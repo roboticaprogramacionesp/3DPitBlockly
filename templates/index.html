@@ -17,6 +17,8 @@
   <script src="{{ url_for('static', filename='xterm.js') }}"></script>
   <script src="{{ url_for('static', filename='xterm-addon-fit.js') }}"></script>
 
+  <link rel="stylesheet" href="{{ url_for('static', filename='tutorial-steps.css')}}" />
+
   <style>
     /* BLOQUE EN EJECUCIÓN */
 
@@ -491,6 +493,51 @@
     #refreshFilesList button:hover {
       background: #555;
     }
+
+    /* ── Selector de tutoriales ──────────────────────────────── */
+    #tutorialSelect {
+      appearance: none;
+      -webkit-appearance: none;
+      background-color: #2743b0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23ffffff' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      color: #ffffff;
+      border: 1px solid #5470e0;
+      border-radius: 6px;
+      padding: 5px 32px 5px 10px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      min-width: 160px;
+      transition: background-color 0.15s, border-color 0.15s;
+      outline: none;
+    }
+
+    #tutorialSelect:hover {
+      background-color: #1e35a0;
+      border-color: #7a90f0;
+    }
+
+    #tutorialSelect:focus {
+      border-color: #fff;
+      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.25);
+    }
+
+    #tutorialSelect option,
+    #tutorialSelect optgroup {
+      background-color: #1e2a6e;
+      color: #ffffff;
+    }
+
+    #tutorialSelect optgroup {
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    #refreshFilesList button:hover {
+      background: #555;
+    }
   </style>
 
 </head>
@@ -566,7 +613,39 @@
           Instalar Firmware
         </button>
       </esp-web-install-button>
-      <button id="btnTutor"><span class="icon-btn icon-help"></span></button><!---->
+      <button id="btnTutor"><span class="icon-btn icon-help"></span></button>
+
+      <!--<button id="btnShare">Compartir</button>-->
+
+      <select id="tutorialSelect">
+        <option value="">📖 Tutoriales</option>
+        <optgroup label="💡 LEDs">
+          <option value="led_basico">LED Básico</option>
+          <option value="led_infinito">LED Infinito (parpadeo)</option>
+          <option value="semaforo">Semáforo</option>
+          <option value="neopixel_basico">NeoPixel RGB</option>
+        </optgroup>
+        <optgroup label="🔧 Entradas / Actuadores">
+          <option value="boton">Botón Contador</option>
+          <option value="infrarrojo_basico">Sensor Infrarrojo (obstáculos)</option>
+          <option value="buzzer">Buzzer</option>
+          <option value="servo">Servo Motor</option>
+          <option value="puente_h">Puente H — Motores DC</option>
+        </optgroup>
+        <optgroup label="🎚️ Sensores / Analógicos">
+          <option value="analogico_adkey">ADKey</option>
+        </optgroup>
+        <optgroup label="📡 Sensores">
+          <option value="ultrasonico">Sensor Ultrasónico (HC-SR04)</option>
+          <option value="ir_ky022">Control Remoto IR (KY-022)</option>
+        </optgroup>
+        <optgroup label="📶 Comunicación Inalámbrica">
+          <option value="hc06_basico">Bluetooth HC-06 (Serial)</option>
+          <option value="espnow_receptor">ESP-NOW — Receptor</option>
+          <option value="espnow_emisor">ESP-NOW — Emisor</option>
+          <option value="bluetooth_le">Bluetooth LE (BLE)</option>
+        </optgroup>
+      </select>
 
     </div>
   </div>
@@ -2906,6 +2985,8 @@
   <script type="module" src="{{ url_for('static', filename='install-button.js') }}"></script>
   <script src="{{ url_for('static', filename='js-tutorial.js') }}"></script>
   <script src="{{ url_for('static', filename='code-tutor.js') }}"></script>
+
+  <script src="{{ url_for('static', filename='tutorial-steps.js') }}"></script>
 </body>
 
 <!-- ===============================

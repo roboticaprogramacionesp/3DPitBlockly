@@ -4201,37 +4201,52 @@ Blockly.defineBlocksWithJsonArray([
   },
   {
     type: "move_dc_motor1_on_off",
-    message0: "%1 Motor %2 IN1 %3 IN2 %4",
+    message0: "%1 Motor %2 %3 %4 %5 %6",
     args0: [
-      { type: "field_input", name: "NAME", text: "l298n" },
+      { 
+        type: "field_input", 
+        name: "NAME", 
+        text: "l298n" 
+      },
       {
         type: "field_dropdown",
         name: "motor",
         options: [
           ["A", "A"],
-          ["B", "B"],
-        ],
+          ["B", "B"]
+        ]
+      },
+      {
+        type: "field_label",
+        name: "LABEL1",
+        text: "IN1"
       },
       {
         type: "field_dropdown",
         name: "in1",
         options: [
           ["off", "off"],
-          ["on", "on"],
-        ],
+          ["on", "on"]
+        ]
+      },
+      {
+        type: "field_label",
+        name: "LABEL2",
+        text: "IN2"
       },
       {
         type: "field_dropdown",
         name: "in2",
         options: [
           ["off", "off"],
-          ["on", "on"],
-        ],
-      },
+          ["on", "on"]
+        ]
+      }
     ],
     previousStatement: null,
     nextStatement: null,
     colour: 20,
+    extensions: ["motor_label_update"]
   },
 
   {
@@ -12740,3 +12755,21 @@ Blockly.Extensions.register("auto_comment", function () {
   this.setCommentText("Bloque configurable");
 });
 
+Blockly.Extensions.register(
+  "motor_label_update",
+  function () {
+    this.setOnChange(function (event) {
+      if (!event) return;
+
+      const motor = this.getFieldValue("motor");
+
+      if (motor === "A") {
+        this.getField("LABEL1").setValue("IN1");
+        this.getField("LABEL2").setValue("IN2");
+      } else if (motor === "B") {
+        this.getField("LABEL1").setValue("IN3");
+        this.getField("LABEL2").setValue("IN4");
+      }
+    });
+  }
+);

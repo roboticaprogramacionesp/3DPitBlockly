@@ -405,3 +405,10 @@
     transform: scale(1);
   }
 }
+
+
+.ts-step-desc .icon-btn {
+  visibility: visible;
+  vertical-align: middle;
+  margin: 0 4px;
+}

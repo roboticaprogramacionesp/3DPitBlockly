@@ -760,7 +760,7 @@ Blockly.Python["ky001_read_index"] = function (block) {
     0;
 
   return [
-    `ds${pin}.read_temp(ds[${index}])`,
+    `ds${pin}.read_temp(ds${pin}_roms[${index}])`,
     Blockly.Python.ORDER_FUNCTION_CALL,
   ];
 };
@@ -805,7 +805,7 @@ Blockly.Python["pin_off"] = function (block) {
 Blockly.Python["set_value_pin"] = function (block) {
   const pin = block.getFieldValue("PIN");
   const value = block.getFieldValue("VALUE");
-  return `p${pin}.value(${value}\n`;
+  return `p${pin}.value(${value})\n`;
 };
 
 Blockly.Python["pin_value"] = function (block) {
@@ -2003,7 +2003,7 @@ Blockly.Python["spi_write"] = function (block) {
 Blockly.Python["spi_read"] = function (block) {
   const name = block.getFieldValue("NAME");
   const n = block.getFieldValue("N");
-  return [`${id}.read(${n})`, Blockly.Python.ORDER_ATOMIC];
+  return [`${name}.read(${n})`, Blockly.Python.ORDER_ATOMIC];
 };
 
 Blockly.Python["i2s_init"] = function (block) {
@@ -2104,8 +2104,7 @@ Blockly.Python["wifi_init"] = function (block) {
   const variable = block.getFieldValue("VAR");
   const mode = block.getFieldValue("MODE");
 
-  Blockly.Python.definitions_["wifi_imports"] =
-    "import network\n" + "import time";
+  Blockly.Python.definitions_["wifi_imports"] = "import network";
 
   let code = "";
 
@@ -4494,14 +4493,14 @@ ${name} = bmp280.BMP280(i2c_${name})
 };
 
 Blockly.Python["bmp_read_temp"] = function (block) {
-  const code = "bmp.temperature";
-
+  const name = block.getFieldValue("NAME");
+  const code = `${name}.temperature`;
   return [code, Blockly.Python.ORDER_ATOMIC];
 };
 
 Blockly.Python["bmp_read_pressure"] = function (block) {
-  const code = "bmp.pressure";
-
+  const name = block.getFieldValue("NAME");
+  const code = `${name}.pressure`;
   return [code, Blockly.Python.ORDER_ATOMIC];
 };
 
@@ -4570,21 +4569,6 @@ ${name} = QMC5883(i2c_${name}, slvAddr=${addr})
 Blockly.Python["qmc5883l_read_xyz"] = function (block) {
   const name = block.getFieldValue("NAME");
   return `${name}_data = ${name}.measure()\n`;
-};
-
-Blockly.Python["qmc5883l_read_x"] = function (block) {
-  const name = block.getFieldValue("NAME");
-  return [`${name}_data[0]`, Blockly.Python.ORDER_ATOMIC];
-};
-
-Blockly.Python["qmc5883l_read_y"] = function (block) {
-  const name = block.getFieldValue("NAME");
-  return [`${name}_data[1]`, Blockly.Python.ORDER_ATOMIC];
-};
-
-Blockly.Python["qmc5883l_read_z"] = function (block) {
-  const name = block.getFieldValue("NAME");
-  return [`${name}_data[2]`, Blockly.Python.ORDER_ATOMIC];
 };
 
 Blockly.Python["qmc5883l_read_x"] = function (block) {
