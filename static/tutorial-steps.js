@@ -75,6 +75,11 @@ var TUTORIALS = {
       },
 
       {
+        titulo: "Abre la categoría LEDs",
+        desc: "Haz clic en <b>LEDs</b> en el panel de bloques para desplegarlo.",
+        highlightCat: "LEDs", expandCat: null, bloque: null
+      },
+      {
         titulo: "Selecciona la subcategoría LED",
         desc: "Dentro de <b>LEDs</b> haz clic en <b>LED</b> para ver sus bloques.",
         highlightCat: "LED", expandCat: "LEDs", bloque: null
@@ -270,10 +275,18 @@ var TUTORIALS = {
         bloque: null
       },
       {
+        titulo: "Establecer variable btn",
+        desc: "Ve a <b>Variables</b> y arrastra el bloque <em>establecer btn a</em> al área de trabajo. Lo colocaremos antes del ciclo para inicializarlo en 0.",
+        highlightCat: "Variables",
+        expandCat: null,
+        bloque: "variables_set", bloqueLabel: "Establecer variable"
+      },
+      {
         titulo: "Establecer 0 en btn",
-        desc: "Ve a Matemáticas y selecciona el bloque 0.",
+        desc: "Ve a <b>Matemáticas</b> y selecciona el bloque <em>0</em>. Conéctalo al bloque <em>establecer btn a</em> para inicializar la variable en 0.",
         highlightCat: "Matemáticas",
-        bloque: "math_number"
+        expandCat: null,
+        bloque: "math_number", bloqueLabel: "Número"
       },
       {
         titulo: "Agregar ciclo infinito",
@@ -283,10 +296,11 @@ var TUTORIALS = {
         bloque: "controls_whileUntil"
       },
       {
-        titulo: "Establecer variable btn",
-        desc: "Ve a <b>Variables</b> y arrastra el bloque <em>establecer btn a</em> dentro del ciclo. Conecta aquí el resultado de la lectura del botón.",
+        titulo: "Actualizar btn con la lectura del botón",
+        desc: "Ve a <b>Variables</b> y arrastra el bloque <em>establecer btn a</em> <b>dentro del ciclo</b>. Aquí conectaremos el bloque que lee el estado del botón.",
         highlightCat: "Variables",
-        bloque: "variables_set"
+        expandCat: null,
+        bloque: "variables_set", bloqueLabel: "Establecer variable"
       },
       {
         titulo: "Invertir la lectura usando No",
@@ -304,14 +318,21 @@ var TUTORIALS = {
       },
       {
         titulo: "Agregar condición",
-        desc: "Ve a <b>Lógica</b> y arrastra el bloque <em>Si hacer</em>. Después agrega una comparación <em>btn = 1</em>.",
+        desc: "Ve a <b>Lógica</b> y arrastra el bloque <em>Si hacer</em>. Lo colocaremos dentro del ciclo. Luego necesitamos agregarle una comparación como condición.",
         highlightCat: "Lógica",
         expandCat: null,
         bloque: "controls_if", bloqueLabel: "Si … hacer"
       },
       {
+        titulo: "Agregar bloque de comparación (=)",
+        desc: "Ve a <b>Lógica</b> y arrastra el bloque <em>=</em> (comparar). Conéctalo al hueco de condición del bloque <em>Si hacer</em>. Este bloque compara dos valores y devuelve verdadero si son iguales.",
+        highlightCat: "Lógica",
+        expandCat: null,
+        bloque: "logic_compare", bloqueLabel: "= (comparar)"
+      },
+      {
         titulo: "Comparar valor primera posición",
-        desc: "Usa el bloque <em>=</em> en la primera posición desde <b>Variables</b> para consultar el estado del botón (btn).",
+        desc: "Ve a <b>Variables</b> y arrastra el bloque <em>obtener btn</em>. Conéctalo en la <b>primera posición</b> (izquierda) del bloque <em>=</em>.",
         highlightCat: "Variables",
         expandCat: null,
         bloque: {
@@ -321,7 +342,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Comparar valor segunda posición",
-        desc: "Usa el bloque <em>=</em> en la segunda posición establecer el valor de 1.",
+        desc: "Ve a <b>Matemáticas</b> y arrastra el bloque de número <em>0</em>. Cámbialo a <b>1</b> y conéctalo en la <b>segunda posición</b> (derecha) del bloque <em>=</em>. Ahora la condición es: si btn = 1.",
         highlightCat: "Matemáticas",
         expandCat: null,
         bloque: "math_number"
@@ -358,13 +379,13 @@ var TUTORIALS = {
       },
       {
         titulo: "Incrementar el contador",
-        desc: "Ve a <b>Variables</b> y arrastra el bloque <em>cambiar contador en</em>. Conéctalo dentro de la sección <b>hacer</b> del bloque Si. El valor predeterminado es <b>1</b>, lo que sumará 1 al contador cada vez que se presione el botón.",
+        desc: "Ve a <b>Variables</b> y arrastra el bloque <em>añadir a btn</em> cambiar a <em>añadir a contador</em>. Conéctalo dentro de la sección <b>hacer</b> del bloque Si. El valor predeterminado es <b>1</b>, lo que sumará 1 al contador cada vez que se presione el botón.",
         highlightCat: "Variables",
         bloque: "math_change", bloqueLabel: "Sumar a variable"
       },
       {
         titulo: "Agregar espera",
-        desc: "Desde <b>Tiempo</b>, arrastra el bloque <em>esperar</em> y ajusta el valor a <b>0.3</b> segundos. Colócalo al final de la sección <b>hacer</b> del bloque Si, después del incremento. Esto evita que el botón registre múltiples pulsaciones por rebote.",
+        desc: "Desde <b>Tiempo</b>, arrastra el bloque <em>esperar</em> y ajusta el valor a <b>0.3</b> segundos. Colócalo de bajo del bloque de <b>si hacer</b>. Esto evita que el botón registre múltiples pulsaciones por rebote.",
         highlightCat: "Tiempo",
         expandCat: null,
         bloque: "time_sleep"
@@ -784,26 +805,21 @@ var TUTORIALS = {
   },
 
   infrarrojo_basico: {
-    title: "Sensor IR — Carrito Seguidor de Línea", icon: "🚗",
+    title: "Sensor Infrarrojo — Detectar Línea", icon: "⬛",
     steps: [
       {
-        titulo: "¿Qué haremos?",
-        desc: "Construiremos un <b>carrito seguidor de línea</b> usando dos sensores infrarrojos. Cada sensor detecta si está sobre una línea <b>negra</b> (devuelve <b>0</b>) o sobre fondo <b>blanco</b> (devuelve <b>1</b>). El ESP32 lee los dos sensores y decide hacia dónde girar para mantener el carrito sobre la línea.",
+        titulo: "¿Qué aprenderemos?",
+        desc: "Usaremos un <b>sensor infrarrojo</b> para detectar si está sobre una línea <b>negra</b> o sobre fondo <b>blanco</b>. El sensor devuelve <b>0</b> cuando detecta negro (poca reflexión) y <b>1</b> cuando detecta blanco (mucha reflexión). Mostraremos el resultado en el monitor serial.",
         highlightCat: null, bloque: null
       },
       {
-        titulo: "¿Cómo funciona el sensor IR?",
-        desc: "El sensor infrarrojo emite luz y mide el reflejo. La superficie <b>blanca refleja mucho</b> → el sensor devuelve <b>1</b>. La superficie <b>negra absorbe la luz</b> → el sensor devuelve <b>0</b>.<br><br>Con <b>dos sensores</b> (izquierdo y derecho) podemos saber exactamente dónde está la línea y corregir la dirección.",
+        titulo: "¿Cómo funciona?",
+        desc: "El sensor emite luz infrarroja y mide cuánta regresa reflejada:<br><br>⬛ Superficie <b>negra</b> → absorbe la luz → el sensor devuelve <b>0</b><br>⬜ Superficie <b>blanca</b> → refleja la luz → el sensor devuelve <b>1</b><br><br>Con el potenciómetro del módulo puedes ajustar la sensibilidad de detección.",
         highlightCat: null, bloque: null
       },
       {
-        titulo: "Conexión física — Sensores IR",
-        desc: "Conecta los <b>dos sensores infrarrojos</b> al ESP32:<br>📌 Sensor <b>Izquierdo OUT</b> → pin <b>34</b><br>📌 Sensor <b>Derecho OUT</b> → pin <b>35</b><br>⚡ <b>VCC</b> de ambos → 3.3V o 5V<br>⏚ <b>GND</b> de ambos → GND<br><br>⚙️ Ajusta el potenciómetro de cada sensor hasta que el LED de estado se apague sobre la línea negra y se encienda sobre fondo blanco.",
-        highlightCat: null, bloque: null
-      },
-      {
-        titulo: "Conexión física — Motores (L298N)",
-        desc: "Conecta el módulo L298N al ESP32:<br>📌 <b>IN1</b> → pin <b>26</b> (Motor A adelante)<br>📌 <b>IN2</b> → pin <b>25</b> (Motor A atrás)<br>📌 <b>IN3</b> → pin <b>17</b> (Motor B adelante)<br>📌 <b>IN4</b> → pin <b>16</b> (Motor B atrás)<br>⚡ <b>12V</b> → batería de los motores<br>⏚ <b>GND</b> → GND común con el ESP32<br><br>Motor A = rueda <b>izquierda</b> · Motor B = rueda <b>derecha</b>",
+        titulo: "Conexión física",
+        desc: "Conecta el módulo infrarrojo al ESP32 así:<br>📌 <b>OUT</b> (señal) → pin <b>12</b><br>⚡ <b>VCC</b> → 3.3V<br>⏚ <b>GND</b> → GND<br><br>⚙️ Ajusta el potenciómetro del módulo hasta que el LED indicador se encienda sobre blanco y se apague sobre negro.",
         highlightCat: null, bloque: null
       },
       {
@@ -812,99 +828,52 @@ var TUTORIALS = {
         highlightCat: "Sensores IR", expandCat: "Sensores", bloque: null
       },
       {
-        titulo: "Arrastra: Preparar sensor IR izquierdo",
-        desc: "Arrastra el bloque <em>Preparar sensor infrarrojo</em>. Asigna el pin <b>34</b> y modo <b>PULL_UP</b>. Este es el sensor <b>izquierdo</b>. Colócalo al inicio, fuera de cualquier ciclo.",
-        highlightCat: "Sensores IR", expandCat: "Sensores",
+        titulo: "Arrastra: Preparar sensor infrarrojo",
+        desc: "Arrastra el bloque <em>Preparar sensor infrarrojo</em> al área de trabajo. Asegúrate de que el pin sea <b>12</b>. Este bloque se coloca <b>una sola vez</b> al inicio del programa.",
+        highlightCat: "Sensores IR", expandCats: ["Sensores", "Sensores Digitales"], 
         bloque: "init_infrarrojo", bloqueLabel: "Preparar sensor infrarrojo"
       },
       {
-        titulo: "Arrastra: Preparar sensor IR derecho",
-        desc: "Arrastra otro bloque <em>Preparar sensor infrarrojo</em>. Asigna el pin <b>35</b> y modo <b>PULL_UP</b>. Este es el sensor <b>derecho</b>. Colócalo justo debajo del anterior.",
-        highlightCat: "Sensores IR", expandCat: "Sensores",
-        bloque: "init_infrarrojo", bloqueLabel: "Preparar sensor infrarrojo"
-      },
-      {
-        titulo: "Inicializa los motores (L298N)",
-        desc: "Ve a <b>Actuadores → Motor DC</b> y arrastra <em>Preparar Motor DC (L298N)</em>. Configura: IN1=<b>26</b>, IN2=<b>25</b>, IN3=<b>17</b>, IN4=<b>16</b>. Ponlo debajo de los sensores.",
-        highlightCat: "Motor DC", expandCat: "Actuadores",
-        bloque: "init_dc_motor", bloqueLabel: "Preparar Motor DC (L298N)"
-      },
-      {
-        titulo: "Crea variables: ir_izq e ir_der",
-        desc: "Ve a <b>Variables</b> y crea dos variables: <b>ir_izq</b> (sensor izquierdo) e <b>ir_der</b> (sensor derecho). Estas guardarán la lectura de cada sensor en cada ciclo.",
+        titulo: "Crea la variable ir_valor",
+        desc: "Ve a <b>Variables</b> y haz clic en <b>Crear variable</b>. Escribe el nombre <b>ir_valor</b> y confirma. Esta variable guardará la lectura del sensor en cada ciclo.",
         highlightCat: "Variables", highlightFlyoutButton: "create_variable", bloque: null
       },
       {
         titulo: "Agrega un ciclo infinito",
-        desc: "Ve a <b>Ciclos</b> y arrastra <em>repetir mientras … Verdadero</em>. Todo el control del carrito irá dentro de este bloque.",
+        desc: "Ve a <b>Ciclos</b> y arrastra el bloque <em>repetir mientras … Verdadero</em>. Todo lo que pongamos dentro se ejecutará sin parar.",
         highlightCat: "Ciclos",
         bloque: "controls_whileUntil", bloqueLabel: "repetir mientras Verdadero"
       },
       {
-        titulo: "Lee el sensor izquierdo",
-        desc: "Dentro del ciclo, ve a <b>Variables</b> y arrastra <em>establecer ir_izq a</em>. Conéctale el bloque <em>Leer sensor infrarrojo</em> (pin <b>34</b>) desde <b>Sensores IR</b>.",
+        titulo: "Guarda la lectura del sensor",
+        desc: "Ve a <b>Variables</b> y arrastra el bloque <em>establecer ir_valor a</em> <b>dentro</b> del ciclo.",
+        highlightCat: "Variables", 
+        bloque: "variables_set", bloqueLabel: "establecer ir_valor a"
+      },
+      {
+        titulo: "Conecta: Leer sensor infrarrojo",
+        desc: "Ve a <b>Sensores → Sensores Digitales → Sensores IR</b> y arrastra el bloque <em>Leer sensor infrarrojo</em> (pin <b>12</b>). Conéctalo al espacio vacío del bloque <em>establecer ir_valor a</em>.",
+        highlightCat: "Sensores IR", expandCats: ["Sensores", "Sensores Digitales"],
+        bloque: "read_infrarrojo", bloqueLabel: "Leer sensor infrarrojo"
+      },
+      {
+        titulo: "Imprime el resultado",
+        desc: "Ve a <b>Textos</b> y arrastra el bloque <em>imprimir</em> justo debajo del bloque anterior (dentro del ciclo).",
+        highlightCat: "Textos",
+        bloque: "text_print", bloqueLabel: "imprimir"
+      },
+      {
+        titulo: "Conecta ir_valor al imprimir",
+        desc: "Ve a <b>Variables</b> y arrastra el bloque <em>obtener ir_valor</em>. Conéctalo dentro del bloque <em>imprimir</em>. Verás <b>0</b> sobre negro y <b>1</b> sobre blanco en el monitor serial.",
         highlightCat: "Variables",
-        bloque: "variables_set", bloqueLabel: "establecer ir_izq a"
-      },
-      {
-        titulo: "Lee el sensor derecho",
-        desc: "Arrastra otro bloque <em>establecer ir_der a</em> justo debajo. Conéctale el bloque <em>Leer sensor infrarrojo</em> con el pin <b>35</b>.",
-        highlightCat: "Variables",
-        bloque: "variables_set", bloqueLabel: "establecer ir_der a"
-      },
-      {
-        titulo: "Condición: ambos sobre la línea (ir_izq=0 y ir_der=0)",
-        desc: "Arrastra un bloque <em>Si … hacer</em> desde <b>Lógica</b>. Agrega la condición: <em>ir_izq = 0</em> <b>Y</b> <em>ir_der = 0</em>. Cuando <b>ambos sensores ven negro</b>, el carrito está centrado → debe ir <b>recto</b>.",
-        highlightCat: "Lógica",
-        bloque: "controls_if", bloqueLabel: "Si … hacer"
-      },
-      {
-        titulo: "Acción: avanzar recto",
-        desc: "Dentro de ese <em>Si</em>, ve a <b>Actuadores → Motor DC</b> y arrastra <b>dos</b> bloques <em>Controlar Motor DC</em>: Motor A → IN1=<b>on</b>, IN2=<b>off</b> · Motor B → IN3=<b>on</b>, IN4=<b>off</b>. Ambas ruedas giran hacia adelante.",
-        highlightCat: "Motor DC", expandCat: "Actuadores",
-        bloque: "move_dc_motor1_on_off", bloqueLabel: "Controlar Motor DC (encender/apagar)"
-      },
-      {
-        titulo: "Condición: sensor izquierdo sobre blanco (ir_izq=1 y ir_der=0)",
-        desc: "Añade otra condición <em>Si</em>: <em>ir_izq = 1</em> <b>Y</b> <em>ir_der = 0</em>. El carrito se fue a la <b>derecha</b> → debe girar a la <b>izquierda</b> para corregirse.",
-        highlightCat: "Lógica",
-        bloque: "controls_if", bloqueLabel: "Si … hacer"
-      },
-      {
-        titulo: "Acción: girar a la izquierda",
-        desc: "Dentro de ese <em>Si</em>, arrastra dos bloques <em>Controlar Motor DC</em>: Motor A → IN1=<b>off</b>, IN2=<b>on</b> (atrás/lento) · Motor B → IN3=<b>on</b>, IN4=<b>off</b> (adelante). Esto gira el carrito hacia la izquierda.",
-        highlightCat: "Motor DC", expandCat: "Actuadores",
-        bloque: "move_dc_motor1_on_off", bloqueLabel: "Controlar Motor DC (encender/apagar)"
-      },
-      {
-        titulo: "Condición: sensor derecho sobre blanco (ir_izq=0 y ir_der=1)",
-        desc: "Añade otra condición <em>Si</em>: <em>ir_izq = 0</em> <b>Y</b> <em>ir_der = 1</em>. El carrito se fue a la <b>izquierda</b> → debe girar a la <b>derecha</b> para corregirse.",
-        highlightCat: "Lógica",
-        bloque: "controls_if", bloqueLabel: "Si … hacer"
-      },
-      {
-        titulo: "Acción: girar a la derecha",
-        desc: "Dentro de ese <em>Si</em>, arrastra dos bloques <em>Controlar Motor DC</em>: Motor A → IN1=<b>on</b>, IN2=<b>off</b> (adelante) · Motor B → IN3=<b>off</b>, IN4=<b>on</b> (atrás/lento). Esto gira el carrito hacia la derecha.",
-        highlightCat: "Motor DC", expandCat: "Actuadores",
-        bloque: "move_dc_motor1_on_off", bloqueLabel: "Controlar Motor DC (encender/apagar)"
-      },
-      {
-        titulo: "Condición: ambos fuera de la línea (ir_izq=1 y ir_der=1)",
-        desc: "Añade la última condición <em>Si</em>: <em>ir_izq = 1</em> <b>Y</b> <em>ir_der = 1</em>. Ambos sensores ven blanco → el carrito perdió la línea completamente → <b>detener</b> o buscar.",
-        highlightCat: "Lógica",
-        bloque: "controls_if", bloqueLabel: "Si … hacer"
-      },
-      {
-        titulo: "Acción: detener los motores",
-        desc: "Dentro de ese <em>Si</em>, arrastra dos bloques <em>Controlar Motor DC</em>: Motor A → IN1=<b>off</b>, IN2=<b>off</b> · Motor B → IN3=<b>off</b>, IN4=<b>off</b>. Ambas ruedas se detienen.",
-        highlightCat: "Motor DC", expandCat: "Actuadores",
-        bloque: "move_dc_motor1_on_off", bloqueLabel: "Controlar Motor DC (encender/apagar)"
+        bloque: { tipo: "variables_get", valor: "ir_valor" },
+        bloqueLabel: "obtener ir_valor"
       },
       {
         titulo: "Agrega una pausa corta",
-        desc: "Al final del ciclo (fuera de los bloques <em>Si</em>), ve a <b>Tiempo</b> y arrastra <em>Esperar</em>. Ajusta el valor a <b>0.05</b> segundos (50 ms). Esto evita que el ESP32 trabaje a máxima velocidad sin respiro.",
+        desc: "Ve a <b>Tiempo</b> y arrastra el bloque <em>Esperar</em> al final del ciclo. Ajusta el valor a <b>0.2</b> segundos para no saturar el monitor serial.",
         highlightCat: "Tiempo",
-        bloque: "time_sleep", bloqueLabel: "esperar 0.05 s"
+        bloque: "time_sleep", bloqueLabel: "esperar 0.2 s"
       },
       {
         titulo: "Conecta tu ESP32",
@@ -913,12 +882,12 @@ var TUTORIALS = {
       },
       {
         titulo: "Selecciona tu puerto",
-        desc: "El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
+        desc: "El navegador mostrará los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         waitForAction: "connect"
       },
       {
-        titulo: "¡Ejecuta y prueba el carrito!",
-        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Coloca el carrito sobre una pista con línea negra sobre fondo blanco y observa cómo sigue la línea automáticamente. Si se desvía, ajusta el potenciómetro de los sensores.",
+        titulo: "¡Ejecuta y prueba!",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Abre el monitor serial y pasa el sensor sobre una línea negra y sobre fondo blanco. Verás cómo el valor cambia entre <b>0</b> (negro) y <b>1</b> (blanco).",
         highlightElement: "#btnRun", waitForAction: "run"
       }
     ]
@@ -1918,12 +1887,12 @@ var TUTORIALS = {
       },
       {
         titulo: "Características del DS18B20",
-        desc: "• Rango: <b>-55°C a +125°C</b> con precisión de ±0.5°C<br>• Protocolo <b>OneWire</b>: un solo pin de datos<br>• Puedes encadenar <b>múltiples sensores</b> en el mismo pin<br>• Ideal para medición de temperatura en líquidos (versión impermeable)<br>• Alimentación: 3.3V o 5V",
+        desc: "• Rango: <b>-55°C a +125°C</b> con precisión de ±0.5°C<br>• Protocolo <b>OneWire</b>: un solo pin de datos<br>• Puedes encadenar <b>múltiples sensores</b> en el mismo pin<br>• Ideal para medición de temperatura en líquidos (versión impermeable)<br>• Alimentación: <b>3.3V</b>",
         highlightCat: null, bloque: null
       },
       {
         titulo: "Conexión física del KY-001",
-        desc: "El módulo KY-001 tiene 3 pines:<br>📌 <b>S</b> (datos OneWire) → pin <b>4</b><br>⚡ <b>V</b> (voltaje) → 3.3V o 5V<br>⏚ <b>G</b> (tierra) → GND<br><br>El módulo ya incluye la resistencia pull-up de 4.7 kΩ. Si usas el sensor DS18B20 desnudo, agrega esa resistencia entre el pin de datos y 3.3V.",
+        desc: "El módulo KY-001 tiene 3 pines:<br>📌 <b>S</b> (datos OneWire) → pin <b>4</b><br>⚡ <b>V</b> (voltaje) → <b>3.3V</b><br>⏚ <b>G</b> (tierra) → GND<br><br>⚠️ Conecta siempre a <b>3.3V</b>, nunca a 5V — el ESP32 no tolera 5V en sus pines y puedes dañarlo.<br><br>El módulo ya incluye la resistencia pull-up de 4.7 kΩ. Si usas el sensor DS18B20 desnudo, agrega esa resistencia entre el pin de datos y 3.3V.",
         highlightCat: null, bloque: null
       },
       {
@@ -1934,23 +1903,23 @@ var TUTORIALS = {
       {
         titulo: "Arrastra: Inicializar KY-001",
         desc: "Arrastra el bloque <em>Preparar sensor KY-001 (DS18B20)</em> al área de trabajo. Asigna el pin <b>4</b>. Este bloque configura el bus OneWire y va <b>una sola vez</b> al inicio.",
-        highlightCat: "KY-001", expandCat: "Sensores",
+        highlightCat: "DS18B20 (KY-001)", expandCats: ["Sensores", "Sensores Digitales"],
         bloque: "ky001_init", bloqueLabel: "Preparar sensor KY-001"
       },
       {
         titulo: "Crea la variable: roms",
-        desc: "Ve a <b>Variables</b> y crea una variable llamada <b>roms</b>. Esta guardará la lista de sensores detectados en el bus OneWire (puede haber uno o varios).",
+        desc: "Ve a <b>Variables</b> y haz clic en <b>Crear variable</b>. Escribe el nombre <b>roms</b> y confirma. Esta variable guardará la lista de sensores detectados en el bus OneWire.",
         highlightCat: "Variables", highlightFlyoutButton: "create_variable", bloque: null
       },
       {
         titulo: "Escanear sensores en el bus",
-        desc: "Ve a <b>Variables</b> y arrastra <em>establecer roms a</em>. Luego ve a <b>Sensores → KY-001</b> y conecta el bloque <em>Escanear sensores DS18B20</em> (pin <b>4</b>). Esto detecta todos los sensores conectados y guarda su lista.",
+        desc: "Ve a <b>Variables</b> y arrastra el bloque <em>establecer roms a</em>. Luego ve a <b>Sensores → Sensores Digitales → KY-001</b> y arrastra el bloque <em>Escanear sensores DS18B20</em> (pin <b>4</b>). Conéctalo al espacio vacío.",
         highlightCat: "KY-001", expandCat: "Sensores",
         bloque: "ky001_scan", bloqueLabel: "Escanear sensores DS18B20"
       },
       {
         titulo: "Crea la variable: temperatura",
-        desc: "Ve a <b>Variables</b> y crea otra variable llamada <b>temperatura</b>. Guardará el valor leído del sensor en cada ciclo.",
+        desc: "Ve a <b>Variables</b> y haz clic en <b>Crear variable</b>. Escribe el nombre <b>temperatura</b> y confirma. Guardará el valor leído del sensor en cada ciclo.",
         highlightCat: "Variables", highlightFlyoutButton: "create_variable", bloque: null
       },
       {
@@ -1961,25 +1930,31 @@ var TUTORIALS = {
       },
       {
         titulo: "Dentro del ciclo: convertir temperatura",
-        desc: "Ve a <b>Sensores → KY-001</b> y arrastra el bloque <em>Convertir temperatura DS18B20</em> (pin <b>4</b>) como <b>primer bloque dentro del ciclo</b>. Este comando ordena al sensor que tome la medición; sin él la lectura siempre dará el mismo valor.",
+        desc: "Ve a <b>Sensores → Sensores Digitales → KY-001</b> y arrastra el bloque <em>Convertir temperatura DS18B20</em> (pin <b>4</b>) como <b>primer bloque dentro del ciclo</b>. Este comando ordena al sensor que tome la medición; sin él la lectura siempre dará el mismo valor.",
         highlightCat: "KY-001", expandCat: "Sensores",
         bloque: "ky001_convert", bloqueLabel: "Convertir temperatura DS18B20"
       },
       {
         titulo: "Esperar la conversión",
-        desc: "El DS18B20 tarda hasta 750 ms en convertir. Ve a <b>Tiempo</b> y arrastra <em>Esperar</em> con valor <b>1</b> segundo justo después del bloque anterior.",
+        desc: "El DS18B20 tarda hasta 750 ms en medir. Ve a <b>Tiempo</b> y arrastra el bloque <em>Esperar</em> con valor <b>1</b> segundo justo después del bloque anterior.",
         highlightCat: "Tiempo",
         bloque: "time_sleep", bloqueLabel: "esperar 1 s"
       },
       {
-        titulo: "Leer la temperatura del sensor",
-        desc: "Ve a <b>Variables</b> y arrastra <em>establecer temperatura a</em>. Luego ve a <b>Sensores → KY-001</b> y conecta el bloque <em>Leer temperatura DS18B20</em> (pin <b>4</b>, índice <b>0</b> para el primer sensor). Conéctalo al espacio vacío.",
+        titulo: "Guardar la temperatura en la variable",
+        desc: "Ve a <b>Variables</b> y arrastra el bloque <em>establecer temperatura a</em> dentro del ciclo, después de la espera.",
+        highlightCat: "Variables",
+        bloque: "variables_set", bloqueLabel: "establecer temperatura a"
+      },
+      {
+        titulo: "Conecta: Leer temperatura DS18B20",
+        desc: "Ve a <b>Sensores → Sensores Digitales → KY-001</b> y arrastra el bloque <em>Leer temperatura DS18B20</em> (pin <b>4</b>, índice <b>0</b> para el primer sensor). Conéctalo al espacio vacío del bloque <em>establecer temperatura a</em>.",
         highlightCat: "KY-001", expandCat: "Sensores",
         bloque: "ky001_read_index", bloqueLabel: "Leer temperatura DS18B20"
       },
       {
-        titulo: "Imprimir el valor",
-        desc: "Ve a <b>Textos</b> y arrastra el bloque <em>imprimir</em>. Usa un bloque <em>crear texto con</em> para unir el texto <b>'Temperatura: '</b> con la variable <b>temperatura</b> y <b>' °C'</b>.",
+        titulo: "Imprime el resultado",
+        desc: "Ve a <b>Textos</b> y arrastra el bloque <em>imprimir</em>. Usa un bloque <em>crear texto con</em> para unir el texto <b>'Temperatura: '</b> con la variable <b>temperatura</b> y <b>' °C'</b> al final.",
         highlightCat: "Textos",
         bloque: "text_print", bloqueLabel: "imprimir"
       },
@@ -1995,7 +1970,7 @@ var TUTORIALS = {
       },
       {
         titulo: "¡Ejecuta y prueba!",
-        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. En el monitor serial verás la temperatura en °C. Toca el sensor con los dedos y observa cómo sube. Si conectas varios sensores en el mismo pin, cambia el índice (0, 1, 2…) para leer cada uno. 🌡️",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. En el monitor serial verás la temperatura en °C actualizándose cada segundo. Toca el sensor con los dedos y observa cómo sube el valor. 🌡️",
         highlightElement: "#btnRun", waitForAction: "run"
       }
     ]
@@ -2008,7 +1983,7 @@ var TUTORIALS = {
 var TutorialSteps = {
   tutorial: null,
   paso: 0,
-  _glowToolbox: null,
+  _glowToolbox: [],
   _glowBlocks: [],     // SVG roots resaltados — SOLO del flyout, nunca del workspace
   _flyoutObs: null,   // MutationObserver del flyout
   _currentTipos: [],    // tipos del paso actual, para el observer
@@ -2097,10 +2072,16 @@ var TutorialSteps = {
 
     // Ruta del toolbox
     var html = '';
-    if (step.expandCat && step.expandCat !== step.highlightCat) {
-      html += '<span class="ts-cat-part">' + step.expandCat + '</span>' +
-        '<span class="ts-cat-sep">›</span>';
-    }
+    var catsToExpand = step.expandCats
+      ? step.expandCats
+      : (step.expandCat ? [step.expandCat] : []);
+
+    catsToExpand.forEach(function (cat) {
+      if (cat !== step.highlightCat) {
+        html += '<span class="ts-cat-part">' + cat + '</span>' +
+          '<span class="ts-cat-sep">›</span>';
+      }
+    });
     if (step.highlightCat) {
       html += '<span class="ts-cat-part ts-cat-active">' + step.highlightCat + '</span>';
     }
@@ -2137,7 +2118,12 @@ var TutorialSteps = {
 
     // Highlights
     this._limpiarTodo();
-    this._highlightToolbox(step.highlightCat);
+
+    // Expandir categorías padres en orden (soporta expandCats array o expandCat string)
+    var catsToExpand = step.expandCats
+      ? step.expandCats
+      : (step.expandCat ? [step.expandCat] : []);
+    this._highlightToolbox(step.highlightCat, catsToExpand);
 
     if (step.highlightElement) {
       this._highlightHTMLElement(step.highlightElement);
@@ -2281,17 +2267,33 @@ var TutorialSteps = {
   },
 
   /* ── Highlight toolbox ───────────────────────────────────── */
-  _highlightToolbox: function (nombre) {
-    if (!nombre) return;
+  _highlightToolbox: function (nombre, padres) {
+    // padres puede ser string (legado) o array
+    var listaPadres = Array.isArray(padres)
+      ? padres.map(function (p) { return p.trim(); })
+      : (padres ? [padres.trim()] : []);
+
+    var nombres = listaPadres.slice(); // copia de padres
+    if (nombre) nombres.push(nombre.trim());
+    if (!nombres.length) return;
+
     var rows = document.querySelectorAll('.blocklyTreeRow');
+    var scrollTarget = null;
+
     for (var i = 0; i < rows.length; i++) {
       var label = rows[i].querySelector('.blocklyTreeLabel');
-      if (label && label.textContent.trim() === nombre.trim()) {
+      if (!label) continue;
+      var txt = label.textContent.trim();
+      if (nombres.indexOf(txt) !== -1) {
         rows[i].classList.add('ts-toolbox-glow');
-        this._glowToolbox = rows[i];
-        rows[i].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-        break;
+        this._glowToolbox.push(rows[i]);
+        if (txt === (nombre ? nombre.trim() : listaPadres[listaPadres.length - 1])) {
+          scrollTarget = rows[i];
+        }
       }
+    }
+    if (scrollTarget) {
+      scrollTarget.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     }
   },
 
@@ -2450,10 +2452,10 @@ var TutorialSteps = {
     this._detenerFlyoutObserver();
     this._currentTipos = [];
 
-    if (this._glowToolbox) {
-      this._glowToolbox.classList.remove('ts-toolbox-glow');
-      this._glowToolbox = null;
-    }
+    this._glowToolbox.forEach(function (row) {
+      row.classList.remove('ts-toolbox-glow');
+    });
+    this._glowToolbox = [];
 
     this._glowBlocks.forEach(function (svg) {
       svg.classList.remove('ts-block-glow');

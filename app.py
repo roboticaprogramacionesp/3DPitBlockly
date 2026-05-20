@@ -14,7 +14,7 @@ AUTOSAVE_PATH = os.path.join(
 class Api:
     def save_xml(self, xml_text):
         file_path = webview.windows[0].create_file_dialog(
-            webview.FileDialog.SAVE,
+            webview.SAVE_DIALOG,
             save_filename="workspace.xml",
             file_types=("Blockly XML (*.xml)",)
         )
@@ -41,7 +41,7 @@ class Api:
     
     def save_py(self, code, default_name="test.py"):
         file_path = webview.windows[0].create_file_dialog(
-            webview.FileDialog.SAVE,
+            webview.SAVE_DIALOG,
             save_filename=default_name,
             file_types=('Python Files (*.py)',)
         )
@@ -75,7 +75,7 @@ class Api:
 
     def save_png(self, base64_data, default_name="mis_bloques.png"):
         file_path = webview.windows[0].create_file_dialog(
-            webview.FileDialog.SAVE,
+            webview.SAVE_DIALOG,
             save_filename=default_name,
             file_types=('PNG Files (*.png)',)
         )
@@ -117,7 +117,7 @@ if __name__ == "__main__":
     webview.create_window(
         "3DPit Blocks",
         "http://127.0.0.1:5000/",
-        min_size=(780, 600),
+        min_size=(1000, 600),
         resizable=True,
         js_api=api,       
     )
