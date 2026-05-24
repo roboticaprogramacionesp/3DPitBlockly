@@ -117,7 +117,7 @@ if __name__ == "__main__":
     webview.create_window(
         "3DPit Blocks",
         "http://127.0.0.1:5000/",
-        min_size=(1000, 600),
+        min_size=(850, 600),
         resizable=True,
         js_api=api,       
     )

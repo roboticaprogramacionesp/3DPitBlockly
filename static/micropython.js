@@ -142,7 +142,7 @@ Blockly.Python["yield"] = function (block) {
 };
 
 Blockly.Python["file_open"] = function (block) {
-  const file = block.getFieldValue("FILENAME");
+  const file = block.getFieldValue("FILENAME").replace(/'/g, "\\'");
   let mode = block.getFieldValue("MODE");
   const isBinary = block.getFieldValue("BINARY") === "TRUE";
   // Agregar 'b' si es binario
@@ -163,7 +163,7 @@ Blockly.Python["file_write"] = function (block) {
 
 Blockly.Python["file_read"] = function (block) {
   const file = block.getFieldValue("file");
-  return `${file}.read()\n`;
+  return [`${file}.read()`, Blockly.Python.ORDER_FUNCTION_CALL];
 };
 
 Blockly.Python["file_close"] = function (block) {
@@ -172,16 +172,20 @@ Blockly.Python["file_close"] = function (block) {
 };
 
 Blockly.Python["create_folder"] = function (block) {
-  const file = block.getFieldValue("file");
+  const folder =
+    Blockly.Python.valueToCode(block, "FOLDER", Blockly.Python.ORDER_NONE) ||
+    "''";
   Blockly.Python.definitions_["import_os"] = "import os";
-  const code = `os.mkdir(${file})\n`;
+  const code = `os.mkdir(${folder})\n`;
   return code;
 };
 
 Blockly.Python["delete_file"] = function (block) {
-  const file = block.getFieldValue("file");
+  const filename =
+    Blockly.Python.valueToCode(block, "FILENAME", Blockly.Python.ORDER_NONE) ||
+    "''";
   Blockly.Python.definitions_["import_os"] = "import os";
-  const code = `os.remove(${file})\n`;
+  const code = `os.remove(${filename})\n`;
   return code;
 };
 
@@ -192,10 +196,8 @@ Blockly.Python["listdir"] = function (block) {
 };
 
 Blockly.Python["simple_text"] = function (block) {
-  const text =
-    Blockly.Python.valueToCode(block, "TEXT", Blockly.Python.ORDER_NONE) ||
-    '""';
-  return [`${text}`, Blockly.Python.ORDER_FUNCTION_CALL];
+  const text = block.getFieldValue("NAME") || "";
+  return [`'${text}'`, Blockly.Python.ORDER_ATOMIC];
 };
 
 Blockly.Python["input_text"] = function (block) {
@@ -263,95 +265,8 @@ Blockly.Python["json_has_key"] = function (block) {
   return [`"${key}" in ${obj}`, Blockly.Python.ORDER_RELATIONAL];
 };
 
-Blockly.Python["dict_create_with"] = function (block) {
-  const elements = [];
-  for (let i = 0; i < block.itemCount_; i++) {
-    const key =
-      Blockly.Python.valueToCode(block, "KEY" + i, Blockly.Python.ORDER_NONE) ||
-      "''";
-    const value =
-      Blockly.Python.valueToCode(
-        block,
-        "VALUE" + i,
-        Blockly.Python.ORDER_NONE,
-      ) || "None";
-
-    elements.push(`${key}: ${value}`);
-  }
-
-  const code = `{${elements.join(", ")}}`;
-  return [code, Blockly.Python.ORDER_ATOMIC];
-};
-
 Blockly.Python["dict_create_empty"] = function () {
   return ["{}", Blockly.Python.ORDER_ATOMIC];
-};
-
-Blockly.Python["dict_create_with"] = function () {
-  return ["{}", Blockly.Python.ORDER_ATOMIC];
-};
-
-Blockly.Python["dict_get"] = function (block) {
-  const dict =
-    Blockly.Python.valueToCode(block, "DICT", Blockly.Python.ORDER_MEMBER) ||
-    "{}";
-
-  const key =
-    Blockly.Python.valueToCode(block, "KEY", Blockly.Python.ORDER_NONE) || "''";
-
-  const code = `${dict}[${key}]`;
-
-  return [code, Blockly.Python.ORDER_MEMBER];
-};
-
-Blockly.Python["dict_set"] = function (block) {
-  const dict =
-    Blockly.Python.valueToCode(block, "DICT", Blockly.Python.ORDER_MEMBER) ||
-    "{}";
-
-  const key =
-    Blockly.Python.valueToCode(block, "KEY", Blockly.Python.ORDER_NONE) || "''";
-
-  const value =
-    Blockly.Python.valueToCode(block, "VALUE", Blockly.Python.ORDER_NONE) ||
-    "None";
-
-  const code = `${dict}[${key}] = ${value}\n`;
-
-  return code;
-};
-
-Blockly.Python["dict_keys"] = function (block) {
-  const dict =
-    Blockly.Python.valueToCode(block, "DICT", Blockly.Python.ORDER_MEMBER) ||
-    "{}";
-
-  const code = `${dict}.keys()`;
-
-  return [code, Blockly.Python.ORDER_FUNCTION_CALL];
-};
-
-Blockly.Python["dict_values"] = function (block) {
-  const dict =
-    Blockly.Python.valueToCode(block, "DICT", Blockly.Python.ORDER_MEMBER) ||
-    "{}";
-
-  const code = `${dict}.values()`;
-
-  return [code, Blockly.Python.ORDER_FUNCTION_CALL];
-};
-
-Blockly.Python["dict_has_key"] = function (block) {
-  const dict =
-    Blockly.Python.valueToCode(block, "DICT", Blockly.Python.ORDER_MEMBER) ||
-    "{}";
-
-  const key =
-    Blockly.Python.valueToCode(block, "KEY", Blockly.Python.ORDER_NONE) || "''";
-
-  const code = `${key} in ${dict}`;
-
-  return [code, Blockly.Python.ORDER_RELATIONAL];
 };
 
 Blockly.Python["dict_pair"] = function (block) {
@@ -507,11 +422,9 @@ Blockly.Python["class_init"] = function (block) {
 Blockly.Python["class_method"] = function (block) {
   const methodName = block.getFieldValue("NAME") || "mi_metodo";
 
-  const mutation = block.mutationToDom();
-  const argsCount = parseInt(mutation.getAttribute("args"), 10) || 0;
   const args = [];
-  for (let i = 0; i < argsCount; i++) {
-    args.push("arg" + (i + 1));
+  for (let i = 0; block.getField("ARGNAME" + i); i++) {
+    args.push(block.getFieldValue("ARGNAME" + i));
   }
 
   const body =
@@ -3133,7 +3046,7 @@ Blockly.Python["neopixel_show"] = function (block) {
 Blockly.Python["neopixel_clear"] = function (block) {
   const name = block.getFieldValue("NAME");
 
-  return `${name}.fill(0)\n`;
+  return `${name}.fill((0,0,0))\n`;
 };
 
 Blockly.Python["neopixel_pixel"] = function (block) {
@@ -3652,13 +3565,6 @@ Blockly.Python["tft_bitmap"] = function (block) {
     Blockly.Python.valueToCode(block, "Y", Blockly.Python.ORDER_NONE) || 0;
 
   return `${name}.bitmap(${bmp}, ${x}, ${y})\n`;
-};
-
-Blockly.Python["espnow_add_peer"] = function (block) {
-  const peer =
-    Blockly.Python.valueToCode(block, "PEER", Blockly.Python.ORDER_ATOMIC) ||
-    "b'\\xff\\xff\\xff\\xff\\xff\\xff'";
-  return `e.add_peer(${peer})\n`;
 };
 
 Blockly.Python["points"] = function (block) {
@@ -4629,35 +4535,47 @@ Blockly.Python["gps_init"] = function (block) {
   const tx = block.getFieldValue("TX");
   const rx = block.getFieldValue("RX");
   const baud = block.getFieldValue("BAUD");
+
+  const offset = block.getFieldValue("OFFSET") || 0;
+  const format = block.getFieldValue("FORMAT") || "ddm";
+
   Blockly.Python.definitions_["import_gps"] =
-    "from micropyGPS import MicropyGPS";
-  const code = `uart_${id} = UART(${id}, baudrate=${baud}, tx=${tx}, rx=${rx})
-${name} = MicropyGPS(uart_${id})
+    "from micropyGPS import MicropyGPS\nfrom machine import UART";
+
+  const code = `
+uart_${name} = UART(${id}, baudrate=${baud}, tx=${tx}, rx=${rx})
+${name} = MicropyGPS(${offset}, '${format}')
 `;
+
   return code;
+};
+
+Blockly.Python["gps_any"] = function (block) {
+  const name = block.getFieldValue("NAME");
+  return [`uart_${name}.any()`, Blockly.Python.ORDER_ATOMIC];
+};
+
+Blockly.Python["gps_read"] = function (block) {
+  const name = block.getFieldValue("NAME");
+  return [`uart_${name}.read()`, Blockly.Python.ORDER_FUNCTION_CALL];
 };
 
 Blockly.Python["gps_update"] = function (block) {
   const name = block.getFieldValue("NAME");
-  const data = Blockly.Python.nameDB_.getName(
-    block.getFieldValue("DATA"),
-    Blockly.VARIABLE_CATEGORY_NAME,
-  );
-  const code = `if ${name}.any():
-  ${data} = ${name}.read()`;
-  return code;
+  const i = Blockly.Python.valueToCode(block, "UPDATED", Blockly.Python.ORDER_ATOMIC);
+
+  const code = `${name}.update(chr(${i}))`;
+  return [code, Blockly.Python.ORDER_ATOMIC];
 };
 
 Blockly.Python["gps_latitude"] = function (block) {
   const name = block.getFieldValue("NAME");
-  const code = `${name}.latitude[0]`;
-  return [code, Blockly.Python.ORDER_ATOMIC];
+  return [`${name}.latitude`, Blockly.Python.ORDER_ATOMIC];
 };
 
 Blockly.Python["gps_longitude"] = function (block) {
   const name = block.getFieldValue("NAME");
-  const code = `${name}.longitude[0]`;
-  return [code, Blockly.Python.ORDER_ATOMIC];
+  return [`${name}.longitude`, Blockly.Python.ORDER_ATOMIC];
 };
 
 Blockly.Python["gps_time"] = function (block) {

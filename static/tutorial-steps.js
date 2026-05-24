@@ -42,8 +42,8 @@ var TUTORIALS = {
         highlightCat: "LED", expandCat: "LEDs", bloque: "set_led", bloqueLabel: "Encender / Apagar LED"
       },
       {
-        titulo: "Conecta tu ESP32",
-        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span> y selecciona el puerto serial de tu ESP32.",
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
       },
       {
@@ -120,8 +120,8 @@ var TUTORIALS = {
         highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
       },
       {
-        titulo: "Conecta tu ESP32",
-        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span> y selecciona el puerto serial de tu ESP32.",
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
       },
       {
@@ -198,8 +198,8 @@ var TUTORIALS = {
         highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
       },
       {
-        titulo: "Conecta tu ESP32",
-        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span> y selecciona el puerto serial de tu ESP32.",
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
       },
       {
@@ -304,7 +304,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Invertir la lectura usando No",
-        desc: "Ve a <b>Lógica</b> y arrastra el bloque <em>no</em>. Conéctalo al bloque <em>leer Pin 0</em> para invertir la señal del botón (PULL_UP activo en bajo).",
+        desc: "Ve a <b>Lógica</b> y arrastra el bloque <em>no</em>. Conéctalo al bloque <em>leer Pin 12</em> para invertir la señal del botón (PULL_UP activo en bajo).",
         highlightCat: "Lógica",
         expandCat: null,
         bloque: "logic_negate", bloqueLabel: "No (invertir)"
@@ -391,16 +391,10 @@ var TUTORIALS = {
         bloque: "time_sleep"
       },
       {
-        titulo: "Conecta tu ESP32",
-        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span> y selecciona el puerto serial de tu ESP32.",
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
       },
-      {
-        titulo: "Selecciona tu puerto",
-        desc: "El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
-        waitForAction: "connect"
-      },
-
       {
         titulo: "Ejecuta tu programa",
         desc: "Haz clic en el botón <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span> para enviar el código a tu ESP32.",
@@ -455,8 +449,8 @@ var TUTORIALS = {
         highlightCat: "Sounds (Buzzer)", expandCat: "Actuadores", bloque: "buzzer_stop", bloqueLabel: "Detener buzzer"
       },
       {
-        titulo: "Conecta tu ESP32",
-        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span> y selecciona el puerto serial de tu ESP32.",
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
       },
       {
@@ -502,8 +496,8 @@ var TUTORIALS = {
         highlightCat: "Servo", expandCat: "Actuadores", bloque: "move_servo", bloqueLabel: "Mover servo a grados"
       },
       {
-        titulo: "Conecta tu ESP32",
-        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span> y selecciona el puerto serial de tu ESP32.",
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
       },
       {
@@ -590,8 +584,8 @@ var TUTORIALS = {
         highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
       },
       {
-        titulo: "Conecta tu ESP32",
-        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span> y selecciona el puerto serial de tu ESP32.",
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
       },
       {
@@ -669,8 +663,8 @@ var TUTORIALS = {
         highlightCat: "NeoPixel", expandCat: "Pantallas", bloque: "neopixel_write", bloqueLabel: "Actualizar LEDs (mostrar colores)"
       },
       {
-        titulo: "Conecta tu ESP32",
-        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span> y selecciona el puerto serial de tu ESP32.",
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
       },
       {
@@ -786,8 +780,8 @@ var TUTORIALS = {
         highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
       },
       {
-        titulo: "Conecta tu ESP32",
-        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span> y selecciona el puerto serial de tu ESP32.",
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
       },
       {
@@ -876,8 +870,8 @@ var TUTORIALS = {
         bloque: "time_sleep", bloqueLabel: "esperar 0.2 s"
       },
       {
-        titulo: "Conecta tu ESP32",
-        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span> y selecciona el puerto serial de tu ESP32.",
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
       },
       {
@@ -1310,8 +1304,8 @@ var TUTORIALS = {
         bloque: "time_sleep"
       },
       {
-        titulo: "Conecta tu ESP32",
-        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span> y selecciona el puerto serial de tu ESP32.",
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
       },
       {
@@ -1391,8 +1385,8 @@ var TUTORIALS = {
         }
       },
       {
-        titulo: "Conecta tu ESP32",
-        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span> y selecciona el puerto serial de tu ESP32.",
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
       },
       {
@@ -1495,8 +1489,8 @@ var TUTORIALS = {
         highlightCat: "Textos", expandCat: null, bloque: "text_print"
       },
       {
-        titulo: "Conecta tu ESP32 receptor",
-        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span> y selecciona el puerto serial de tu ESP32 receptor.",
+        titulo: "Conecta tu ESP32 receptor y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
       },
       {
@@ -1578,8 +1572,8 @@ var TUTORIALS = {
         bloque: "text", bloqueLabel: "Texto (mensaje)"
       },
       {
-        titulo: "Conecta tu ESP32 emisor",
-        desc: "Asegúrate de que el receptor ya está ejecutando. Conecta ahora el ESP32 emisor: haz clic en <b>Conectar</b> <span class='icon-btn icon-disconnect'></span> y selecciona su puerto.",
+        titulo: "Conecta tu ESP32 emisor y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
       },
       {
@@ -1674,8 +1668,8 @@ var TUTORIALS = {
         highlightCat: null, bloque: null
       },
       {
-        titulo: "Conecta tu ESP32",
-        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span> y selecciona el puerto serial de tu ESP32.",
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
       },
       {
@@ -1760,8 +1754,8 @@ var TUTORIALS = {
         highlightCat: null, bloque: null
       },
       {
-        titulo: "Conecta tu ESP32",
-        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span> y selecciona el puerto serial de tu ESP32.",
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
       },
       {
@@ -1857,8 +1851,8 @@ var TUTORIALS = {
         bloque: "time_sleep", bloqueLabel: "esperar 2 s"
       },
       {
-        titulo: "Conecta tu ESP32",
-        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span> y selecciona el puerto serial de tu ESP32.",
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
       },
       {
@@ -1959,8 +1953,8 @@ var TUTORIALS = {
         bloque: "text_print", bloqueLabel: "imprimir"
       },
       {
-        titulo: "Conecta tu ESP32",
-        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span> y selecciona el puerto serial de tu ESP32.",
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
       },
       {
@@ -2012,7 +2006,7 @@ var TutorialSteps = {
     if (!this.tutorial) return;
     if (this.paso < this.tutorial.steps.length - 1) {
       this.paso++;
-      this._renderPaso();
+      this._renderPasoConTransicion('next');
     } else {
       this._mostrarFin();
     }
@@ -2021,7 +2015,33 @@ var TutorialSteps = {
   anterior: function () {
     if (!this.tutorial || this.paso === 0) return;
     this.paso--;
-    this._renderPaso();
+    this._renderPasoConTransicion('prev');
+  },
+
+  /* Transición suave: fade-out → actualizar → fade-in */
+  _renderPasoConTransicion: function (dir) {
+    var body = document.getElementById('ts-body');
+    if (!body) { this._renderPaso(); return; }
+
+    // Fade out
+    body.style.transition = 'opacity .14s ease, transform .14s ease';
+    body.style.opacity = '0';
+    body.style.transform = dir === 'next' ? 'translateY(5px)' : 'translateY(-5px)';
+
+    var self = this;
+    setTimeout(function () {
+      self._renderPaso();
+      // Posición inicial para la entrada
+      body.style.transition = 'none';
+      body.style.transform = dir === 'next' ? 'translateY(-5px)' : 'translateY(5px)';
+      body.style.opacity = '0';
+
+      // Forzar reflow y luego fade in
+      void body.offsetWidth;
+      body.style.transition = 'opacity .22s cubic-bezier(0.22,1,0.36,1), transform .22s cubic-bezier(0.22,1,0.36,1)';
+      body.style.opacity = '1';
+      body.style.transform = 'translateY(0)';
+    }, 140);
   },
 
   cerrar: function () {
@@ -2110,11 +2130,7 @@ var TutorialSteps = {
     document.getElementById('ts-btn-next').textContent =
       (this.paso === total - 1) ? '¡Terminar! 🎉' : 'Siguiente →';
 
-    // Animación
-    var body = document.getElementById('ts-body');
-    body.classList.remove('ts-anim');
-    void body.offsetWidth;
-    body.classList.add('ts-anim');
+    // (La animación de entrada/salida la maneja _renderPasoConTransicion)
 
     // Highlights
     this._limpiarTodo();
@@ -2499,6 +2515,9 @@ var TutorialSteps = {
     document.getElementById('ts-btn-next').style.display = '';
     document.getElementById('ts-btn-prev').style.display = '';
     document.getElementById('ts-body').innerHTML = TutorialSteps._bodyTpl();
+    // Resetear estilos inline de transición que pudo dejar _renderPasoConTransicion
+    var body = document.getElementById('ts-body');
+    if (body) { body.style.opacity = ''; body.style.transform = ''; body.style.transition = ''; }
     this.paso = 0;
     this._renderPaso();
   },

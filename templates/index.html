@@ -17,19 +17,17 @@
   <script src="{{ url_for('static', filename='xterm.js') }}"></script>
   <script src="{{ url_for('static', filename='xterm-addon-fit.js') }}"></script>
 
-  <link rel="stylesheet" href="{{ url_for('static', filename='tutorial-steps.css')}}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='tutorial-steps.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='serial-monitor.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='viewcode.css') }}" />
 
   <style>
-    /* BLOQUE EN EJECUCIÓN */
-
     /* BLOQUE EN EJECUCIÓN */
     .blocklyHighlight>.blocklyPath {
       stroke: #ffd400 !important;
       stroke-width: 7px !important;
       fill-opacity: 0.9;
     }
-
-    /* glow para que se vea más fuerte */
 
     .blocklyHighlight {
       filter: drop-shadow(0 0 6px #ffd400);
@@ -44,20 +42,61 @@
       opacity: 1;
     }
 
+    /* ── Reset global ── */
     html,
     body {
       height: 100%;
       margin: 0;
       overflow: hidden;
-
-      /* 👈 elimina scroll vertical del navegador */
     }
 
     body.no-scroll {
       overflow: hidden;
     }
 
-    /* Dropdown */
+    /* ── Menú superior ── */
+    .top-menu {
+      position: relative;
+      height: 48px;
+      background: #3454d1;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-left: 15px;
+      padding-right: 15px;
+      gap: 10px;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: bold;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .menu-buttons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .menu-buttons button {
+      font-size: 20px;
+      background: #3454d1;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      cursor: pointer;
+    }
+
+    .menu-buttons button:hover {
+      background: #555;
+    }
+
+    /* ── Dropdown ── */
     .dropdown {
       position: relative;
       display: inline-block;
@@ -79,10 +118,6 @@
       min-width: 180px;
       box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
       z-index: 1000;
-
-      align-items: center;
-      justify-content: space-between;
-      /* Logo a la izquierda, botones a la derecha */
       gap: 10px;
     }
 
@@ -91,13 +126,9 @@
       padding: 10px 14px;
       text-decoration: none;
       font-size: 14px;
-
-      /* 👇 CLAVE */
       display: flex;
       align-items: center;
-      /* centra verticalmente */
       gap: 8px;
-      /* espacio icono-texto */
     }
 
     .dropdown-content a:hover {
@@ -108,435 +139,233 @@
       display: block;
     }
 
-    .top-menu {
-      position: relative;
-      /* o fixed si quieres que siempre quede visible */
-      height: 48px;
-      background: #3454d1;
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      /* Logo a la izquierda, botones a la derecha */
-      padding-left: 15px;
-      padding-right: 15px;
-      gap: 10px;
-    }
-
-    .logo {
-      font-size: 22px;
-      font-weight: bold;
-      line-height: 1;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .menu-buttons {
-      display: flex;
-      /* Importante: convierte en flex */
-      align-items: center;
-      /* Centrado vertical de todos los hijos */
-      gap: 6px;
-    }
-
-    .menu-buttons button {
-      font-size: 20px;
-      background: #3454d1;
-      color: white;
-      border: none;
-      padding: 6px 10px;
-      cursor: pointer;
-    }
-
-    .menu-buttons button:hover {
-      background: #555;
-    }
-
-    /* Cada vista ocupa toda la altura debajo del menú */
+    /* ── Vistas ── */
     .view {
       display: none;
       height: calc(100vh - 48px);
       width: 100%;
       overflow: hidden;
-      /* evita doble scroll en contenedores hijos */
     }
 
     .view.active {
       display: block;
     }
 
-    /* BLOQUES */
+    /* ── Vista Bloques ── */
     #blocklyDiv {
       width: 100%;
       height: 100%;
       padding-left: 5px;
     }
 
-    /* CÓDIGO: contenedor y barra superior */
-    #viewCode {
-      background: #1e1e1e;
-      color: #d4d4d4;
+    /* ── Responsive: menu-buttons se envuelve en pantallas pequeñas ── */
+    .menu-buttons {
+      flex-wrap: wrap;
+      row-gap: 4px;
     }
 
-    #codeContainer {
-      height: 100%;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      /* si quieres un padding general, ponlo aquí */
-      padding: 10px;
-      box-sizing: border-box;
+    @media (max-width: 700px) {
+      .top-menu {
+        height: auto;
+        padding: 6px 8px;
+        flex-wrap: wrap;
+      }
+
+      .menu-buttons {
+        gap: 4px;
+      }
+
+      .menu-buttons button {
+        padding: 5px 7px;
+        font-size: 17px;
+      }
+
+      .logo {
+        font-size: 18px;
+      }
     }
 
-    #codeMainArea {
-      display: flex;
-      flex: 1;
-      overflow: hidden;
-    }
-
-    #espExplorer {
-      width: 280px;
-      min-width: 180px;
-      max-width: 200px;
-
-      background: #181818;
-      border-right: 1px solid #333;
-
-      display: flex;
-      flex-direction: column;
-    }
-
-    #explorerHeader {
-      height: 40px;
-      background: #222;
-      display: flex;
+    /* ── Custom Tutorial Dropdown ── */
+    #tut-trigger {
+      position: relative;
+      display: inline-flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 5px 10px;
-      box-sizing: border-box;
-    }
-
-    #explorerHeader button {
-      background: white;
-      color: white;
-      cursor: pointer;
-    }
-
-    #explorerHeader button:hover {
-      background: #555;
-    }
-
-    #fileList {
-      flex: 1;
-      overflow-y: auto;
-    }
-
-    .file-item {
-      padding: 6px 10px;
-      cursor: pointer;
-      color: #ccc;
+      gap: 7px;
+      background: #1e1e38;
+      color: #b0a8f0;
+      border: 1px solid #3a3a6a;
+      border-radius: 8px;
+      padding: 5px 10px 5px 10px;
       font-size: 13px;
-    }
-
-    .file-item:hover {
-      background: #2a2a2a;
-    }
-
-    .file-item.active {
-      background: #3454d1;
-      color: white;
-    }
-
-    .file-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 6px 8px;
-      font-size: 13px;
-      color: #ccc;
-    }
-
-    .file-row:hover {
-      background: #2a2a2a;
-    }
-
-    .file-name {
+      font-weight: 600;
       cursor: pointer;
-      flex: 1;
-    }
-
-    .file-icons {
-      display: flex;
-      gap: 6px;
-    }
-
-    #codeBar {
-      height: 40px;
-      background: #222;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 5px 10px;
-      box-sizing: border-box;
-    }
-
-    #codeBar button {
-      background: #333;
-      color: white;
-      cursor: pointer;
-    }
-
-    #codeBar button:hover {
-      background: #555;
-    }
-
-    #fileNameInput {
-      background: #111;
-      color: #0f0;
-      border: 1px solid #333;
-      padding: 5px;
-      width: 180px;
-    }
-
-    /* CODEMIRROR 5: el
-    editor debe medir 100% */
-    .CodeMirror {
-      height: 100%;
-      /* <- CLAVE: llena el wrapper */
-      font-family: monospace;
-      font-size: 14px;
-      background: #1e1e1e;
-      /* uniforme con el view */
-      color: #d4d4d4;
-    }
-
-    .cm-s-dracula.CodeMirror {
-      background: #1e1e1e;
-      /* dracula sobre fondo oscuro uniforme */
-      color: #d4d4d4;
-    }
-
-    /* Scrollbar dentro del editor, no
-    en el contenedor */
-    .CodeMirror-scroll {
-      min-height: 100%;
-    }
-
-    /* Cuando está vacío, que el fondo luzca igual
-    (sin "parches" ) */
-    .CodeMirror-empty {
-      color: #666;
-      /* placeholder sutil */
-    }
-
-    .CodeMirror pre.CodeMirror-placeholder {
-      color: #666 !important;
-    }
-
-    #consoleBar {
-      height: 40px;
-      background: #222;
-      display: flex;
-      gap: 10px;
-      padding: 5px;
-      box-sizing: border-box;
-    }
-
-    #consoleBar button {
-      background: #333;
-      color: white;
-      border: none;
-      padding: 6px 12px;
-      cursor: pointer;
-    }
-
-    #consoleBar button:hover {
-      background: #555;
-    }
-
-    /* Contenedor principal height: 100vh; */
-    #codeSplitContainer {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      overflow: hidden;
-    }
-
-    /* Editor arriba */
-    #editorWrapper {
-      flex: 1;
-      min-height: 100px;
-      overflow: hidden;
-    }
-
-    /* Splitter */
-    #splitter {
-      height: 6px;
-      background: #444;
-      cursor: row-resize;
-    }
-
-    /* CONTENEDOR TERMINAL */
-    #terminalWrapper {
-      flex: 1;
-      background: #1e1e1e;
-      overflow: hidden;
-      border-top: 1px solid #333;
-    }
-
-    /* TERMINAL */
-    #terminal {
-      width: 100%;
-      height: 100%;
-      padding: 6px;
-      box-sizing: border-box;
-    }
-
-    /* =============================
-   SPRITE ICONOS SVG (13 íconos)
-   ============================= */
-    .icon-btn {
-      display: inline-block;
-      width: 24px;
-      height: 24px;
-      background-image: url("{{ url_for('static', filename='img/icons3dpit.svg') }}");
-      background-repeat: no-repeat;
-      background-size: auto 24px;
-      /* importante */
-    }
-
-    .icon-btn {
-      visibility: hidden;
-    }
-
-    /* Índices n = 0..12  => X = -n*24px, Y ya va centrado */
-    .icon-save {
-      background-position-x: 0px;
-    }
-
-    .icon-load {
-      background-position-x: -24px;
-    }
-
-    .icon-clear {
-      background-position-x: -48px;
-    }
-
-    .icon-run {
-      background-position-x: -72px;
-    }
-
-    .icon-stop {
-      background-position-x: -96px;
-    }
-
-    .icon-disconnect {
-      background-position-x: -120px;
-    }
-
-    .icon-connect {
-      background-position-x: -144px;
-    }
-
-    .icon-reload {
-      background-position-x: -168px;
-    }
-
-    .icon-help {
-      background-position-x: -192px;
-    }
-
-    .icon-new {
-      background-position-x: -216px;
-    }
-
-    .icon-save-py {
-      background-position-x: -240px;
-    }
-
-    .icon-load-py {
-      background-position-x: -264px;
-    }
-
-    .icon-reload-esp32 {
-      background-position-x: -288px;
-    }
-
-    .icon-download {
-      background-position-x: -312px;
-    }
-
-    #fileList .icon-btn {
-      visibility: visible;
-      transition: 0.2s;
-    }
-
-    .file-item:hover .icon-btn {
-      opacity: 1;
-    }
-
-    #codeLayout {
-      display: flex;
-      height: 100%;
-      width: 100%;
-      overflow: hidden;
-    }
-
-    #refreshFilesList {
-      background: #333;
-      color: white;
-      cursor: pointer;
-    }
-
-    #refreshFilesList button:hover {
-      background: #555;
-    }
-
-    /* ── Selector de tutoriales ──────────────────────────────── */
-    #tutorialSelect {
-      appearance: none;
-      -webkit-appearance: none;
-      background-color: #2743b0;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23ffffff' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 10px center;
-      color: #ffffff;
-      border: 1px solid #5470e0;
-      border-radius: 6px;
-      padding: 5px 32px 5px 10px;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      min-width: 160px;
-      transition: background-color 0.15s, border-color 0.15s;
+      white-space: nowrap;
+      transition: background .15s, border-color .15s, color .15s, box-shadow .15s;
+      user-select: none;
       outline: none;
     }
 
-    #tutorialSelect:hover {
-      background-color: #1e35a0;
-      border-color: #7a90f0;
+    #tut-trigger:hover,
+    #tut-trigger.open {
+      background: #28284a;
+      border-color: #7c6af7;
+      color: #fff;
+      box-shadow: 0 0 0 2px rgba(124, 106, 247, .25);
     }
 
-    #tutorialSelect:focus {
-      border-color: #fff;
-      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.25);
+    #tut-trigger .tut-arrow {
+      font-size: 9px;
+      opacity: .6;
+      transition: transform .2s;
+      display: inline-block;
     }
 
-    #tutorialSelect option,
-    #tutorialSelect optgroup {
-      background-color: #1e2a6e;
-      color: #ffffff;
+    #tut-trigger.open .tut-arrow {
+      transform: rotate(180deg);
+      opacity: 1;
     }
 
-    #tutorialSelect optgroup {
+    /* ── Panel desplegable ── */
+    #tut-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      width: 270px;
+      max-height: 70vh;
+      overflow-y: auto;
+      overflow-x: hidden;
+      background: #1a1a2e;
+      border: 1px solid #2e2e50;
+      border-radius: 10px;
+      box-shadow: 0 10px 36px rgba(0, 0, 0, .7);
+      z-index: 9999;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      animation: tutDropIn .18s cubic-bezier(.22, 1, .36, 1);
+      /* Scrollbar temático */
+      scrollbar-width: thin;
+      scrollbar-color: #3a3a60 transparent;
+    }
+
+    #tut-dropdown::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    #tut-dropdown::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    #tut-dropdown::-webkit-scrollbar-thumb {
+      background: #3a3a60;
+      border-radius: 4px;
+    }
+
+    #tut-dropdown::-webkit-scrollbar-thumb:hover {
+      background: #7c6af7;
+    }
+
+    #tut-dropdown.open {
+      display: block;
+    }
+
+    @keyframes tutDropIn {
+      from {
+        opacity: 0;
+        transform: translateY(-6px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Grupos */
+    .tut-group-label {
+      padding: 8px 12px 4px;
+      font-size: 10px;
       font-weight: 700;
-      font-size: 12px;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: #44447a;
+      border-top: 1px solid #2e2e50;
     }
 
-    #refreshFilesList button:hover {
-      background: #555;
+    .tut-group-label:first-child {
+      border-top: none;
+    }
+
+    /* Opciones */
+    .tut-option {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 14px;
+      font-size: 13px;
+      color: #aaaace;
+      cursor: pointer;
+      transition: background .12s, color .12s;
+    }
+
+    .tut-option:hover {
+      background: rgba(124, 106, 247, .15);
+      color: #fff;
+    }
+
+    .tut-option:hover .tut-opt-icon {
+      filter: drop-shadow(0 0 4px #7c6af7);
+    }
+
+    .tut-opt-icon {
+      font-size: 16px;
+      flex-shrink: 0;
+      transition: filter .15s;
+    }
+
+    /* Wrapper para posicionamiento */
+    #tut-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+
+    /* select original oculto — lo mantenemos para que TutorialSteps.cargar() siga funcionando */
+    #tutorialSelect {
+      display: none;
+    }
+  </style>
+
+  <style>
+    /* ── Modales ── */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+      background: #4030cc;
+      color: white;
+      padding: 20px;
+      border-radius: 10px;
+      width: 320px;
+      margin: 15% auto;
+      text-align: center;
+    }
+
+    .modal-content input {
+      width: 90%;
+      padding: 8px;
+      margin: 10px 0;
+    }
+
+    .modal-buttons {
+      display: flex;
+      justify-content: space-between;
     }
   </style>
 
@@ -589,7 +418,8 @@
           <!--🔄 -->
         </div>
       </div>
-      <button id="btnCode">Código</button>
+      <button id="btnCode" >Código</button>
+      
       <!--<button id="btnConsole">Terminal</button> -->
       <button id="btnConnection">
         <span id="iconConnection" class="icon-btn icon-disconect"></span>
@@ -608,18 +438,19 @@
       </div>
       <!-- <button id="btnUndo">⏪</button> -->
       <!-- <button id="btnRedo">⏩</button> -->
-      <esp-web-install-button manifest="{{ url_for('static', filename='manifest.json') }}" no-improv>
+      <esp-web-install-button manifest="./static/manifest.json" no-improv>
         <button slot="activate" id="btnBurnFirmware">
-          Instalar Firmware
+          <span class="icon-btn icon-burnfimware"></span>
         </button>
       </esp-web-install-button>
       <button id="btnTutor"><span class="icon-btn icon-help"></span></button>
 
-      <!--<button id="btnShare">Compartir</button>-->
+      <!-- <button id="btnShare">🔗</button> -->
 
+      <!-- SELECT oculto: lo mantiene TutorialSteps internamente -->
       <select id="tutorialSelect">
         <option value="">📖 Tutoriales</option>
-        <optgroup label="💡 LEDs">
+        <optgroup label="💡 LEDs Salidas digitales">
           <option value="led_basico">LED Básico</option>
           <option value="led_infinito">LED Infinito (parpadeo)</option>
           <option value="semaforo">Semáforo</option>
@@ -627,10 +458,14 @@
         </optgroup>
         <optgroup label="🔧 Entradas / Actuadores">
           <option value="boton">Botón Contador</option>
-          <option value="infrarrojo_basico">Sensor Infrarrojo (obstáculos)</option>
+          <option value="infrarrojo_basico">Sensor IR — Carrito Seguidor de Línea</option>
           <option value="buzzer">Buzzer</option>
           <option value="servo">Servo Motor</option>
           <option value="puente_h">Puente H — Motores DC</option>
+        </optgroup>
+        <optgroup label="🌡️ Temperatura / Humedad">
+          <option value="dht11">DHT11 — Temperatura y Humedad</option>
+          <option value="ky001">KY-001 — Sensor DS18B20 (OneWire)</option>
         </optgroup>
         <optgroup label="🎚️ Sensores / Analógicos">
           <option value="analogico_adkey">ADKey</option>
@@ -647,6 +482,52 @@
         </optgroup>
       </select>
 
+      <!-- Custom dropdown temático -->
+      <div id="tut-wrapper">
+        <button id="tut-trigger" aria-haspopup="listbox" aria-expanded="false">
+          📖 Tutoriales <span class="tut-arrow">▼</span>
+        </button>
+        <div id="tut-dropdown" role="listbox">
+
+          <div class="tut-group-label">💡 LEDs · Salidas digitales</div>
+          <div class="tut-option" data-value="led_basico"><span class="tut-opt-icon">💡</span>LED Básico</div>
+          <div class="tut-option" data-value="led_infinito"><span class="tut-opt-icon">🔁</span>LED Infinito (parpadeo)
+          </div>
+          <div class="tut-option" data-value="semaforo"><span class="tut-opt-icon">🚦</span>Semáforo</div>
+          <div class="tut-option" data-value="neopixel_basico"><span class="tut-opt-icon">🌈</span>NeoPixel RGB</div>
+
+          <div class="tut-group-label">🔧 Entradas · Actuadores</div>
+          <div class="tut-option" data-value="boton"><span class="tut-opt-icon">🔘</span>Botón Contador</div>
+          <div class="tut-option" data-value="infrarrojo_basico"><span class="tut-opt-icon">🚗</span>Sensor IR — Carrito
+          </div>
+          <div class="tut-option" data-value="buzzer"><span class="tut-opt-icon">🔊</span>Buzzer</div>
+          <div class="tut-option" data-value="servo"><span class="tut-opt-icon">⚙️</span>Servo Motor</div>
+          <div class="tut-option" data-value="puente_h"><span class="tut-opt-icon">🏎️</span>Puente H — Motores DC</div>
+
+          <div class="tut-group-label">🌡️ Temperatura · Humedad</div>
+          <div class="tut-option" data-value="dht11"><span class="tut-opt-icon">🌡️</span>DHT11</div>
+          <div class="tut-option" data-value="ky001"><span class="tut-opt-icon">🌡️</span>KY-001 DS18B20</div>
+
+          <div class="tut-group-label">🎚️ Sensores Analógicos</div>
+          <div class="tut-option" data-value="analogico_adkey"><span class="tut-opt-icon">🎚️</span>ADKey</div>
+
+          <div class="tut-group-label">📡 Sensores</div>
+          <div class="tut-option" data-value="ultrasonico"><span class="tut-opt-icon">📡</span>Sensor Ultrasónico
+            HC-SR04</div>
+          <div class="tut-option" data-value="ir_ky022"><span class="tut-opt-icon">📻</span>Control Remoto IR KY-022
+          </div>
+
+          <div class="tut-group-label">📶 Comunicación Inalámbrica</div>
+          <div class="tut-option" data-value="hc06_basico"><span class="tut-opt-icon">🔵</span>Bluetooth HC-06</div>
+          <div class="tut-option" data-value="espnow_receptor"><span class="tut-opt-icon">📥</span>ESP-NOW Receptor
+          </div>
+          <div class="tut-option" data-value="espnow_emisor"><span class="tut-opt-icon">📤</span>ESP-NOW Emisor</div>
+          <div class="tut-option" data-value="bluetooth_le"><span class="tut-opt-icon">📱</span>Bluetooth LE (BLE)</div>
+        </div>
+      </div>
+
+      <button id="btnOpenSerialMonitor" title="Monitor Serial" onclick="SerialMonitor.toggle()">🖥️</button>
+
     </div>
   </div>
 
@@ -660,62 +541,64 @@
     <!-- Vista CÓDIGO -->
     <div id="viewCode" class="view">
       <div id="codeContainer">
-        <div id="codeBar">
-          <input id="fileNameInput" placeholder="test.py" />
-          <button id="btnUploadCode">
-            <span class="icon-btn icon-download"></span></button><!--▶️-->
-          <button id="btnSavePy">
-            <span class="icon-btn icon-save-py"></span>
-          </button>
-          <!--💾.py-->
-          <button id="btnLoadPy">
-            <span class="icon-btn icon-load-py"></span>
-          </button>
-          <!--📂.py-->
-          <input type="file" id="loadPy" accept=".py" style="display: none" />
-
-          <button id="btnConsoleClear">
-            <span class="icon-btn icon-clear"></span>
-          </button>
-          <!--🗑️ Limpiar-->
-          <!-- <button id="btnConsoleRun">Ejecutar</button> -->
-          <button id="btnConsoleReset">
-            <span class="icon-btn icon-reload-esp32"></span></button><!--🔄Reset-->
-          <button id="btnCodeTutor">
-            <span class="icon-btn icon-help"></span></button><!--Help-->
-          <!-- <button id="btnPaste">Pegar</button> -->
-        </div>
-
         <div id="codeLayout">
-          <!-- ===== COLUMNA IZQUIERDA ===== -->
+
+          <!-- ===== COLUMNA IZQUIERDA: Explorador de archivos ===== -->
           <div id="espExplorer">
             <div id="explorerHeader">
               ESP32
-              <button value="List Files" id="refreshFilesList" class="notext button icon"
-                title="Refresh device file list" onclick="Files.listFiles()">
+              <button id="refreshFilesList" title="Refrescar archivos del dispositivo" onclick="Files.listFiles()">
                 <span class="icon-btn icon-reload"></span>
               </button>
             </div>
-
             <div id="fileList"></div>
           </div>
 
-          <!-- ===== COLUMNA DERECHA ===== -->
+          <!-- ===== COLUMNA DERECHA: Toolbar + Editor + Terminal ===== -->
           <div id="codeSplitContainer">
+
+            <!-- Barra de herramientas del editor -->
+            <div id="codeBar">
+              <input id="fileNameInput" placeholder="test.py" />
+              <button id="btnUploadCode" title="Subir archivo a ESP32">
+                <span class="icon-btn icon-download"></span>
+              </button>
+              <button id="btnSavePy" title="Guardar .py localmente">
+                <span class="icon-btn icon-save-py"></span>
+              </button>
+              <button id="btnLoadPy" title="Cargar .py local">
+                <span class="icon-btn icon-load-py"></span>
+              </button>
+              <input type="file" id="loadPy" accept=".py" style="display: none" />
+              <button id="btnConsoleClear" title="Limpiar terminal">
+                <span class="icon-btn icon-clear"></span>
+              </button>
+              <button id="btnConsoleReset" title="Reset ESP32">
+                <span class="icon-btn icon-reload-esp32"></span>
+              </button>
+              <button id="btnCodeTutor" title="Ayuda / Tutorial">
+                <span class="icon-btn icon-help"></span>
+              </button>
+            </div>
+
+            <!-- Editor CodeMirror -->
             <div id="editorWrapper">
               <textarea id="codeEditor"></textarea>
             </div>
 
-            <!-- SPLITTER -->
+            <!-- Splitter (drag para redimensionar) -->
             <div id="splitter"></div>
 
+            <!-- Terminal xterm.js -->
             <div id="terminalWrapper">
               <div id="terminal"></div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
+
+          </div><!-- /codeSplitContainer -->
+        </div><!-- /codeLayout -->
+      </div><!-- /codeContainer -->
+    </div><!-- /viewCode -->
+
   </div>
 
   <div class="blocklyToolboxDiv">
@@ -991,7 +874,7 @@
         <block type="objecto"></block>
         <block type="from"></block>
         <block type="import"></block>
-        <block type="add"></block>
+        <!-- <block type="add"></block> -->
         <block type="none"></block>
 
         <block type="in">
@@ -1198,11 +1081,9 @@
       </category>
 
       <category name="Interruptores" colour="230">
-        <category name="Interruptores">
-          <block type="interruptor_init"></block>
-          <block type="interruptor_read"></block>
-          <block type="interruptor_irq"></block>
-        </category>
+        <block type="interruptor_init"></block>
+        <block type="interruptor_read"></block>
+        <block type="interruptor_irq"></block>
       </category>
 
       <category name="Actuadores" colour="20">
@@ -1281,7 +1162,9 @@
             <block type="read_ultrasonic_hcsr04"></block>
           </category>
           <category name="IR KY-022">
-            <block type="init_ir_ky022"></block>
+            <block type="init_ir_ky022">
+              <field name="PIN">15</field>
+            </block>
             <block type="ir_ky022_callback_code"></block>
           </category>
         </category>
@@ -1329,6 +1212,18 @@
           <block type="ky023_read_y"></block>
           <block type="ky023_read_sw"></block>
         </category>
+      </category>
+
+      <category name="Shield" colour="230">
+        <block type="shield_set_motor">
+          <field name="PINA">26</field>
+          <field name="PINPWMA">16</field>
+          <field name="PINB">17</field>
+          <field name="PINPWMB">27</field>
+        </block>
+
+        <block type="set_speed_motorA"></block>
+        <block type="set_speed_motorB"></block>
       </category>
 
       <category name="Periféricos" colour="#1ABC9C">
@@ -1649,6 +1544,8 @@
               <field name="RX">16</field>
               <field name="BAUD">9600</field>
             </block>
+            <block type="gps_any"></block>
+            <block type="gps_read"></block>
             <block type="gps_update"></block>
             <block type="gps_latitude"></block>
             <block type="gps_longitude"></block>
@@ -2956,7 +2853,7 @@
       </category>
     </xml>
   </div>
-  <!--<script src="blockly/blockly.min.js"></script> -->
+
   <script src="{{ url_for('static', filename='blockly/blockly_compressed.js') }}"></script>
   <script src="{{ url_for('static', filename='blockly/blocks_compressed.js') }}"></script>
   <script src="{{ url_for('static', filename='blockly/python_compressed.js') }}"></script>
@@ -2979,16 +2876,84 @@
   <script src="{{ url_for('static', filename='animation.js') }}"></script>
 
   <script src="{{ url_for('static', filename='main.js') }}"></script>
+  <script src="{{ url_for('static', filename='viewcode.js') }}"></script>
   <!-- <script src="{{ url_for('static', filename='files.js') }}"></script> -->
 
-  <!-- Cargar esp-web-tools desde tu carpeta local https://app.unpkg.com/esp-web-tools@10.2.1/files/dist/web/stub_flasher_32c3-DmSvHQKL.js -->
   <script type="module" src="{{ url_for('static', filename='install-button.js') }}"></script>
   <script src="{{ url_for('static', filename='js-tutorial.js') }}"></script>
   <script src="{{ url_for('static', filename='code-tutor.js') }}"></script>
 
   <script src="{{ url_for('static', filename='tutorial-steps.js') }}"></script>
-</body>
+  <script src="{{ url_for('static', filename='serial-monitor.js') }}"></script>
 
+   <!-- ── Custom Tutorial Dropdown logic ── -->
+   <script>
+    (function () {
+      var trigger = document.getElementById('tut-trigger');
+      var dropdown = document.getElementById('tut-dropdown');
+      var selNative = document.getElementById('tutorialSelect');
+
+      function open() {
+        dropdown.classList.add('open');
+        trigger.classList.add('open');
+        trigger.setAttribute('aria-expanded', 'true');
+      }
+      function close() {
+        dropdown.classList.remove('open');
+        trigger.classList.remove('open');
+        trigger.setAttribute('aria-expanded', 'false');
+      }
+      function toggle() {
+        dropdown.classList.contains('open') ? close() : open();
+      }
+
+      trigger.addEventListener('click', function (e) {
+        e.stopPropagation();
+        toggle();
+      });
+
+      // Cerrar al hacer clic fuera
+      document.addEventListener('click', function (e) {
+        if (!document.getElementById('tut-wrapper').contains(e.target)) close();
+      });
+
+      // Seleccionar opción
+      dropdown.querySelectorAll('.tut-option').forEach(function (opt) {
+        opt.addEventListener('click', function () {
+          var val = opt.getAttribute('data-value');
+          // Sincronizar con el select nativo (lo usa TutorialSteps internamente)
+          selNative.value = val;
+          // Disparar el evento change para que TutorialSteps.cargar() se active
+          selNative.dispatchEvent(new Event('change'));
+          // Actualizar etiqueta del botón de forma segura (sin innerHTML)
+          var span = document.createElement('span');
+          span.className = 'tut-arrow';
+          span.textContent = '▼';
+          trigger.textContent = '';
+          // Copiar solo el texto del ícono y el label del option
+          var icon = opt.querySelector('.tut-icon');
+          var label = opt.querySelector('.tut-label');
+          if (icon) {
+            var iconClone = document.createElement('span');
+            iconClone.className = 'tut-icon';
+            iconClone.textContent = icon.textContent;
+            trigger.appendChild(iconClone);
+          }
+          if (label) {
+            var labelClone = document.createElement('span');
+            labelClone.className = 'tut-label';
+            labelClone.textContent = label.textContent;
+            trigger.appendChild(labelClone);
+          } else {
+            // Fallback: usar solo el texto del option
+            trigger.appendChild(document.createTextNode(opt.textContent.trim() + ' '));
+          }
+          trigger.appendChild(span);
+          close();
+        });
+      });
+    })();
+  </script>
 <!-- ===============================
      MODAL CONFIRMACIÓN
 ================================ -->
@@ -3005,278 +2970,19 @@
   </div>
 </div>
 
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
+<!-- ===============================
+     MODAL COMPARTIR
+================================ -->
+<div id="shareModal" class="modal">
+  <div class="modal-content">
+    <h3>Compartir proyecto</h3>
+    <input id="shareInput" readonly />
+    <div class="modal-buttons">
+      <button id="copyBtn">Copiar</button>
+      <button id="closeModal">Cerrar</button>
+    </div>
+  </div>
+</div>
 
-    const select = document.getElementById("display");
-    const modal = document.getElementById("miModal");
-    const cerrar = document.getElementById("cerrarModal");
-    const minimizar = document.getElementById("minimizar");
-    const header = document.getElementById("modalHeader");
-    const contenido = document.getElementById("contenidoModal");
-    const canvas = document.getElementById("canvas");
-
-    if (!select || !modal || !cerrar || !header || !canvas) return;
-
-    // ===== SELECT =====
-    select.addEventListener("change", function () {
-      modal.style.display = "block";
-    });
-
-    cerrar.onclick = () => modal.style.display = "none";
-
-    // ===== MINIMIZAR =====
-    let minimizado = false;
-    minimizar.onclick = () => {
-      minimizado = !minimizado;
-      contenido.style.display = minimizado ? "none" : "block";
-    };
-
-    // ===== DRAG =====
-    let offsetX = 0, offsetY = 0, isDragging = false;
-
-    header.onmousedown = (e) => {
-      isDragging = true;
-      offsetX = e.clientX - modal.offsetLeft;
-      offsetY = e.clientY - modal.offsetTop;
-    };
-
-    document.onmousemove = (e) => {
-      if (isDragging) {
-        modal.style.left = (e.clientX - offsetX) + "px";
-        modal.style.top = (e.clientY - offsetY) + "px";
-      }
-    };
-
-    document.onmouseup = () => isDragging = false;
-
-    // ===== CANVAS =====
-    const ctx = canvas.getContext("2d");
-
-    const scale = 4;
-    canvas.style.width = canvas.width * scale + "px";
-    canvas.style.height = canvas.height * scale + "px";
-
-    function limpiar() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
-
-    function dibujarPixel(x, y) {
-      ctx.fillStyle = "white";
-      ctx.fillRect(x, y, 1, 1);
-    }
-
-    function dibujarLinea(x0, y0, x1, y1) {
-      ctx.strokeStyle = "white";
-      ctx.beginPath();
-      ctx.moveTo(x0, y0);
-      ctx.lineTo(x1, y1);
-      ctx.stroke();
-    }
-
-    function dibujarRect(x, y, w, h) {
-      ctx.strokeStyle = "white";
-      ctx.strokeRect(x, y, w, h);
-    }
-
-    function dibujarFillRect(x, y, w, h) {
-      ctx.fillStyle = "white";
-      ctx.fillRect(x, y, w, h);
-    }
-
-    function dibujarTexto(txt, x, y, size = 8) {
-      ctx.fillStyle = "white";
-      ctx.font = size + "px monospace";
-      ctx.fillText(txt, x, y + size);
-    }
-
-    function dibujarCirculo(x, y, r) {
-      ctx.strokeStyle = "white";
-      ctx.beginPath();
-      ctx.arc(x, y, r, 0, Math.PI * 2);
-      ctx.stroke();
-    }
-
-    function scrollCanvas(dx, dy) {
-      const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      limpiar();
-      ctx.putImageData(img, dx, dy);
-    }
-
-    function dibujarPoligono(puntos, offsetX, offsetY) {
-      ctx.strokeStyle = "white";
-      ctx.beginPath();
-      ctx.moveTo(puntos[0] + offsetX, puntos[1] + offsetY);
-      for (let i = 2; i < puntos.length; i += 2) {
-        ctx.lineTo(puntos[i] + offsetX, puntos[i + 1] + offsetY);
-      }
-      ctx.stroke();
-    }
-
-    function dibujarIcono(x, y, size) {
-      ctx.fillStyle = "white";
-      ctx.fillRect(x, y, 8 * size, 8 * size);
-    }
-
-    // ===== LCD =====
-    let lcdBuffer = ["", ""];
-
-    function renderLCD() {
-      limpiar();
-      ctx.fillStyle = "lime";
-      ctx.font = "14px monospace";
-      ctx.fillText(lcdBuffer[0], 5, 20);
-      ctx.fillText(lcdBuffer[1], 5, 40);
-    }
-
-    // ===== 7 SEG =====
-    function dibujar7Segmentos(txt) {
-      limpiar();
-      ctx.fillStyle = "white";
-      ctx.font = "40px monospace";
-      ctx.fillText(txt, 10, 50);
-    }
-
-    // ===== MATRIZ =====
-    let matriz = Array(8).fill().map(() => Array(8).fill(0));
-
-    function renderMatriz() {
-      limpiar();
-      for (let y = 0; y < 8; y++) {
-        for (let x = 0; x < 8; x++) {
-          if (matriz[y][x]) {
-            ctx.fillRect(x * 8, y * 8, 6, 6);
-          }
-        }
-      }
-    }
-
-    // ===== INTERPRETE =====
-    window.ejecutarPython = function (codigo) {
-
-      let tipo = "oled";
-
-      const seleccion = document.getElementById("display").value;
-
-      if (seleccion) {
-        tipo = seleccion;
-      } else {
-        if (codigo.includes("tm1637")) tipo = "tm1637";
-        else if (codigo.includes("matrix8")) tipo = "matrix";
-        else if (codigo.includes("lcd")) tipo = "lcd";
-      }
-
-      configurarCanvas(tipo);
-
-      limpiar();
-
-      codigo.split("\n").forEach(linea => {
-        linea = linea.trim();
-        if (!linea) return;
-
-        let m;
-
-        // ===== OLED =====
-        if (tipo === "oled") {
-
-          if (linea.includes(".clear()")) limpiar();
-
-          if (m = linea.match(/\.set_pixel\((\d+),\s*(\d+),\s*(\d+)\)/))
-            if (m[3] == "1") dibujarPixel(+m[1], +m[2]);
-
-          if (m = linea.match(/\.line\((\d+),\s*(\d+),\s*(\d+),\s*(\d+)/))
-            dibujarLinea(+m[1], +m[2], +m[3], +m[4]);
-
-          if (m = linea.match(/\.rect\((\d+),\s*(\d+),\s*(\d+),\s*(\d+)/))
-            dibujarRect(+m[1], +m[2], +m[3], +m[4]);
-
-          if (m = linea.match(/\.fill_rect\((\d+),\s*(\d+),\s*(\d+),\s*(\d+)/))
-            dibujarFillRect(+m[1], +m[2], +m[3], +m[4]);
-
-          if (m = linea.match(/\.circle\((\d+),\s*(\d+),\s*(\d+)/))
-            dibujarCirculo(+m[1], +m[2], +m[3]);
-
-          if (m = linea.match(/\.text\(['"]([^'"]*)['"],\s*(\d+),\s*(\d+)/))
-            dibujarTexto(m[1], +m[2], +m[3], 8);
-
-          if (m = linea.match(/\.text20\(['"]([^'"]*)['"],\s*(\d+),\s*(\d+)/))
-            dibujarTexto(m[1], +m[2], +m[3], 16);
-
-          if (m = linea.match(/\.scroll\(([-\d]+),\s*([-\d]+)\)/))
-            scrollCanvas(+m[1], +m[2]);
-
-          if (m = linea.match(/\.poly\(\[([^\]]+)\],\s*(\d+),\s*(\d+)/)) {
-            let puntos = m[1].split(",").map(n => +n);
-            dibujarPoligono(puntos, +m[2], +m[3]);
-          }
-
-          if (m = linea.match(/\.icon2\((\d+),\s*(\d+),\s*(\d+),\s*(\d+)\)/))
-            dibujarIcono(+m[2], +m[3], +m[4]);
-        }
-
-        // ===== LCD =====
-        if (tipo === "lcd") {
-
-          if (m = linea.match(/\.print\((.*)\)/)) {
-            lcdBuffer[0] = m[1].replace(/['"]/g, '');
-            renderLCD();
-          }
-
-          if (linea.includes(".clear()")) {
-            lcdBuffer = ["", ""];
-            renderLCD();
-          }
-        }
-
-        // ===== TM1637 =====
-        if (tipo === "tm1637") {
-
-          if (m = linea.match(/\.number\((\d+)\)/))
-            dibujar7Segmentos(m[1]);
-
-          if (linea.includes(".clear()"))
-            dibujar7Segmentos("    ");
-        }
-
-        // ===== MATRIZ =====
-        if (tipo === "matrix") {
-
-          if (m = linea.match(/\.pixel\((\d+),\s*(\d+),\s*(\d+)\)/)) {
-            matriz[m[2]][m[1]] = +m[3];
-            renderMatriz();
-          }
-
-          if (linea.includes(".clear()")) {
-            matriz = Array(8).fill().map(() => Array(8).fill(0));
-            renderMatriz();
-          }
-        }
-
-      });
-    };
-
-
-    function configurarCanvas(tipo) {
-      if (tipo === "oled") {
-        canvas.width = 128;
-        canvas.height = 64;
-      }
-
-      if (tipo === "matrix") {
-        canvas.width = 64;
-        canvas.height = 64;
-      }
-
-      if (tipo === "tft") {
-        canvas.width = 240;
-        canvas.height = 320;
-      }
-
-      canvas.style.width = canvas.width * 2 + "px";
-      canvas.style.height = canvas.height * 2 + "px";
-    }
-
-  });
-</script>
-
+</body>
 </html>

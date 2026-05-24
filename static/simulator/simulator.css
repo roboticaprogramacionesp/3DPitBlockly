@@ -1,0 +1,589 @@
+/* ============================================================
+   SIMULATOR.CSS — 3DPit Blocks · Vista Simulador
+   Fase 1: Layout y UI base
+   ============================================================ */
+
+/* ── Variables ── */
+:root {
+  --sim-bg:          #0d0f1a;
+  --sim-panel-bg:    #13162a;
+  --sim-panel-border:#1e2340;
+  --sim-canvas-bg:   #0a0c18;
+  --sim-grid-color:  rgba(52, 84, 209, 0.08);
+  --sim-accent:      #3454d1;
+  --sim-accent-glow: rgba(52, 84, 209, 0.4);
+  --sim-green:       #00e676;
+  --sim-green-dim:   rgba(0, 230, 118, 0.15);
+  --sim-text:        #c8d0f0;
+  --sim-text-dim:    #5a6080;
+  --sim-text-bright: #e8eeff;
+  --sim-separator:   #1a1e35;
+  --sim-hover:       rgba(52, 84, 209, 0.12);
+  --sim-comp-bg:     #181c32;
+  --sim-comp-hover:  #1e2440;
+  --sim-comp-border: #252a48;
+  --panel-width:     220px;
+  --props-width:     220px;
+  --toolbar-h:       44px;
+}
+
+/* ── Contenedor principal de la vista ── */
+#viewSimulator {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--sim-bg);
+  color: var(--sim-text);
+  font-family: 'Consolas', 'JetBrains Mono', 'Fira Code', monospace;
+  overflow: hidden;
+}
+
+/* ── Toolbar del simulador ── */
+#simToolbar {
+  height: var(--toolbar-h);
+  min-height: var(--toolbar-h);
+  background: var(--sim-panel-bg);
+  border-bottom: 1px solid var(--sim-panel-border);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+  flex-shrink: 0;
+}
+
+.sim-toolbar-sep {
+  width: 1px;
+  height: 24px;
+  background: var(--sim-panel-border);
+  margin: 0 4px;
+}
+
+.sim-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
+  white-space: nowrap;
+}
+.sim-btn:active { transform: scale(0.96); }
+
+.sim-btn-run {
+  background: var(--sim-green-dim);
+  color: var(--sim-green);
+  border: 1px solid rgba(0, 230, 118, 0.25);
+}
+.sim-btn-run:hover {
+  background: rgba(0, 230, 118, 0.22);
+  box-shadow: 0 0 12px rgba(0, 230, 118, 0.2);
+}
+.sim-btn-run.running {
+  background: rgba(255, 82, 82, 0.15);
+  color: #ff5252;
+  border-color: rgba(255, 82, 82, 0.3);
+}
+
+.sim-btn-secondary {
+  background: transparent;
+  color: var(--sim-text);
+  border: 1px solid var(--sim-panel-border);
+}
+.sim-btn-secondary:hover {
+  background: var(--sim-hover);
+  border-color: var(--sim-accent);
+  color: var(--sim-text-bright);
+}
+
+.sim-btn-icon {
+  background: transparent;
+  color: var(--sim-text-dim);
+  border: none;
+  padding: 5px 8px;
+  font-size: 14px;
+}
+.sim-btn-icon:hover { color: var(--sim-text-bright); }
+
+/* Indicador de estado */
+#simStatusBadge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--sim-text-dim);
+  margin-left: auto;
+}
+#simStatusDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--sim-text-dim);
+  transition: background 0.3s, box-shadow 0.3s;
+}
+#simStatusDot.running {
+  background: var(--sim-green);
+  box-shadow: 0 0 8px var(--sim-green);
+  animation: simDotPulse 1.5s ease-in-out infinite;
+}
+#simStatusDot.error {
+  background: #ff5252;
+  box-shadow: 0 0 8px #ff5252;
+}
+@keyframes simDotPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* Velocidad */
+#simSpeedWrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--sim-text-dim);
+}
+#simSpeedWrap input[type=range] {
+  -webkit-appearance: none;
+  width: 70px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--sim-panel-border);
+  outline: none;
+  cursor: pointer;
+}
+#simSpeedWrap input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--sim-accent);
+  cursor: pointer;
+}
+
+/* ── Cuerpo principal (panel izq + canvas + panel der) ── */
+#simBody {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ── Panel izquierdo: componentes ── */
+#simComponentPanel {
+  width: var(--panel-width);
+  min-width: var(--panel-width);
+  background: var(--sim-panel-bg);
+  border-right: 1px solid var(--sim-panel-border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+#simComponentPanel .panel-header {
+  padding: 10px 12px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sim-text-dim);
+  border-bottom: 1px solid var(--sim-separator);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Búsqueda de componentes */
+#simCompSearch {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--sim-separator);
+}
+#simCompSearch input {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--sim-canvas-bg);
+  border: 1px solid var(--sim-panel-border);
+  border-radius: 5px;
+  color: var(--sim-text);
+  font-size: 11px;
+  font-family: inherit;
+  padding: 5px 8px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+#simCompSearch input:focus {
+  border-color: var(--sim-accent);
+}
+#simCompSearch input::placeholder {
+  color: var(--sim-text-dim);
+}
+
+/* Lista de componentes con scroll */
+#simCompList {
+  flex: 1;
+  overflow-y: auto;
+  padding: 6px 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--sim-panel-border) transparent;
+}
+#simCompList::-webkit-scrollbar { width: 4px; }
+#simCompList::-webkit-scrollbar-track { background: transparent; }
+#simCompList::-webkit-scrollbar-thumb { background: var(--sim-panel-border); border-radius: 2px; }
+
+/* Grupos de categoría */
+.comp-category-label {
+  padding: 8px 12px 4px;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #3454d1;
+  opacity: 0.8;
+}
+
+/* Tarjeta de componente arrastrable */
+.comp-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 12px;
+  margin: 1px 6px;
+  border-radius: 6px;
+  cursor: grab;
+  transition: background 0.12s, border-color 0.12s;
+  border: 1px solid transparent;
+  user-select: none;
+}
+.comp-item:hover {
+  background: var(--sim-comp-hover);
+  border-color: var(--sim-comp-border);
+}
+.comp-item:active { cursor: grabbing; }
+
+.comp-item-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--sim-comp-bg);
+  border: 1px solid var(--sim-comp-border);
+  border-radius: 6px;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.comp-item-info {
+  flex: 1;
+  min-width: 0;
+}
+.comp-item-name {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--sim-text-bright);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.comp-item-desc {
+  font-size: 10px;
+  color: var(--sim-text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 1px;
+}
+
+/* ── Canvas central ── */
+#simCanvasWrap {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: var(--sim-canvas-bg);
+  background-image:
+    linear-gradient(var(--sim-grid-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--sim-grid-color) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Canvas SVG para conexiones */
+#simConnectionsSVG {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Área donde se sueltan los componentes */
+#simCanvas {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 2;
+}
+
+/* Mensaje inicial (cuando el canvas está vacío) */
+#simEmptyMsg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: none;
+  z-index: 0;
+}
+#simEmptyMsg .empty-icon {
+  font-size: 48px;
+  opacity: 0.12;
+  display: block;
+  margin-bottom: 12px;
+}
+#simEmptyMsg .empty-text {
+  font-size: 13px;
+  color: var(--sim-text-dim);
+  opacity: 0.5;
+}
+#simEmptyMsg .empty-hint {
+  font-size: 11px;
+  color: var(--sim-text-dim);
+  opacity: 0.3;
+  margin-top: 6px;
+}
+
+/* Componentes en el canvas */
+.sim-component {
+  position: absolute;
+  cursor: move;
+  user-select: none;
+  z-index: 10;
+  transition: filter 0.15s;
+}
+.sim-component:hover {
+  filter: drop-shadow(0 0 8px var(--sim-accent-glow));
+}
+.sim-component.selected {
+  filter: drop-shadow(0 0 12px var(--sim-accent));
+}
+.sim-component.selected .comp-body {
+  outline: 1.5px solid var(--sim-accent);
+  outline-offset: 2px;
+}
+
+/* Pines de conexión — ocultos por defecto, visibles al pasar el mouse */
+.sim-pin {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ffd740;
+  border: 1.5px solid #b8a000;
+  cursor: crosshair;
+  z-index: 20;
+  transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+  transform: translate(-50%, -50%);
+  opacity: 0;                      /* oculto por defecto */
+}
+/* Mostrar pines al pasar el mouse sobre el componente */
+.sim-component:hover .sim-pin {
+  opacity: 1;
+}
+/* O al pasar directamente sobre el pin */
+.sim-pin:hover {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.5);
+  box-shadow: 0 0 8px #ffd740;
+}
+/* Pines conectados: siempre visibles */
+.sim-pin.connected {
+  opacity: 1;
+  background: var(--sim-green);
+  border-color: #00a050;
+  box-shadow: 0 0 6px var(--sim-green);
+}
+.sim-pin.gnd {
+  background: #607d8b;
+  border-color: #37474f;
+}
+.sim-pin.power {
+  background: #ff5252;
+  border-color: #b71c1c;
+}
+
+/* ── Panel derecho: propiedades ── */
+#simPropsPanel {
+  width: var(--props-width);
+  min-width: var(--props-width);
+  background: var(--sim-panel-bg);
+  border-left: 1px solid var(--sim-panel-border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+#simPropsPanel .panel-header {
+  padding: 10px 12px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sim-text-dim);
+  border-bottom: 1px solid var(--sim-separator);
+}
+
+#simPropsContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--sim-panel-border) transparent;
+}
+#simPropsContent::-webkit-scrollbar { width: 4px; }
+#simPropsContent::-webkit-scrollbar-track { background: transparent; }
+#simPropsContent::-webkit-scrollbar-thumb { background: var(--sim-panel-border); border-radius: 2px; }
+
+/* Mensaje cuando no hay componente seleccionado */
+.props-empty {
+  text-align: center;
+  padding: 30px 10px;
+  color: var(--sim-text-dim);
+  font-size: 11px;
+  opacity: 0.6;
+}
+.props-empty span { font-size: 28px; display: block; margin-bottom: 8px; }
+
+/* Campos de propiedades */
+.prop-group {
+  margin-bottom: 14px;
+}
+.prop-group-title {
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--sim-accent);
+  margin-bottom: 7px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--sim-separator);
+}
+.prop-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 7px;
+  gap: 6px;
+}
+.prop-label {
+  font-size: 11px;
+  color: var(--sim-text-dim);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.prop-value {
+  font-size: 11px;
+  color: var(--sim-text-bright);
+  text-align: right;
+  font-family: inherit;
+}
+.prop-input {
+  background: var(--sim-canvas-bg);
+  border: 1px solid var(--sim-panel-border);
+  border-radius: 4px;
+  color: var(--sim-text);
+  font-size: 11px;
+  font-family: inherit;
+  padding: 4px 6px;
+  width: 90px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.prop-input:focus { border-color: var(--sim-accent); }
+
+.prop-select {
+  background: var(--sim-canvas-bg);
+  border: 1px solid var(--sim-panel-border);
+  border-radius: 4px;
+  color: var(--sim-text);
+  font-size: 11px;
+  font-family: inherit;
+  padding: 4px 6px;
+  width: 110px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Botón eliminar componente */
+#btnDeleteComp {
+  width: 100%;
+  margin-top: 8px;
+  background: rgba(255, 82, 82, 0.1);
+  color: #ff5252;
+  border: 1px solid rgba(255, 82, 82, 0.25);
+  border-radius: 6px;
+  padding: 7px;
+  font-size: 11px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s;
+  display: none;
+}
+#btnDeleteComp:hover { background: rgba(255, 82, 82, 0.2); }
+
+/* ── Console / Log inferior (opcional, oculta por defecto) ── */
+#simConsole {
+  height: 120px;
+  background: #070910;
+  border-top: 1px solid var(--sim-panel-border);
+  padding: 8px 12px;
+  font-size: 11px;
+  color: #7a8aaa;
+  overflow-y: auto;
+  display: none;
+  flex-shrink: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--sim-panel-border) transparent;
+}
+#simConsole.visible { display: block; }
+#simConsole .log-line { margin: 1px 0; line-height: 1.5; }
+#simConsole .log-line.info  { color: #5c8fcc; }
+#simConsole .log-line.ok    { color: var(--sim-green); }
+#simConsole .log-line.warn  { color: #ffd740; }
+#simConsole .log-line.error { color: #ff5252; }
+#simConsole .log-time { color: var(--sim-text-dim); margin-right: 6px; }
+
+/* ── Animación de drop al soltar un componente ── */
+@keyframes compDrop {
+  0%   { transform: scale(0.7); opacity: 0; }
+  70%  { transform: scale(1.06); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.sim-component.just-dropped {
+  animation: compDrop 0.25s cubic-bezier(.22,1,.36,1) forwards;
+}
+
+/* ── Cable siendo dibujado ── */
+#simWirePreview {
+  position: absolute;
+  pointer-events: none;
+  z-index: 100;
+}
+
+/* ── Tooltip de pin ── */
+.sim-pin-tooltip {
+  position: fixed;
+  background: #1a1e35;
+  border: 1px solid var(--sim-accent);
+  color: var(--sim-text-bright);
+  font-size: 10px;
+  padding: 3px 7px;
+  border-radius: 4px;
+  pointer-events: none;
+  z-index: 9999;
+  white-space: nowrap;
+  display: none;
+}

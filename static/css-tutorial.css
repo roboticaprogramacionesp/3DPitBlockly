@@ -13,7 +13,10 @@
 
 .tutorial-overlay {
   position: fixed;
-  background: rgba(0, 0, 0, 0.6);
+  inset: 0;               /* top/right/bottom/left: 0 — cubre todo el viewport */
+  width: 100%;
+  height: 100%;
+  background: transparent; /* el oscuro lo pone el box-shadow del cutout */
   z-index: 9999;
 }
 

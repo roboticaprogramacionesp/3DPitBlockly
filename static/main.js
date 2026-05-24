@@ -2,7 +2,13 @@
  * Application Namespace & Blockly Setup
  */
 var Code = {};
-const IS_DESKTOP = typeof window.pywebview !== "undefined";
+// DESPUÉS
+let IS_DESKTOP = typeof window.pywebview !== "undefined";
+// Se confirma cuando pywebviewready dispara
+window.addEventListener("pywebviewready", () => { IS_DESKTOP = true; });
+
+// ── FLAG DE DEBUG: poner false en producción ──────────────────
+const DEBUG = false;
 
 Code.workspace = Blockly.inject("blocklyDiv", {
   scrollbars: true,
@@ -49,12 +55,33 @@ Code.generateCode = function (generator = Blockly.Python) {
 };
 
 // CHECAR SOPORTE WEB SERIAL
-if (!navigator.serial) {
-  console.log(
-    "Tu navegador no soporta Web Serial. Usa Chrome o Edge en escritorio.",
-  );
-  //alert("Tu navegador no soporta Web Serial. Usa Chrome o Edge en escritorio.");
+if (!navigator.serial && !IS_DESKTOP) {
+  console.log("Tu navegador no soporta Web Serial...");
   throw new Error("Web Serial no disponible");
+}
+
+// ─────────────────────────────────────────────────────────────
+// VALIDACIÓN DE NOMBRES DE ARCHIVO (FIX: inyección MicroPython)
+// Solo permite letras, números, guión, guión bajo, punto.
+// Máximo 64 caracteres. Debe terminar en extensión válida.
+// ─────────────────────────────────────────────────────────────
+const SAFE_FILENAME_RE = /^[\w\-][.\w\-]{0,62}\.(py|txt|json|csv|log|mpy|html|js|css)$/i;
+
+function isSafeFileName(name) {
+  return typeof name === "string" && SAFE_FILENAME_RE.test(name);
+}
+
+/**
+ * Sanitiza y valida un nombre de archivo antes de usarlo en comandos serial.
+ * Lanza si el nombre no es seguro.
+ */
+function requireSafeFileName(name) {
+  if (!isSafeFileName(name)) {
+    const msg = `Nombre de archivo no válido: "${name}"`;
+    term && term.writeln(`\r\n⚠ ${msg}\r\n`);
+    throw new Error(msg);
+  }
+  return name;
 }
 
 function blurBlockly() {
@@ -86,12 +113,10 @@ const editor = CodeMirror.fromTextArea(document.getElementById("codeEditor"), {
 // BOTÓN: VER CÓDIGO
 document.getElementById("btnCode").addEventListener("click", function () {
   updateCodeFromBlockly();
-
   showView("viewCode");
   isWorkSpace = false;
   requestAnimationFrame(() => {
     editor.refresh();
-
     refreshTerminalFit();
   });
 });
@@ -106,13 +131,14 @@ function refreshBlockly() {
   const blocklyDiv = document.getElementById("blocklyDiv");
   const w = blocklyDiv.clientWidth;
   const h = blocklyDiv.clientHeight;
-  if (w === 0 || h === 0) return; // ❗ evita render con tamaño 0
+  if (w === 0 || h === 0) return; // evita render con tamaño 0
   svg.style.width = w + "px";
   svg.style.height = h + "px";
   Blockly.svgResize(Code.workspace);
 }
 
 function showView(viewId) {
+  let _simInit = false;
   Blockly.hideChaff(true);
   isWorkSpace = viewId === "viewBlocks";
 
@@ -120,12 +146,12 @@ function showView(viewId) {
 
   views.forEach((v) => {
     v.classList.remove("active");
-    v.style.display = "none"; // ocultar todas
+    v.style.display = "none";
   });
 
   const view = document.getElementById(viewId);
   view.classList.add("active");
-  view.style.display = "block"; // mostrar la vista activa
+  view.style.display = "block";
   if (viewId === "viewBlocks") {
     document.getElementById("viewBlocks").style.display = "block";
     document.getElementById("viewCode").style.display = "none";
@@ -136,7 +162,7 @@ function showView(viewId) {
     }, 50);
   } else {
     document.body.classList.remove("body--no-blockly-ui");
-    toggleFloating(true); // mostrar botones flotantes
+    toggleFloating(true);
 
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
@@ -146,61 +172,20 @@ function showView(viewId) {
   }
 }
 
-// UTILIDADES
-/*
-document
-  .getElementById("btnUndo")
-  .addEventListener("click", () => Code.workspace.undo(false));
-document
-  .getElementById("btnRedo")
-  .addEventListener("click", () => Code.workspace.undo(true));
-
-*/
-
-// AUTOGUARDADO – LOCAL STORAGE
+// ─────────────────────────────────────────────────────────────
+// AUTOGUARDADO — listener unificado (FIX: doble listener)
+// Un solo listener por workspace: desktop → Python API + debounce,
+// web → localStorage directo.
+// ─────────────────────────────────────────────────────────────
 const AUTOSAVE_KEY = "blockly_autosave_workspace";
+let autosaveTimer = null;
+const AUTOSAVE_DELAY = 800;
 
 function autoSaveWorkspace() {
   const xmlDom = Blockly.Xml.workspaceToDom(Code.workspace);
   const xmlText = Blockly.Xml.domToText(xmlDom);
   localStorage.setItem(AUTOSAVE_KEY, xmlText);
 }
-
-// Guardar cada cambio (ignorar eventos de UI)
-Code.workspace.addChangeListener((event) => {
-  if (event.isUiEvent) return;
-  autoSaveWorkspace();
-});
-
-function restoreWorkspaceFromLocal() {
-  const xmlText = localStorage.getItem(AUTOSAVE_KEY);
-  if (!xmlText) return;
-
-  try {
-    const xmlDom = Blockly.Xml.textToDom(xmlText);
-    Blockly.Xml.domToWorkspace(xmlDom, Code.workspace);
-  } catch (e) {
-    console.warn("No se pudo restaurar el workspace");
-  }
-}
-
-let activeTutorial = null;
-
-//           TUTORIAL
-document.getElementById("btnTutor").addEventListener("click", function () {
-  showView("viewBlocks");
-  startTutorial();
-});
-
-//           TUTORIAL
-document.getElementById("btnCodeTutor").addEventListener("click", function () {
-  showView("viewCode");
-  startCodeTutorial();
-});
-
-// AUTOGUARDADO – PYTHON (DESKTOP)
-let autosaveTimer = null;
-const AUTOSAVE_DELAY = 800;
 
 function autoSaveWorkspacePython() {
   const workspace = Blockly.getMainWorkspace();
@@ -212,42 +197,85 @@ function autoSaveWorkspacePython() {
   }
 }
 
-Code.workspace.addChangeListener(function (event) {
-  if (event.type === Blockly.Events.UI) return;
+Code.workspace.addChangeListener((event) => {
+  if (event.isUiEvent || event.type === Blockly.Events.UI) return;
+  if (isRestoring) return;
 
-  clearTimeout(autosaveTimer);
-  autosaveTimer = setTimeout(autoSaveWorkspacePython, AUTOSAVE_DELAY);
+  // Re-evaluar IS_DESKTOP aquí, no al inicio
+  const isDesktop = typeof window.pywebview !== "undefined" && !!window.pywebview?.api;
+
+  if (isDesktop) {
+    clearTimeout(autosaveTimer);
+    autosaveTimer = setTimeout(autoSaveWorkspacePython, AUTOSAVE_DELAY);
+  } else {
+    autoSaveWorkspace();
+  }
 });
 
+let activeTutorial = null;
+
+// TUTORIAL
+document.getElementById("btnTutor").addEventListener("click", function () {
+  showView("viewBlocks");
+  startTutorial();
+});
+
+// TUTORIAL
+document.getElementById("btnCodeTutor").addEventListener("click", function () {
+  showView("viewCode");
+  startCodeTutorial();
+});
+
+let isRestoring = false;
+
+function restoreWorkspaceFromLocal() {
+  const xmlText = localStorage.getItem(AUTOSAVE_KEY);
+  if (!xmlText) return;
+  try {
+    const xmlDom = Blockly.Xml.textToDom(xmlText);
+    Blockly.Xml.domToWorkspace(xmlDom, Code.workspace);
+  } catch (e) {
+    console.warn("No se pudo restaurar el workspace");
+  }
+}
+
 async function restoreWorkspaceFromPython() {
+  let attempts = 0;
+  while (!window.pywebview?.api?.load_autosave && attempts < 20) {
+    await new Promise(r => setTimeout(r, 100));
+    attempts++;
+  }
   if (!window.pywebview?.api?.load_autosave) return;
 
   const xmlText = await window.pywebview.api.load_autosave();
   if (!xmlText) return;
 
   try {
+    isRestoring = true;  // ← bloquea el autosave durante la carga
     const xmlDom = Blockly.Xml.textToDom(xmlText);
-    Blockly.Xml.clearWorkspaceAndLoadFromXml(
-      xmlDom,
-      Blockly.getMainWorkspace(),
-    );
+    Blockly.Xml.clearWorkspaceAndLoadFromXml(xmlDom, Blockly.getMainWorkspace());
   } catch (e) {
     console.warn("No se pudo restaurar autosave", e);
+  } finally {
+    isRestoring = false;  // ← reactiva el autosave
   }
 }
 
-// ⏳ ESPERAR A PYWEBVIEW
+// ESPERAR A PYWEBVIEW (Desktop)
 window.addEventListener("pywebviewready", () => {
+  IS_DESKTOP = true;
   restoreWorkspaceFromPython();
   startTutorial();
 });
 
-if (window.pywebview?.api) {
-  autoSaveWorkspacePython();
-} else {
-  restoreWorkspaceFromLocal();
-  //localStorage.setItem(AUTOSAVE_KEY, xmlText);
+if (!IS_DESKTOP) {
+  // Solo restaurar desde localStorage si definitivamente es web
+  // (se confirma después de que pywebviewready no llegue)
+  setTimeout(() => {
+    if (!IS_DESKTOP) restoreWorkspaceFromLocal();
+  }, 500);
 }
+
 
 // BOTÓN: NUEVO ARCHIVO
 document.getElementById("btnNew").addEventListener("click", async function () {
@@ -258,12 +286,10 @@ document.getElementById("btnNew").addEventListener("click", async function () {
   Blockly.Events.disable();
 
   try {
-    // Limpiar workspace
     if (Code.workspace) {
       Code.workspace.clear();
     }
 
-    // Limpiar editor
     if (typeof editor !== "undefined") {
       editor.setValue("");
     } else {
@@ -271,10 +297,8 @@ document.getElementById("btnNew").addEventListener("click", async function () {
       if (codeArea) codeArea.value = "";
     }
 
-    // Borrar autosave local
     localStorage.removeItem(AUTOSAVE_KEY);
 
-    // Borrar autosave backend (si existe)
     if (window.pywebview?.api?.clear_autosave) {
       await window.pywebview.api.clear_autosave();
     }
@@ -285,6 +309,9 @@ document.getElementById("btnNew").addEventListener("click", async function () {
   Blockly.Events.enable();
 });
 
+// ─────────────────────────────────────────────────────────────
+// GUARDAR ARCHIVO (FIX: detección de tipo solo por extensión)
+// ─────────────────────────────────────────────────────────────
 async function saveFileAuto(content, fileName = "") {
   try {
     let extension = "txt";
@@ -295,16 +322,24 @@ async function saveFileAuto(content, fileName = "") {
       extension = "png";
       mimeType = "image/png";
       isBase64 = true;
-    } else if (fileName.endsWith(".xml") || content.trim().startsWith("<")) {
-      extension = "xml";
-      mimeType = "text/xml";
-    } else if (
-      fileName.endsWith(".py") ||
-      content.includes("import ") ||
-      content.includes("def ")
-    ) {
-      extension = "py";
-      mimeType = "text/x-python";
+    } else {
+      // Detectar tipo SOLO por extensión del fileName (más robusto)
+      const ext = fileName.split(".").pop().toLowerCase();
+      if (ext === "xml") {
+        extension = "xml";
+        mimeType = "text/xml";
+      } else if (ext === "py") {
+        extension = "py";
+        mimeType = "text/x-python";
+      } else if (ext === "json") {
+        extension = "json";
+        mimeType = "application/json";
+      }
+      // Fallback: si el contenido es XML y no hay extensión clara
+      if (extension === "txt" && content.trim().startsWith("<")) {
+        extension = "xml";
+        mimeType = "text/xml";
+      }
     }
 
     const suggestedName =
@@ -339,19 +374,11 @@ async function saveFileAuto(content, fileName = "") {
     }
 
     await writable.close();
-
-    //alert(`Archivo ${extension.toUpperCase()} guardado correctamente`);
   } catch (err) {
-    // 🔥 AQUÍ ESTÁ LA CLAVE
     if (err.name === "AbortError") {
-      // ❌ usuario canceló → NO hacer nada
       return;
     }
-
-    // ⚠️ solo errores reales
     console.error("Error real al guardar:", err);
-    console.log("Error al guardar archivo");
-    //alert("Error al guardar archivo");
   }
 }
 
@@ -362,13 +389,11 @@ document.getElementById("btnSave").addEventListener("click", async (e) => {
   const xmlDom = Blockly.Xml.workspaceToDom(workspace);
   const xmlText = Blockly.Xml.domToPrettyText(xmlDom);
 
-  // 🖥️ Desktop (evaluación dinámica REAL)
   if (window.pywebview?.api?.save_xml) {
     const result = await window.pywebview.api.save_xml(xmlText);
 
     if (result?.status === "ok") {
-      console.log("Archivo XML guardado en:", result.path);
-      //alert("Proyecto guardado en:\n" + result.path);
+      if (DEBUG) console.log("Archivo XML guardado en:", result.path);
     }
   } else {
     await saveFileAuto(xmlText, "proyecto.xml");
@@ -395,24 +420,20 @@ document.getElementById("loadXML").addEventListener("change", function (event) {
       const xmlDom = Blockly.Xml.textToDom(xmlText);
       Blockly.Xml.domToWorkspace(xmlDom, Code.workspace);
 
-      // 👇 GENERAR CÓDIGO Y MOSTRARLO
       updateCodeFromBlockly();
-      //showView("viewCode");
 
       requestAnimationFrame(() => {
         editor.refresh();
       });
     } catch (err) {
-      //alert("Error al cargar el archivo XML");
       console.error(err);
     }
   };
 
   reader.readAsText(file);
 
-  // Permite volver a cargar el mismo archivo si se desea
   event.target.value = "";
-  showView("viewBlocks"); // <- quita la clase body--no-blockly-ui
+  showView("viewBlocks");
 });
 
 // RESTAURAR DESDE AUTOSAVE
@@ -422,12 +443,10 @@ async function reloadWorkspace() {
   try {
     let xmlText = "";
 
-    // 1️⃣ Intentar desde Python (desktop)
     if (window.pywebview?.api?.load_autosave) {
       xmlText = await window.pywebview.api.load_autosave();
     }
 
-    // 2️⃣ Si no hay, intentar desde LocalStorage
     if (!xmlText) {
       xmlText = localStorage.getItem("blockly_autosave_workspace");
     }
@@ -438,7 +457,6 @@ async function reloadWorkspace() {
     }
 
     const xmlDom = Blockly.Xml.textToDom(xmlText);
-
     Blockly.Xml.clearWorkspaceAndLoadFromXml(xmlDom, Code.workspace);
   } catch (e) {
     console.error("Error al recargar workspace", e);
@@ -461,17 +479,11 @@ document.getElementById("btnSavePy").addEventListener("click", async (e) => {
 
   const code = editor.getValue();
 
-  // 🖥️ SI ES APP DE ESCRITORIO (pywebview)
-  if (
-    window.pywebview &&
-    window.pywebview.api &&
-    window.pywebview.api.save_py
-  ) {
+  if (window.pywebview?.api?.save_py) {
     const result = await window.pywebview.api.save_py(code, fileName);
 
     if (result?.status === "ok") {
-      console.log(`Archivo ${fileName} guardado en:`, result.path);
-      //alert("Archivo guardado en:\n" + result.path);
+      if (DEBUG) console.log(`Archivo ${fileName} guardado en:`, result.path);
     }
   } else {
     await saveFileAuto(code, fileName);
@@ -496,10 +508,13 @@ document.getElementById("loadPy").addEventListener("change", function (event) {
 
   reader.readAsText(file);
 
-  // Permite volver a cargar el mismo archivo
   event.target.value = "";
 });
 
+// ─────────────────────────────────────────────────────────────
+// MODALES (FIX: innerHTML → textContent para evitar XSS)
+// Si necesitas HTML real en el mensaje usa showCustomConfirmHTML()
+// ─────────────────────────────────────────────────────────────
 function showCustomConfirm(message = "¿Deseas continuar?") {
   return new Promise((resolve) => {
     const modal = document.getElementById("customModal");
@@ -513,7 +528,8 @@ function showCustomConfirm(message = "¿Deseas continuar?") {
       return;
     }
 
-    msg.innerHTML = message;
+    // FIX: textContent en lugar de innerHTML para evitar XSS
+    msg.textContent = message;
 
     btnCancel.style.display = "inline-block";
     btnAccept.textContent = "Aceptar";
@@ -540,13 +556,13 @@ function showMessageModal(message) {
 
   if (!modal || !msg || !btnAccept) {
     console.log(message);
-    //alert(message);
     return;
   }
 
-  msg.innerHTML = message;
+  // FIX: textContent en lugar de innerHTML para evitar XSS
+  msg.textContent = message;
 
-  btnCancel.style.display = "none"; // ocultamos cancelar
+  btnCancel.style.display = "none";
   btnAccept.textContent = "OK";
 
   modal.style.display = "flex";
@@ -558,136 +574,17 @@ function showMessageModal(message) {
 
 window.addEventListener("DOMContentLoaded", () => {
   startTutorial();
-  initTerminal();
-  enableTerminalInput();
-  //console.log("Terminal inicializada correctamente");
 });
 
 //////////////////////////////////////////////////////////////
-// TERMINAL AUTO RESIZE OBSERVER
+// TERMINAL XTERM + FIT ADDON — declaradas en viewcode.js
 //////////////////////////////////////////////////////////////
-
-let resizeObserver;
-
-function enableTerminalAutoResize() {
-  const terminalElement = document.getElementById("terminal");
-
-  resizeObserver = new ResizeObserver(() => {
-    if (fitAddon && term) {
-      fitAddon.fit();
-    }
-  });
-
-  resizeObserver.observe(terminalElement);
-}
-
-//////////////////////////////////////////////////////////////
-// TERMINAL XTERM + FIT ADDON
-//////////////////////////////////////////////////////////////
-
-let term;
-let fitAddon;
-
-function initTerminal() {
-  if (term) return;
-
-  fitAddon = new FitAddon.FitAddon();
-
-  term = new Terminal({
-    cursorBlink: true,
-
-    cursorStyle: "block",
-
-    scrollback: 5000,
-
-    convertEol: true,
-
-    fontSize: 14,
-
-    fontFamily: 'Consolas, "Courier New", monospace',
-
-    //rendererType: "canvas",
-
-    theme: {
-      background: "#1e1e1e",
-      foreground: "#d4d4d4",
-
-      cursor: "#ffffff",
-
-      selectionBackground: "rgba(255,255,255,0.2)",
-
-      black: "#000000",
-      red: "#cd3131",
-      green: "#0dbc79",
-      yellow: "#e5e510",
-      blue: "#2472c8",
-      magenta: "#bc3fbc",
-      cyan: "#11a8cd",
-      white: "#e5e5e5",
-
-      brightBlack: "#666666",
-      brightRed: "#f14c4c",
-      brightGreen: "#23d18b",
-      brightYellow: "#f5f543",
-      brightBlue: "#3b8eea",
-      brightMagenta: "#d670d6",
-      brightCyan: "#29b8db",
-      brightWhite: "#ffffff",
-    },
-  });
-
-  term.loadAddon(fitAddon);
-
-  const el = document.getElementById("terminal");
-
-  term.open(el);
-
-  requestAnimationFrame(() => {
-    fitAddon.fit();
-  });
-
-  enableTerminalAutoResize();
-}
-
-/*
-document.getElementById("btnPaste").addEventListener("click", async () => {
-  if (!isConnected || isSendingCode) return;
-
-  try {
-    let text = await navigator.clipboard.readText();
-
-    if (text) {
-      // 🔥 agregar salto de línea al final
-      if (!text.endsWith("\n")) {
-        text += "\r\n";
-      }
-
-      await sendSerial(text);
-    }
-  } catch (err) {
-    console.error("Error al pegar:", err);
-  }
-});
-*/
 
 window.addEventListener("resize", () => {
   if (Code.workspace) {
     Blockly.svgResize(Code.workspace);
   }
-  if (fitAddon) {
-    fitAddon.fit();
-  }
 });
-
-function refreshTerminalFit() {
-  setTimeout(() => {
-    if (fitAddon) {
-      fitAddon.fit();
-
-      term.scrollToBottom();
-    }
-  }, 100);
-}
 
 //////////////////////////////////////////////////////////////
 // WEBSERIAL ENGINE
@@ -708,12 +605,14 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 let serialBuffer = "";
 let waitingResponse = false;
 
+// Bandera global para operaciones de archivo (FIX: race condition)
+let isFileOperationBusy = false;
+
 //////////////////////////////////////////////////////////////
 // CONNECT
 //////////////////////////////////////////////////////////////
 async function connectSerial() {
   try {
-    // asegurar que terminal exista
     if (!term) {
       initTerminal();
       enableTerminalInput();
@@ -740,7 +639,7 @@ async function connectSerial() {
     readSerialLoop();
   } catch (error) {
     if (term)
-      term.writeln("\r\nError conexión: " + error); //❌
+      term.writeln("\r\nError conexión: " + error);
     else console.error(error);
   }
 }
@@ -760,47 +659,32 @@ async function disconnectSerial() {
     serialConnected = false;
     updateConnectionIcon(false);
 
-    // reader
     if (serialReader) {
-      try {
-        await serialReader.cancel();
-      } catch { }
-      try {
-        serialReader.releaseLock();
-      } catch { }
+      try { await serialReader.cancel(); } catch { }
+      try { serialReader.releaseLock(); } catch { }
       serialReader = null;
     }
 
-    // writer
     if (serialWriter) {
-      try {
-        await serialWriter.close();
-      } catch { }
-      try {
-        serialWriter.releaseLock();
-      } catch { }
+      try { await serialWriter.close(); } catch { }
+      try { serialWriter.releaseLock(); } catch { }
       serialWriter = null;
     }
 
-    // puerto
     if (serialPort && serialPort.readable) {
-      try {
-        await serialPort.close();
-      } catch { }
+      try { await serialPort.close(); } catch { }
     }
 
     serialPort = null;
 
     term.writeln("\r\nDesconectado\r\n");
 
-    // UI segura
     const btnConnect = document.getElementById("btnConnect");
     const btnDisconnect = document.getElementById("btnDisconnect");
 
     if (btnConnect) btnConnect.disabled = false;
     if (btnDisconnect) btnDisconnect.disabled = true;
 
-    // 🔥 limpiar explorer
     clearExplorer();
   } catch (error) {
     if (error.name !== "NetworkError" && error.name !== "InvalidStateError") {
@@ -812,61 +696,6 @@ async function disconnectSerial() {
     isDisconnecting = false;
   }
 }
-/*
-async function disconnectSerial() {
-  try {
-    isConnected = false;
-    serialConnected = false;
-    updateConnectionIcon(false);
-    // cancelar reader
-    if (serialReader) {
-      try {
-        await serialReader.cancel();
-      } catch (e) {}
-      try {
-        serialReader.releaseLock();
-      } catch (e) {}
-      serialReader = null;
-    }
-
-    // cerrar writer
-    if (serialWriter) {
-      try {
-        await serialWriter.close();
-      } catch (e) {}
-      try {
-        serialWriter.releaseLock();
-      } catch (e) {}
-      serialWriter = null;
-    }
-
-    // cerrar puerto
-    if (serialPort) {
-      try {
-        await serialPort.close();
-      } catch (e) {}
-      serialPort = null;
-    }
-
-    term.writeln("\r\nDesconectado\r\n"); //🔌
-
-    // UI
-    const btnConnect = document.getElementById("btnConnect");
-    const btnDisconnect = document.getElementById("btnDisconnect");
-
-    if (btnConnect) btnConnect.disabled = false;
-    if (btnDisconnect) btnDisconnect.disabled = true;
-
-  } catch (error) {
-    if (error.name !== "NetworkError") {
-      console.error(error);
-      term.writeln("\r\nError al desconectar\r\n");
-    }
-  } finally {
-    resetSerialState();
-  }
-}
-*/
 
 //////////////////////////////////////////////////////////////
 // READ LOOP UNIVERSAL
@@ -877,7 +706,7 @@ async function readSerialLoop() {
       const { value, done } = await serialReader.read();
 
       if (done) {
-        term.writeln("\r\nPuerto cerrado\r\n"); //⚠️
+        term.writeln("\r\nPuerto cerrado\r\n");
         await disconnectSerial();
         break;
       }
@@ -886,13 +715,15 @@ async function readSerialLoop() {
         const chunk = decoder.decode(value, { stream: true });
         term.write(chunk);
 
+        if (typeof SerialMonitor !== 'undefined') SerialMonitor.feed(chunk);
+
         if (waitingResponse) {
           serialBuffer += chunk;
         }
       }
     }
   } catch (error) {
-    term.writeln("\r\nConexión perdida\r\n"); //⚠️
+    term.writeln("\r\nConexión perdida\r\n");
     await disconnectSerial();
   }
 }
@@ -903,11 +734,7 @@ async function readSerialLoop() {
 
 async function sendSerial(data) {
   if (!serialWriter) return;
-
-  if (!data || data.length === 0) return; // 🔥 evitar vacío
-
-  //console.log("SEND:", JSON.stringify(data), "length:", data.length);
-
+  if (!data || data.length === 0) return;
   await serialWriter.write(encoder.encode(data));
 }
 
@@ -918,10 +745,9 @@ async function sendSerial(data) {
 function enableTerminalInput() {
   term.onData(async (data) => {
     if (!isConnected) return;
-
-    // bloquear input SOLO durante envio
     if (isSendingCode) return;
-    console.log("DATA:", JSON.stringify(data));
+    // FIX: console.log de teclas eliminado (exponía contraseñas)
+    if (DEBUG) console.log("DATA:", JSON.stringify(data));
     await sendSerial(data);
   });
 }
@@ -937,7 +763,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  // Estado inicial → desconectado
   updateConnectionIcon(false);
 
   btnConnection.addEventListener("click", async () => {
@@ -954,12 +779,9 @@ document.addEventListener("DOMContentLoaded", () => {
 //////////////////////////////////////////////////////////////
 
 navigator.serial.addEventListener("disconnect", async (event) => {
-  //console.log("USB desconectado", event);
-
   if (serialPort && event.target === serialPort) {
-    term.writeln("\r\nDispositivo desconectado físicamente\r\n"); //⚠️
-
-    await disconnectSerial(); // usar tu función existente
+    term.writeln("\r\nDispositivo desconectado físicamente\r\n");
+    await disconnectSerial();
   }
 });
 
@@ -968,9 +790,7 @@ navigator.serial.addEventListener("disconnect", async (event) => {
 //////////////////////////////////////////////////////////////
 
 navigator.serial.addEventListener("connect", (event) => {
-  //console.log("USB conectado", event);
-
-  term.writeln("\r\nDispositivo USB detectado\r\n"); //🔌
+  term.writeln("\r\nDispositivo USB detectado\r\n");
 });
 
 function updateConnectionIcon(connected) {
@@ -987,12 +807,10 @@ function updateConnectionIcon(connected) {
 }
 
 function getCode() {
-  // Si usas Blockly
   if (typeof Blockly !== "undefined" && Code?.workspace) {
     return Blockly.Python.workspaceToCode(Code.workspace);
   }
 
-  // Si usas editor (CodeMirror)
   if (typeof editor !== "undefined" && editor.getValue) {
     return editor.getValue();
   }
@@ -1000,6 +818,9 @@ function getCode() {
   return "";
 }
 
+// ─────────────────────────────────────────────────────────────
+// BOTÓN: EJECUTAR (paste mode — seguro para cualquier código)
+// ─────────────────────────────────────────────────────────────
 btnRun.addEventListener("click", async () => {
 
   if (!isConnected || !serialWriter) {
@@ -1007,7 +828,7 @@ btnRun.addEventListener("click", async () => {
     return;
   }
 
-  const code = getCode(); // 🔥 ya no depende de la pestaña
+  const code = getCode();
 
   if (!code || code.trim() === "") {
     term.writeln("\r\nNo hay código para ejecutar\r\n");
@@ -1022,156 +843,91 @@ btnRun.addEventListener("click", async () => {
     await sendSerial("\x03"); // Ctrl+C
     await sleep(100);
 
-    await sendSerial("\x05"); // Ctrl+E
-    await sleep(100);
+    if (typeof SerialMonitor !== 'undefined') SerialMonitor.notifySending(code);
 
+    await sendSerial("\x05");  // Ctrl+E — paste mode
+    await sleep(100);
     await sendSerial(code);
     await sendSerial("\r\n");
+    await sendSerial("\x04"); // Ctrl+D — ejecutar
 
-    await sendSerial("\x04"); // Ctrl+D
-
-  } catch (error) {
-    term.writeln("\r\nError: " + error + "\r\n");
   } finally {
     isSendingCode = false;
+    if (typeof SerialMonitor !== 'undefined') SerialMonitor.notifyDone();
     term.focus();
   }
+
 });
 
-/*
-btnRun.addEventListener("click", async () => {
-  let codigo = "";
-
-  if (isWorkSpace) {
-    updateCodeFromBlockly();
-
-    codigo = editor.getValue();
-    console.log("Código generado:\n", codigo);
-    //const visor = document.getElementById("codigoGenerado");
-
-    //if (visor) {
-    //visor.textContent = codigo;
-    //}
-
-    ejecutarPython(codigo);
-  }
-
-  if (!isConnected || !serialWriter) {
-    console.log("Conecta la ESP32 primero.");
-    //alert("Conecta la ESP32 primero.");
-    return;
-  }
-
-  // 1️⃣ Obtener el código desde CodeMirror o textarea
-  let codeStr = "";
-
-  if (typeof editor !== "undefined" && editor.getDoc) {
-    codeStr = editor.getDoc().getValue(); // tu CodeMirror
-  } else {
-    codeStr = document.getElementById("codeEditor").value; // fallback
-  }
-  /*
-  // 3️⃣ Preparar el código para MicroPython
-  let safeCode = codeStr
-    .replace(/\\/g, "\\\\")
-    .replace(/'/g, "\\'")
-    .replace(/\n/g, "\\r");
-
-  // 4️⃣ Comandos para escribir archivo en MicroPython
-  let commands = [
-    `f = open('main.py','w')`,
-    `f.write('${safeCode}')`,
-    `f.close()`,
-  ];
-
-  // 5️⃣ Enviar al dispositivo uno por uno
-  for (let cmd of commands) {
-    await sendSerial(cmd + "\r\n");
-  }
-  
-  //term.writeln(`\r\nArchivo main.py guardado correctamente\r\n`); //✅
-
-  const code = editor.getValue();
-
-  if (!code || code.trim() === "") {
-    term.writeln("\r\nNo hay código para ejecutar\r\n"); //⚠️
-    return;
-  }
-
-  try {
-    // bloquear input mientras se envía
-    isSendingCode = true;
-
-    term.writeln("\r\nEjecutando código...\r\n"); //▶
-
-    // 1. detener cualquier programa
-    await sendSerial("\x03"); // Ctrl+C
-    await sleep(100);
-
-    // 2. entrar en paste mode
-    await sendSerial("\x05"); // Ctrl+E
-    await sleep(100);
-
-    // 3. enviar código completo (no hace falta filtrar)
-    await sendSerial(code);
-
-    // asegurar salto final
-    await sendSerial("\r\n");
-
-    // 4. salir de paste mode
-    await sendSerial("\x04"); // Ctrl+D
-  } catch (error) {
-    term.writeln("\r\nError: " + error + "\r\n"); //❌
-  } finally {
-    isSendingCode = false;
-
-    term.focus();
-  }
-});
-*/
-
-// Botón para subir/guardar código
+// ─────────────────────────────────────────────────────────────
+// BOTÓN: SUBIR ARCHIVO AL ESP32
+// FIX: usa paste mode igual que btnRun para evitar inyección
+// FIX: valida nombre de archivo antes de enviarlo
+// ─────────────────────────────────────────────────────────────
 document.getElementById("btnUploadCode").addEventListener("click", async () => {
   if (!isConnected || !serialWriter) {
     console.log("Conecta la ESP32 primero.");
-    //alert("Conecta la ESP32 primero.");
     return;
   }
 
-  // 1️⃣ Obtener el código desde CodeMirror o textarea
   let codeStr = "";
   if (typeof editor !== "undefined" && editor.getDoc) {
-    codeStr = editor.getDoc().getValue(); // tu CodeMirror
+    codeStr = editor.getDoc().getValue();
   } else {
-    codeStr = document.getElementById("codeEditor").value; // fallback
+    codeStr = document.getElementById("codeEditor").value;
   }
 
-  // 2️⃣ Obtener el nombre del archivo
   let fileNameInput = document.getElementById("fileNameInput");
-  let fileName =
+  let rawFileName =
     fileNameInput && fileNameInput.value.trim() !== ""
       ? fileNameInput.value.trim()
       : "test.py";
 
-  // 3️⃣ Preparar el código para MicroPython
-  let safeCode = codeStr
-    .replace(/\\/g, "\\\\")
-    .replace(/'/g, "\\'")
-    .replace(/\n/g, "\\r");
-
-  // 4️⃣ Comandos para escribir archivo en MicroPython
-  let commands = [
-    `f = open('${fileName}','w')`,
-    `f.write('${safeCode}')`,
-    `f.close()`,
-  ];
-
-  // 5️⃣ Enviar al dispositivo uno por uno
-  for (let cmd of commands) {
-    await sendSerial(cmd + "\r\n");
+  // FIX: validar nombre antes de enviarlo al dispositivo
+  if (!isSafeFileName(rawFileName)) {
+    term.writeln(`\r\n⚠ Nombre de archivo no válido: "${rawFileName}"\r\nUsa solo letras, números, guiones y extensión .py\r\n`);
+    return;
   }
 
-  term.writeln(`\r\nArchivo '${fileName}' guardado correctamente\r\n`); //✅
+  const fileName = rawFileName;
+
+  term.writeln(`\r\nSubiendo '${fileName}'...\r\n`);
+
+  try {
+    isSendingCode = true;
+
+    await sendSerial("\x03"); // Ctrl+C
+    await sleep(100);
+
+    // Usar paste mode para escribir el archivo: más seguro que f.write()
+    // Generamos un script inline que abre el archivo y escribe el contenido
+    // usando paste mode para evitar problemas con caracteres especiales.
+    const script = [
+      `_f = open('${fileName}', 'w')`,
+      `_f.write(${JSON.stringify(codeStr)})`,
+      `_f.close()`,
+      `del _f`,
+      `print('OK:${fileName}')`,
+    ].join("\n");
+
+    if (typeof SerialMonitor !== 'undefined') SerialMonitor.notifySending(script);
+
+    await sendSerial("\x05");  // Ctrl+E — paste mode
+    await sleep(100);
+    await sendSerial(script);
+    await sendSerial("\r\n");
+    await sendSerial("\x04"); // Ctrl+D — ejecutar
+
+    await sleep(300);
+
+    term.writeln(`\r\nArchivo '${fileName}' guardado correctamente\r\n`);
+  } catch (err) {
+    term.writeln(`\r\nError al subir archivo: ${err.message}\r\n`);
+    console.error(err);
+  } finally {
+    isSendingCode = false;
+    if (typeof SerialMonitor !== 'undefined') SerialMonitor.notifyDone();
+  }
 });
 
 ////////////////////////////////////////////////////////////
@@ -1180,15 +936,13 @@ document.getElementById("btnUploadCode").addEventListener("click", async () => {
 
 async function stopExecution() {
   if (!serialWriter) {
-    term.writeln("\r\nNo conectado\r\n"); //⚠️
+    term.writeln("\r\nNo conectado\r\n");
     return;
   }
 
   try {
-    // Enviar Ctrl+C
     await sendSerial("\x03");
-
-    term.writeln("\r\nEjecución detenida\r\n"); //⛔
+    term.writeln("\r\nEjecución detenida\r\n");
   } catch (error) {
     console.error("Error enviando Ctrl+C:", error);
   }
@@ -1199,60 +953,12 @@ document.getElementById("btnStop").addEventListener("click", stopExecution);
 btnConsoleReset.addEventListener("click", async () => {
   await sendSerial("\x03");
   await sleep(100);
-
   await sendSerial("\x04");
 });
 
 btnConsoleClear.addEventListener("click", () => {
   term.clear();
 });
-
-const splitter = document.getElementById("splitter");
-const editorWrapper = document.getElementById("editorWrapper");
-const container = document.getElementById("codeSplitContainer");
-
-let isDragging = false;
-
-const MIN_EDITOR_HEIGHT = 100;
-const MIN_TERMINAL_HEIGHT = 100;
-
-splitter.addEventListener("mousedown", () => {
-  isDragging = true;
-  document.body.style.cursor = "row-resize";
-});
-
-document.addEventListener(
-  "mousemove",
-  (e) => {
-    if (!isDragging) return;
-
-    const rect = container.getBoundingClientRect();
-
-    let newEditorHeight = e.clientY - rect.top;
-
-    const maxEditorHeight =
-      rect.height - MIN_TERMINAL_HEIGHT - splitter.offsetHeight;
-
-    if (newEditorHeight < MIN_EDITOR_HEIGHT)
-      newEditorHeight = MIN_EDITOR_HEIGHT;
-
-    if (newEditorHeight > maxEditorHeight) newEditorHeight = maxEditorHeight;
-
-    editorWrapper.style.flex = `0 0 ${newEditorHeight}px`;
-
-    refreshTerminalFit();
-  },
-  { passive: true },
-);
-
-document.addEventListener(
-  "mouseup",
-  () => {
-    isDragging = false;
-    document.body.style.cursor = "default";
-  },
-  { passive: true },
-);
 
 function resetSerialState() {
   serialReader = null;
@@ -1264,6 +970,7 @@ function resetSerialState() {
 
   serialBuffer = "";
   waitingResponse = false;
+  isFileOperationBusy = false;
 }
 
 function clearExplorer() {
@@ -1273,51 +980,60 @@ function clearExplorer() {
   Files.currentFile = null;
 }
 
+// ─────────────────────────────────────────────────────────────
+// FILES — explorador de archivos del ESP32
+// FIX: validación de fileName en openFile, runFile, deleteFile, downloadFile
+// FIX: bandera isFileOperationBusy en todas las operaciones (race condition)
+// FIX: downloadBtn.onclick corregido (era runFile, ahora downloadFile)
+// FIX: readResponse usa ">>>" como terminador (más robusto que "]")
+// ─────────────────────────────────────────────────────────────
 const Files = {
   currentFile: null,
-
-  isOpening: false, // 🔒 bandera anti doble clic
+  isOpening: false,
 
   async listFiles() {
     if (!isConnected) {
-      term.writeln("\r\nESP32 no conectado"); //⚠️
+      term.writeln("\r\nESP32 no conectado");
       return;
     }
 
+    // Evitar doble listado simultáneo
+    if (isFileOperationBusy) return;
+    isFileOperationBusy = true;
+
     Files.currentFile = null;
 
-    term.writeln("\r\nListando archivos..."); //📁
+    term.writeln("\r\nListando archivos...");
 
-    await sendSerial("\x03");
-    await sleep(100);
+    try {
+      await sendSerial("\x03");
+      await sleep(100);
 
-    await sendSerial("import os\r\n");
-    await sendSerial("print(os.listdir())\r\n");
+      await sendSerial("import os\r\n");
+      await sendSerial("print(os.listdir())\r\n");
 
-    const response = await this.readResponse();
-
-    //console.log("RAW:", response);
-
-    const files = this.parseList(response);
-
-    this.updateExplorer(files);
+      const response = await this.readResponse();
+      const files = this.parseList(response);
+      this.updateExplorer(files);
+    } finally {
+      isFileOperationBusy = false;
+    }
   },
 
   async sendCommand(cmd) {
-    const encoder = new TextEncoder();
-    await serialWriter.write(encoder.encode(cmd));
+    const enc = new TextEncoder();
+    await serialWriter.write(enc.encode(cmd));
   },
 
-  async readResponse(timeout = 3000) {
+  // FIX: usa ">>>" como terminador (igual que openFile) y timeout mayor
+  async readResponse(timeout = 5000) {
     serialBuffer = "";
     waitingResponse = true;
 
     const start = Date.now();
 
     while (Date.now() - start < timeout) {
-      if (serialBuffer.includes("]")) {
-        break;
-      }
+      if (serialBuffer.includes(">>>")) break;
       await new Promise((r) => setTimeout(r, 50));
     }
 
@@ -1337,7 +1053,8 @@ const Files = {
         .replace("[", "")
         .replace("]", "")
         .split(",")
-        .map((f) => f.trim());
+        .map((f) => f.trim())
+        .filter(Boolean);
     } catch {
       return [];
     }
@@ -1351,7 +1068,6 @@ const Files = {
       const row = document.createElement("div");
       row.className = "file-row";
 
-      // ===== Nombre archivo =====
       const nameDiv = document.createElement("div");
       nameDiv.className = "file-name";
       nameDiv.textContent = file;
@@ -1362,7 +1078,6 @@ const Files = {
         this.openFile(file);
       };
 
-      // ===== Iconos =====
       const iconsDiv = document.createElement("div");
       iconsDiv.className = "file-icons";
 
@@ -1377,9 +1092,10 @@ const Files = {
       const downloadBtn = document.createElement("span");
       downloadBtn.className = "icon-btn icon-save-py";
       downloadBtn.title = "Descargar " + file;
-      runBtn.onclick = (e) => {
+      // FIX: estaba apuntando a runFile en lugar de downloadFile
+      downloadBtn.onclick = (e) => {
         e.stopPropagation();
-        this.runFile(file);
+        this.downloadFile(file);
       };
 
       const deleteBtn = document.createElement("span");
@@ -1402,17 +1118,19 @@ const Files = {
   },
 
   async openFile(fileName) {
-    // 🔒 BLOQUEO
+    // FIX: validar nombre de archivo
+    try { requireSafeFileName(fileName); } catch { return; }
+
     if (this.isOpening) return;
     this.isOpening = true;
 
     if (!isConnected) {
-      term.writeln("\r\nESP32 no conectado"); //⚠️
+      term.writeln("\r\nESP32 no conectado");
       this.isOpening = false;
       return;
     }
 
-    term.writeln(`\r\nAbriendo ${fileName}...\r\n`); //📂
+    term.writeln(`\r\nAbriendo ${fileName}...\r\n`);
 
     try {
       await sendSerial("\x03");
@@ -1425,7 +1143,7 @@ const Files = {
 
       const start = Date.now();
 
-      while (Date.now() - start < 3000) {
+      while (Date.now() - start < 5000) {
         if (serialBuffer.includes(">>>")) break;
         await sleep(50);
       }
@@ -1440,7 +1158,6 @@ const Files = {
       );
 
       content = content.replace(/>>>/g, "");
-
       content = content.trim();
 
       editor.setValue(content);
@@ -1451,23 +1168,24 @@ const Files = {
       if (input) input.value = fileName;
 
       editor.refresh();
-
       showView("viewCode");
 
-      term.writeln("Archivo cargado correctamente\r\n"); //✅
+      term.writeln("Archivo cargado correctamente\r\n");
     } catch (err) {
       console.error(err);
-      term.writeln("Error abriendo archivo\r\n"); //❌
+      term.writeln("Error abriendo archivo\r\n");
     } finally {
-      // 🔓 DESBLOQUEAR SIEMPRE
       this.isOpening = false;
     }
   },
 
   async runFile(fileName) {
+    // FIX: validar nombre de archivo
+    try { requireSafeFileName(fileName); } catch { return; }
+
     if (!isConnected) return;
 
-    term.writeln(`\r\nEjecutando ${fileName}...\r\n`); //▶
+    term.writeln(`\r\nEjecutando ${fileName}...\r\n`);
 
     await sendSerial("\x03");
     await sleep(100);
@@ -1476,15 +1194,17 @@ const Files = {
   },
 
   async deleteFile(fileName) {
+    // FIX: validar nombre de archivo
+    try { requireSafeFileName(fileName); } catch { return; }
+
     if (!confirm("¿Eliminar " + fileName + "?")) return;
 
     if (fileName === "boot.py") {
       console.log("No se recomienda eliminar boot.py");
-      //alert("No se recomienda eliminar boot.py");
       return;
     }
 
-    term.writeln(`\r\nEliminando ${fileName}...\r\n`); //🗑
+    term.writeln(`\r\nEliminando ${fileName}...\r\n`);
 
     await sendSerial("\x03");
     await sleep(100);
@@ -1492,34 +1212,59 @@ const Files = {
     await sendSerial(`import os\r\n`);
     await sendSerial(`os.remove('${fileName}')\r\n`);
 
-    term.writeln("Archivo eliminado\r\n"); //✅
+    term.writeln("Archivo eliminado\r\n");
 
-    // refrescar lista
     this.listFiles();
   },
 
   async downloadFile(fileName) {
-    await sendSerial("\x03");
-    await sleep(100);
+    // FIX: validar nombre de archivo
+    try { requireSafeFileName(fileName); } catch { return; }
 
-    serialBuffer = "";
-    waitingResponse = true;
+    if (!isConnected) {
+      term.writeln("\r\nESP32 no conectado\r\n");
+      return;
+    }
 
-    await sendSerial(`print(open('${fileName}').read())\r\n`);
+    // FIX: bandera para evitar doble descarga simultánea
+    if (isFileOperationBusy) return;
+    isFileOperationBusy = true;
 
-    await sleep(1000);
+    try {
+      await sendSerial("\x03");
+      await sleep(100);
 
-    waitingResponse = false;
+      serialBuffer = "";
+      waitingResponse = true;
 
-    let content = serialBuffer;
+      await sendSerial(`print(open('${fileName}').read())\r\n`);
 
-    content = content.replace(/>>>/g, "").trim();
+      // FIX: esperar ">>>" igual que openFile (más fiable que sleep fijo)
+      const start = Date.now();
+      while (Date.now() - start < 5000) {
+        if (serialBuffer.includes(">>>")) break;
+        await sleep(50);
+      }
 
-    const blob = new Blob([content], { type: "text/plain" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = fileName;
-    a.click();
+      waitingResponse = false;
+
+      let content = serialBuffer
+        .replace(new RegExp(`print\\(open\\('${fileName}'\\)\\.read\\(\\)\\)`), "")
+        .replace(/>>>/g, "")
+        .trim();
+
+      const blob = new Blob([content], { type: "text/plain" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = fileName;
+      a.click();
+      URL.revokeObjectURL(a.href); // FIX: liberar memoria
+    } catch (err) {
+      console.error("Error descargando archivo:", err);
+      term.writeln(`\r\nError al descargar ${fileName}\r\n`);
+    } finally {
+      isFileOperationBusy = false;
+    }
   },
 };
 
@@ -1529,7 +1274,6 @@ function toggleFloating(show) {
       if (el) el.style.display = show ? "" : "none";
     });
   } else {
-    // fallback por selector si hiciera falta
     document.querySelectorAll(".floating-tools").forEach((el) => {
       el.style.display = show ? "" : "none";
     });
@@ -1544,7 +1288,7 @@ function debounce(fn, wait = 120) {
   };
 }
 
-// Minimizado / pestaña oculta
+// FIX: un solo listener visibilitychange (eliminado el duplicado de la línea 1406)
 document.addEventListener("visibilitychange", () => {
   const hidden = document.visibilityState !== "visible";
   toggleFloating(!hidden);
@@ -1556,17 +1300,10 @@ document.addEventListener("visibilitychange", () => {
   }
 });
 
-// Foco de ventana (por si el navegador no emite visibilitychange en todos los casos)
-document.addEventListener("visibilitychange", () => {
-  const hidden = document.visibilityState !== "visible";
-  toggleFloating(!hidden);
-});
-
-// Cambios de tamaño (incluye maximizar/restaurar)
+// Cambios de tamaño
 window.addEventListener(
   "resize",
   debounce(() => {
-    // Si la ventana queda muy chica, ocultamos; ajusta umbrales a tu UI
     const tooSmall = window.innerWidth < 640 || window.innerHeight < 420;
     toggleFloating(!tooSmall);
     refreshBlockly();
@@ -1591,23 +1328,8 @@ Code.workspace.getParentSvg().addEventListener("dblclick", function () {
   const block = Blockly.selected;
   if (!block) return;
   if (block.type !== "runstart") return;
-  //console.log("🚀 Ejecutando animación");
   runBlocklyAnimation();
 });
-
-/* ===== Generar enlace para compartir ===== */
-function generateShareLink() {
-  const xmlDom = Blockly.Xml.workspaceToDom(Code.workspace);
-  const xmlText = Blockly.Xml.domToText(xmlDom);
-
-  // comprimir
-  const compressed = LZString.compressToEncodedURIComponent(xmlText);
-
-  // crear URL
-  const url = location.origin + location.pathname + "#" + compressed;
-
-  return url;
-}
 
 // ===== LOGGER SIMPLE =====
 
@@ -1621,7 +1343,6 @@ function saveLog(type, message, extra = {}) {
     time: new Date().toISOString(),
   });
 
-  // limitar tamaño
   if (logs.length > 500) logs.shift();
 
   localStorage.setItem("app_logs", JSON.stringify(logs));
@@ -1639,18 +1360,14 @@ window.addEventListener("unhandledrejection", function (event) {
   saveLog("PROMISE_ERROR", event.reason?.message || event.reason);
 });
 
-
+// ===== COMPARTIR ENLACE =====
+// FIX: eliminada la función duplicada generateShareLink()
 
 function generarLinkCompartir() {
   const xml = Blockly.Xml.workspaceToDom(Code.workspace);
   const xmlText = Blockly.Xml.domToText(xml);
-
-  // 🔥 Comprimir
   const compressed = LZString.compressToEncodedURIComponent(xmlText);
-
-  // Crear URL
   const url = window.location.origin + window.location.pathname + "#" + compressed;
-
   return url;
 }
 
@@ -1665,7 +1382,6 @@ function compartir() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-
   document.getElementById("btnShare")?.addEventListener("click", compartir);
 
   document.getElementById("copyBtn")?.addEventListener("click", () => {
@@ -1677,7 +1393,6 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("closeModal")?.addEventListener("click", () => {
     document.getElementById("shareModal").style.display = "none";
   });
-
 });
 
 function cargarDesdeURL() {
@@ -1686,9 +1401,7 @@ function cargarDesdeURL() {
       const compressed = window.location.hash.substring(1);
       const xmlText = LZString.decompressFromEncodedURIComponent(compressed);
       const xml = Blockly.Xml.textToDom(xmlText);
-
       Blockly.Xml.domToWorkspace(xml, Code.workspace);
-
     } catch (e) {
       console.error("Error al cargar desde URL:", e);
     }

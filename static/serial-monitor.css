@@ -1,0 +1,318 @@
+/* ============================================================
+   SERIAL MONITOR — Floating Modal
+   Tema: azul 3DPit (#3454d1)
+   ============================================================ */
+
+/* ── Ventana flotante ── */
+#serialMonitorModal {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 440px;
+  min-width: 440px;
+  max-width: 95vw;
+  height: 440px;
+  min-height: 150px;
+  max-height: 85vh;
+  z-index: 9000;
+
+  background: #12152a;
+  border: 1px solid #3454d1;
+  border-radius: 8px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(52, 84, 209, 0.2);
+
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: 'Consolas', 'Courier New', monospace;
+  resize: both;
+}
+
+#serialMonitorModal.sm-open {
+  display: flex;
+}
+
+#serialMonitorModal.sm-minimized {
+  height: 38px !important;
+  min-height: 38px;
+  resize: none;
+}
+
+/* ── Barra de título (draggable) ── */
+#smTitleBar {
+  height: 38px;
+  background: #3454d1;
+  border-bottom: 1px solid #2a43b0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  cursor: grab;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+#smTitleBar:active {
+  cursor: grabbing;
+}
+
+#smTitleLeft {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+#smTitleIcon {
+  font-size: 15px;
+}
+
+#smTitleText {
+  font-size: 12px;
+  font-weight: 600;
+  color: #e8eeff;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Indicador LED de actividad */
+#smStatusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.25);
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+#smStatusDot.sm-active {
+  background: #00e676;
+  box-shadow: 0 0 6px #00e676;
+  animation: smPulse 1s ease-out;
+}
+
+@keyframes smPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.7); }
+  70%  { box-shadow: 0 0 0 6px rgba(0, 230, 118, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0); }
+}
+
+/* Botones de la barra de título */
+#smTitleActions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sm-title-btn {
+  width: 26px;
+  height: 26px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 4px;
+  color: #c8d4ff;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s;
+  padding: 0;
+  line-height: 1;
+}
+
+.sm-title-btn:hover {
+  background: rgba(255,255,255,0.22);
+  color: #fff;
+}
+
+.sm-title-btn.sm-close-btn:hover {
+  background: #c0392b;
+  color: #fff;
+  border-color: #c0392b;
+}
+
+/* ── Toolbar ── */
+#smToolbar {
+  height: 34px;
+  background: #0e1120;
+  border-bottom: 1px solid #1e2a5a;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 10px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.sm-toolbar-label {
+  font-size: 10px;
+  color: #6878c0;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.sm-toolbar-select {
+  background: #1a1f3a;
+  color: #8898d8;
+  border: 1px solid #2a3560;
+  border-radius: 4px;
+  font-size: 11px;
+  font-family: inherit;
+  padding: 2px 5px;
+  cursor: pointer;
+  outline: none;
+}
+
+.sm-toolbar-select:focus {
+  border-color: #3454d1;
+}
+
+.sm-toolbar-sep {
+  width: 1px;
+  height: 18px;
+  background: #1e2a5a;
+  margin: 0 2px;
+  flex-shrink: 0;
+}
+
+.sm-toolbar-check-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  color: #6878c0;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.sm-toolbar-check-label input[type="checkbox"] {
+  accent-color: #3454d1;
+  cursor: pointer;
+}
+
+#smClearBtn {
+  margin-left: auto;
+  background: transparent;
+  border: 1px solid #2a3560;
+  border-radius: 4px;
+  color: #6878c0;
+  font-size: 10px;
+  font-family: inherit;
+  padding: 2px 8px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+
+#smClearBtn:hover {
+  background: #1e2a5a;
+  color: #a0b8ff;
+}
+
+/* ── Área de terminal (xterm) ── */
+#smTerminalWrapper {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  background: #0a0c18;
+  min-height: 0;
+}
+
+#smTerminal {
+  width: 100%;
+  height: 100%;
+}
+
+#smTerminal .xterm {
+  height: 100%;
+  padding: 4px 6px;
+}
+
+#smTerminal .xterm-viewport {
+  background: transparent !important;
+}
+
+/* ── Input de comandos ── */
+#smInputBar {
+  height: 38px;
+  background: #0e1120;
+  border-top: 1px solid #1e2a5a;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-shrink: 0;
+}
+
+#smPrompt {
+  padding: 0 8px;
+  font-size: 12px;
+  color: #3454d1;
+  user-select: none;
+  white-space: nowrap;
+  font-weight: bold;
+}
+
+#smCommandInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #c8d8ff;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 12px;
+  caret-color: #3454d1;
+  padding: 0;
+  height: 100%;
+}
+
+#smCommandInput::placeholder {
+  color: #2a3560;
+}
+
+#smSendBtn {
+  height: 100%;
+  padding: 0 14px;
+  background: #3454d1;
+  border: none;
+  border-left: 1px solid #2a43b0;
+  color: #e8eeff;
+  font-size: 11px;
+  font-family: inherit;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+
+#smSendBtn:hover {
+  background: #4466e8;
+  color: #fff;
+}
+
+#smSendBtn:disabled {
+  background: #0e1120;
+  color: #2a3560;
+  cursor: not-allowed;
+}
+
+/* ── Scrollbar ── */
+#smTerminalWrapper ::-webkit-scrollbar {
+  width: 6px;
+}
+#smTerminalWrapper ::-webkit-scrollbar-track {
+  background: transparent;
+}
+#smTerminalWrapper ::-webkit-scrollbar-thumb {
+  background: #2a3560;
+  border-radius: 3px;
+}
+#smTerminalWrapper ::-webkit-scrollbar-thumb:hover {
+  background: #3454d1;
+}

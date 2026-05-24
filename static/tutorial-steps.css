@@ -20,6 +20,8 @@
   font-size: 14px;
   color: #dde0f5;
   z-index: 9000;
+  /* Suaviza cambios de altura entre pasos */
+  transition: height .25s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* ── Cabecera / zona drag ────────────────────────────────────── */
@@ -110,6 +112,7 @@
 .ts-body {
   padding: 14px;
   flex: 1;
+  min-height: 180px; /* evita brincos al mostrar/ocultar el cat-box */
 }
 
 .ts-step-header {
@@ -309,17 +312,17 @@
 @keyframes tsStepIn {
   from {
     opacity: 0;
-    transform: translateX(8px);
+    transform: translateY(6px);
   }
 
   to {
     opacity: 1;
-    transform: translateX(0);
+    transform: translateY(0);
   }
 }
 
 .ts-anim {
-  animation: tsStepIn .2s ease;
+  animation: tsStepIn .28s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* ── Scrollbar ───────────────────────────────────────────────── */

@@ -165,3 +165,18 @@ function closeTutorial() {
   document.body.style.overflow = "";
   activeTutorial = null;
 }
+
+// ── Recalcular cutout al redimensionar / maximizar la ventana ──
+window.tutorialRecalc = function () {
+  const overlay = document.getElementById("tutorialOverlay");
+  if (!overlay || overlay.classList.contains("hidden")) return;
+
+  if (activeTutorial === "blocks") showTutorialStep();
+  else if (activeTutorial === "code" && typeof showTutorialStep2 === "function") showTutorialStep2();
+};
+
+let _tutorialResizeTimer;
+window.addEventListener("resize", function () {
+  clearTimeout(_tutorialResizeTimer);
+  _tutorialResizeTimer = setTimeout(window.tutorialRecalc, 80);
+});
