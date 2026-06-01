@@ -4,6 +4,8 @@
 <head>
   <meta charset="UTF-8" />
   <title>3DPit Blocks</title>
+ 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <link rel="icon" href="static/3DPit.ico" />
   <link rel="preload" href="static/img/icons3dpit.svg" as="image" />
 
@@ -368,6 +370,56 @@
       display: flex;
       justify-content: space-between;
     }
+
+    /* ── Botón conexiones eléctricas ── */
+    #btnWiring {
+      position: relative;
+    }
+
+    /* ── Vista Conexiones Eléctricas ── */
+    #wiringContainer {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      background: #1e1e1e;
+    }
+
+    #wiringHeader {
+      height: 40px;
+      background: #222;
+      border-bottom: 1px solid #333;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 12px;
+      flex-shrink: 0;
+    }
+
+    #wiringTitle {
+      font-size: 13px;
+      font-weight: 600;
+      color: #aaa;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    #wiringContent {
+      flex: 1;
+      overflow: auto;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 20px;
+      box-sizing: border-box;
+      background: #fff;
+    }
+
+    #wiringImg {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
   </style>
 
 </head>
@@ -419,8 +471,8 @@
           <!--🔄 -->
         </div>
       </div>
-      <button id="btnCode" >Código</button>
-      
+      <button id="btnCode">Código</button>
+
       <!--<button id="btnConsole">Terminal</button> -->
       <button id="btnConnection">
         <span id="iconConnection" class="icon-btn icon-disconect"></span>
@@ -446,7 +498,7 @@
       </esp-web-install-button>
       <button id="btnTutor"><span class="icon-btn icon-help"></span></button>
 
-      <button id="btnShare">🔗</button>
+      <button id="btnShare">🔗</button> 
 
       <!-- SELECT oculto: lo mantiene TutorialSteps internamente -->
       <select id="tutorialSelect">
@@ -480,6 +532,9 @@
           <option value="espnow_receptor">ESP-NOW — Receptor</option>
           <option value="espnow_emisor">ESP-NOW — Emisor</option>
           <option value="bluetooth_le">Bluetooth LE (BLE)</option>
+          <option value="servidor_socket">Servidor Socket (TCP)</option>
+          <option value="cliente_socket">Cliente Socket (TCP)</option>
+          <option value="portal_cautivo">Portal Cautivo (Captive Portal)</option>
         </optgroup>
       </select>
 
@@ -524,10 +579,18 @@
           </div>
           <div class="tut-option" data-value="espnow_emisor"><span class="tut-opt-icon">📤</span>ESP-NOW Emisor</div>
           <div class="tut-option" data-value="bluetooth_le"><span class="tut-opt-icon">📱</span>Bluetooth LE (BLE)</div>
+          <div class="tut-option" data-value="servidor_socket"><span class="tut-opt-icon">🖥️</span>Servidor Socket
+            (TCP)</div>
+          <div class="tut-option" data-value="cliente_socket"><span class="tut-opt-icon">📱</span>Cliente Socket (TCP)
+          </div>
+          <div class="tut-option" data-value="portal_cautivo"><span class="tut-opt-icon">🌐</span>Portal Cautivo</div>
+
         </div>
       </div>
-
       <button id="btnOpenSerialMonitor" title="Monitor Serial" onclick="SerialMonitor.toggle()">🖥️</button>
+      <button id="btnWiring" title="Conexiones eléctricas">
+        <span class="icon-btn icon-conexiones"></span>
+      </button>
 
     </div>
   </div>
@@ -599,6 +662,18 @@
         </div><!-- /codeLayout -->
       </div><!-- /codeContainer -->
     </div><!-- /viewCode -->
+
+    <!-- Vista CONEXIONES ELÉCTRICAS -->
+    <div id="viewWiring" class="view">
+      <div id="wiringContainer">
+        <div id="wiringHeader">
+          <span id="wiringTitle">Conexiones eléctricas</span>
+        </div>
+        <div id="wiringContent">
+          <img id="wiringImg" src="" alt="Diagrama de conexión" />
+        </div>
+      </div>
+    </div><!-- /viewWiring -->
 
   </div>
 
@@ -779,7 +854,7 @@
       </category>
 
       <!-- DICCIONARIOS -->
-      <category name="Diccionarios" colour="#8E44AD">
+      <category name="Diccionarios" colour=230>
         <!-- <block type="dicts_create_with_container"></block> -->
         <!-- <block type="dict_create_empty"></block> -->
         <block type="dict_create_with"></block>
@@ -2850,6 +2925,8 @@
           <block type="portal_dns_server"></block>
           <block type="portal_http_server"></block>
           <block type="portal_main"></block>
+          <block type="portal_comandos"></block>
+          <block type="async_sleep_ms"></block>
         </category>
       </category>
     </xml>
@@ -2955,35 +3032,273 @@
       });
     })();
   </script>
-<!-- ===============================
+  <!-- ===============================
      MODAL CONFIRMACIÓN
 ================================ -->
-<div id="customModal" class="modal-overlay" style="display: none">
-  <div class="modal-box">
-    <div class="modal-title" id="modalTitle">⚠️ Advertencia</div>
+  <div id="customModal" class="modal-overlay" style="display: none">
+    <div class="modal-box">
+      <div class="modal-title" id="modalTitle">⚠️ Advertencia</div>
 
-    <div class="modal-message" id="modalMessage">Mensaje aquí</div>
+      <div class="modal-message" id="modalMessage">Mensaje aquí</div>
 
-    <div class="modal-buttons">
-      <button id="modalCancel" class="btn-cancel">Cancelar</button>
-      <button id="modalAccept" class="btn-accept">Aceptar</button>
+      <div class="modal-buttons">
+        <button id="modalCancel" class="btn-cancel">Cancelar</button>
+        <button id="modalAccept" class="btn-accept">Aceptar</button>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- ===============================
+  <!-- ===============================
      MODAL COMPARTIR
 ================================ -->
-<div id="shareModal" class="modal">
-  <div class="modal-content">
-    <h3>Compartir proyecto</h3>
-    <input id="shareInput" readonly />
-    <div class="modal-buttons">
-      <button id="copyBtn">Copiar</button>
-      <button id="closeModal">Cerrar</button>
+  <div id="shareModal" class="modal">
+    <div class="modal-content">
+      <h3>Compartir proyecto</h3>
+      <input id="shareInput" readonly />
+      <div class="modal-buttons">
+        <button id="copyBtn">Copiar</button>
+        <button id="closeModal">Cerrar</button>
+      </div>
     </div>
   </div>
+
+</body>
+
+</html>
+
+<!-- ===============================
+     MENÚ CONTEXTUAL DESKTOP
+     Copy/Paste nativo para pywebview
+================================ -->
+<div id="ctxMenu" style="
+  display:none;
+  position:fixed;
+  z-index:99999;
+  background:#1e1e1e;
+  border:1px solid #3454d1;
+  border-radius:6px;
+  padding:4px 0;
+  min-width:160px;
+  box-shadow:0 4px 20px rgba(0,0,0,0.6);
+  font-family:'Segoe UI',system-ui,sans-serif;
+  font-size:13px;
+">
+  <div class="ctx-item" data-action="cut">✂ Cortar <span class="ctx-shortcut">Ctrl+X</span></div>
+  <div class="ctx-item" data-action="copy">⎘ Copiar <span class="ctx-shortcut">Ctrl+C</span></div>
+  <div class="ctx-item" data-action="paste">📋 Pegar <span class="ctx-shortcut">Ctrl+V</span></div>
+  <div class="ctx-item" data-action="delete">🗑 Eliminar <span class="ctx-shortcut">Del</span></div>
+  <div class="ctx-sep"></div>
+  <div class="ctx-item" data-action="selectall">⬜ Seleccionar todo <span class="ctx-shortcut">Ctrl+A</span></div>
 </div>
+
+<style>
+  .ctx-item {
+    padding: 6px 16px;
+    color: #d4d4d4;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    user-select: none;
+  }
+
+  .ctx-item:hover {
+    background: #3454d1;
+    color: #fff;
+  }
+
+  .ctx-shortcut {
+    color: #666;
+    font-size: 11px;
+  }
+
+  .ctx-item:hover .ctx-shortcut {
+    color: #c8d4ff;
+  }
+
+  .ctx-sep {
+    height: 1px;
+    background: #333;
+    margin: 4px 0;
+  }
+</style>
+
+<script>
+  (function () {
+    const menu = document.getElementById('ctxMenu');
+    let _lastTarget = null;
+    let _lastCmInstance = null;
+    let _menuVisible = false;
+
+    /* ── Clipboard via pywebview.api (Python/tkinter) ── */
+    function pasteFromClipboard(callback) {
+      if (window.pywebview && window.pywebview.api) {
+        window.pywebview.api.get_clipboard()
+          .then(function (text) { callback(text || ''); })
+          .catch(function () { callback(''); });
+      } else {
+        navigator.clipboard.readText().then(callback).catch(function () { callback(''); });
+      }
+    }
+
+    function copyToClipboard(text) {
+      if (window.pywebview && window.pywebview.api) {
+        window.pywebview.api.set_clipboard(text).catch(function () { });
+      } else {
+        const ta = document.createElement('textarea');
+        ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;';
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+    }
+
+    function showMenu(x, y) {
+      menu.style.left = Math.min(x, window.innerWidth - 170) + 'px';
+      menu.style.top = Math.min(y, window.innerHeight - 180) + 'px';
+      menu.style.display = 'block';
+      _menuVisible = true;
+    }
+
+    function hideMenu() {
+      menu.style.display = 'none';
+      _menuVisible = false;
+    }
+
+    /* ── Clic derecho: mostrar menú ── */
+    document.addEventListener('contextmenu', function (e) {
+      const tag = e.target.tagName;
+      const cmWrapper = e.target.closest('.CodeMirror');
+      const isEditable = e.target.isContentEditable
+        || tag === 'INPUT'
+        || tag === 'TEXTAREA'
+        || cmWrapper
+        || e.target.closest('#smCommandInput')
+        || e.target.closest('#smTerminal')
+        || e.target.closest('#terminal')
+        || e.target.closest('#smFileNameInput')
+        || e.target.closest('#fileNameInput');
+
+      // Siempre prevenir el menú nativo de CEF
+      e.preventDefault();
+      e.stopPropagation();
+
+      if (!isEditable) { hideMenu(); return; }
+
+      _lastTarget = e.target;
+      _lastCmInstance = cmWrapper ? cmWrapper.CodeMirror : null;
+      showMenu(e.clientX, e.clientY);
+    });
+
+    /* ── Cerrar con mousedown FUERA del menú ──
+       Usamos mousedown pero con flag para no interferir con
+       el mouseup/click que viene después sobre un ítem del menú. */
+    document.addEventListener('mousedown', function (e) {
+      if (_menuVisible && !menu.contains(e.target)) {
+        hideMenu();
+      }
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') hideMenu();
+    });
+
+    /* ── Ejecutar acción — usamos mousedown en el menú para
+       capturar antes de que el foco cambie ── */
+    menu.addEventListener('mousedown', function (e) {
+      // Evitar que el mousedown del documento cierre el menú
+      e.stopPropagation();
+    });
+
+    menu.addEventListener('click', function (e) {
+      const item = e.target.closest('.ctx-item');
+      if (!item) return;
+
+      const action = item.dataset.action;
+      const t = _lastTarget;
+      const cm = _lastCmInstance;
+      hideMenu();
+
+      // ── CodeMirror ──
+      if (cm) {
+        if (action === 'cut') {
+          const sel = cm.getSelection();
+          if (sel) { copyToClipboard(sel); cm.replaceSelection(''); }
+        } else if (action === 'copy') {
+          const sel = cm.getSelection();
+          if (sel) copyToClipboard(sel);
+        } else if (action === 'paste') {
+          pasteFromClipboard(function (text) { if (text) cm.replaceSelection(text); });
+        } else if (action === 'delete') {
+          const sel = cm.getSelection();
+          if (sel) cm.replaceSelection('');
+          else {
+            // borrar carácter a la derecha si no hay selección
+            const cur = cm.getCursor();
+            const line = cm.getLine(cur.line);
+            if (cur.ch < line.length) {
+              cm.replaceRange('', cur, { line: cur.line, ch: cur.ch + 1 });
+            }
+          }
+        } else if (action === 'selectall') {
+          cm.execCommand('selectAll');
+        }
+        return;
+      }
+
+      // ── Inputs / Textareas nativos ──
+      if (action === 'cut') {
+        if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) {
+          const s = t.selectionStart, end = t.selectionEnd;
+          if (s !== end) {
+            copyToClipboard(t.value.slice(s, end));
+            t.value = t.value.slice(0, s) + t.value.slice(end);
+            t.selectionStart = t.selectionEnd = s;
+            t.dispatchEvent(new Event('input', { bubbles: true }));
+          }
+        }
+      } else if (action === 'copy') {
+        if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) {
+          const s = t.selectionStart, end = t.selectionEnd;
+          if (s !== end) copyToClipboard(t.value.slice(s, end));
+        }
+      } else if (action === 'paste') {
+        if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) {
+          pasteFromClipboard(function (text) {
+            if (!text) return;
+            t.focus();
+            const s = t.selectionStart, end = t.selectionEnd;
+            t.value = t.value.slice(0, s) + text + t.value.slice(end);
+            t.selectionStart = t.selectionEnd = s + text.length;
+            t.dispatchEvent(new Event('input', { bubbles: true }));
+          });
+        }
+      } else if (action === 'delete') {
+        if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) {
+          const s = t.selectionStart, end = t.selectionEnd;
+          if (s !== end) {
+            t.value = t.value.slice(0, s) + t.value.slice(end);
+            t.selectionStart = t.selectionEnd = s;
+          } else {
+            t.value = t.value.slice(0, s) + t.value.slice(s + 1);
+            t.selectionStart = t.selectionEnd = s;
+          }
+          t.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+      } else if (action === 'selectall') {
+        if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) {
+          t.focus();
+          t.select();
+        } else {
+          document.execCommand('selectAll');
+        }
+      }
+    });
+  })();
+</script>
 
 </body>
 

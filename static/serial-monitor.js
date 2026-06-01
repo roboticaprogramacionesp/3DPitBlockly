@@ -25,6 +25,10 @@ const SerialMonitor = (() => {
   let lineBuffer    = '';
   let suppressingPaste = false;
 
+  /* Contenido del archivo cargado localmente (null = usar editor) */
+  let _loadedFileContent = null;
+  let _loadedFileName    = null;
+
   /* ── Dependencias inyectables (FIX: acoplamiento implícito) ──
      Por defecto usa las globales de main.js para retrocompatibilidad.
      Llamar SerialMonitor.init({ sendFn, isConnectedFn }) para inyectarlas. */
@@ -79,6 +83,21 @@ const SerialMonitor = (() => {
           </label>
           <button id="smClearBtn">&#x1F5D1; Limpiar</button>
         </div>
+        <div id="smNameFile">
+          <span class="sm-toolbar-label">Fuente</span>
+          <label class="sm-toolbar-check-label" title="Generar código desde los bloques Blockly">
+            <input type="radio" name="smSource" id="smSrcBlocks" value="blocks" checked> &#x25A6; Bloques
+          </label>
+          <label class="sm-toolbar-check-label" title="Usar archivo cargado con 📂">
+            <input type="radio" name="smSource" id="smSrcFile" value="file"> &#x1F4C2; Archivo
+          </label>
+          <div class="sm-toolbar-sep"></div>
+          <input id="smFileNameInput" type="text" value="test.py"
+            placeholder="nombre.py" autocomplete="off" spellcheck="false"/>
+          <button id="smPickFileBtn" title="Cargar archivo desde tu computadora">&#x1F4C2;</button>
+          <input id="smFilePickerInput" type="file" accept=".py,.txt,.json,.csv,.log,.mpy,.html,.js,.css" style="display:none"/>
+          <button id="smUploadBtn">&#x2191; Subir</button>
+        </div>
         <div id="smTerminalWrapper">
           <div id="smTerminal"></div>
         </div>
@@ -111,6 +130,7 @@ const SerialMonitor = (() => {
       fontSize: 12,
       lineHeight: 1.3,
       fontFamily: 'Consolas, "Courier New", monospace',
+      rightClickSelectsWord: true,   // clic derecho selecciona palabra si no hay selección
       theme: {
         background: '#0a0c18',
         foreground: '#c8d8ff',
@@ -129,6 +149,42 @@ const SerialMonitor = (() => {
     smTerm.loadAddon(smFit);
     smTerm.open(document.getElementById('smTerminal'));
     requestAnimationFrame(() => smFit.fit());
+
+    // ── Clic derecho: copiar seleccion (igual que viewcode) ──────────────────────
+    const smTermEl = document.getElementById('smTerminal');
+    smTermEl.addEventListener('contextmenu', async (e) => {
+      e.preventDefault();
+      const selected = smTerm.getSelection();
+      const textToCopy = selected || _getFullTerminalText();
+      if (!textToCopy) return;
+
+      let copied = false;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        try { await navigator.clipboard.writeText(textToCopy); copied = true; } catch (_) {}
+      }
+      if (!copied && window.pywebview && window.pywebview.api && window.pywebview.api.set_clipboard) {
+        try {
+          const r = await window.pywebview.api.set_clipboard(textToCopy);
+          copied = r && r.status === 'ok';
+        } catch (_) {}
+      }
+      if (!copied) {
+        try {
+          const ta = document.createElement('textarea');
+          ta.value = textToCopy;
+          ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
+          document.body.appendChild(ta);
+          ta.select();
+          copied = document.execCommand('copy');
+          document.body.removeChild(ta);
+        } catch (_) {}
+      }
+      if (copied) {
+        blinkDot();
+        _smToast(selected ? 'Seleccion copiada' : 'Todo copiado');
+      }
+    });
+    // ─────────────────────────────────────────────────────────────────
 
     // FIX: guardar referencia al ResizeObserver para poder desconectarlo
     smResizeObs = new ResizeObserver(() => {
@@ -180,9 +236,11 @@ const SerialMonitor = (() => {
     prevWidth  = modal.offsetWidth  + 'px';
     prevHeight = modal.offsetHeight + 'px';
 
-    if (wrapper) wrapper.style.display = 'none';
-    if (toolbar) toolbar.style.display = 'none';
-    if (input)   input.style.display   = 'none';
+    const nameBar = document.getElementById('smNameFile');
+    if (wrapper)  wrapper.style.display  = 'none';
+    if (toolbar)  toolbar.style.display  = 'none';
+    if (nameBar)  nameBar.style.display  = 'none';
+    if (input)    input.style.display    = 'none';
 
     modal.classList.add('sm-minimized');
     modal.style.width = '240px';
@@ -196,9 +254,11 @@ const SerialMonitor = (() => {
     const input   = document.getElementById('smInputBar');
     const btn     = document.getElementById('smMinBtn');
 
-    if (wrapper) wrapper.style.display = '';
-    if (toolbar) toolbar.style.display = '';
-    if (input)   input.style.display   = '';
+    const nameBar2 = document.getElementById('smNameFile');
+    if (wrapper)  wrapper.style.display  = '';
+    if (toolbar)  toolbar.style.display  = '';
+    if (nameBar2) nameBar2.style.display  = '';
+    if (input)    input.style.display    = '';
 
     modal.classList.remove('sm-minimized');
     if (prevWidth)  modal.style.width  = prevWidth;
@@ -297,8 +357,12 @@ const SerialMonitor = (() => {
   async function sendCommand(raw) {
     const input = document.getElementById('smCommandInput');
     const cmd = raw != null ? raw : (input ? input.value.trim() : '');
-    if (!cmd) return;
 
+    // Garantizar que la terminal esté lista antes de escribir cualquier mensaje
+    if (!smTerm) initSmTerminal();
+
+    // Verificar conexión ANTES de validar el comando — así el warning
+    // aparece aunque el input esté vacío
     const connected = getIsConnected();
     if (!connected) {
       if (smTerm) {
@@ -307,6 +371,8 @@ const SerialMonitor = (() => {
       }
       return;
     }
+
+    if (!cmd) return;
 
     const lineEnding = document.getElementById('smLineEnding')
       ? document.getElementById('smLineEnding').value
@@ -375,8 +441,218 @@ const SerialMonitor = (() => {
     autoChk && autoChk.addEventListener('change', (e) => { autoScroll = e.target.checked; });
     tsChk   && tsChk.addEventListener('change',   (e) => { showTimestamp = e.target.checked; });
 
+    const uploadBtn = document.getElementById('smUploadBtn');
+    uploadBtn && uploadBtn.addEventListener('click', () => uploadCode());
+
+    /* ── Botón 📂 — cargar archivo local ── */
+    const pickBtn    = document.getElementById('smPickFileBtn');
+    const pickerInput = document.getElementById('smFilePickerInput');
+
+    pickBtn && pickBtn.addEventListener('click', () => {
+      pickerInput && pickerInput.click();
+    });
+
+    pickerInput && pickerInput.addEventListener('change', (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+
+      // Seleccionar automáticamente el radio "Archivo"
+      const srcFileRadio = document.getElementById('smSrcFile');
+      if (srcFileRadio) srcFileRadio.checked = true;
+
+      // Actualizar nombre automáticamente
+      const nameInput = document.getElementById('smFileNameInput');
+      if (nameInput) nameInput.value = file.name;
+
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        _loadedFileContent = ev.target.result;
+        _loadedFileName    = file.name;
+        if (!smTerm) initSmTerminal();
+        const lines = _loadedFileContent.split('\n');
+        const preview = lines.slice(0, 6).map(l => '  ' + l).join('\r\n');
+        smTerm.writeln(`\x1b[36m📂 Archivo cargado: ${file.name} (${lines.length} líneas)\x1b[0m`);
+        smTerm.writeln('\x1b[2m' + preview + (lines.length > 6 ? '\r\n  ...' : '') + '\x1b[0m');
+        if (autoScroll) smTerm.scrollToBottom();
+      };
+      reader.readAsText(file);
+
+      // Limpiar el input para que el mismo archivo pueda cargarse de nuevo
+      e.target.value = '';
+    });
+
     if (modal && titleBar) enableDrag(modal, titleBar);
   }
+
+  /* ─────────────────────────────────────────
+     Subir código al ESP32 desde el monitor
+     Fuente seleccionable con radio buttons:
+       • Bloques → genera Python desde Blockly al vuelo
+       • Editor  → lee el CodeMirror (requiere haber pasado por btnCode)
+       • Archivo → usa el archivo cargado con 📂
+     Tamaño:
+       • Pequeño (script < 256 B): paste mode — rápido
+       • Grande:                   raw REPL  — sin límite
+  ───────────────────────────────────────── */
+  async function uploadCode() {
+    if (!smTerm) initSmTerminal();
+
+    const connected = getIsConnected();
+    if (!connected) {
+      smTerm && smTerm.writeln('\x1b[33m\u26a0  Sin conexión — conecta el dispositivo primero\x1b[0m');
+      return;
+    }
+
+    // ── Leer qué fuente está seleccionada ────────────────────────
+    const srcBlocks = document.getElementById('smSrcBlocks');
+    const srcEditor = document.getElementById('smSrcEditor');
+    const srcFile   = document.getElementById('smSrcFile');
+
+    const source = srcFile   && srcFile.checked   ? 'file'
+                 : srcEditor && srcEditor.checked  ? 'editor'
+                 : 'blocks'; // default
+
+    let codeStr = '';
+
+    if (source === 'file') {
+      // ── Archivo cargado con 📂 ─────────────────────────────────
+      if (!_loadedFileContent) {
+        smTerm.writeln('\x1b[33m\u26a0  Selecciona "📂 Archivo" y carga uno primero\x1b[0m');
+        return;
+      }
+      codeStr = _loadedFileContent;
+
+    } else if (source === 'editor') {
+      // ── Editor CodeMirror ──────────────────────────────────────
+      if (typeof editor !== 'undefined' && editor.getDoc) {
+        codeStr = editor.getDoc().getValue();
+      } else {
+        const ce = document.getElementById('codeEditor');
+        if (ce) codeStr = ce.value;
+      }
+      if (!codeStr || !codeStr.trim()) {
+        smTerm.writeln('\x1b[33m\u26a0  El editor está vacío — ve a "Código" y genera el código primero\x1b[0m');
+        return;
+      }
+
+    } else {
+      // ── Bloques Blockly → Python al vuelo ─────────────────────
+      if (typeof Blockly !== 'undefined' &&
+          typeof Code !== 'undefined' && Code.workspace) {
+        try {
+          codeStr = Blockly.Python.workspaceToCode(Code.workspace);
+        } catch (e) {
+          smTerm.writeln('\x1b[31m\u26a0  Error generando código desde bloques: ' + e.message + '\x1b[0m');
+          return;
+        }
+      } else {
+        smTerm.writeln('\x1b[33m\u26a0  Blockly no disponible — cambia la fuente a "Editor" o "📂 Archivo"\x1b[0m');
+        return;
+      }
+      if (!codeStr || !codeStr.trim()) {
+        smTerm.writeln('\x1b[33m\u26a0  El workspace de Blockly está vacío — añade bloques primero\x1b[0m');
+        return;
+      }
+    }
+
+    // ── Nombre del archivo destino ────────────────────────────────
+    const nameInput = document.getElementById('smFileNameInput');
+    const rawName = nameInput && nameInput.value.trim()
+      ? nameInput.value.trim()
+      : (_loadedFileName || 'test.py');
+
+    if (typeof isSafeFileName === 'function' && !isSafeFileName(rawName)) {
+      smTerm.writeln(`\x1b[31m\u26a0  Nombre no válido: "${rawName}"\x1b[0m`);
+      return;
+    }
+
+    const fileName = rawName;
+    const fn       = getSendFn();
+    if (!fn) {
+      smTerm.writeln('\x1b[31m\u26a0  No hay función serial activa\x1b[0m');
+      return;
+    }
+
+    const srcLabel = source === 'blocks' ? '⬛ Bloques' : source === 'editor' ? '✎ Editor' : '📂 Archivo';
+    smTerm.writeln(`\x1b[36m\u2191  [${srcLabel}] Subiendo '${fileName}' (${codeStr.length} bytes)...\x1b[0m`);
+
+    const uploadBtn = document.getElementById('smUploadBtn');
+    if (uploadBtn) uploadBtn.disabled = true;
+
+    try {
+      notifySending(codeStr);
+
+      // Script MicroPython que escribe el archivo en el ESP32
+      const writeScript = [
+        `_f = open('${fileName}', 'w')`,
+        `_f.write(${JSON.stringify(codeStr)})`,
+        `_f.close()`,
+        `del _f`,
+        `print('OK:${fileName}')`,
+      ].join('\n');
+
+      const scriptLen = new TextEncoder().encode(writeScript).length;
+
+      if (scriptLen < 256) {
+        /* ── Pequeño: paste mode directo ── */
+        await fn('\x03');
+        await _sleep(80);
+        await fn('\x05');
+        await _sleep(60);
+        await fn(writeScript);
+        await fn('\r\n');
+        await fn('\x04');
+        await _sleep(300);
+      } else {
+        /* ── Grande: raw REPL ── */
+        if (typeof sendViaRawRepl === 'function') {
+          const ok = await sendViaRawRepl(writeScript);
+          if (!ok) {
+            smTerm.writeln('\x1b[31m\u26a0  No se pudo entrar en raw REPL. Reintenta.\x1b[0m');
+            return;
+          }
+        } else {
+          // Fallback propio si main.js no expone sendViaRawRepl
+          await fn('\x03'); await _sleep(80);
+          await fn('\x03'); await _sleep(80);
+          await fn('\x01'); // Ctrl+A — raw REPL
+          await _sleep(300);
+          const enc = new TextEncoder();
+          const bytes = enc.encode(writeScript);
+          const CHUNK = 256;
+          if (typeof serialWriter !== 'undefined' && serialWriter) {
+            for (let i = 0; i < bytes.length; i += CHUNK) {
+              await serialWriter.write(bytes.slice(i, i + CHUNK));
+            }
+          } else {
+            await fn(writeScript);
+          }
+          await fn('\x04'); // ejecutar
+          await _sleep(500);
+          await fn('\x02'); // Ctrl+B — salir de raw REPL
+          await _sleep(100);
+        }
+      }
+
+      smTerm.writeln(`\x1b[32m\u2714  '${fileName}' guardado correctamente\x1b[0m`);
+
+      // Solo limpiar el archivo cargado si esa era la fuente
+      if (source === 'file') {
+        _loadedFileContent = null;
+        _loadedFileName    = null;
+      }
+
+    } catch (err) {
+      smTerm.writeln(`\x1b[31mError al subir: ${err.message}\x1b[0m`);
+      console.error('[SerialMonitor] uploadCode error:', err);
+    } finally {
+      if (uploadBtn) uploadBtn.disabled = false;
+      notifyDone();
+    }
+  }
+
+  /** Pequeño sleep interno para no depender de main.js */
+  function _sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
   /* ─────────────────────────────────────────
      Limpieza de texto serial
@@ -398,6 +674,55 @@ const SerialMonitor = (() => {
       /^Exception/.test(line);
     return isError ? '\x1b[31m' + line + '\x1b[0m' : line;
   }
+
+  /* ─────────────────────────────────────────
+     Helpers internos de copia
+  ───────────────────────────────────────── */
+
+  /** Extrae todo el texto visible del buffer de smTerm como string plano. */
+  function _getFullTerminalText() {
+    if (!smTerm) return '';
+    const buffer = smTerm.buffer.active;
+    const lines = [];
+    for (let i = 0; i < buffer.length; i++) {
+      const line = buffer.getLine(i);
+      if (line) lines.push(line.translateToString(true));
+    }
+    while (lines.length && !lines[lines.length - 1].trim()) lines.pop();
+    return lines.join('');
+  }
+
+  /** Toast minimalista que aparece sobre el monitor serial. */
+  function _smToast(msg) {
+    const existing = document.getElementById('smToast');
+    if (existing) existing.remove();
+    const toast = document.createElement('div');
+    toast.id = 'smToast';
+    toast.textContent = msg;
+    toast.style.cssText = [
+      'position:fixed', 'z-index:9999',
+      'background:#3454d1', 'color:#e8eeff',
+      'font-family:Consolas,monospace', 'font-size:11px',
+      'padding:4px 12px', 'border-radius:4px',
+      'box-shadow:0 2px 8px rgba(0,0,0,.5)',
+      'pointer-events:none', 'opacity:1',
+      'transition:opacity .4s ease',
+    ].join(';');
+    const modal = document.getElementById('serialMonitorModal');
+    if (modal) {
+      const r = modal.getBoundingClientRect();
+      toast.style.left = (r.left + 10) + 'px';
+      toast.style.top  = (r.top  - 28) + 'px';
+    } else {
+      toast.style.bottom = '72px';
+      toast.style.right  = '28px';
+    }
+    document.body.appendChild(toast);
+    setTimeout(() => { toast.style.opacity = '0'; }, 1200);
+    setTimeout(() => toast.remove(), 1700);
+  }
+
+
 
   /**
    * feed(rawChunk) — llamar desde readSerialLoop en main.js
@@ -508,5 +833,19 @@ const SerialMonitor = (() => {
     if (isConnectedFn) _isConnectedFn = isConnectedFn;
   }
 
-  return { feed, open, close, toggle, sendCommand, notifySending, notifyDone, init: initDeps };
+  /**
+   * SerialMonitor.warn(msg)
+   * Muestra un aviso amarillo en el monitor serial.
+   * Útil para llamar desde main.js cuando una acción falla por falta de conexión.
+   * Si el monitor no está inicializado, lo inicializa primero.
+   */
+  function warn(msg) {
+    if (!smTerm) initSmTerminal();
+    if (!smTerm) return;
+    smTerm.writeln('\x1b[33m\u26a0  ' + msg + '\x1b[0m');
+    if (autoScroll) smTerm.scrollToBottom();
+    blinkDot();
+  }
+
+  return { feed, open, close, toggle, sendCommand, notifySending, notifyDone, warn, init: initDeps };
 })();

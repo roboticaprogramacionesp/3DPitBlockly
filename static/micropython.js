@@ -2107,9 +2107,11 @@ Blockly.Python["wifi_define_connect"] = function (block) {
   const ssid = block.getFieldValue("SSID");
   const pass = block.getFieldValue("PASS");
 
-  Blockly.Python.definitions_["wifi_do_connect"] =
+  Blockly.Python.definitions_["wifi_imports"] =
+    "import network\nimport time";
+
+    const code =
     "def do_connect():\n" +
-    "    import network\n" +
     "    wlan = network.WLAN(network.STA_IF)\n" +
     "    wlan.active(True)\n" +
     "    if not wlan.isconnected():\n" +
@@ -2117,9 +2119,9 @@ Blockly.Python["wifi_define_connect"] = function (block) {
     `        wlan.connect('${ssid}', '${pass}')\n` +
     "        while not wlan.isconnected():\n" +
     "            pass\n" +
-    "    print('network config:', wlan.ifconfig())\n";
+    "    print('network config:', wlan.ifconfig())\n\n";
 
-  return "";
+  return code;
 };
 
 Blockly.Python["wifi_call_connect"] = function () {
@@ -2191,7 +2193,7 @@ Blockly.Python["socket_listen"] = function (block) {
   const variable = block.getFieldValue("VAR");
   const backlog = block.getFieldValue("BACKLOG");
 
-  return `${variable}.listen(${backlog})\n`;
+  return `${variable}.listen(${backlog})\n\n`;
 };
 
 Blockly.Python["socket_accept"] = function (block) {
@@ -2328,47 +2330,65 @@ Blockly.Python["portal_dns_server"] = function () {
     "      await asyncio.sleep_ms(10)\n";
   return "";
 };
+
 Blockly.Python["portal_http_server"] = function (block) {
   const index = block.getFieldValue("INDEX");
-  const tipo = block.getFieldValue("TIPO");
-  const valor = block.getFieldValue("VALOR");
 
   Blockly.Python.definitions_["portal_http"] =
-    "PAGE = '" +
-    index +
-    "'\n" +
+    "PAGE = '" + index + "'\n\n" +
+
     "async def handle_http(reader, writer):\n" +
     "  gc.collect()\n" +
-    "  line = await reader.readline()\n" +
-    "  if not line:\n" +
-    "    return\n" +
     "  try:\n" +
-    "    method, path, proto = line.decode().split()\n" +
-    "  except:\n" +
-    "    return\n" +
-    "  while True:\n" +
-    "    hdr = await reader.readline()\n" +
-    '    if hdr == b"\\r\\n":\n' +
-    "      break\n\n" +
-    "  try:\n" +
+    "    line = await reader.readline()\n" +
+    "    if not line:\n" +
+    "      return\n" +
+    "\n" +
+    "    try:\n" +
+    "      method, path, proto = line.decode().split()\n" +
+    "    except:\n" +
+    "      return\n" +
+    "\n" +
+    "    while True:\n" +
+    "      hdr = await reader.readline()\n" +
+    "      if hdr == b'\\r\\n' or hdr == b'':\n" +
+    "        break\n" +
+    "\n" +
+    "    if '?' in path:\n" +
+    "      query = path.split('?', 1)[1]\n" +
+    "      for p in query.split('&'):\n" +
+    "        if '=' in p:\n" +
+    "          t, v = p.split('=', 1)\n" +
+    "          await comandos(t, v)\n" +
+    "\n" +
     "    page = PAGE\n" +
-    '    if "?" in path:\n' +
-    '      query = path.split("?",1)[1]\n' +
-    '      for p in query.split("&"):\n' +
-    '        if "=" in p:\n' +
-    '          tipo, valor = p.split("=")\n' +
-    "          #print(tipo, valor)\n" +
-    "          comandos(tipo, valor)\n" +
-    '    if not page.endswith(".html"):\n' +
-    '      page += ".html"\n' +
-    "    with open(page) as f:\n" +
-    "      html = f.read()\n" +
-    '    await writer.awrite("HTTP/1.0 200 OK\\r\\n")\n' +
-    '    await writer.awrite("Content-Type: text/html; charset=utf-8\\r\\n\\r\\n")\n' +
-    "    await writer.awrite(html)\n" +
-    "  except:\n" +
-    '    await writer.awrite("HTTP/1.0 500 ERROR\\r\\n\\r\\nError al abrir pagina")\n' +
-    "  await writer.aclose()\n\n";
+    "    if not page.endswith('.html'):\n" +
+    "      page += '.html'\n" +
+    "\n" +
+    "    try:\n" +
+    "      await writer.awrite('HTTP/1.0 200 OK\\r\\n')\n" +
+    "      await writer.awrite('Content-Type: text/html; charset=utf-8\\r\\n\\r\\n')\n" +
+    "\n" +
+    "      with open(page, 'r') as f:\n" +
+    "        while True:\n" +
+    "          chunk = f.read(512)\n" +
+    "          if not chunk:\n" +
+    "            break\n" +
+    "          await writer.awrite(chunk)\n" +
+    "          await asyncio.sleep_ms(0)\n" +
+    "\n" +
+    "    except OSError:\n" +
+    "      await writer.awrite('HTTP/1.0 404 NOT FOUND\\r\\n\\r\\nNo encontrado')\n" +
+    "\n" +
+    "  except OSError as e:\n" +
+    "    if e.args[0] not in (128, 104):\n" +
+    "      print('HTTP error:', e)\n" +
+    "\n" +
+    "  finally:\n" +
+    "    try:\n" +
+    "      await writer.aclose()\n" +
+    "    except:\n" +
+    "      pass\n";
 
   return "";
 };
@@ -4624,4 +4644,181 @@ Blockly.Python["yf201_total_liters"] = function (block) {
 Blockly.Python["yf201_reset"] = function (block) {
   const name = block.getFieldValue("NAME");
   return `${name}_pulses = 0\n`;
+};
+// =============================================
+// PORTAL CAUTIVO - GENERADORES PYTHON
+// =============================================
+
+// Configuración del AP (genera las constantes globales)
+Blockly.Python["wifi_ap_config"] = function (block) {
+  const ssid     = block.getFieldValue("SSID")     || "ESP32_AP";
+  const password = block.getFieldValue("PASSWORD") || "12345678";
+  const ip       = block.getFieldValue("IP")       || "192.168.0.1";
+  const subnet   = block.getFieldValue("SUBNET")   || "255.255.255.0";
+
+  Blockly.Python.definitions_["import_network"] = "import network";
+
+  return (
+    `SERVER_SSID = "${ssid}"\n` +
+    `PASSWORD = "${password}"\n` +
+    `SERVER_IP = "${ip}"\n` +
+    `SERVER_SUBNET = "${subnet}"\n` +
+    `\n` +
+    `def wifi_start_access_point():\n` +
+    `    ap = network.WLAN(network.AP_IF)\n` +
+    `    ap.active(True)\n` +
+    `    ap.ifconfig((SERVER_IP, SERVER_SUBNET, SERVER_IP, SERVER_IP))\n` +
+    `    ap.config(essid=SERVER_SSID, password=PASSWORD, authmode=network.AUTH_WPA2_PSK)\n` +
+    `    print("AP iniciado:", ap.ifconfig())\n`
+  );
+};
+
+// Llamar wifi_start_access_point()
+Blockly.Python["wifi_start_ap"] = function (_block) {
+  Blockly.Python.definitions_["import_network"] = "import network";
+  return "wifi_start_access_point()\n";
+};
+
+// Página HTML por defecto
+Blockly.Python["portal_set_page"] = function (block) {
+  const page = block.getFieldValue("PAGE") || "index3";
+  return `PAGE = '${page}'\n`;
+};
+
+// Iniciar portal cautivo completo
+Blockly.Python["portal_run"] = function (_block) {
+  Blockly.Python.definitions_["import_network"]  = "import network";
+  Blockly.Python.definitions_["import_socket"]   = "import socket";
+  Blockly.Python.definitions_["import_gc"]       = "import gc";
+  Blockly.Python.definitions_["import_asyncio"]  = "import uasyncio as asyncio";
+
+  // Inyecta DNSQuery + run_dns_server + handle_http + portal_main como bloque fijo
+  Blockly.Python.definitions_["portal_core"] =
+`class DNSQuery:
+    def __init__(self, data):
+        self.data = data
+    def response(self, ip):
+        packet = self.data[:2] + b"\\x81\\x80"
+        packet += self.data[4:6] + self.data[4:6]
+        packet += b"\\x00\\x00\\x00\\x00"
+        packet += self.data[12:]
+        packet += b"\\xC0\\x0C"
+        packet += b"\\x00\\x01\\x00\\x01\\x00\\x00\\x00\\x3C\\x00\\x04"
+        packet += bytes(map(int, ip.split(".")))
+        return packet
+
+async def run_dns_server():
+    udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    udp.setblocking(False)
+    udp.bind(("0.0.0.0", 53))
+    while True:
+        try:
+            data, addr = udp.recvfrom(1024)
+            q = DNSQuery(data)
+            udp.sendto(q.response(SERVER_IP), addr)
+        except:
+            await asyncio.sleep_ms(10)
+
+async def handle_http(reader, writer):
+    gc.collect()
+    try:
+        line = await reader.readline()
+        if not line:
+            return
+        try:
+            method, path, proto = line.decode().split()
+        except:
+            return
+        while True:
+            hdr = await reader.readline()
+            if hdr == b"\\r\\n" or hdr == b"":
+                break
+        if "?" in path:
+            query = path.split("?", 1)[1]
+            for p in query.split("&"):
+                if "=" in p:
+                    t, v = p.split("=", 1)
+                    await comandos(t, v)
+        page = PAGE
+        if not page.endswith(".html"):
+            page += ".html"
+        try:
+            await writer.awrite("HTTP/1.0 200 OK\\r\\n")
+            await writer.awrite("Content-Type: text/html; charset=utf-8\\r\\n\\r\\n")
+            with open(page, 'r') as f:
+                while True:
+                    chunk = f.read(512)
+                    if not chunk:
+                        break
+                    await writer.awrite(chunk)
+                    await asyncio.sleep_ms(0)
+        except OSError:
+            await writer.awrite("HTTP/1.0 404 NOT FOUND\\r\\n\\r\\nNo encontrado")
+    except OSError as e:
+        if e.args[0] not in (128, 104):
+            print("HTTP error:", e)
+    finally:
+        try:
+            await writer.aclose()
+        except:
+            pass`;
+
+  return "";
+};
+
+Blockly.Python["portal_comandos"] = function (block) {
+  const tipoVar = block.getFieldValue("TIPO_VAR") || "tipo";
+  const valorVar = block.getFieldValue("VALOR_VAR") || "valor";
+
+  const body =
+    Blockly.Python.statementToCode(block, "DO") ||
+    "    await asyncio.sleep_ms(10)\n";
+
+  Blockly.Python.definitions_["portal_comandos"] =
+    `async def comandos(${tipoVar}, ${valorVar}):\n${body}`;
+
+  return "";
+};
+
+
+// Comparar tipo
+Blockly.Python["portal_si_tipo"] = function (block) {
+  const tipo = block.getFieldValue("TIPO") || "";
+  return [`tipo == "${tipo}"`, Blockly.Python.ORDER_RELATIONAL];
+};
+
+// Comparar valor
+Blockly.Python["portal_si_valor"] = function (block) {
+  const valor = block.getFieldValue("VALOR") || "";
+  return [`valor == "${valor}"`, Blockly.Python.ORDER_RELATIONAL];
+};
+
+// Obtener tipo recibido
+Blockly.Python["portal_get_tipo"] = function (_block) {
+  return ["tipo", Blockly.Python.ORDER_ATOMIC];
+};
+
+// Obtener valor recibido
+Blockly.Python["portal_get_valor"] = function (_block) {
+  return ["valor", Blockly.Python.ORDER_ATOMIC];
+};
+
+// await asyncio.sleep_ms
+Blockly.Python["async_sleep_ms"] = function (block) {
+  const ms = block.getFieldValue("MS") || 100;
+  Blockly.Python.definitions_["import_asyncio"] = "import uasyncio as asyncio";
+  return `await asyncio.sleep_ms(${ms})\n`;
+};
+
+// await asyncio.sleep (segundos)
+Blockly.Python["async_sleep_s"] = function (block) {
+  const s = block.getFieldValue("S") || 1;
+  Blockly.Python.definitions_["import_asyncio"] = "import uasyncio as asyncio";
+  return `await asyncio.sleep(${s})\n`;
+};
+
+// gc.collect()
+Blockly.Python["gc_collect"] = function (_block) {
+  Blockly.Python.definitions_["import_gc"] = "import gc";
+  return "gc.collect()\n";
 };

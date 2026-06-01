@@ -6174,7 +6174,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_input",
         name: "VAR",
-        text: "conexion",
+        text: "s",
       },
     ],
     previousStatement: null,
@@ -12783,3 +12783,135 @@ Blockly.Extensions.register(
     });
   }
 );
+// =============================================
+// PORTAL CAUTIVO - BLOQUES DE DEFINICIÓN
+// =============================================
+
+Blockly.defineBlocksWithJsonArray([
+  // --- Configuración del Access Point ---
+  {
+    type: "wifi_ap_config",
+    message0: "configurar AP  SSID %1  contraseña %2  IP %3  subred %4",
+    args0: [
+      { type: "field_input", name: "SSID", text: "ESP32_AP" },
+      { type: "field_input", name: "PASSWORD", text: "12345678" },
+      { type: "field_input", name: "IP", text: "192.168.0.1" },
+      { type: "field_input", name: "SUBNET", text: "255.255.255.0" },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: "#2980B9",
+    tooltip: "Define las constantes del Access Point WiFi",
+  },
+
+  // --- Página HTML por defecto ---
+  {
+    type: "portal_set_page",
+    message0: "página HTML del portal %1",
+    args0: [
+      { type: "field_input", name: "PAGE", text: "index3" },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: "#8E44AD",
+    tooltip: "Nombre del archivo HTML a servir (sin .html)",
+  },
+
+  // --- Bloque comandos async ---
+  {
+    type: "portal_comandos",
+    message0: "al recibir comando %1 %2",
+    args0: [
+      { type: "field_input", name: "TIPO_VAR", text: "tipo" },
+      { type: "field_input", name: "VALOR_VAR", text: "valor" },
+    ],
+    message1: "%1",
+    args1: [
+      {
+        type: "input_statement",
+        name: "DO",
+      },
+    ],
+    colour: "#8e44ad",
+    nextStatement: null,
+    tooltip: "Define el cuerpo de la función async comandos(tipo, valor)",
+  },
+
+  // --- Comparar tipo de comando recibido ---
+  {
+    type: "portal_si_tipo",
+    message0: "si tipo es %1",
+    args0: [
+      { type: "field_input", name: "TIPO", text: "led" },
+    ],
+    output: "Boolean",
+    colour: "#E67E22",
+    tooltip: "Compara el tipo recibido por el portal",
+  },
+
+  // --- Comparar valor de comando recibido ---
+  {
+    type: "portal_si_valor",
+    message0: "si valor es %1",
+    args0: [
+      { type: "field_input", name: "VALOR", text: "on" },
+    ],
+    output: "Boolean",
+    colour: "#E67E22",
+    tooltip: "Compara el valor recibido por el portal",
+  },
+
+  // --- Obtener tipo recibido ---
+  {
+    type: "portal_get_tipo",
+    message0: "tipo recibido",
+    output: "String",
+    colour: "#E67E22",
+    tooltip: "Devuelve la variable 'tipo' del comando HTTP",
+  },
+
+  // --- Obtener valor recibido ---
+  {
+    type: "portal_get_valor",
+    message0: "valor recibido",
+    output: "String",
+    colour: "#E67E22",
+    tooltip: "Devuelve la variable 'valor' del comando HTTP",
+  },
+
+  // --- await asyncio.sleep_ms ---
+  {
+    type: "async_sleep_ms",
+    message0: "async esperar %1 ms",
+    args0: [
+      { type: "field_number", name: "MS", value: 100, min: 0 },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 120,
+    tooltip: "await asyncio.sleep_ms(ms) — no bloquea el event loop",
+  },
+
+  // --- await asyncio.sleep (segundos) ---
+  {
+    type: "async_sleep_s",
+    message0: "esperar %1 segundos (async)",
+    args0: [
+      { type: "field_number", name: "S", value: 1, min: 0 },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: "#1ABC9C",
+    tooltip: "await asyncio.sleep(s) — no bloquea el event loop",
+  },
+
+  // --- gc.collect ---
+  {
+    type: "gc_collect",
+    message0: "liberar memoria (gc.collect)",
+    previousStatement: null,
+    nextStatement: null,
+    colour: "#7F8C8D",
+    tooltip: "Fuerza el recolector de basura de MicroPython",
+  },
+]);

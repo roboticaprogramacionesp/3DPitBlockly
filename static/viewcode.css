@@ -298,7 +298,8 @@
   .icon-reload-esp32   { background-position-x: -288px; }
   .icon-download       { background-position-x: -312px; }
   .icon-burnfimware    { background-position-x: -336px; }
-  
+  .icon-conexiones     { background-position-x: -360px; }
+
   /* Los íconos dentro del fileList siempre visibles */
   #fileList .icon-btn {
     visibility: visible;

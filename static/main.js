@@ -125,6 +125,11 @@ document
   .getElementById("btnBlocks")
   .addEventListener("click", () => showView("viewBlocks"));
 
+// ── Vista Conexiones Eléctricas ──────────────────────────────
+document.getElementById("btnWiring").addEventListener("click", function () {
+  showView("viewWiring");
+});
+
 function refreshBlockly() {
   if (!Code.workspace) return;
   const svg = Code.workspace.getParentSvg();
@@ -717,6 +722,9 @@ async function readSerialLoop() {
 
         if (typeof SerialMonitor !== 'undefined') SerialMonitor.feed(chunk);
 
+        // Hook para raw REPL — buffer local, no toca serialBuffer global
+        if (typeof window._rawReplHook === 'function') window._rawReplHook(chunk);
+
         if (waitingResponse) {
           serialBuffer += chunk;
         }
@@ -819,12 +827,100 @@ function getCode() {
 }
 
 // ─────────────────────────────────────────────────────────────
-// BOTÓN: EJECUTAR (paste mode — seguro para cualquier código)
+// RAW REPL HELPER
+// Protocolo oficial de MicroPython para transferencia de código.
+// \x01  → entra en raw REPL  (responde "raw REPL; CTRL-B to exit\r\n>")
+// data  → envía bytes sin echo ni parsing
+// \x04  → ejecuta  (responde "\x04" + stdout + "\x04" + stderr + ">")
+// \x02  → sale de raw REPL, vuelve al REPL normal
+//
+// Usado tanto por btnRun como por btnUploadCode para código grande.
+// Para código pequeño (< 256 bytes) se sigue usando paste mode (\x05)
+// porque es más rápido y no requiere handshake.
+// ─────────────────────────────────────────────────────────────
+
+/**
+ * sendViaRawRepl(codeStr)
+ * Envía código de cualquier tamaño usando el protocolo RAW REPL de MicroPython.
+ *
+ * IMPORTANTE: usa un buffer local propio — NO toca serialBuffer ni
+ * waitingResponse globales para no interferir con Files.readResponse()
+ * ni con ninguna otra operación concurrente.
+ *
+ * Protocolo:
+ *  1. Ctrl+C x2  → interrumpir ejecución actual
+ *  2. Ctrl+A     → entrar en raw REPL (ESP32 responde "raw REPL; ...>")
+ *  3. bytes      → enviar código en bloques de 256 bytes sin pausas
+ *  4. Ctrl+D     → ejecutar (responde \x04 + stdout + \x04 + stderr + ">")
+ *  5. Ctrl+B     → salir, volver al friendly REPL
+ */
+async function sendViaRawRepl(codeStr) {
+  if (!serialReader || !serialWriter) return false;
+
+  // Buffer completamente local — no comparte estado con readResponse/listFiles
+  let _localBuf = "";
+  window._rawReplHook = (chunk) => { _localBuf += chunk; };
+
+  async function _waitLocal(token, timeoutMs) {
+    const end = Date.now() + timeoutMs;
+    while (Date.now() < end) {
+      if (_localBuf.includes(token)) return true;
+      await sleep(20);
+    }
+    return false;
+  }
+
+  try {
+    // 1. Interrumpir
+    await sendSerial("\x03"); await sleep(80);
+    await sendSerial("\x03"); await sleep(80);
+
+    // 2. Entrar en raw REPL
+    _localBuf = "";
+    await sendSerial("\x01");                // Ctrl+A
+    let gotPrompt = await _waitLocal(">", 2000);
+
+    if (!gotPrompt) {
+      await sendSerial("\r\n"); await sleep(60);
+      _localBuf = "";
+      await sendSerial("\x01");
+      gotPrompt = await _waitLocal(">", 2000);
+      if (!gotPrompt) return false;
+    }
+
+    // 3. Enviar código en bloques de 256 bytes (sin pausas — el hardware lo maneja)
+    const CHUNK = 256;
+    const bytes = encoder.encode(codeStr);
+    for (let i = 0; i < bytes.length; i += CHUNK) {
+      await serialWriter.write(bytes.slice(i, i + CHUNK));
+    }
+
+    // 4. Ejecutar y esperar primer \x04 (fin de stdout)
+    _localBuf = "";
+    await sendSerial("\x04");               // Ctrl+D — run
+    await _waitLocal("\x04", 10000);
+
+    // 5. Volver al friendly REPL
+    await sendSerial("\x02");               // Ctrl+B
+    await sleep(100);
+
+    return true;
+
+  } finally {
+    window._rawReplHook = null;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// BOTÓN: EJECUTAR
+// - Código pequeño (< 256 bytes): paste mode (\x05) — rápido
+// - Código grande:                raw REPL  (\x01) — sin límite
 // ─────────────────────────────────────────────────────────────
 btnRun.addEventListener("click", async () => {
 
   if (!isConnected || !serialWriter) {
     console.log("Conecta la ESP32 primero.");
+    if (typeof SerialMonitor !== 'undefined') SerialMonitor.warn('Sin conexión — conecta el dispositivo primero');
     return;
   }
 
@@ -837,19 +933,28 @@ btnRun.addEventListener("click", async () => {
 
   try {
     isSendingCode = true;
-
     term.writeln("\r\nEjecutando código...\r\n");
-
-    await sendSerial("\x03"); // Ctrl+C
-    await sleep(100);
 
     if (typeof SerialMonitor !== 'undefined') SerialMonitor.notifySending(code);
 
-    await sendSerial("\x05");  // Ctrl+E — paste mode
-    await sleep(100);
-    await sendSerial(code);
-    await sendSerial("\r\n");
-    await sendSerial("\x04"); // Ctrl+D — ejecutar
+    const bytes = encoder.encode(code);
+
+    if (bytes.length < 256) {
+      // Código pequeño — paste mode (\x05), igual que antes
+      await sendSerial("\x03");
+      await sleep(80);
+      await sendSerial("\x05");
+      await sleep(60);
+      await sendSerial(code);
+      await sendSerial("\r\n");
+      await sendSerial("\x04");
+    } else {
+      // Código grande — raw REPL (\x01), sin límite de tamaño
+      const ok = await sendViaRawRepl(code);
+      if (!ok) {
+        term.writeln("\r\n⚠ No se pudo entrar en raw REPL. Reintenta.\r\n");
+      }
+    }
 
   } finally {
     isSendingCode = false;
@@ -861,12 +966,13 @@ btnRun.addEventListener("click", async () => {
 
 // ─────────────────────────────────────────────────────────────
 // BOTÓN: SUBIR ARCHIVO AL ESP32
-// FIX: usa paste mode igual que btnRun para evitar inyección
-// FIX: valida nombre de archivo antes de enviarlo
+// - Archivo pequeño (script < 256 bytes): paste mode — rápido
+// - Archivo grande:                       raw REPL  — sin límite
 // ─────────────────────────────────────────────────────────────
 document.getElementById("btnUploadCode").addEventListener("click", async () => {
   if (!isConnected || !serialWriter) {
     console.log("Conecta la ESP32 primero.");
+    if (typeof SerialMonitor !== 'undefined') SerialMonitor.warn('Sin conexión — conecta el dispositivo primero');
     return;
   }
 
@@ -883,26 +989,21 @@ document.getElementById("btnUploadCode").addEventListener("click", async () => {
       ? fileNameInput.value.trim()
       : "test.py";
 
-  // FIX: validar nombre antes de enviarlo al dispositivo
   if (!isSafeFileName(rawFileName)) {
-    term.writeln(`\r\n⚠ Nombre de archivo no válido: "${rawFileName}"\r\nUsa solo letras, números, guiones y extensión .py\r\n`);
+    term.writeln(`\r\n⚠ Nombre de archivo no válido: "${rawFileName}"\r\nUsa solo letras, números, guiones y extensión válida.\r\n`);
     return;
   }
 
   const fileName = rawFileName;
-
-  term.writeln(`\r\nSubiendo '${fileName}'...\r\n`);
+  term.writeln(`\r\nSubiendo '${fileName}' (${codeStr.length} bytes)...\r\n`);
 
   try {
     isSendingCode = true;
 
-    await sendSerial("\x03"); // Ctrl+C
-    await sleep(100);
+    if (typeof SerialMonitor !== 'undefined') SerialMonitor.notifySending(codeStr);
 
-    // Usar paste mode para escribir el archivo: más seguro que f.write()
-    // Generamos un script inline que abre el archivo y escribe el contenido
-    // usando paste mode para evitar problemas con caracteres especiales.
-    const script = [
+    // Script que guarda el contenido en el archivo
+    const writeScript = [
       `_f = open('${fileName}', 'w')`,
       `_f.write(${JSON.stringify(codeStr)})`,
       `_f.close()`,
@@ -910,15 +1011,26 @@ document.getElementById("btnUploadCode").addEventListener("click", async () => {
       `print('OK:${fileName}')`,
     ].join("\n");
 
-    if (typeof SerialMonitor !== 'undefined') SerialMonitor.notifySending(script);
+    const scriptBytes = encoder.encode(writeScript);
 
-    await sendSerial("\x05");  // Ctrl+E — paste mode
-    await sleep(100);
-    await sendSerial(script);
-    await sendSerial("\r\n");
-    await sendSerial("\x04"); // Ctrl+D — ejecutar
-
-    await sleep(300);
+    if (scriptBytes.length < 256) {
+      // Archivo pequeño — paste mode directo
+      await sendSerial("\x03");
+      await sleep(80);
+      await sendSerial("\x05");
+      await sleep(60);
+      await sendSerial(writeScript);
+      await sendSerial("\r\n");
+      await sendSerial("\x04");
+      await sleep(300);
+    } else {
+      // Archivo grande — raw REPL
+      const ok = await sendViaRawRepl(writeScript);
+      if (!ok) {
+        term.writeln(`\r\n⚠ No se pudo entrar en raw REPL. Reintenta.\r\n`);
+        return;
+      }
+    }
 
     term.writeln(`\r\nArchivo '${fileName}' guardado correctamente\r\n`);
   } catch (err) {
@@ -971,6 +1083,9 @@ function resetSerialState() {
   serialBuffer = "";
   waitingResponse = false;
   isFileOperationBusy = false;
+
+  // Limpiar hook de raw REPL si quedó colgado por desconexión abrupta
+  window._rawReplHook = null;
 }
 
 function clearExplorer() {
@@ -992,29 +1107,30 @@ const Files = {
   isOpening: false,
 
   async listFiles() {
+    // Si no hay conexión, mostrar aviso pero NO bloquear (útil para depuración)
     if (!isConnected) {
-      term.writeln("\r\nESP32 no conectado");
+      term && term.writeln("\r\n⚠ ESP32 no conectado. Mostrando lista vacía.\r\n");
+      this.updateExplorer([]); // limpia el explorador en lugar de abortar
       return;
     }
 
-    // Evitar doble listado simultáneo
     if (isFileOperationBusy) return;
     isFileOperationBusy = true;
-
     Files.currentFile = null;
-
     term.writeln("\r\nListando archivos...");
 
     try {
       await sendSerial("\x03");
       await sleep(100);
-
       await sendSerial("import os\r\n");
       await sendSerial("print(os.listdir())\r\n");
 
       const response = await this.readResponse();
       const files = this.parseList(response);
       this.updateExplorer(files);
+    } catch (err) {
+      console.error("[listFiles] Error:", err);
+      term.writeln("\r\n⚠ Error al listar archivos\r\n");
     } finally {
       isFileOperationBusy = false;
     }
@@ -1029,32 +1145,35 @@ const Files = {
   async readResponse(timeout = 5000) {
     serialBuffer = "";
     waitingResponse = true;
-
+  
     const start = Date.now();
-
+  
     while (Date.now() - start < timeout) {
-      if (serialBuffer.includes(">>>")) break;
+      // Esperar que llegue el cierre de lista Y el prompt >>>
+      if (serialBuffer.includes("]") && serialBuffer.includes(">>>")) break;
       await new Promise((r) => setTimeout(r, 50));
     }
-
+  
     waitingResponse = false;
-
     return serialBuffer;
   },
 
   parseList(text) {
     try {
-      const match = text.match(/\[(.*?)\]/);
-
+      // Primero aislar el bloque [...] aunque cruce varias líneas
+      const match = text.match(/\[[\s\S]*?\]/);
       if (!match) return [];
-
-      return match[0]
-        .replace(/'/g, "")
-        .replace("[", "")
-        .replace("]", "")
-        .split(",")
-        .map((f) => f.trim())
-        .filter(Boolean);
+  
+      const files = [];
+      const re = /['"]([^'"]{2,})['"]/g;  // mínimo 2 chars descarta ',' sueltas
+      let m;
+      while ((m = re.exec(match[0])) !== null) {
+        const name = m[1].trim();
+        if (name.includes('.')) {   // solo nombres con extensión
+          files.push(name);
+        }
+      }
+      return files;
     } catch {
       return [];
     }
@@ -1392,6 +1511,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("closeModal")?.addEventListener("click", () => {
     document.getElementById("shareModal").style.display = "none";
+  });
+
+  // Botón "Refresh" del explorador de archivos ESP32
+  // El HTML puede usar id="btnRefreshFiles", "refreshFilesList", o "btnListFiles"
+  const refreshBtn =
+    document.getElementById("btnRefreshFiles") ||
+    document.getElementById("refreshFilesList") ||
+    document.getElementById("btnListFiles");
+
+  refreshBtn?.addEventListener("click", () => {
+    Files.listFiles();
   });
 });
 

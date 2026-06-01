@@ -10,6 +10,7 @@ var TUTORIALS = {
 
   led_basico: {
     title: "LED Básico", icon: "💡",
+    diagram: "img/conexiones/led.svg",
     steps: [
       {
         titulo: "¿Qué aprenderemos?",
@@ -47,11 +48,6 @@ var TUTORIALS = {
         highlightElement: "#btnConnection"
       },
       {
-        titulo: "Selecciona tu puerto",
-        desc: "El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
-        waitForAction: "connect"
-      },
-      {
         titulo: "Ejecuta tu programa",
         desc: "Haz clic en el botón <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span> para enviar el código a tu ESP32.",
         highlightElement: "#btnRun",
@@ -62,6 +58,7 @@ var TUTORIALS = {
 
   led_infinito: {
     title: "LED Infinito (parpadeo)", icon: "🔁",
+    diagram: "img/conexiones/led_infinito.svg",
     steps: [
       {
         titulo: "¿Qué aprenderemos?",
@@ -125,11 +122,6 @@ var TUTORIALS = {
         highlightElement: "#btnConnection"
       },
       {
-        titulo: "Selecciona tu puerto",
-        desc: "El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
-        waitForAction: "connect"
-      },
-      {
         titulo: "Ejecuta tu programa",
         desc: "Haz clic en el botón <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span> para enviar el código a tu ESP32.",
         highlightElement: "#btnRun",
@@ -140,6 +132,7 @@ var TUTORIALS = {
 
   semaforo: {
     title: "Semáforo", icon: "🚦",
+    diagram: "img/conexiones/semaforo.svg",
     steps: [
       {
         titulo: "¿Qué aprenderemos?",
@@ -203,11 +196,6 @@ var TUTORIALS = {
         highlightElement: "#btnConnection"
       },
       {
-        titulo: "Selecciona tu puerto",
-        desc: "El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
-        waitForAction: "connect"
-      },
-      {
         titulo: "Ejecuta tu programa",
         desc: "Haz clic en el botón <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span> para enviar el código a tu ESP32.",
         highlightElement: "#btnRun",
@@ -217,8 +205,8 @@ var TUTORIALS = {
   },
 
   boton: {
-    title: "Botón Contador",
-    icon: "🔘",
+    title: "Botón Contador", icon: "🔘",
+    diagram: "img/conexiones/boton.svg",
     steps: [
       {
         titulo: "¿Qué aprenderemos?",
@@ -391,11 +379,6 @@ var TUTORIALS = {
         bloque: "time_sleep"
       },
       {
-        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
-        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
-        highlightElement: "#btnConnection"
-      },
-      {
         titulo: "Ejecuta tu programa",
         desc: "Haz clic en el botón <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span> para enviar el código a tu ESP32.",
         highlightElement: "#btnRun",
@@ -406,6 +389,7 @@ var TUTORIALS = {
 
   buzzer: {
     title: "Buzzer", icon: "🔊",
+    diagram: "img/conexiones/buzzer.svg",
     steps: [
       {
         titulo: "¿Qué aprenderemos?",
@@ -454,11 +438,6 @@ var TUTORIALS = {
         highlightElement: "#btnConnection"
       },
       {
-        titulo: "Selecciona tu puerto",
-        desc: "El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
-        waitForAction: "connect"
-      },
-      {
         titulo: "Ejecuta tu programa",
         desc: "Haz clic en el botón <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span> para enviar el código a tu ESP32.",
         highlightElement: "#btnRun",
@@ -469,6 +448,7 @@ var TUTORIALS = {
 
   servo: {
     title: "Servo Motor", icon: "⚙️",
+    diagram: "img/conexiones/servo.svg",
     steps: [
       {
         titulo: "¿Qué aprenderemos?",
@@ -501,11 +481,6 @@ var TUTORIALS = {
         highlightElement: "#btnConnection"
       },
       {
-        titulo: "Selecciona tu puerto",
-        desc: "El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
-        waitForAction: "connect"
-      },
-      {
         titulo: "Ejecuta tu programa",
         desc: "Haz clic en el botón <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span> para enviar el código a tu ESP32.",
         highlightElement: "#btnRun",
@@ -516,6 +491,7 @@ var TUTORIALS = {
 
   ultrasonico: {
     title: "Sensor Ultrasónico (HC-SR04)", icon: "📡",
+    diagram: "img/conexiones/ultrasonico.svg",
     steps: [
       {
         titulo: "¿Qué aprenderemos?",
@@ -589,11 +565,6 @@ var TUTORIALS = {
         highlightElement: "#btnConnection"
       },
       {
-        titulo: "Selecciona tu puerto",
-        desc: "El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
-        waitForAction: "connect"
-      },
-      {
         titulo: "Ejecuta tu programa",
         desc: "Haz clic en el botón <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span> para enviar el código a tu ESP32.",
         highlightElement: "#btnRun",
@@ -604,6 +575,7 @@ var TUTORIALS = {
 
   neopixel_basico: {
     title: "NeoPixel RGB", icon: "🌈",
+    diagram: "img/conexiones/neopixel.svg",
     steps: [
       {
         titulo: "¿Qué aprenderemos?",
@@ -668,11 +640,6 @@ var TUTORIALS = {
         highlightElement: "#btnConnection"
       },
       {
-        titulo: "Selecciona tu puerto",
-        desc: "El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
-        waitForAction: "connect"
-      },
-      {
         titulo: "Ejecuta tu programa",
         desc: "Haz clic en el botón <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span> para enviar el código a tu ESP32.",
         highlightElement: "#btnRun",
@@ -683,6 +650,7 @@ var TUTORIALS = {
 
   puente_h: {
     title: "Puente H — Motores DC", icon: "⚡",
+    diagram: "img/conexiones/puente_h.svg",
     steps: [
       {
         titulo: "¿Qué aprenderemos?",
@@ -785,11 +753,6 @@ var TUTORIALS = {
         highlightElement: "#btnConnection"
       },
       {
-        titulo: "Selecciona tu puerto",
-        desc: "El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
-        waitForAction: "connect"
-      },
-      {
         titulo: "Ejecuta tu programa",
         desc: "Haz clic en el botón <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span> para enviar el código a tu ESP32.",
         highlightElement: "#btnRun",
@@ -800,6 +763,7 @@ var TUTORIALS = {
 
   infrarrojo_basico: {
     title: "Sensor Infrarrojo — Detectar Línea", icon: "⬛",
+    diagram: "img/conexiones/infrarrojo.svg",
     steps: [
       {
         titulo: "¿Qué aprenderemos?",
@@ -824,7 +788,7 @@ var TUTORIALS = {
       {
         titulo: "Arrastra: Preparar sensor infrarrojo",
         desc: "Arrastra el bloque <em>Preparar sensor infrarrojo</em> al área de trabajo. Asegúrate de que el pin sea <b>12</b>. Este bloque se coloca <b>una sola vez</b> al inicio del programa.",
-        highlightCat: "Sensores IR", expandCats: ["Sensores", "Sensores Digitales"], 
+        highlightCat: "Sensores IR", expandCats: ["Sensores", "Sensores Digitales"],
         bloque: "init_infrarrojo", bloqueLabel: "Preparar sensor infrarrojo"
       },
       {
@@ -841,7 +805,7 @@ var TUTORIALS = {
       {
         titulo: "Guarda la lectura del sensor",
         desc: "Ve a <b>Variables</b> y arrastra el bloque <em>establecer ir_valor a</em> <b>dentro</b> del ciclo.",
-        highlightCat: "Variables", 
+        highlightCat: "Variables",
         bloque: "variables_set", bloqueLabel: "establecer ir_valor a"
       },
       {
@@ -875,11 +839,6 @@ var TUTORIALS = {
         highlightElement: "#btnConnection"
       },
       {
-        titulo: "Selecciona tu puerto",
-        desc: "El navegador mostrará los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
-        waitForAction: "connect"
-      },
-      {
         titulo: "¡Ejecuta y prueba!",
         desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Abre el monitor serial y pasa el sensor sobre una línea negra y sobre fondo blanco. Verás cómo el valor cambia entre <b>0</b> (negro) y <b>1</b> (blanco).",
         highlightElement: "#btnRun", waitForAction: "run"
@@ -889,6 +848,7 @@ var TUTORIALS = {
 
   analogico_adkey: {
     title: "Sensor Analógico (ADC Keypad)", icon: "🎛️",
+    diagram: "img/conexiones/adkeypad.svg",
     steps: [
       {
         titulo: "¿Qué aprenderemos?",
@@ -997,7 +957,6 @@ var TUTORIALS = {
         highlightCat: "Matemáticas",
         bloque: "math_number"
       },
-
       {
         titulo: "Segunda comparación",
         desc: "Agrega otro bloque <em>logic_compare</em> para verificar si <b>adkey < 100</b>.",
@@ -1309,11 +1268,6 @@ var TUTORIALS = {
         highlightElement: "#btnConnection"
       },
       {
-        titulo: "Selecciona tu puerto",
-        desc: "Elige el puerto correspondiente a tu ESP32 y presiona <b>Conectar</b>.",
-        waitForAction: "connect"
-      },
-      {
         titulo: "Ejecuta tu programa",
         desc: "Haz clic en <b>Ejecutar</b> <span class='icon-btn icon-run'></span> para probar tu teclado ADC.",
         highlightElement: "#btnRun",
@@ -1322,8 +1276,359 @@ var TUTORIALS = {
     ]
   },
 
+  /* ══════════════════════════════════════════════════════════════
+     SERVIDOR SOCKET (WiFi AP + TCP Socket)
+  ══════════════════════════════════════════════════════════════ */
+  servidor_socket: {
+    title: "Servidor Socket (TCP)", icon: "🖥️",
+    diagram: "img/conexiones/servidor.svg",
+    steps: [
+      {
+        titulo: "¿Qué aprenderemos?",
+        desc: "Programaremos el ESP32 como un <b>servidor TCP</b>. El ESP32 creará su propia red WiFi (Access Point), esperará conexiones de clientes en el puerto 80 y mostrará los mensajes recibidos en el monitor serial.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "¿Cómo funciona?",
+        desc: "El flujo es:<br>1️⃣ ESP32 crea un punto de acceso WiFi (AP)<br>2️⃣ Crea un socket y espera conexiones en el puerto <b>80</b><br>3️⃣ Cuando llega un cliente, acepta la conexión<br>4️⃣ Recibe el mensaje y lo muestra en el monitor serial<br>5️⃣ Repite infinitamente",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Abre Comunicación Inalambrica › WiFi",
+        desc: "Haz clic en <b>Comunicación Inalambrica</b> → <b>WiFi</b> en el panel de bloques para ver los bloques de red.",
+        highlightCat: "WiFi", expandCat: "Comunicación Inalambrica", bloque: null
+      },
+      {
+        titulo: "Arrastra: Configurar Access Point",
+        desc: "Arrastra el bloque <em>Configurar Access Point (AP)</em>. Ajusta los valores:<br>📡 SSID: <b>ESP32_AP</b><br>🔑 Contraseña: (vacío o mínimo 8 caracteres)<br>🌐 IP: <b>192.168.0.1</b><br>🔲 Subnet: <b>255.255.255.0</b>",
+        highlightCat: "WiFi", expandCat: "Comunicación Inalambrica",
+        bloque: "wifi_ap", bloqueLabel: "Configurar Access Point (AP)"
+      },
+      {
+        titulo: "Arrastra: Iniciar Access Point",
+        desc: "Arrastra el bloque <em>Iniciar AP</em> justo debajo del bloque anterior. Este bloque activa el punto de acceso WiFi del ESP32.",
+        highlightCat: "WiFi", expandCat: "Comunicación Inalambrica",
+        bloque: "wifi_start_ap", bloqueLabel: "Iniciar AP"
+      },
+      {
+        titulo: "Abre la categoría Servidor",
+        desc: "Dentro de <b>Comunicación Inalambrica</b> → <b>Socket</b>, selecciona <b>Servidor</b> para ver los bloques de comunicación TCP.",
+        highlightCat: "Servidor", expandCats: ["Comunicación Inalambrica", "Socket"], bloque: null
+      },
+      {
+        titulo: "Arrastra: Vincular socket (bind)",
+        desc: "Arrastra el bloque <em>Vincular socket</em>. Configura:<br>📋 Variable: <b>s</b><br>🌐 IP: <b>0.0.0.0</b> (escucha en todas las interfaces)<br>🔌 Puerto: <b>80</b>",
+        highlightCat: "Servidor", expandCats: ["Comunicación Inalambrica", "Socket"],
+        bloque: "socket_bind", bloqueLabel: "Vincular socket (bind)"
+      },
+      {
+        titulo: "Arrastra: Escuchar conexiones (listen)",
+        desc: "Arrastra el bloque <em>Escuchar conexiones</em>. Configura:<br>📋 Variable: <b>s</b><br>📥 Backlog: <b>5</b> (máximo de conexiones en espera)",
+        highlightCat: "Servidor", expandCats: ["Comunicación Inalambrica", "Socket"],
+        bloque: "socket_listen", bloqueLabel: "Escuchar conexiones (listen)"
+      },
+      {
+        titulo: "Agrega un ciclo infinito",
+        desc: "Ve a <b>Ciclos</b> y arrastra el bloque <em>Repetir mientras Verdadero</em>. El servidor esperará clientes continuamente dentro de este ciclo.",
+        highlightCat: "Ciclos", expandCat: null, bloque: "controls_whileUntil"
+      },
+      {
+        titulo: "Arrastra: Aceptar conexión (accept)",
+        desc: "Ve a <b>Socket</b> y arrastra el bloque <em>Aceptar conexión</em> dentro del ciclo. Configura:<br>📋 Socket: <b>s</b><br>📨 Variable conexión: <b>conexion</b><br>📍 Variable dirección: <b>addr</b>",
+        highlightCat: "Servidor", expandCats: ["Comunicación Inalambrica", "Socket"],
+        bloque: "socket_accept", bloqueLabel: "Aceptar conexión (accept)"
+      },
+      {
+        titulo: "Imprime la nueva conexión",
+        desc: "Ve a <b>Textos</b> y arrastra el bloque <em>imprimir</em> al área de trabajo, dentro del ciclo después del bloque <em>Aceptar conexión</em>.",
+        highlightCat: "Textos", expandCat: null, bloque: "text_print", bloqueLabel: "Imprimir en monitor serial"
+      },
+      {
+        titulo: "Une el texto con crear texto con",
+        desc: "Ve a <b>Textos</b> y arrastra el bloque <em>crear texto con</em>. Conéctalo dentro del bloque <em>imprimir</em>. En la primera posición agrega un bloque <em>texto</em> con el mensaje <b>'Nueva conexión establecida!'</b>.",
+        highlightCat: "Textos", expandCat: null, bloque: "text_join", bloqueLabel: "Crear texto con"
+      },
+      {
+        titulo: "Conecta la variable conexion",
+        desc: "Ve a <b>Variables</b> y arrastra el bloque <em>obtener conexion</em>. Conéctalo en la segunda posición del bloque <em>crear texto con</em>.",
+        highlightCat: "Variables", expandCat: null,
+        bloque: { tipo: "variables_get", valor: "conexion" },
+        bloqueLabel: "obtener conexion"
+      },
+      {
+        titulo: "Crea la variable: respuesta",
+        desc: "Ve a <b>Variables</b> y haz clic en <b>Crear variable</b>. Escribe el nombre <b>respuesta</b> y confirma. Esta variable guardará los mensajes recibidos de los clientes.",
+        highlightCat: "Variables", highlightFlyoutButton: "create_variable", bloque: null
+      },
+      {
+        titulo: "Guardar respuesta del cliente",
+        desc: "Ve a <b>Variables</b> y arrastra <em>establecer respuesta a</em> justo después del bloque <em>Imprimir</em>.",
+        highlightCat: "Variables",
+        bloque: "variables_set", bloqueLabel: "establecer respuesta a"
+      },
+      {
+        titulo: "Leer valor recibido",
+        desc: "Conecta <em>socket_receive</em> dentro del bloque establecer respuesta a para guardar los mensajes recibidos.",
+        highlightCat: "Servidor", expandCats: ["Comunicación Inalambrica", "Socket"],
+        bloque: "socket_receive", bloqueLabel: "Recibir conexiónes del socket"
+      },
+      {
+        titulo: "Imprime el mensaje recibido",
+        desc: "Ve a <b>Textos</b> y arrastra otro bloque <em>imprimir</em> al área de trabajo, debajo del bloque de <em>Recibir datos del socket</em>.",
+        highlightCat: "Textos", expandCat: null, bloque: "text_print", bloqueLabel: "Imprimir en monitor serial"
+      },
+      {
+        titulo: "Une el texto con la variable respuesta",
+        desc: "Ve a <b>Textos</b> y arrastra el bloque <em>crear texto con</em>. Conéctalo dentro del bloque <em>imprimir</em>. Agrega el texto <b>'Mensaje recibido es:'</b> en la primera posición.",
+        highlightCat: "Textos", expandCat: null, bloque: "text_join", bloqueLabel: "Crear texto con"
+      },
+      {
+        titulo: "Conecta la variable respuesta",
+        desc: "Ve a <b>Variables</b> y arrastra el bloque <em>obtener respuesta</em>. Conéctalo en la segunda posición del bloque <em>crear texto con</em>.",
+        highlightCat: "Variables", expandCat: null,
+        bloque: { tipo: "variables_get", valor: "respuesta" },
+        bloqueLabel: "obtener respuesta"
+      },
+      {
+        titulo: "Agrega una pausa",
+        desc: "Ve a <b>Tiempo</b> y arrastra <em>Esperar</em> con valor <b>1</b> segundo al final del ciclo.",
+        highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
+      },
+      {
+        titulo: "Cerrar la conexión del cliente",
+        desc: "Ve a <b>Comunicación Inalambrica</b> → <b>Socket</b> → <b>Servidor</b> y arrastra el bloque <em>Cerrar socket</em>. Colócalo justo después del bloque <em>Esperar</em>. Variable: <b>conexion</b>.",
+        highlightCat: "Servidor", expandCats: ["Comunicación Inalambrica", "Socket"],
+        bloque: "socket_close", bloqueLabel: "Cerrar socket"
+      },
+      {
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "Ejecuta el servidor",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. El ESP32 creará la red <b>ESP32_AP</b>. Ahora programa el cliente con el otro tutorial para enviarle mensajes.",
+        highlightElement: "#btnRun", waitForAction: "run"
+      }
+    ]
+  },
+
+  /* ══════════════════════════════════════════════════════════════
+     CLIENTE SOCKET (WiFi + TCP Socket)
+  ══════════════════════════════════════════════════════════════ */
+  cliente_socket: {
+    title: "Cliente Socket (TCP)", icon: "📱",
+    diagram: "img/conexiones/cliente.svg",
+    steps: [
+      {
+        titulo: "¿Qué aprenderemos?",
+        desc: "Programaremos el ESP32 como un <b>cliente TCP</b>. Se conectará a la red WiFi del servidor, creará un socket, enviará un mensaje y cerrará la conexión. Asegúrate de tener el <b>ESP32 Servidor</b> ya encendido antes de continuar.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Configuración de red",
+        desc: "El cliente se conectará al Access Point del servidor:<br>📡 SSID: <b>ESP32_AP</b> (o el nombre de tu red)<br>🔑 Contraseña: la de tu red<br>🌐 IP del servidor: <b>192.168.0.1</b><br>🔌 Puerto: <b>80</b><br><br>Ajusta el SSID y contraseña según tu configuración.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Abre Comunicación Inalambrica › WiFi",
+        desc: "Haz clic en <b>Comunicación Inalambrica</b> → <b>WiFi</b> en el panel de bloques.",
+        highlightCat: "WiFi", expandCat: "Comunicación Inalambrica", bloque: null
+      },
+      {
+        titulo: "Arrastra: Definir credenciales WiFi",
+        desc: "Arrastra el bloque <em>Definir credenciales WiFi</em>. Escribe el <b>SSID</b> y la <b>contraseña</b> de la red a la que te conectarás (la red del servidor o tu router).",
+        highlightCat: "WiFi", expandCat: "Comunicación Inalambrica",
+        bloque: "wifi_define_connect", bloqueLabel: "Definir credenciales WiFi"
+      },
+      {
+        titulo: "Arrastra: Conectar a WiFi",
+        desc: "Arrastra el bloque <em>Conectar a WiFi</em> debajo del bloque anterior. El ESP32 se conectará automáticamente a la red configurada.",
+        highlightCat: "WiFi", expandCat: "Comunicación Inalambrica",
+        bloque: "wifi_call_connect", bloqueLabel: "Conectar a WiFi"
+      },
+      {
+        titulo: "Llama a la función enviar_msg",
+        desc: "Ve a <b>Funciones</b> y arrastra el bloque de llamada <em>enviar_msg</em>. En el parámetro <b>msg</b> conecta un bloque de texto con el mensaje que deseas enviar, por ejemplo <b>3DP!t</b>.",
+        highlightCat: "Funciones", expandCat: null,
+        bloque: "procedures_callnoreturn", bloqueLabel: "Llamar función"
+      },
+      {
+        titulo: "Define la función enviar_msg",
+        desc: "Ve a <b>Funciones</b> y crea una función llamada <b>enviar_msg</b> con un parámetro <b>msg</b>. Dentro de esta función irán todos los bloques de socket.",
+        highlightCat: "Funciones", expandCat: null,
+        bloque: "procedures_defnoreturn", bloqueLabel: "Definir función"
+      },
+      {
+        titulo: "Dentro de la función: Crear socket",
+        desc: "Ve a <b>Comunicación Inalambrica</b> → <b>Socket</b> y arrastra el bloque <em>Crear socket</em> dentro de la función. Configura:<br>📋 Variable: <b>s</b><br>🌐 Familia: <b>AF_INET</b><br>📡 Tipo: <b>SOCK_STREAM</b><br>🔌 Protocolo: <b>IPPROTO_TCP</b>",
+        highlightCat: "Socket", expandCat: "Comunicación Inalambrica",
+        bloque: "socket_create", bloqueLabel: "Crear socket"
+      },
+      {
+        titulo: "Dentro de la función: Conectar al servidor",
+        desc: "Arrastra el bloque <em>Conectar socket</em> debajo. Configura:<br>📋 Variable: <b>s</b><br>🌐 IP: <b>192.168.0.1</b> (IP del servidor)<br>🔌 Puerto: <b>80</b>",
+        highlightCat: "Cliente", expandCats: ["Comunicación Inalambrica", "Socket"],
+        bloque: "socket_connect", bloqueLabel: "Conectar socket"
+      },
+      {
+        titulo: "Dentro de la función: Enviar mensaje",
+        desc: "Ve a <b>Comunicación Inalambrica</b> → <b>Socket</b> → <b>Cliente</b> y arrastra el bloque <em>Enviar todos los datos (sendall)</em>. Variable: <b>s</b>.",
+        highlightCat: "Cliente", expandCats: ["Comunicación Inalambrica", "Socket"],
+        bloque: "socket_sendall", bloqueLabel: "Enviar todos los datos (sendall)"
+      },
+      {
+        titulo: "Conecta la variable msg al sendall",
+        desc: "Ve a <b>Variables</b> y arrastra el bloque <em>obtener msg</em>. Conéctalo en el espacio de <em>Datos</em> del bloque <em>Enviar todos los datos</em>.",
+        highlightCat: "Variables", expandCat: null,
+        bloque: { tipo: "variables_get", valor: "msg" },
+        bloqueLabel: "obtener msg"
+      },
+      {
+        titulo: "Dentro de la función: Cerrar socket",
+        desc: "Arrastra el bloque <em>Cerrar socket</em> al final de la función. Variable: <b>s</b>. Siempre cierra el socket después de enviar.",
+        highlightCat: "Cliente", expandCats: ["Comunicación Inalambrica", "Socket"],
+        bloque: "socket_close", bloqueLabel: "Cerrar socket"
+      },
+      {
+        titulo: "Llama a la función enviar_msg",
+        desc: "Ve a <b>Funciones</b> y arrastra el bloque de llamada <em>enviar_msg</em> debajo del bloque <em>Conectar a WiFi</em>. En el parámetro <b>msg</b> conecta un bloque de <em>texto</em> desde <b>Textos</b> con el mensaje que deseas enviar, por ejemplo <b>Hola desde ESP32!</b>.",
+        highlightCat: "Funciones", expandCat: null,
+        bloque: "procedures_callnoreturn", bloqueLabel: "Llamar función enviar_msg"
+      },
+      {
+        titulo: "Escribe el mensaje a enviar",
+        desc: "Ve a <b>Textos</b> y arrastra el bloque <em>texto</em>. Conéctalo al parámetro <b>msg</b> del bloque <em>enviar_msg</em>. Escribe el mensaje que deseas enviar al servidor, por ejemplo <b>Hola desde ESP32!</b>.",
+        highlightCat: "Textos", expandCat: null,
+        bloque: "text", bloqueLabel: "Texto (cadena)"
+      },
+      {
+        titulo: "Conecta tu ESP32 cliente y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 cliente y presiona <b>Conectar</b>.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "¡Ejecuta el cliente y verifica!",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. El ESP32 se conectará a la red, enviará el mensaje al servidor y cerrará la conexión. En el monitor serial del <b>servidor</b> verás el mensaje recibido. 🎉",
+        highlightElement: "#btnRun", waitForAction: "run"
+      }
+    ]
+  },
+
+  /* ══════════════════════════════════════════════════════════════
+     PORTAL CAUTIVO (WiFi AP + DNS + HTTP Server)
+  ══════════════════════════════════════════════════════════════ */
+  portal_cautivo: {
+    title: "Portal Cautivo (Captive Portal)", icon: "🌐",
+    diagram: "img/conexiones/cautivo.svg",
+    steps: [
+      {
+        titulo: "¿Qué es un Portal Cautivo?",
+        desc: "Un <b>portal cautivo</b> es la página de bienvenida que aparece cuando te conectas a una red WiFi pública (hotel, café, aeropuerto). Con el ESP32 crearemos nuestra propia red y redirigiremos a cualquier dispositivo conectado a una página web personalizada.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "¿Cómo funciona?",
+        desc: "El flujo completo es:<br>1️⃣ ESP32 crea una red WiFi propia (AP)<br>2️⃣ Un servidor DNS redirige todas las peticiones al ESP32<br>3️⃣ El servidor HTTP sirve una página web personalizada<br>4️⃣ Los comandos que llegan se procesan en la función <b>comandos</b>",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Abre Comunicación Inalambrica › WiFi",
+        desc: "Haz clic en <b>Comunicación Inalambrica</b> → <b>WiFi</b> en el panel de bloques.",
+        highlightCat: "WiFi", expandCat: "Comunicación Inalambrica", bloque: null
+      },
+      {
+        titulo: "Arrastra: Configurar Access Point",
+        desc: "Arrastra el bloque <em>Configurar Access Point (AP)</em>. Configura:<br>📡 SSID: <b>ESP32_AP</b><br>🔑 Contraseña: <b>12345678</b><br>🌐 IP: <b>192.168.0.1</b><br>🔲 Subnet: <b>255.255.255.0</b>",
+        highlightCat: "WiFi", expandCat: "Comunicación Inalambrica",
+        bloque: "wifi_ap", bloqueLabel: "Configurar Access Point (AP)"
+      },
+      {
+        titulo: "Abre la categoría Portal Cautivo",
+        desc: "Dentro de <b>Comunicación Inalambrica</b>, busca y selecciona <b>Portal Cautivo</b> para ver sus bloques.",
+        highlightCat: "Portal Cautivo", expandCat: "Comunicación Inalambrica", bloque: null
+      },
+      {
+        titulo: "Arrastra: Inicializar Portal",
+        desc: "Arrastra el bloque <em>Inicializar portal cautivo</em>. Este bloque prepara el sistema del portal para recibir conexiones.",
+        highlightCat: "Portal Cautivo", expandCat: "Comunicación Inalambrica",
+        bloque: "portal_init", bloqueLabel: "Inicializar portal cautivo"
+      },
+      {
+        titulo: "Arrastra: Consulta DNS",
+        desc: "Arrastra el bloque <em>Consulta DNS</em> debajo. Este bloque configura el servidor DNS que redirigirá todas las peticiones al ESP32.",
+        highlightCat: "Portal Cautivo", expandCat: "Comunicación Inalambrica",
+        bloque: "DNSQuery", bloqueLabel: "Consulta DNS"
+      },
+      {
+        titulo: "Arrastra: Servidor DNS del portal",
+        desc: "Arrastra el bloque <em>Servidor DNS del portal</em>. Este servidor captura todas las peticiones DNS y las redirige a la IP del ESP32, forzando a los clientes a ver tu página.",
+        highlightCat: "Portal Cautivo", expandCat: "Comunicación Inalambrica",
+        bloque: "portal_dns_server", bloqueLabel: "Servidor DNS del portal"
+      },
+      {
+        titulo: "Arrastra: Servidor HTTP del portal",
+        desc: "Arrastra el bloque <em>Servidor HTTP del portal</em>. Configura:<br>📄 Nombre de la página: <b>index</b><br>📋 Variable tipo: <b>tipo</b><br>📋 Variable valor: <b>valor</b><br><br>Estos parámetros se pasan a la función <b>comandos</b> cuando llega una petición.",
+        highlightCat: "Portal Cautivo", expandCat: "Comunicación Inalambrica",
+        bloque: "portal_http_server", bloqueLabel: "Servidor HTTP del portal"
+      },
+      {
+        titulo: "Arrastra: Bucle principal del portal",
+        desc: "Arrastra el bloque <em>Bucle principal del portal</em> al final. Este bloque mantiene el portal funcionando de forma continua, procesando peticiones DNS y HTTP.",
+        highlightCat: "Portal Cautivo", expandCat: "Comunicación Inalambrica",
+        bloque: "portal_main", bloqueLabel: "Bucle principal del portal"
+      },
+      {
+        titulo: "Define la función comandos",
+        desc: "Ve a <b>Funciones</b> y crea una función llamada <b>comandos</b> con dos parámetros: <b>tipo</b> y <b>valor</b>. Esta función se llamará cada vez que un cliente envíe un comando desde la página web del portal.",
+        highlightCat: "Portal Cautivo", expandCat: "Comunicación Inalambrica",
+        bloque: "portal_comandos", bloqueLabel: "Definir función"
+      },
+      {
+        titulo: "Dentro de comandos: Imprimir tipo",
+        desc: "Ve a <b>Textos</b> y arrastra el bloque <em>imprimir</em> dentro de la función <b>comandos</b>.",
+        highlightCat: "Textos", expandCat: null, bloque: "text_print", bloqueLabel: "Imprimir en monitor serial"
+      },
+      {
+        titulo: "Conecta la variable tipo",
+        desc: "Ve a <b>Variables</b> y arrastra el bloque <em>obtener tipo</em>. Conéctalo dentro del bloque <em>imprimir</em>. Así verás qué tipo de comando llegó.",
+        highlightCat: "Variables", expandCat: null,
+        bloque: { tipo: "variables_get", valor: "tipo" },
+        bloqueLabel: "obtener tipo"
+      },
+      {
+        titulo: "Dentro de comandos: Imprimir valor",
+        desc: "Ve a <b>Textos</b> y arrastra otro bloque <em>imprimir</em> debajo del anterior.",
+        highlightCat: "Textos", expandCat: null, bloque: "text_print", bloqueLabel: "Imprimir en monitor serial"
+      },
+      {
+        titulo: "Conecta la variable valor",
+        desc: "Ve a <b>Variables</b> y arrastra el bloque <em>obtener valor</em>. Conéctalo dentro del segundo bloque <em>imprimir</em>. Así verás el valor enviado por el cliente.",
+        highlightCat: "Variables", expandCat: null,
+        bloque: { tipo: "variables_get", valor: "valor" },
+        bloqueLabel: "obtener valor"
+      },
+      {
+        titulo: "Dentro de comandos: Esperar 100 ms",
+        desc: "Ve a <b>Tiempo</b> y arrastra <em>Esperar</em> con valor <b>100</b> ms abajo del print valor.",
+        highlightCat: "Portal Cautivo", expandCat: "Comunicación Inalambrica", bloque: "async_sleep_ms"
+      },
+      {
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "¡Ejecuta y prueba el portal!",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Conecta tu celular o laptop a la red <b>ESP32_AP</b>. Al abrir cualquier página web serás redirigido automáticamente al portal cautivo del ESP32. 🌐",
+        highlightElement: "#btnRun", waitForAction: "run"
+      }
+    ]
+  },
+
   ir_ky022: {
     title: "Control Remoto IR (KY-022)", icon: "📺",
+    diagram: "img/conexiones/ky-022.svg",
     steps: [
       {
         titulo: "¿Qué aprenderemos?",
@@ -1332,7 +1637,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Conexión física del KY-022",
-        desc: "Conecta el módulo KY-022 al ESP32 así:<br>📌 <b>S</b> (señal) → pin <b>15</b><br>⚡ <b>V</b> (voltaje) → 3.3V<br>⏚ <b>G</b> (tierra) → GND<br><br>El lado con el pequeño lente negro del sensor debe apuntar hacia el control remoto.",
+        desc: "Conecta el módulo KY-022 al ESP32 así:<br>📌 <b>S</b> (señal) → pin <b>16</b><br>⚡ <b>V</b> (voltaje) → 3.3V<br>⏚ <b>G</b> (tierra) → GND<br><br>El lado con el pequeño lente negro del sensor debe apuntar hacia el control remoto.",
         highlightCat: null, bloque: null
       },
       {
@@ -1390,11 +1695,6 @@ var TUTORIALS = {
         highlightElement: "#btnConnection"
       },
       {
-        titulo: "Selecciona tu puerto",
-        desc: "El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
-        waitForAction: "connect"
-      },
-      {
         titulo: "¡Ejecuta y prueba los botones!",
         desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Abre el monitor serial, apunta el control remoto al sensor KY-022 y presiona distintos botones. Verás un número diferente por cada botón. <b>Anota los códigos</b>, los necesitarás para proyectos más avanzados.",
         highlightElement: "#btnRun", waitForAction: "run"
@@ -1404,6 +1704,7 @@ var TUTORIALS = {
 
   espnow_receptor: {
     title: "ESP-NOW — Receptor", icon: "📶",
+    diagram: "img/conexiones/espnow.svg",
     steps: [
       {
         titulo: "¿Qué es ESP-NOW?",
@@ -1480,23 +1781,35 @@ var TUTORIALS = {
       },
       {
         titulo: "Dentro del Si: imprimir host",
-        desc: "Ve a <b>Textos</b> y arrastra el bloque <em>imprimir</em> dentro de la sección <b>hacer</b>. Conecta el bloque <em>obtener host</em> desde Variables.",
+        desc: "Ve a <b>Textos</b> y arrastra el bloque <em>imprimir</em> dentro de la sección <b>hacer</b>.",
         highlightCat: "Textos", expandCat: null, bloque: "text_print"
       },
       {
+        titulo: "Imprimir: obtener variable host",
+        desc: "Ve a <b>Variables</b> y arrastra el bloque <em>obtener host</em>. Conecta el bloque <em>obtener host</em> desde Variables a la entrada del <em>Imprimir</em>",
+        highlightCat: "Variables", expandCat: null,
+        bloque: { tipo: "variables_get", valor: "host" }
+      },
+      {
         titulo: "Dentro del Si: imprimir msg",
-        desc: "Arrastra otro bloque <em>imprimir</em> debajo. Conecta <em>obtener msg</em> desde <b>Variables</b>.",
+        desc: "Arrastra otro bloque <em>imprimir</em>. Colocar debajo de anterior <em>Imprimir</em>",
         highlightCat: "Textos", expandCat: null, bloque: "text_print"
+      },
+      {
+        titulo: "Imprimir: obtener variable msg",
+        desc: "Ve a <b>Variables</b> y arrastra el bloque <em>obtener msg</em>. Conecta el bloque <em>obtener msg</em> desde Variables a la entrada del <em>Imprimir</em>",
+        highlightCat: "Variables", expandCat: null,
+        bloque: { tipo: "variables_get", valor: "msg" }
+      },
+      {
+        titulo: "Agrega una pausa",
+        desc: "Ve a <b>Tiempo</b> y arrastra el bloque <em>esperar</em>. Ajusta a <b>1</b> segundo. Colócalo al final del ciclo, fuera del bloque Si.",
+        highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
       },
       {
         titulo: "Conecta tu ESP32 receptor y Selecciona tu puerto",
         desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
-      },
-      {
-        titulo: "Selecciona tu puerto",
-        desc: "El navegador mostrará los puertos disponibles. Elige el de tu ESP32 receptor y presiona <b>Conectar</b>.",
-        waitForAction: "connect"
       },
       {
         titulo: "Ejecuta el receptor y déjalo escuchando",
@@ -1508,6 +1821,7 @@ var TUTORIALS = {
 
   espnow_emisor: {
     title: "ESP-NOW — Emisor", icon: "📡",
+    diagram: "img/conexiones/espnow.svg",
     steps: [
       {
         titulo: "¿Qué haremos?",
@@ -1591,6 +1905,7 @@ var TUTORIALS = {
 
   hc06_basico: {
     title: "Bluetooth HC-06 (Serial)", icon: "🔵",
+    diagram: "img/conexiones/hc-06.svg",
     steps: [
       {
         titulo: "¿Qué aprenderemos?",
@@ -1673,11 +1988,6 @@ var TUTORIALS = {
         highlightElement: "#btnConnection"
       },
       {
-        titulo: "Selecciona tu puerto",
-        desc: "El navegador mostrará los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
-        waitForAction: "connect"
-      },
-      {
         titulo: "Ejecuta y prueba",
         desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Desde la app en tu celular verás el mensaje enviado por el ESP32. Escribe algo en la app y aparecerá en el monitor serial. ¡Comunicación Bluetooth lista! 📲",
         highlightElement: "#btnRun", waitForAction: "run"
@@ -1687,6 +1997,7 @@ var TUTORIALS = {
 
   bluetooth_le: {
     title: "Bluetooth LE (BLE) — UART Serial", icon: "📡",
+    diagram: "img/conexiones/ble.svg",
     steps: [
       {
         titulo: "¿Qué es Bluetooth LE?",
@@ -1759,11 +2070,6 @@ var TUTORIALS = {
         highlightElement: "#btnConnection"
       },
       {
-        titulo: "Selecciona tu puerto",
-        desc: "El navegador mostrará los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
-        waitForAction: "connect"
-      },
-      {
         titulo: "¡Ejecuta y conecta tu celular!",
         desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Abre la app BLE, busca <b>ESP32-BLE</b> y conéctate. Envía texto desde la app y aparecerá en el monitor serial del ESP32. ¡BLE funcionando! 🎉",
         highlightElement: "#btnRun", waitForAction: "run"
@@ -1776,6 +2082,7 @@ var TUTORIALS = {
   ══════════════════════════════════════════════════════════════ */
   dht11: {
     title: "DHT11 — Temperatura y Humedad", icon: "🌡️",
+    diagram: "img/conexiones/dht11.svg",
     steps: [
       {
         titulo: "¿Qué aprenderemos?",
@@ -1856,11 +2163,6 @@ var TUTORIALS = {
         highlightElement: "#btnConnection"
       },
       {
-        titulo: "Selecciona tu puerto",
-        desc: "El navegador mostrará los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
-        waitForAction: "connect"
-      },
-      {
         titulo: "¡Ejecuta y observa!",
         desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. En el monitor serial verás la temperatura en °C y la humedad en % actualizándose cada 2 segundos. Sopla sobre el sensor para ver cómo cambia la humedad. 🌬️",
         highlightElement: "#btnRun", waitForAction: "run"
@@ -1873,6 +2175,7 @@ var TUTORIALS = {
   ══════════════════════════════════════════════════════════════ */
   ky001: {
     title: "KY-001 — Sensor DS18B20 (OneWire)", icon: "🌡️",
+    diagram: "img/conexiones/ky-001.svg",
     steps: [
       {
         titulo: "¿Qué es el KY-001?",
@@ -1958,11 +2261,6 @@ var TUTORIALS = {
         highlightElement: "#btnConnection"
       },
       {
-        titulo: "Selecciona tu puerto",
-        desc: "El navegador mostrará los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
-        waitForAction: "connect"
-      },
-      {
         titulo: "¡Ejecuta y prueba!",
         desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. En el monitor serial verás la temperatura en °C actualizándose cada segundo. Toca el sensor con los dedos y observa cómo sube el valor. 🌡️",
         highlightElement: "#btnRun", waitForAction: "run"
@@ -1987,6 +2285,8 @@ var TutorialSteps = {
     if (!id) { this.cerrar(); return; }
     var tut = TUTORIALS[id];
     if (!tut) return;
+    // Siempre regresar a la vista de bloques al cambiar de tutorial
+    if (typeof showView === 'function') showView('viewBlocks');
     this.tutorial = tut;
     this.paso = 0;
     document.getElementById('ts-panel').style.display = 'flex';
@@ -1995,6 +2295,22 @@ var TutorialSteps = {
     var btnPrev = document.getElementById('ts-btn-prev');
     if (btnNext) btnNext.style.display = '';
     if (btnPrev) btnPrev.style.display = '';
+    // Mostrar botón de conexiones en la barra superior solo si el tutorial tiene diagrama
+    var btnWiring = document.getElementById('btnWiring');
+    if (btnWiring) {
+      if (tut.diagram) {
+        btnWiring.style.display = '';
+        btnWiring.classList.add('ts-has-wiring');
+        var iconEl = btnWiring.querySelector('.icon-btn');
+        if (iconEl) iconEl.style.visibility = 'visible';
+      } else {
+        btnWiring.style.display = 'none';
+        btnWiring.classList.remove('ts-has-wiring');
+      }
+    }
+    // Mostrar botón de conexiones en el panel tutorial
+    var btnTsWiring = document.getElementById('ts-btn-wiring');
+    if (btnTsWiring) btnTsWiring.style.display = tut.diagram ? '' : 'none';
     // Restaurar body si fue reemplazado por pantalla de fin
     if (!document.getElementById('ts-step-num')) {
       document.getElementById('ts-body').innerHTML = this._bodyTpl();
@@ -2052,6 +2368,14 @@ var TutorialSteps = {
     if (panel) panel.style.display = 'none';
     var sel = document.getElementById('tutorialSelect');
     if (sel) sel.value = '';
+    // Ocultar botón de conexiones al cerrar
+    var btnWiring = document.getElementById('btnWiring');
+    if (btnWiring) {
+      btnWiring.style.display = 'none';
+      btnWiring.classList.remove('ts-has-wiring');
+    }
+    var btnTsWiring = document.getElementById('ts-btn-wiring');
+    if (btnTsWiring) btnTsWiring.style.display = 'none';
   },
 
   /* ── Render ──────────────────────────────────────────────── */
@@ -2079,6 +2403,7 @@ var TutorialSteps = {
     document.getElementById('ts-step-num').textContent = this.paso + 1;
     document.getElementById('ts-step-title').textContent = step.titulo;
     document.getElementById('ts-step-desc').innerHTML = step.desc;
+
 
     // Mostrar u ocultar el panel de categoría/bloque según el paso
     var catBox = document.getElementById('ts-cat-box');
@@ -2626,6 +2951,7 @@ document.addEventListener('DOMContentLoaded', function () {
     '<div class="ts-body" id="ts-body">' + TutorialSteps._bodyTpl() + '</div>' +
     '<div class="ts-footer">' +
     '  <button class="ts-btn ts-btn-sec"     id="ts-btn-prev">← Anterior</button>' +
+    '  <button class="ts-btn-wiring" id="ts-btn-wiring" title="Ver conexiones eléctricas" style="display:none">🔌</button>' +
     '  <button class="ts-btn ts-btn-primary" id="ts-btn-next">Siguiente →</button>' +
     '</div>';
 
@@ -2634,6 +2960,33 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('ts-close').addEventListener('click', function () { TutorialSteps.cerrar(); });
   document.getElementById('ts-btn-next').addEventListener('click', function () { TutorialSteps.siguiente(); });
   document.getElementById('ts-btn-prev').addEventListener('click', function () { TutorialSteps.anterior(); });
+
+  // ── Botón de conexiones (icono) en el panel tutorial ─────────
+  document.getElementById('ts-btn-wiring').addEventListener('click', function () {
+    var tut = TutorialSteps.tutorial;
+    if (!tut || !tut.diagram) return;
+    var base = (typeof TS_STATIC_URL !== 'undefined') ? TS_STATIC_URL : '/static/';
+    var img = document.getElementById('wiringImg');
+    var titleEl = document.getElementById('wiringTitle');
+    if (img) img.src = base + tut.diagram;
+    if (titleEl) titleEl.textContent = tut.title + ' — Conexiones eléctricas';
+    if (typeof showView === 'function') showView('viewWiring');
+  });
+
+  // ── Botón de conexiones eléctricas (barra superior) ─────────
+  var btnWiring = document.getElementById('btnWiring');
+  if (btnWiring) {
+    btnWiring.addEventListener('click', function () {
+      var tut = TutorialSteps.tutorial;
+      if (!tut || !tut.diagram) return;
+      var base = (typeof TS_STATIC_URL !== 'undefined') ? TS_STATIC_URL : '/static/';
+      var img = document.getElementById('wiringImg');
+      var titleEl = document.getElementById('wiringTitle');
+      if (img) img.src = base + tut.diagram;
+      if (titleEl) titleEl.textContent = tut.title + ' — Conexiones eléctricas';
+      if (typeof showView === 'function') showView('viewWiring');
+    });
+  }
 
   var sel = document.getElementById('tutorialSelect');
   if (sel) sel.addEventListener('change', function () { TutorialSteps.cargar(this.value); });
