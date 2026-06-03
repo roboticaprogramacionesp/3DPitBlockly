@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>3DPit Blocks</title>
- 
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <link rel="icon" href="static/3DPit.ico" />
   <link rel="preload" href="static/img/icons3dpit.svg" as="image" />
@@ -405,21 +405,25 @@
 
     #wiringContent {
       flex: 1;
-      overflow: auto;
+      overflow: hidden;
+      /* antes era auto */
       display: flex;
       align-items: flex-start;
       justify-content: center;
       padding: 20px;
       box-sizing: border-box;
       background: #fff;
+      position: relative;
+      user-select: none;
     }
 
     #wiringImg {
-      max-width: 100%;
-      height: auto;
       display: block;
+      max-width: none;
+      /* importante: quitar el max-width: 100% */
+      height: auto;
+      transition: transform 0.05s linear;
     }
-
   </style>
 
 </head>
@@ -432,7 +436,7 @@
     <div id="tutorialBox">
       <div id="tutorialHeader">
         <h3 id="tutorialTitle"></h3>
-        <button style="text-align: right" id="tutorialClose">X</button>
+        <button style="text-align: right" id="tutorialClose">✕</button>
       </div>
 
       <p id="tutorialText"></p>
@@ -498,7 +502,7 @@
       </esp-web-install-button>
       <button id="btnTutor"><span class="icon-btn icon-help"></span></button>
 
-      <button id="btnShare">🔗</button> 
+      <button id="btnShare">🔗</button>
 
       <!-- SELECT oculto: lo mantiene TutorialSteps internamente -->
       <select id="tutorialSelect">
@@ -668,6 +672,14 @@
       <div id="wiringContainer">
         <div id="wiringHeader">
           <span id="wiringTitle">Conexiones eléctricas</span>
+          <div style="display:flex; gap:6px; margin-left:auto;">
+            <button id="btnZoomIn" title="Acercar"
+              style="font-size:16px; background:#333; color:#fff; border:none; border-radius:4px; padding:2px 8px; cursor:pointer;">＋</button>
+            <button id="btnZoomOut" title="Alejar"
+              style="font-size:16px; background:#333; color:#fff; border:none; border-radius:4px; padding:2px 8px; cursor:pointer;">－</button>
+            <button id="btnZoomReset" title="Resetear zoom"
+              style="font-size:12px; background:#333; color:#aaa; border:none; border-radius:4px; padding:2px 8px; cursor:pointer;">1:1</button>
+          </div>
         </div>
         <div id="wiringContent">
           <img id="wiringImg" src="" alt="Diagrama de conexión" />
@@ -2968,71 +2980,71 @@
 
   <!-- ── Custom Tutorial Dropdown logic ── -->
   <script>
-    (function () {
-      var trigger = document.getElementById('tut-trigger');
-      var dropdown = document.getElementById('tut-dropdown');
-      var selNative = document.getElementById('tutorialSelect');
+      (function () {
+        var trigger = document.getElementById('tut-trigger');
+        var dropdown = document.getElementById('tut-dropdown');
+        var selNative = document.getElementById('tutorialSelect');
 
-      function open() {
-        dropdown.classList.add('open');
-        trigger.classList.add('open');
-        trigger.setAttribute('aria-expanded', 'true');
-      }
-      function close() {
-        dropdown.classList.remove('open');
-        trigger.classList.remove('open');
-        trigger.setAttribute('aria-expanded', 'false');
-      }
-      function toggle() {
-        dropdown.classList.contains('open') ? close() : open();
-      }
+        function open() {
+          dropdown.classList.add('open');
+          trigger.classList.add('open');
+          trigger.setAttribute('aria-expanded', 'true');
+        }
+        function close() {
+          dropdown.classList.remove('open');
+          trigger.classList.remove('open');
+          trigger.setAttribute('aria-expanded', 'false');
+        }
+        function toggle() {
+          dropdown.classList.contains('open') ? close() : open();
+        }
 
-      trigger.addEventListener('click', function (e) {
-        e.stopPropagation();
-        toggle();
-      });
-
-      // Cerrar al hacer clic fuera
-      document.addEventListener('click', function (e) {
-        if (!document.getElementById('tut-wrapper').contains(e.target)) close();
-      });
-
-      // Seleccionar opción
-      dropdown.querySelectorAll('.tut-option').forEach(function (opt) {
-        opt.addEventListener('click', function () {
-          var val = opt.getAttribute('data-value');
-          // Sincronizar con el select nativo (lo usa TutorialSteps internamente)
-          selNative.value = val;
-          // Disparar el evento change para que TutorialSteps.cargar() se active
-          selNative.dispatchEvent(new Event('change'));
-          // Actualizar etiqueta del botón de forma segura (sin innerHTML)
-          var span = document.createElement('span');
-          span.className = 'tut-arrow';
-          span.textContent = '▼';
-          trigger.textContent = '';
-          // Copiar solo el texto del ícono y el label del option
-          var icon = opt.querySelector('.tut-icon');
-          var label = opt.querySelector('.tut-label');
-          if (icon) {
-            var iconClone = document.createElement('span');
-            iconClone.className = 'tut-icon';
-            iconClone.textContent = icon.textContent;
-            trigger.appendChild(iconClone);
-          }
-          if (label) {
-            var labelClone = document.createElement('span');
-            labelClone.className = 'tut-label';
-            labelClone.textContent = label.textContent;
-            trigger.appendChild(labelClone);
-          } else {
-            // Fallback: usar solo el texto del option
-            trigger.appendChild(document.createTextNode(opt.textContent.trim() + ' '));
-          }
-          trigger.appendChild(span);
-          close();
+        trigger.addEventListener('click', function (e) {
+          e.stopPropagation();
+          toggle();
         });
-      });
-    })();
+
+        // Cerrar al hacer clic fuera
+        document.addEventListener('click', function (e) {
+          if (!document.getElementById('tut-wrapper').contains(e.target)) close();
+        });
+
+        // Seleccionar opción
+        dropdown.querySelectorAll('.tut-option').forEach(function (opt) {
+          opt.addEventListener('click', function () {
+            var val = opt.getAttribute('data-value');
+            // Sincronizar con el select nativo (lo usa TutorialSteps internamente)
+            selNative.value = val;
+            // Disparar el evento change para que TutorialSteps.cargar() se active
+            selNative.dispatchEvent(new Event('change'));
+            // Actualizar etiqueta del botón de forma segura (sin innerHTML)
+            var span = document.createElement('span');
+            span.className = 'tut-arrow';
+            span.textContent = '▼';
+            trigger.textContent = '';
+            // Copiar solo el texto del ícono y el label del option
+            var icon = opt.querySelector('.tut-icon');
+            var label = opt.querySelector('.tut-label');
+            if (icon) {
+              var iconClone = document.createElement('span');
+              iconClone.className = 'tut-icon';
+              iconClone.textContent = icon.textContent;
+              trigger.appendChild(iconClone);
+            }
+            if (label) {
+              var labelClone = document.createElement('span');
+              labelClone.className = 'tut-label';
+              labelClone.textContent = label.textContent;
+              trigger.appendChild(labelClone);
+            } else {
+              // Fallback: usar solo el texto del option
+              trigger.appendChild(document.createTextNode(opt.textContent.trim() + ' '));
+            }
+            trigger.appendChild(span);
+            close();
+          });
+        });
+      })();
   </script>
   <!-- ===============================
      MODAL CONFIRMACIÓN
@@ -3300,6 +3312,88 @@
       }
     });
   })();
+</script>
+
+
+<!-- ── Zoom & Pan en Vista Conexiones ── -->
+<script>
+  (function () {
+    const content = document.getElementById('wiringContent');
+    const img = document.getElementById('wiringImg');
+
+    let scale = 1, tx = 0, ty = 0;
+    let dragging = false, startX, startY;
+
+    function applyTransform() {
+      img.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
+      img.style.transformOrigin = '0 0';
+      img.style.cursor = dragging ? 'grabbing' : 'grab';
+    }
+
+    // Zoom con rueda
+    content.addEventListener('wheel', function (e) {
+      e.preventDefault();
+      const rect = content.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+      const delta = e.deltaY < 0 ? 1.1 : 0.9;
+      tx = mouseX - (mouseX - tx) * delta;
+      ty = mouseY - (mouseY - ty) * delta;
+      scale = Math.min(Math.max(scale * delta, 0.2), 8);
+      applyTransform();
+    }, { passive: false });
+
+    // Arrastrar (pan)
+    content.addEventListener('mousedown', function (e) {
+      if (e.button !== 0) return;
+      dragging = true;
+      startX = e.clientX - tx;
+      startY = e.clientY - ty;
+      applyTransform();
+    });
+    window.addEventListener('mousemove', function (e) {
+      if (!dragging) return;
+      tx = e.clientX - startX;
+      ty = e.clientY - startY;
+      applyTransform();
+    });
+    window.addEventListener('mouseup', function () {
+      dragging = false;
+      applyTransform();
+    });
+
+    // Doble clic = resetear
+    content.addEventListener('dblclick', function () {
+      scale = 1; tx = 0; ty = 0;
+      applyTransform();
+    });
+
+    // Resetear cuando cambia la imagen
+    img.addEventListener('load', function () {
+      scale = 1; tx = 0; ty = 0;
+      applyTransform();
+    });
+
+    document.getElementById('btnZoomIn').addEventListener('click', function () {
+      const cx = content.clientWidth / 2, cy = content.clientHeight / 2;
+      tx = cx - (cx - tx) * 1.25;
+      ty = cy - (cy - ty) * 1.25;
+      scale = Math.min(scale * 1.25, 8);
+      applyTransform();
+    });
+    document.getElementById('btnZoomOut').addEventListener('click', function () {
+      const cx = content.clientWidth / 2, cy = content.clientHeight / 2;
+      tx = cx - (cx - tx) * 0.8;
+      ty = cy - (cy - ty) * 0.8;
+      scale = Math.max(scale * 0.8, 0.2);
+      applyTransform();
+    });
+    document.getElementById('btnZoomReset').addEventListener('click', function () {
+      scale = 1; tx = 0; ty = 0;
+      applyTransform();
+    });
+  })();
+
 </script>
 
 </body>

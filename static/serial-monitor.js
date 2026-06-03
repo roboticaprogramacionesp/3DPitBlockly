@@ -13,7 +13,7 @@
  *    como alternativa al acceso global (retrocompatible: sigue funcionando sin init)
  */
 
-const SerialMonitor = (() => {
+var SerialMonitor = (() => {
 
   /* ── Estado interno ── */
   let smTerm        = null;
@@ -82,6 +82,13 @@ const SerialMonitor = (() => {
             <input type="checkbox" id="smTimestamp"> Hora
           </label>
           <button id="smClearBtn">&#x1F5D1; Limpiar</button>
+        </div>
+        <div id="smSizeBar">
+          <span class="sm-size-label">&#x1F520;</span>
+          <button class="sm-size-btn" id="smSizeDown" title="Reducir texto">&#x2212;</button>
+          <span class="sm-size-display" id="smSizeDisplay">M</span>
+          <div class="sm-size-track" id="smSizeTrack"><div class="sm-size-fill" id="smSizeFill"></div></div>
+          <button class="sm-size-btn" id="smSizeUp" title="Aumentar texto">+</button>
         </div>
         <div id="smNameFile">
           <span class="sm-toolbar-label">Fuente</span>
@@ -237,9 +244,11 @@ const SerialMonitor = (() => {
     prevHeight = modal.offsetHeight + 'px';
 
     const nameBar = document.getElementById('smNameFile');
+    const sizeBar = document.getElementById('smSizeBar');
     if (wrapper)  wrapper.style.display  = 'none';
     if (toolbar)  toolbar.style.display  = 'none';
     if (nameBar)  nameBar.style.display  = 'none';
+    if (sizeBar)  sizeBar.style.display  = 'none';
     if (input)    input.style.display    = 'none';
 
     modal.classList.add('sm-minimized');
@@ -255,9 +264,11 @@ const SerialMonitor = (() => {
     const btn     = document.getElementById('smMinBtn');
 
     const nameBar2 = document.getElementById('smNameFile');
+    const sizeBar2 = document.getElementById('smSizeBar');
     if (wrapper)  wrapper.style.display  = '';
     if (toolbar)  toolbar.style.display  = '';
     if (nameBar2) nameBar2.style.display  = '';
+    if (sizeBar2) sizeBar2.style.display  = '';
     if (input)    input.style.display    = '';
 
     modal.classList.remove('sm-minimized');
@@ -414,6 +425,48 @@ const SerialMonitor = (() => {
     closeBtn && closeBtn.addEventListener('click', close);
     minBtn   && minBtn.addEventListener('click', () => {
       modal.classList.contains('sm-minimized') ? restore() : minimize();
+    });
+
+    /* ── Control de tamaño de texto (terminal xterm) ── */
+    const SM_SIZES      = ['S', 'M', 'L', 'XL'];
+    const SM_FONTSIZES  = [10,   12,  15,  19];   // px para xterm fontSize
+    let smSizeIdx = 1; // M por defecto
+
+    function smApplySize() {
+      const s = SM_SIZES[smSizeIdx];
+      const fz = SM_FONTSIZES[smSizeIdx];
+      const disp = document.getElementById('smSizeDisplay');
+      const fill = document.getElementById('smSizeFill');
+      if (disp) disp.textContent = s;
+      if (fill) fill.style.width = (smSizeIdx / (SM_SIZES.length - 1) * 100) + '%';
+      if (smTerm) {
+        smTerm.options.fontSize = fz;
+        if (smFit) smFit.fit();
+      }
+      try { localStorage.setItem('sm-font-size', smSizeIdx); } catch(e) {}
+    }
+
+    // Recuperar preferencia guardada
+    try {
+      const saved = parseInt(localStorage.getItem('sm-font-size'), 10);
+      if (!isNaN(saved) && saved >= 0 && saved < SM_SIZES.length) smSizeIdx = saved;
+    } catch(e) {}
+
+    const smSizeUp   = document.getElementById('smSizeUp');
+    const smSizeDown = document.getElementById('smSizeDown');
+    const smSizeTrack = document.getElementById('smSizeTrack');
+
+    smSizeUp && smSizeUp.addEventListener('click', () => {
+      if (smSizeIdx < SM_SIZES.length - 1) { smSizeIdx++; smApplySize(); }
+    });
+    smSizeDown && smSizeDown.addEventListener('click', () => {
+      if (smSizeIdx > 0) { smSizeIdx--; smApplySize(); }
+    });
+    smSizeTrack && smSizeTrack.addEventListener('click', (e) => {
+      const rect = smSizeTrack.getBoundingClientRect();
+      smSizeIdx = Math.round((e.clientX - rect.left) / rect.width * (SM_SIZES.length - 1));
+      smSizeIdx = Math.max(0, Math.min(SM_SIZES.length - 1, smSizeIdx));
+      smApplySize();
     });
     clearBtn && clearBtn.addEventListener('click', () => {
       if (smTerm) smTerm.clear();
@@ -847,5 +900,16 @@ const SerialMonitor = (() => {
     blinkDot();
   }
 
-  return { feed, open, close, toggle, sendCommand, notifySending, notifyDone, warn, init: initDeps };
+  function fitTerminal() {
+    if (smFit && smTerm) smFit.fit();
+  }
+
+  return { feed, open, close, toggle, sendCommand, notifySending, notifyDone, warn, init: initDeps, fitTerminal };
 })();
+
+/* Alias global que main.js llama como refreshTerminalFit() */
+function refreshTerminalFit() {
+  if (SerialMonitor && typeof SerialMonitor.fitTerminal === 'function') {
+    SerialMonitor.fitTerminal();
+  }
+}

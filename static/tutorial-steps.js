@@ -2032,32 +2032,45 @@ var TUTORIALS = {
         bloque: "ble_set_name", bloqueLabel: "Establecer nombre BLE"
       },
       {
+        titulo: "Arrastra: Registrar callback (uart.irq)",
+        desc: "Ve a <b>Comunicación Inalambrica</b> → <b>BLE</b> y arrastra el bloque <em>Al recibir datos BLE</em>. En el campo <b>función</b> escribe <b>datos_recibidos</b> y en el campo <b>variable RX</b> escribe <b>rx_buffer</b>. Esto conecta tu función al evento de recepción y define la variable donde se guardarán los bytes.",
+        highlightCat: "BLE", expandCat: "Comunicación Inalambrica",
+        bloque: "ble_on_receive", bloqueLabel: "Al recibir datos BLE"
+      },
+      {
         titulo: "Define la función de callback",
-        desc: "Necesitamos una función que se ejecute cuando lleguen datos. Ve a <b>Funciones</b> (o <b>Procedimientos</b>) y crea una función llamada <b>datos_recibidos</b>. Dentro coloca los bloques para leer y mostrar los datos.",
+        desc: "Ve a <b>Funciones</b> y crea una función llamada <b>datos_recibidos</b>. Dentro de ella colocaremos los bloques para leer, decodificar e imprimir los datos recibidos.",
         highlightCat: "Funciones", expandCat: null, bloque: "procedures_defnoreturn", bloqueLabel: "definir función"
       },
       {
-        titulo: "Dentro de la función: Leer datos BLE",
-        desc: "Ve a <b>Comunicación Inalambrica</b> → <b>BLE</b> y arrastra el bloque <em>Leer datos BLE</em> dentro de la función. Devuelve los bytes recibidos del celular.",
+        titulo: "Dentro de la función: Guardar en rx_buffer",
+        desc: "Ve a <b>Variables</b> y arrastra el bloque <em>establecer rx_buffer a</em> dentro de la función. Esta variable guardará el texto decodificado de lo que llegue del celular.",
+        highlightCat: "Variables", expandCat: null,
+        bloque: "variables_set", bloqueLabel: "establecer rx_buffer a"
+      },
+      {
+        titulo: "Dentro de la función: Decodificar los bytes recibidos",
+        desc: "Ve a <b>Textos</b> y arrastra el bloque <em>Decodificar bytes (text_decode)</em> para conectarlo al hueco de <em>establecer rx_buffer a</em>. Activa la opción <b>strip = VERDADERO</b> para eliminar espacios en blanco al inicio y al final.",
+        highlightCat: "Textos", expandCat: null,
+        bloque: "text_decode", bloqueLabel: "Decodificar bytes"
+      },
+      {
+        titulo: "Dentro del decodificador: Leer datos BLE",
+        desc: "Ve a <b>Comunicación Inalambrica</b> → <b>BLE</b> y arrastra el bloque <em>Leer datos BLE</em>. Conéctalo al hueco <b>bytes</b> del bloque <em>Decodificar bytes</em>. Este bloque obtiene los bytes crudos recibidos del celular.",
         highlightCat: "BLE", expandCat: "Comunicación Inalambrica",
         bloque: "ble_read", bloqueLabel: "Leer datos BLE"
       },
       {
-        titulo: "Dentro de la función: Imprimir datos recibidos",
-        desc: "Ve a <b>Textos</b> y arrastra el bloque <em>imprimir</em> dentro de la función. Conecta el bloque <em>Leer datos BLE</em> dentro del imprimir para ver en el monitor serial lo que llega del celular.",
+        titulo: "Dentro de la función: Imprimir rx_buffer",
+        desc: "Ve a <b>Textos</b> y arrastra el bloque <em>imprimir</em> justo después del bloque <em>establecer rx_buffer a</em>. Luego conecta el bloque <em>obtener rx_buffer</em> desde <b>Variables</b> dentro del imprimir para ver en el monitor serial el mensaje recibido.",
         highlightCat: "Textos", expandCat: null, bloque: "text_print", bloqueLabel: "imprimir"
       },
       {
-        titulo: "Dentro de la función: Responder al celular",
-        desc: "Ve a <b>Comunicación Inalambrica</b> → <b>BLE</b> y arrastra el bloque <em>Enviar datos BLE</em>. Escribe el texto de respuesta, por ejemplo <b>Datos recibidos</b>.",
-        highlightCat: "BLE", expandCat: "Comunicación Inalambrica",
-        bloque: "ble_write", bloqueLabel: "Enviar datos BLE"
-      },
-      {
-        titulo: "Arrastra: Registrar callback (uart.irq)",
-        desc: "Ve a <b>Comunicación Inalambrica</b> → <b>BLE</b> y arrastra el bloque <em>Al recibir datos BLE</em>. En el campo <b>función</b> escribe <b>datos_recibidos</b>. Esto conecta tu función al evento de recepción.",
-        highlightCat: "BLE", expandCat: "Comunicación Inalambrica",
-        bloque: "ble_on_receive", bloqueLabel: "Al recibir datos BLE"
+        titulo: "Conecta rx_buffer al imprimir",
+        desc: "Ve a <b>Variables</b> y arrastra el bloque <em>obtener rx_buffer</em>. Conéctalo dentro del bloque <em>imprimir</em>.",
+        highlightCat: "Variables", expandCat: null,
+        bloque: { tipo: "variables_get", valor: "rx_buffer" },
+        bloqueLabel: "obtener rx_buffer"
       },
       {
         titulo: "Instala una app BLE en tu celular",
@@ -2304,7 +2317,7 @@ var TutorialSteps = {
         var iconEl = btnWiring.querySelector('.icon-btn');
         if (iconEl) iconEl.style.visibility = 'visible';
       } else {
-        btnWiring.style.display = 'none';
+        //btnWiring.style.display = 'none';
         btnWiring.classList.remove('ts-has-wiring');
       }
     }
@@ -2552,6 +2565,8 @@ var TutorialSteps = {
     var allBlocks = fws.getAllBlocks ? fws.getAllBlocks(false)
       : Object.values(fws.blockDB_ || {});
 
+    var primerSvg = null;
+
     allBlocks.forEach(function (block) {
       if (!block) return;
 
@@ -2570,8 +2585,86 @@ var TutorialSteps = {
           svg.classList.add('ts-block-glow');
           self._glowBlocks.push(svg);
         }
+
+        // Guardar el primero que coincida para hacer scroll hacia él
+        if (!primerSvg) primerSvg = svg;
       });
     });
+
+    // Scroll automático al primer bloque resaltado
+    if (primerSvg) {
+      self._scrollFlyoutABloque(primerSvg);
+    }
+  },
+
+  /*
+   * Desplaza el flyout para que el bloque indicado quede visible.
+   * Intenta 3 estrategias según la versión de Blockly.
+   */
+  _scrollFlyoutABloque: function (svg) {
+    var ws = this._getWorkspace();
+    if (!ws || !ws.getFlyout) return;
+
+    var flyout = ws.getFlyout();
+    if (!flyout) return;
+
+    try {
+      var fws = (flyout.getWorkspace && flyout.getWorkspace()) || flyout.workspace_;
+
+      // Buscar el elemento DOM del flyout
+      var flyoutEl = flyout.svgGroup_ || flyout.svgGroup;
+      if (!flyoutEl) flyoutEl = document.querySelector('.blocklyFlyout');
+      if (!flyoutEl) return;
+
+      var flyoutRect = flyoutEl.getBoundingClientRect();
+      var blockRect  = svg.getBoundingClientRect();
+
+      // Posición del bloque relativa al área visible del flyout
+      var relTop    = blockRect.top    - flyoutRect.top;
+      var relBottom = blockRect.bottom - flyoutRect.top;
+      var flyoutH   = flyoutRect.height;
+
+      // Si ya es completamente visible, no hacer nada
+      if (relTop >= 8 && relBottom <= flyoutH - 8) return;
+
+      // Cuánto mover para centrar el bloque
+      var blockMid = relTop + blockRect.height / 2;
+      var delta    = blockMid - flyoutH / 2;
+
+      // ── Estrategia 1: scrollbar interno de Blockly ──────────────
+      if (fws && fws.scrollbar_) {
+        var sb = fws.scrollbar_.vScroll || fws.scrollbar_;
+        if (sb && typeof sb.set === 'function') {
+          var cur = (sb.get && typeof sb.get === 'function') ? sb.get() : 0;
+          sb.set(Math.max(0, cur + delta));
+          return;
+        }
+      }
+
+      // ── Estrategia 2: ajustar transform del blocklyBlockCanvas ──
+      var blocksSvg = (flyoutEl.tagName === 'svg') ? flyoutEl
+                    : flyoutEl.querySelector('svg');
+      if (blocksSvg) {
+        var grp = blocksSvg.querySelector('g.blocklyBlockCanvas') ||
+                  blocksSvg.querySelector('g[transform]');
+        if (grp) {
+          var m = (grp.getAttribute('transform') || '')
+                    .match(/translate\(\s*([^,]+),\s*([^)]+)\)/);
+          if (m) {
+            var tx = parseFloat(m[1]);
+            var ty = parseFloat(m[2]);
+            grp.setAttribute('transform', 'translate(' + tx + ',' + (ty - delta) + ')');
+            return;
+          }
+        }
+      }
+
+      // ── Estrategia 3: scrollIntoView como último recurso ────────
+      svg.scrollIntoView({ block: 'center', behavior: 'smooth' });
+
+    } catch (e) {
+      // Silencioso — no interrumpir el flujo del tutorial
+    }
   },
 
   _iniciarFlyoutObserverBloques: function (bloques) {
@@ -2860,7 +2953,7 @@ var TutorialSteps = {
       '<div class="ts-cat-box" id="ts-cat-box">' +
       '  <div class="ts-cat-label">📂 Busca en el panel:</div>' +
       '  <div class="ts-cat-ruta"  id="ts-cat-ruta"></div>' +
-      '  <div class="ts-bloque-row" id="ts-bloque-row" style="display:none">' +
+      '  <div class="ts-bloque-row" id="ts-bloque-row">' +
       '    <span class="ts-bloque-icon">🧩</span>' +
       '    <span class="ts-bloque-chip" id="ts-bloque-chip"></span>' +
       '  </div>' +
@@ -2946,6 +3039,13 @@ document.addEventListener('DOMContentLoaded', function () {
     '  </div>' +
     '  <button class="ts-close" id="ts-close" title="Cerrar">✕</button>' +
     '</div>' +
+    '<div class="ts-size-bar">' +
+    '  <span class="ts-size-label">🔠</span>' +
+    '  <button class="ts-size-btn" id="ts-size-down" title="Reducir texto">−</button>' +
+    '  <span class="ts-size-display" id="ts-size-display">M</span>' +
+    '  <div class="ts-size-track" id="ts-size-track"><div class="ts-size-fill" id="ts-size-fill"></div></div>' +
+    '  <button class="ts-size-btn" id="ts-size-up" title="Aumentar texto">+</button>' +
+    '</div>' +
     '<div class="ts-progress-bar"><div class="ts-progress-fill" id="ts-progress-fill"></div></div>' +
     '<p class="ts-progress-txt" id="ts-progress-txt"></p>' +
     '<div class="ts-body" id="ts-body">' + TutorialSteps._bodyTpl() + '</div>' +
@@ -2960,6 +3060,43 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('ts-close').addEventListener('click', function () { TutorialSteps.cerrar(); });
   document.getElementById('ts-btn-next').addEventListener('click', function () { TutorialSteps.siguiente(); });
   document.getElementById('ts-btn-prev').addEventListener('click', function () { TutorialSteps.anterior(); });
+
+  // ── Control de tamaño de texto ────────────────────────────────
+  var TS_SIZES = ['S', 'M', 'L', 'XL'];
+  var tsSizeIdx = 1; // M por defecto
+
+  function tsApplySize() {
+    var s = TS_SIZES[tsSizeIdx];
+    panel.setAttribute('data-fs', s);
+    document.getElementById('ts-size-display').textContent = s;
+    // Barra de progreso del tamaño
+    var fill = document.getElementById('ts-size-fill');
+    if (fill) fill.style.width = (tsSizeIdx / (TS_SIZES.length - 1) * 100) + '%';
+    // Guardar preferencia
+    try { localStorage.setItem('ts-font-size', tsSizeIdx); } catch(e) {}
+  }
+
+  // Recuperar preferencia guardada
+  try {
+    var saved = parseInt(localStorage.getItem('ts-font-size'), 10);
+    if (!isNaN(saved) && saved >= 0 && saved < TS_SIZES.length) tsSizeIdx = saved;
+  } catch(e) {}
+  tsApplySize();
+
+  document.getElementById('ts-size-up').addEventListener('click', function () {
+    if (tsSizeIdx < TS_SIZES.length - 1) { tsSizeIdx++; tsApplySize(); }
+  });
+  document.getElementById('ts-size-down').addEventListener('click', function () {
+    if (tsSizeIdx > 0) { tsSizeIdx--; tsApplySize(); }
+  });
+  // Clic en la barra de progreso para saltar directo al tamaño
+  document.getElementById('ts-size-track').addEventListener('click', function (e) {
+    var rect = this.getBoundingClientRect();
+    var ratio = (e.clientX - rect.left) / rect.width;
+    tsSizeIdx = Math.round(ratio * (TS_SIZES.length - 1));
+    tsSizeIdx = Math.max(0, Math.min(TS_SIZES.length - 1, tsSizeIdx));
+    tsApplySize();
+  });
 
   // ── Botón de conexiones (icono) en el panel tutorial ─────────
   document.getElementById('ts-btn-wiring').addEventListener('click', function () {

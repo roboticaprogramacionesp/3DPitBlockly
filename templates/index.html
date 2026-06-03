@@ -403,21 +403,25 @@
 
     #wiringContent {
       flex: 1;
-      overflow: auto;
+      overflow: hidden;
+      /* antes era auto */
       display: flex;
       align-items: flex-start;
       justify-content: center;
       padding: 20px;
       box-sizing: border-box;
       background: #fff;
+      position: relative;
+      user-select: none;
     }
 
     #wiringImg {
-      max-width: 100%;
-      height: auto;
       display: block;
+      max-width: none;
+      /* importante: quitar el max-width: 100% */
+      height: auto;
+      transition: transform 0.05s linear;
     }
-
   </style>
 
 </head>
@@ -430,7 +434,7 @@
     <div id="tutorialBox">
       <div id="tutorialHeader">
         <h3 id="tutorialTitle"></h3>
-        <button style="text-align: right" id="tutorialClose">X</button>
+        <button style="text-align: right" id="tutorialClose">✕</button>
       </div>
 
       <p id="tutorialText"></p>
@@ -666,6 +670,14 @@
       <div id="wiringContainer">
         <div id="wiringHeader">
           <span id="wiringTitle">Conexiones eléctricas</span>
+          <div style="display:flex; gap:6px; margin-left:auto;">
+            <button id="btnZoomIn" title="Acercar"
+              style="font-size:16px; background:#333; color:#fff; border:none; border-radius:4px; padding:2px 8px; cursor:pointer;">＋</button>
+            <button id="btnZoomOut" title="Alejar"
+              style="font-size:16px; background:#333; color:#fff; border:none; border-radius:4px; padding:2px 8px; cursor:pointer;">－</button>
+            <button id="btnZoomReset" title="Resetear zoom"
+              style="font-size:12px; background:#333; color:#aaa; border:none; border-radius:4px; padding:2px 8px; cursor:pointer;">1:1</button>
+          </div>
         </div>
         <div id="wiringContent">
           <img id="wiringImg" src="" alt="Diagrama de conexión" />
@@ -3299,6 +3311,89 @@
       }
     });
   })();
+</script>
+
+
+<!-- ── Zoom & Pan en Vista Conexiones ── -->
+<script>
+  (function () {
+    const content = document.getElementById('wiringContent');
+    const img = document.getElementById('wiringImg');
+
+    let scale = 1, tx = 0, ty = 0;
+    let dragging = false, startX, startY;
+
+    function applyTransform() {
+      img.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
+      img.style.transformOrigin = '0 0';
+      img.style.cursor = dragging ? 'grabbing' : 'grab';
+    }
+
+    // Zoom con rueda
+    content.addEventListener('wheel', function (e) {
+      e.preventDefault();
+      const rect = content.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+      const delta = e.deltaY < 0 ? 1.1 : 0.9;
+      tx = mouseX - (mouseX - tx) * delta;
+      ty = mouseY - (mouseY - ty) * delta;
+      scale = Math.min(Math.max(scale * delta, 0.2), 8);
+      applyTransform();
+    }, { passive: false });
+
+    // Arrastrar (pan)
+    content.addEventListener('mousedown', function (e) {
+      if (e.button !== 0) return;
+      dragging = true;
+      startX = e.clientX - tx;
+      startY = e.clientY - ty;
+      applyTransform();
+    });
+    window.addEventListener('mousemove', function (e) {
+      if (!dragging) return;
+      tx = e.clientX - startX;
+      ty = e.clientY - startY;
+      applyTransform();
+    });
+    window.addEventListener('mouseup', function () {
+      dragging = false;
+      applyTransform();
+    });
+
+    // Doble clic = resetear
+    content.addEventListener('dblclick', function () {
+      scale = 1; tx = 0; ty = 0;
+      applyTransform();
+    });
+
+    // Resetear cuando cambia la imagen
+    img.addEventListener('load', function () {
+      scale = 1; tx = 0; ty = 0;
+      applyTransform();
+    });
+
+    document.getElementById('btnZoomIn').addEventListener('click', function () {
+      const cx = content.clientWidth / 2, cy = content.clientHeight / 2;
+      tx = cx - (cx - tx) * 1.25;
+      ty = cy - (cy - ty) * 1.25;
+      scale = Math.min(scale * 1.25, 8);
+      applyTransform();
+    });
+    document.getElementById('btnZoomOut').addEventListener('click', function () {
+      const cx = content.clientWidth / 2, cy = content.clientHeight / 2;
+      tx = cx - (cx - tx) * 0.8;
+      ty = cy - (cy - ty) * 0.8;
+      scale = Math.max(scale * 0.8, 0.2);
+      applyTransform();
+    });
+    document.getElementById('btnZoomReset').addEventListener('click', function () {
+      scale = 1; tx = 0; ty = 0;
+      applyTransform();
+    });
+  })();
+
+
 </script>
 
 </body>

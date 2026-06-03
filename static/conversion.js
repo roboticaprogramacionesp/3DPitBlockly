@@ -34,18 +34,26 @@ Blockly.defineBlocksWithJsonArray([
     tooltip: "Convierte texto a bytes usando encode()",
   },
   {
+    // MicroPython solo soporta UTF-8. No se ofrece dropdown de encoding
+    // porque "ascii" y "latin-1" son alias de utf-8 en MicroPython.
+    // El checkbox "limpiar \r\n" aplica .strip() — muy común en UART/serial.
     type: "text_decode",
-    message0: "decodificar %1 a texto",
+    message0: "decodificar %1 limpiar \\r\\n %2",
     args0: [
       {
         type: "input_value",
         name: "BYTES",
-        check: null,
+        check: null, // acepta bytes y bytearray
+      },
+      {
+        type: "field_checkbox",
+        name: "STRIP",
+        checked: true, // activado por defecto — el caso más común en serial
       },
     ],
     output: "String",
     colour: 160,
-    tooltip: "Convierte bytes a texto usando decode()",
+    tooltip: "Convierte bytes/bytearray a texto UTF-8. Activa 'limpiar' para quitar \\r\\n del final (común en UART).",
   },
   {
     type: "objecto",
@@ -12785,6 +12793,9 @@ Blockly.Extensions.register(
 );
 // =============================================
 // PORTAL CAUTIVO - BLOQUES DE DEFINICIÓN
+// Nota: se usa un segundo defineBlocksWithJsonArray separado intencionalmente
+// porque estos bloques se registran después de que los mutators y extensiones
+// del bloque anterior ya están listos.
 // =============================================
 
 Blockly.defineBlocksWithJsonArray([

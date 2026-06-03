@@ -411,3 +411,77 @@
 #smTerminalWrapper ::-webkit-scrollbar-thumb:hover {
   background: #3454d1;
 }
+
+/* ════════════════════════════════════════════════════════════
+   BARRA DE TAMAÑO DE TEXTO — Serial Monitor
+════════════════════════════════════════════════════════════ */
+#smSizeBar {
+  height: 30px;
+  background: #0e1120;
+  border-bottom: 1px solid #1e2a5a;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 10px;
+  flex-shrink: 0;
+}
+
+#smSizeBar .sm-size-label {
+  font-size: 10px;
+  color: #6878c0;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+#smSizeBar .sm-size-btn {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(52, 84, 209, .12);
+  border: 1px solid rgba(52, 84, 209, .3);
+  border-radius: 4px;
+  color: #8898d8;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  flex-shrink: 0;
+  transition: background .15s, border-color .15s;
+}
+
+#smSizeBar .sm-size-btn:hover {
+  background: rgba(52, 84, 209, .3);
+  border-color: #3454d1;
+  color: #fff;
+}
+
+#smSizeBar .sm-size-display {
+  font-size: 10px;
+  font-weight: 700;
+  color: #3454d1;
+  min-width: 28px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+#smSizeBar .sm-size-track {
+  flex: 1;
+  height: 3px;
+  background: #1e2a5a;
+  border-radius: 3px;
+  position: relative;
+  cursor: pointer;
+}
+
+#smSizeBar .sm-size-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3454d1, #00e676);
+  border-radius: 3px;
+  transition: width .15s ease;
+  pointer-events: none;
+}

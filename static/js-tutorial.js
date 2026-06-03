@@ -46,6 +46,26 @@ const uiTutorial = [
     text: "Cargar sistema operativo a la tarjeta ESP32.",
   },
   {
+    el: "#btnTutor",
+    title: "Tour de la interfaz",
+    text: "Inicia este recorrido guiado en cualquier momento para repasar los botones del programa.",
+  },
+  {
+    el: "#tut-wrapper",
+    title: "Tutoriales guiados paso a paso",
+    text: "Selecciona un tutorial para aprender a usar sensores, LEDs, motores y más. El panel aparecerá y te irá guiando bloque a bloque.",
+  },
+  {
+    el: "#btnOpenSerialMonitor",
+    title: "Monitor Serial",
+    text: "Abre el monitor serial para ver los mensajes que envía el ESP32 y enviarle comandos directamente.",
+  },
+  {
+    el: "#btnWiring",
+    title: "Conexiones eléctricas",
+    text: "Muestra el diagrama de conexiones del tutorial activo para saber cómo conectar los componentes al ESP32.",
+  },
+  {
     el: ".blocklyWorkspace",
     title: "Zona de trabajo",
     text: "Aquí podras unir y conectar bloques para crear el código",

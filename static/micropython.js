@@ -47,11 +47,22 @@ Blockly.Python["text_encode"] = function (block) {
   return [`${value}.encode()`, Blockly.Python.ORDER_ATOMIC];
 };
 
+// ⚠️  MicroPython SOLO soporta UTF-8. Los argumentos "ascii" / "latin-1"
+//     son ignorados silenciosamente — no se ofrecen como opción en el bloque.
+// ⚠️  uart.read() / i2c.readfrom() devuelven None si no hay datos disponibles.
+//     El guard `(... or b'')` evita AttributeError al llamar .decode() sobre None.
+// ⚠️  El protocolo serial añade \r\n al final. .strip() lo elimina si el
+//     checkbox "limpiar \r\n" está activo (recomendado para UART/BLE/HC-06).
 Blockly.Python["text_decode"] = function (block) {
   const value =
     Blockly.Python.valueToCode(block, "BYTES", Blockly.Python.ORDER_NONE) ||
     "b''";
-  return [`${value}.decode()`, Blockly.Python.ORDER_ATOMIC];
+  const strip = block.getFieldValue("STRIP") === "TRUE";
+
+  let code = `(${value} or b'').decode()`;
+  if (strip) code += ".strip()";
+
+  return [code, Blockly.Python.ORDER_ATOMIC];
 };
 
 Blockly.Python["objecto"] = function (block) {
@@ -212,8 +223,12 @@ Blockly.Python["json_create"] = function () {
   return ["{}", Blockly.Python.ORDER_ATOMIC];
 };
 
+// MicroPython usa `ujson`, no `json`. En firmware reciente existe el alias,
+// pero en placas antiguas falla con ImportError. Se importa ujson y se renombra
+// a `json` para que el código generado funcione igual en ambos casos.
 Blockly.Python["json_dumps"] = function (block) {
-  Blockly.Python.definitions_["import_json"] = "import json";
+  Blockly.Python.definitions_["import_json"] =
+    "try:\n  import ujson as json\nexcept ImportError:\n  import json";
 
   const obj =
     Blockly.Python.valueToCode(block, "OBJ", Blockly.Python.ORDER_ATOMIC) ||
@@ -223,7 +238,8 @@ Blockly.Python["json_dumps"] = function (block) {
 };
 
 Blockly.Python["json_loads"] = function (block) {
-  Blockly.Python.definitions_["import_json"] = "import json";
+  Blockly.Python.definitions_["import_json"] =
+    "try:\n  import ujson as json\nexcept ImportError:\n  import json";
 
   const txt =
     Blockly.Python.valueToCode(block, "TEXT", Blockly.Python.ORDER_ATOMIC) ||
@@ -231,6 +247,8 @@ Blockly.Python["json_loads"] = function (block) {
 
   return [`json.loads(${txt})`, Blockly.Python.ORDER_ATOMIC];
 };
+// Se usa .get() en lugar de ["clave"] para evitar KeyError si la clave no existe.
+// Retorna None si no se encuentra la clave — el usuario puede verificar con `es None`.
 Blockly.Python["json_get"] = function (block) {
   const obj =
     Blockly.Python.valueToCode(block, "OBJ", Blockly.Python.ORDER_ATOMIC) ||
@@ -238,7 +256,7 @@ Blockly.Python["json_get"] = function (block) {
 
   const key = block.getFieldValue("KEY");
 
-  return [`${obj}["${key}"]`, Blockly.Python.ORDER_ATOMIC];
+  return [`${obj}.get("${key}", None)`, Blockly.Python.ORDER_ATOMIC];
 };
 
 Blockly.Python["json_set"] = function (block) {
@@ -1810,15 +1828,19 @@ Blockly.Python["init_hc06"] = function (block) {
   return `hc06 = UART(${id}, tx=${tx}, rx=${rx}, baudrate=${baud})\n`;
 };
 
+// ⚠️  UART.write() requiere bytes o bytearray — no acepta str directamente en MicroPython.
+//     Si el usuario conecta un bloque de texto, se codifica automáticamente a bytes.
 Blockly.Python["hc06_send"] = function (block) {
   const text =
     Blockly.Python.valueToCode(block, "TEXT", Blockly.Python.ORDER_ATOMIC) ||
     "''";
-  return `hc06.write(${text})\n`;
+  return `hc06.write(${text}.encode() if isinstance(${text}, str) else ${text})\n`;
 };
 
+// ⚠️  hc06.read() devuelve None si no hay datos en el buffer.
+//     El guard `or b''` evita crashes al encadenar con text_decode u otras operaciones.
 Blockly.Python["hc06_read"] = function (block) {
-  return [`hc06.read()`, Blockly.Python.ORDER_ATOMIC];
+  return [`(hc06.read() or b'')`, Blockly.Python.ORDER_ATOMIC];
 };
 
 Blockly.Python["hc06_any"] = function (block) {
@@ -1837,18 +1859,22 @@ Blockly.Python["uart_init"] = function (block) {
   return `${name} = UART(${id}, tx=${tx}, rx=${rx}, baudrate=${baud})\n`;
 };
 
+// ⚠️  UART.write() requiere bytes o bytearray. Si el usuario pasa un str,
+//     se convierte automáticamente con .encode() para evitar TypeError.
 Blockly.Python["uart_write"] = function (block) {
   const name = block.getFieldValue("NAME");
   const data =
     Blockly.Python.valueToCode(block, "DATA", Blockly.Python.ORDER_ATOMIC) ||
     "b''";
-  return `${name}.write(${data})\n`;
+  return `${name}.write(${data}.encode() if isinstance(${data}, str) else ${data})\n`;
 };
 
+// ⚠️  UART.read() devuelve None si no hay datos disponibles todavía.
+//     El guard `or b''` evita AttributeError si se encadena con .decode() u otras operaciones.
 Blockly.Python["uart_read"] = function (block) {
   const name = block.getFieldValue("NAME");
   const nbytes = block.getFieldValue("NBYTES");
-  const code = `${name}.read(${nbytes})`;
+  const code = `(${name}.read(${nbytes}) or b'')`;
   return [code, Blockly.Python.ORDER_ATOMIC];
 };
 
@@ -1893,9 +1919,12 @@ Blockly.Python["i2c_read"] = function (block) {
   return [code, Blockly.Python.ORDER_ATOMIC];
 };
 
+// 🐛 BUG FIX: `id` no se leía del bloque — generaba SPI(undefined, ...).
+//    Se agrega `block.getFieldValue("ID")` que faltaba.
 Blockly.Python["spi_init"] = function (block) {
   const name = block.getFieldValue("NAME");
-  const sck = block.getFieldValue("SCK");
+  const id   = block.getFieldValue("ID");   // ← faltaba esta línea
+  const sck  = block.getFieldValue("SCK");
   const mosi = block.getFieldValue("MOSI");
   const miso = block.getFieldValue("MISO");
   const baud = block.getFieldValue("BAUD");
@@ -2031,6 +2060,9 @@ Blockly.Python["wifi_init"] = function (block) {
   return code;
 };
 
+// ⚠️  El bucle original era infinito — si la contraseña es incorrecta o el
+//     router no responde, la ESP32 se cuelga para siempre sin mensaje de error.
+//     Se agrega un timeout de 10 segundos (20 intentos × 0.5s) con mensaje claro.
 Blockly.Python["wifi_connect"] = function (block) {
   const variable = block.getFieldValue("VAR");
   const ssid = block.getFieldValue("SSID");
@@ -2042,8 +2074,12 @@ Blockly.Python["wifi_connect"] = function (block) {
     `${variable} = network.WLAN(network.STA_IF)\n` +
     `${variable}.active(True)\n` +
     `${variable}.connect("${ssid}", "${pass}")\n` +
-    `while not ${variable}.isconnected():\n` +
-    "    time.sleep(0.5)\n"
+    `_wifi_timeout = 20\n` +
+    `while not ${variable}.isconnected() and _wifi_timeout > 0:\n` +
+    `    time.sleep(0.5)\n` +
+    `    _wifi_timeout -= 1\n` +
+    `if not ${variable}.isconnected():\n` +
+    `    print("Error: no se pudo conectar al WiFi '${ssid}'")\n`
   );
 };
 
@@ -2079,9 +2115,8 @@ Blockly.Python["wifi_ap"] = function (block) {
   );
 };
 
-Blockly.Python["wifi_start_ap"] = function () {
-  return "wifi_start_access_point()\n";
-};
+// wifi_start_ap está definido más abajo junto al portal cautivo (incluye import_network).
+// Se eliminó esta copia duplicada para evitar que la segunda sobreescriba silenciosamente.
 
 Blockly.Python["wifi_scan"] = function (block) {
   const variable = block.getFieldValue("VAR");
@@ -2165,12 +2200,15 @@ Blockly.Python["socket_sendall"] = function (block) {
   return `${variable}.sendall(${data})\n`;
 };
 
+// ⚠️  socket.recv() puede devolver None o bytes vacíos en conexiones lentas.
+//     Guard + .strip() para consistencia con text_decode.
+//     No encadenar con text_decode — este bloque ya decodifica.
 Blockly.Python["socket_receive"] = function (block) {
   const variable = block.getFieldValue("VAR");
   const size = block.getFieldValue("SIZE");
 
   return [
-    `${variable}.recv(${size}).decode()`,
+    `(${variable}.recv(${size}) or b'').decode().strip()`,
     Blockly.Python.ORDER_FUNCTION_CALL,
   ];
 };
@@ -2268,8 +2306,9 @@ Blockly.Python["ble_set_name"] = function (block) {
   return `uart = BLEUART(ble, "${name}")\n`;
 };
 
+// ⚠️  uart.read() (BLE) devuelve None si no hay datos. Guard igual que UART físico.
 Blockly.Python["ble_read"] = function (block) {
-  return ["uart.read()", Blockly.Python.ORDER_ATOMIC];
+  return [`(uart.read() or b'')`, Blockly.Python.ORDER_ATOMIC];
 };
 
 Blockly.Python["ble_on_receive"] = function (block) {
@@ -2282,6 +2321,7 @@ Blockly.Python["ble_on_receive"] = function (block) {
   return `uart.irq(handler=${datos_recibidos})\n`;
 };
 
+// ⚠️  BLE uart.write() también requiere bytes. Mismo patrón que uart_write y hc06_send.
 Blockly.Python["ble_write"] = function (block) {
   const value = Blockly.Python.valueToCode(
     block,
@@ -2289,7 +2329,7 @@ Blockly.Python["ble_write"] = function (block) {
     Blockly.Python.ORDER_NONE
   ) || "''";
 
-  return `uart.write(${value})\n`;
+  return `uart.write(${value}.encode() if isinstance(${value}, str) else ${value})\n`;
 };
 
 Blockly.Python["portal_init"] = function () {

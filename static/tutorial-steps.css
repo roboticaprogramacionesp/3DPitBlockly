@@ -439,3 +439,130 @@
   vertical-align: middle;
   margin: 0 4px;
 }
+
+/* ── Protección: btnWiring siempre visible ── */
+#btnWiring {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   CONTROL DE TAMAÑO DE TEXTO
+════════════════════════════════════════════════════════════════ */
+
+/* Barra de tamaño de texto debajo del header */
+.ts-size-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 13px 6px;
+  background: rgba(36, 34, 78, .6);
+  border-bottom: 1px solid #2e2e50;
+}
+
+.ts-size-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: #44447a;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.ts-size-btn {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(124, 106, 247, .1);
+  border: 1px solid rgba(124, 106, 247, .25);
+  border-radius: 6px;
+  color: #b0a8f0;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .15s, border-color .15s, transform .12s;
+  line-height: 1;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.ts-size-btn:hover {
+  background: rgba(124, 106, 247, .28);
+  border-color: #7c6af7;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.ts-size-btn:active {
+  transform: scale(.93);
+}
+
+.ts-size-display {
+  font-size: 11px;
+  font-weight: 700;
+  color: #7c6af7;
+  min-width: 34px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.ts-size-track {
+  flex: 1;
+  height: 4px;
+  background: #252545;
+  border-radius: 4px;
+  position: relative;
+  cursor: pointer;
+}
+
+.ts-size-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #7c6af7, #4ecdc4);
+  border-radius: 4px;
+  transition: width .15s ease;
+  pointer-events: none;
+}
+
+/* ── Escalas de tamaño ── */
+/* Aplicadas en #ts-panel con data-fs="S|M|L|XL" */
+
+#ts-panel[data-fs="S"] {
+  font-size: 12px;
+}
+#ts-panel[data-fs="S"] .ts-title        { font-size: 13px; }
+#ts-panel[data-fs="S"] .ts-step-title   { font-size: 12px; }
+#ts-panel[data-fs="S"] .ts-step-desc    { font-size: 12px; }
+#ts-panel[data-fs="S"] .ts-btn          { font-size: 11px; }
+
+#ts-panel[data-fs="M"] {
+  font-size: 14px; /* valor base original */
+}
+
+#ts-panel[data-fs="L"] {
+  font-size: 17px;
+  width: 440px;
+}
+#ts-panel[data-fs="L"] .ts-title        { font-size: 18px; }
+#ts-panel[data-fs="L"] .ts-step-title   { font-size: 17px; }
+#ts-panel[data-fs="L"] .ts-step-desc    { font-size: 17px; }
+#ts-panel[data-fs="L"] .ts-step-num     { width: 30px; height: 30px; font-size: 14px; }
+#ts-panel[data-fs="L"] .ts-btn          { font-size: 15px; padding: 10px 14px; }
+#ts-panel[data-fs="L"] .ts-bloque-chip  { font-size: 13px; }
+
+#ts-panel[data-fs="XL"] {
+  font-size: 21px;
+  width: 500px;
+}
+#ts-panel[data-fs="XL"] .ts-title        { font-size: 22px; }
+#ts-panel[data-fs="XL"] .ts-step-title   { font-size: 20px; }
+#ts-panel[data-fs="XL"] .ts-step-desc    { font-size: 21px; line-height: 1.7; }
+#ts-panel[data-fs="XL"] .ts-step-num     { width: 36px; height: 36px; font-size: 17px; }
+#ts-panel[data-fs="XL"] .ts-btn          { font-size: 18px; padding: 12px 16px; }
+#ts-panel[data-fs="XL"] .ts-bloque-chip  { font-size: 16px; }
+#ts-panel[data-fs="XL"] .ts-label        { font-size: 12px; }
+#ts-panel[data-fs="XL"] .ts-progress-txt { font-size: 13px; }
