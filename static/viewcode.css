@@ -5,303 +5,263 @@
 
 /* ── Contenedor raíz de la vista ── */
 #viewCode {
-    background: #1e1e1e;
-    color: #d4d4d4;
-  }
-  
-  /* Quita el padding del wrapper para que el layout use 100% */
-  #codeContainer {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-    /* SIN padding — el layout interno maneja el espacio */
-  }
-  
-  /* ── Barra de herramientas superior ── */
-  #codeBar {
-    height: 40px;
-    background: #222;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 4px 10px;
-    box-sizing: border-box;
-    flex-shrink: 0;
-  }
-  
-  #codeBar button {
-    background: #333;
-    color: white;
-    border: none;
-    padding: 4px 8px;
-    cursor: pointer;
-    border-radius: 3px;
-  }
-  
-  #codeBar button:hover {
-    background: #555;
-  }
-  
-  #fileNameInput {
-    background: #111;
-    color: #0f0;
-    border: 1px solid #444;
-    border-radius: 3px;
-    padding: 4px 8px;
-    width: 160px;
-    font-size: 13px;
-  }
-  
-  /* ── Layout principal: explorer | editor+terminal ── */
-  #codeLayout {
-    display: flex;
-    flex: 1;           /* ocupa todo el alto restante */
-    width: 100%;
-    overflow: hidden;
-    min-height: 0;     /* necesario para flex children con overflow */
-  }
-  
-  /* ============================================================
-     EXPLORADOR DE ARCHIVOS (columna izquierda)
-     ============================================================ */
-  #espExplorer {
-    width: 200px;
-    min-width: 140px;
-    max-width: 280px;
-    flex-shrink: 0;
-  
-    background: #181818;
-    border-right: 1px solid #333;
-  
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-  
-  #explorerHeader {
-    height: 40px;
-    background: #222;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 10px;
-    box-sizing: border-box;
-    font-size: 12px;
-    font-weight: 600;
-    color: #aaa;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    flex-shrink: 0;
-  }
-  
-  #explorerHeader button {
-    background: #333;
-    border: none;
-    color: #aaa;
-    cursor: pointer;
-    padding: 2px 4px;
-    border-radius: 3px;
-  }
-  
-  #explorerHeader button:hover {
-    background: #333;
-    color: #fff;
-  }
-  
-  #fileList {
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
-  
-  /* Scrollbar del explorador */
-  #fileList::-webkit-scrollbar {
-    width: 5px;
-  }
-  #fileList::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  #fileList::-webkit-scrollbar-thumb {
-    background: #333;
-    border-radius: 3px;
-  }
-  
-  /* Fila de archivo */
-  .file-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 5px 8px;
-    font-size: 13px;
-    color: #ccc;
-    border-bottom: 1px solid #222;
-    cursor: pointer;
-  }
-  
-  .file-row:hover {
-    background: #2a2a2a;
-  }
-  
-  .file-row.active {
-    background: #1e3a6e;
-    color: #fff;
-  }
-  
-  .file-name {
-    flex: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  
-  .file-icons {
-    display: flex;
-    gap: 4px;
-    opacity: 0;
-    transition: opacity 0.15s;
-  }
-  
-  .file-row:hover .file-icons {
-    opacity: 1;
-  }
-  
-  /* Ítem de archivo (estilo alternativo, por compatibilidad) */
-  .file-item {
-    padding: 6px 10px;
-    cursor: pointer;
-    color: #ccc;
-    font-size: 13px;
-  }
-  
-  .file-item:hover {
-    background: #2a2a2a;
-  }
-  
-  .file-item.active {
-    background: #3454d1;
-    color: white;
-  }
-  
-  /* ============================================================
-     COLUMNA DERECHA: editor + splitter + terminal
-     ============================================================ */
-  #codeSplitContainer {
-    display: flex;
-    flex-direction: column;
-    flex: 1;           /* ← ocupa TODO el ancho restante */
-    min-width: 0;
-    overflow: hidden;
-  }
-  
-  /* ── Editor (arriba) ── */
-  #editorWrapper {
-    flex: 1;
-    min-height: 120px;
-    overflow: hidden;
-    position: relative;
-  }
-  
-  /* CodeMirror 5 */
-  .CodeMirror {
-    height: 100%;
-    font-family: 'Consolas', 'Courier New', monospace;
-    font-size: 14px;
-    background: #1e1e1e;
-    color: #d4d4d4;
-  }
-  
-  .cm-s-dracula.CodeMirror {
-    background: #1e1e1e;
-    color: #d4d4d4;
-  }
-  
-  .CodeMirror-scroll {
-    min-height: 100%;
-  }
-  
-  .CodeMirror-empty {
-    color: #555;
-  }
-  
-  .CodeMirror pre.CodeMirror-placeholder {
-    color: #555 !important;
-  }
-  
-  /* ── Splitter (handle de resize) ── */
-  #splitter {
-    height: 6px;
-    background: #3a3a3a;
-    cursor: row-resize;
-    flex-shrink: 0;
-    transition: background 0.15s;
-  }
-  
-  #splitter:hover {
-    background: #3454d1;
-  }
-  
-  /* ── Terminal (abajo) ── */
-  #terminalWrapper {
-    flex: 0 0 220px;   /* altura inicial razonable */
-    min-height: 80px;
-    background: #1e1e1e;
-    overflow: hidden;
-    border-top: 1px solid #333;
-  }
-  
-  #terminal {
-    width: 100%;
-    height: 100%;
-    padding: 4px 6px;
-    box-sizing: border-box;
-  }
-  
-  /* Scrollbar de la terminal */
-  #terminalWrapper .xterm-viewport::-webkit-scrollbar {
-    width: 5px;
-  }
-  #terminalWrapper .xterm-viewport::-webkit-scrollbar-thumb {
-    background: #444;
-    border-radius: 3px;
-  }
-  
-  /* ============================================================
-     SPRITE DE ÍCONOS SVG
-     ============================================================ */
-  .icon-btn {
-    display: inline-block;
-    width: 24px;
-    height: 24px;
-    background-image: url("img/icons3dpit.svg");
-    background-repeat: no-repeat;
-    background-size: auto 24px;
-    cursor: pointer;
-    vertical-align: middle;
-    visibility: hidden;
-  }
-  
-  /* Posiciones del sprite */
-  .icon-save           { background-position-x:   0px; }
-  .icon-load           { background-position-x: -24px; }
-  .icon-clear          { background-position-x: -48px; }
-  .icon-run            { background-position-x: -72px; }
-  .icon-stop           { background-position-x: -96px; }
-  .icon-disconnect     { background-position-x: -120px; }
-  .icon-connect        { background-position-x: -144px; }
-  .icon-reload         { background-position-x: -168px; }
-  .icon-help           { background-position-x: -192px; }
-  .icon-new            { background-position-x: -216px; }
-  .icon-save-py        { background-position-x: -240px; }
-  .icon-load-py        { background-position-x: -264px; }
-  .icon-reload-esp32   { background-position-x: -288px; }
-  .icon-download       { background-position-x: -312px; }
-  .icon-burnfimware    { background-position-x: -336px; }
-  .icon-conexiones     { background-position-x: -360px; }
+  background: #1e1e1e;
+  color: #d4d4d4;
+}
 
-  /* Los íconos dentro del fileList siempre visibles */
-  #fileList .icon-btn {
-    visibility: visible;
-    transition: opacity 0.2s;
-  }
+#codeContainer {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+/* ── Barra de herramientas superior ── */
+#codeBar {
+  height: 40px;
+  background: #222;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+#codeBar button {
+  background: #333;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+#codeBar button:hover { background: #555; }
+
+#fileNameInput {
+  background: #111;
+  color: #0f0;
+  border: 1px solid #444;
+  border-radius: 3px;
+  padding: 4px 8px;
+  width: 160px;
+  font-size: 13px;
+}
+
+/* ── Layout principal: explorer | editor+terminal ── */
+#codeLayout {
+  display: flex;
+  flex: 1;
+  width: 100%;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* ============================================================
+   EXPLORADOR DE ARCHIVOS (columna izquierda)
+   ============================================================ */
+#espExplorer {
+  width: 200px;
+  min-width: 140px;
+  max-width: 280px;
+  flex-shrink: 0;
+  background: #181818;
+  border-right: 1px solid #333;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#explorerHeader {
+  height: 40px;
+  background: #222;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  box-sizing: border-box;
+  font-size: 12px;
+  font-weight: 600;
+  color: #aaa;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+#explorerHeader button {
+  background: #333;
+  border: none;
+  color: #aaa;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+#explorerHeader button:hover { background: #333; color: #fff; }
+
+#fileList {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+#fileList::-webkit-scrollbar { width: 5px; }
+#fileList::-webkit-scrollbar-track { background: transparent; }
+#fileList::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+
+.file-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 8px;
+  font-size: 13px;
+  color: #ccc;
+  border-bottom: 1px solid #222;
+  cursor: pointer;
+}
+
+.file-row:hover { background: #2a2a2a; }
+.file-row.active { background: #1e3a6e; color: #fff; }
+
+.file-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-icons {
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.file-row:hover .file-icons { opacity: 1; }
+
+.file-item { padding: 6px 10px; cursor: pointer; color: #ccc; font-size: 13px; }
+.file-item:hover { background: #2a2a2a; }
+.file-item.active { background: #3454d1; color: white; }
+
+/* ============================================================
+   COLUMNA DERECHA: editor + splitter + terminal
+   ============================================================ */
+#codeSplitContainer {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;   /* CRÍTICO: permite que flex hijos se compriman */
+  overflow: hidden;
+
+}
+
+/* ── Editor (arriba) ── */
+#editorWrapper {
+  flex: auto;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+/* CodeMirror ocupa exactamente el 100% del wrapper */
+#editorWrapper .CodeMirror {
+  flex: auto;
+  min-height: 0;
+  height: 100%;
+}
+
+.CodeMirror {
+  height: 100%;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 14px;
+  background: #1e1e1e;
+  color: #d4d4d4;
+}
+
+.cm-s-dracula.CodeMirror { background: #1e1e1e; color: #d4d4d4; }
+
+/* CRÍTICO: sin min-height — evita que CodeMirror expanda el wrapper */
+.CodeMirror-scroll {
+  min-height: 0 !important;
+  height: 100% !important;
+  box-sizing: border-box;
+}
+
+.CodeMirror-empty { color: #555; }
+.CodeMirror pre.CodeMirror-placeholder { color: #555 !important; }
+
+/* ── Splitter ── */
+#splitter {
+  height: 6px;
+  background: #3a3a3a;
+  cursor: row-resize;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+
+#splitter:hover { background: #3454d1; }
+
+/* ── Terminal (abajo): ocupa todo el espacio restante ── */
+#terminalWrapper {
+  flex: 1;
+  min-height: 80px;
+  background: #1e1e1e;
+  overflow: hidden;
+  border-top: 1px solid #333;
+  margin-bottom: 10px;
+}
+
+/* xterm ocupa el 100% del wrapper */
+#terminal {
+  width: 100%;
+  height: 100%;
+  padding: 4px 6px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Scrollbar terminal */
+#terminalWrapper .xterm-viewport::-webkit-scrollbar { width: 5px; }
+#terminalWrapper .xterm-viewport::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
+
+/* ============================================================
+   SPRITE DE ÍCONOS SVG
+   ============================================================ */
+.icon-btn {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  background-image: url("img/icons3dpit.svg");
+  background-repeat: no-repeat;
+  background-size: auto 24px;
+  cursor: pointer;
+  vertical-align: middle;
+  visibility: hidden;
+}
+
+.icon-save           { background-position-x:   0px; }
+.icon-load           { background-position-x: -24px; }
+.icon-clear          { background-position-x: -48px; }
+.icon-run            { background-position-x: -72px; }
+.icon-stop           { background-position-x: -96px; }
+.icon-disconnect     { background-position-x: -120px; }
+.icon-connect        { background-position-x: -144px; }
+.icon-reload         { background-position-x: -168px; }
+.icon-help           { background-position-x: -192px; }
+.icon-new            { background-position-x: -216px; }
+.icon-save-py        { background-position-x: -240px; }
+.icon-load-py        { background-position-x: -264px; }
+.icon-reload-esp32   { background-position-x: -288px; }
+.icon-download       { background-position-x: -312px; }
+.icon-burnfimware    { background-position-x: -336px; }
+.icon-conexiones     { background-position-x: -360px; }
+
+#fileList .icon-btn {
+  visibility: visible;
+  transition: opacity 0.2s;
+}

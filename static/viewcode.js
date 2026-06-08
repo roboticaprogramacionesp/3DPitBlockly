@@ -1,13 +1,10 @@
 /**
  * viewcode.js
- * Lógica exclusiva de la vista #viewCode:
- *   - Inicialización de xterm.js + FitAddon
- *   - Splitter drag (editor ↕ terminal)
- *   - ResizeObserver para auto-fit de la terminal
- *
- * Dependencias globales esperadas (cargadas antes en index.html):
- *   Terminal, FitAddon  — xterm.js + addon
- *   editor              — instancia de CodeMirror (creada en main.js)
+ * Vista #viewCode:
+ *   - Terminal xterm.js + FitAddon
+ *   - Splitter drag (editor ↕ terminal) con refresh de CodeMirror
+ *   - ResizeObserver para auto-fit
+ *   - refreshTerminalFit() compatible con serial-monitor.js
  */
 
 /* ============================================================
@@ -20,7 +17,6 @@ let term;
 /** @type {import('xterm-addon-fit').FitAddon} */
 let fitAddon;
 
-/** ResizeObserver para ajustar la terminal al contenedor */
 let _termResizeObserver;
 
 /**
@@ -28,80 +24,169 @@ let _termResizeObserver;
  * Puede llamarse de forma segura múltiples veces.
  */
 function initTerminal() {
-  if (term) return; // ya inicializada
+  if (term) return;
 
   fitAddon = new FitAddon.FitAddon();
 
   term = new Terminal({
     cursorBlink: true,
-    cursorStyle: 'block',
+    cursorStyle: "block",
     scrollback: 5000,
     convertEol: true,
     fontSize: 14,
     fontFamily: 'Consolas, "Courier New", monospace',
     theme: {
-      background:         '#1e1e1e',
-      foreground:         '#d4d4d4',
-      cursor:             '#ffffff',
-      selectionBackground:'rgba(255,255,255,0.2)',
-      black:              '#000000',
-      red:                '#cd3131',
-      green:              '#0dbc79',
-      yellow:             '#e5e510',
-      blue:               '#2472c8',
-      magenta:            '#bc3fbc',
-      cyan:               '#11a8cd',
-      white:              '#e5e5e5',
-      brightBlack:        '#666666',
-      brightRed:          '#f14c4c',
-      brightGreen:        '#23d18b',
-      brightYellow:       '#f5f543',
-      brightBlue:         '#3b8eea',
-      brightMagenta:      '#d670d6',
-      brightCyan:         '#29b8db',
-      brightWhite:        '#ffffff',
+      background:          "#1e1e1e",
+      foreground:          "#d4d4d4",
+      cursor:              "#ffffff",
+      selectionBackground: "rgba(255,255,255,0.2)",
+      black:               "#000000",
+      red:                 "#cd3131",
+      green:               "#0dbc79",
+      yellow:              "#e5e510",
+      blue:                "#2472c8",
+      magenta:             "#bc3fbc",
+      cyan:                "#11a8cd",
+      white:               "#e5e5e5",
+      brightBlack:         "#666666",
+      brightRed:           "#f14c4c",
+      brightGreen:         "#23d18b",
+      brightYellow:        "#f5f543",
+      brightBlue:          "#3b8eea",
+      brightMagenta:       "#d670d6",
+      brightCyan:          "#29b8db",
+      brightWhite:         "#ffffff",
     },
   });
 
   term.loadAddon(fitAddon);
 
-  const el = document.getElementById('terminal');
+  const el = document.getElementById("terminal");
+  if (!el) { console.warn("[viewcode] #terminal no encontrado"); return; }
   term.open(el);
 
-  // Primer ajuste de tamaño
   requestAnimationFrame(() => fitAddon.fit());
-
-  // Auto-resize cuando el contenedor cambia de tamaño
   _enableTerminalAutoResize();
+  _enableTerminalCopy();
 
-  // Activar input serial ahora que term ya existe
-  // enableTerminalInput() está definida en main.js
-  if (typeof enableTerminalInput === 'function') {
-    enableTerminalInput();
+  // Activar input serial (teclado directo sobre xterm)
+  if (typeof enableTerminalInput === "function") enableTerminalInput();
+}
+
+/* ── Clic derecho en la terminal principal: copiar selección o todo ── */
+function _enableTerminalCopy() {
+  const wrapper = document.getElementById("terminalWrapper");
+  if (!wrapper) return;
+
+  wrapper.addEventListener("contextmenu", async (e) => {
+    e.preventDefault();
+    if (!term) return;
+
+    const selected = term.getSelection();
+    const text     = selected || _getMainTerminalText();
+    if (!text) return;
+
+    let copied = false;
+
+    // 1. Clipboard API estándar
+    if (navigator.clipboard?.writeText) {
+      try { await navigator.clipboard.writeText(text); copied = true; } catch (_) {}
+    }
+
+    // 2. pywebview (desktop)
+    if (!copied && window.pywebview?.api?.set_clipboard) {
+      try {
+        const r = await window.pywebview.api.set_clipboard(text);
+        copied = r?.status === "ok";
+      } catch (_) {}
+    }
+
+    // 3. Fallback textarea
+    if (!copied) {
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.cssText = "position:fixed;opacity:0;top:0;left:0";
+        document.body.appendChild(ta);
+        ta.select();
+        copied = document.execCommand("copy");
+        document.body.removeChild(ta);
+      } catch (_) {}
+    }
+
+    if (copied) _termToast(selected ? "Selección copiada" : "Todo copiado");
+  });
+}
+
+/** Extrae todo el texto visible del buffer de `term` como string plano. */
+function _getMainTerminalText() {
+  if (!term) return "";
+  const buffer = term.buffer.active;
+  const lines  = [];
+  for (let i = 0; i < buffer.length; i++) {
+    const line = buffer.getLine(i);
+    if (line) lines.push(line.translateToString(true));
   }
+  while (lines.length && !lines[lines.length - 1].trim()) lines.pop();
+  return lines.join("\n");
+}
+
+/** Toast minimalista sobre la terminal principal. */
+function _termToast(msg) {
+  document.getElementById("_termToast")?.remove();
+  const toast = document.createElement("div");
+  toast.id = "_termToast";
+  toast.textContent = msg;
+  toast.style.cssText = [
+    "position:fixed", "z-index:9999",
+    "background:#2472c8", "color:#fff",
+    "font-family:Consolas,monospace", "font-size:11px",
+    "padding:4px 12px", "border-radius:4px",
+    "box-shadow:0 2px 8px rgba(0,0,0,.5)",
+    "pointer-events:none", "opacity:1",
+    "transition:opacity .4s ease",
+  ].join(";");
+  const wrapper = document.getElementById("terminalWrapper");
+  if (wrapper) {
+    const r = wrapper.getBoundingClientRect();
+    toast.style.left   = (r.left + 10) + "px";
+    toast.style.bottom = (window.innerHeight - r.bottom + 8) + "px";
+  } else {
+    toast.style.bottom = "60px"; toast.style.right = "20px";
+  }
+  document.body.appendChild(toast);
+  setTimeout(() => { toast.style.opacity = "0"; }, 1400);
+  setTimeout(() => toast.remove(), 1900);
 }
 
 /**
- * Hace fit de la terminal con un pequeño delay para que el DOM
- * haya terminado de repintar.
+ * Fit de la terminal con delay para que el DOM haya repintado.
+ * También refresca CodeMirror si está visible.
  */
 function refreshTerminalFit() {
   setTimeout(() => {
-    if (!fitAddon || !term) return;
-    fitAddon.fit();
-    term.scrollToBottom();
+    if (fitAddon && term) {
+      fitAddon.fit();
+      term.scrollToBottom();
+    }
+    // CodeMirror necesita refresh si el wrapper cambió de tamaño
+    if (typeof editor !== "undefined" && editor.refresh) {
+      editor.refresh();
+    }
+    // Monitor serial flotante
+    if (typeof SerialMonitor !== "undefined" && typeof SerialMonitor.fitTerminal === "function") {
+      SerialMonitor.fitTerminal();
+    }
   }, 80);
 }
 
 /** @private */
 function _enableTerminalAutoResize() {
-  const el = document.getElementById('terminal');
+  const el = document.getElementById("terminal");
   if (!el) return;
-
   _termResizeObserver = new ResizeObserver(() => {
     if (fitAddon && term) fitAddon.fit();
   });
-
   _termResizeObserver.observe(el);
 }
 
@@ -110,84 +195,95 @@ function _enableTerminalAutoResize() {
    ============================================================ */
 
 (function initSplitter() {
-  const splitter      = document.getElementById('splitter');
-  const editorWrapper = document.getElementById('editorWrapper');
-  const splitContainer = document.getElementById('codeSplitContainer');
+  const splitter       = document.getElementById("splitter");
+  const editorWrapper  = document.getElementById("editorWrapper");
+  const terminalWrapper = document.getElementById("terminalWrapper");
+  const splitContainer = document.getElementById("codeSplitContainer");
 
-  if (!splitter || !editorWrapper || !splitContainer) {
-    console.warn('[viewcode] Elementos del splitter no encontrados');
+  if (!splitter || !editorWrapper || !terminalWrapper || !splitContainer) {
+    console.warn("[viewcode] Elementos del splitter no encontrados");
     return;
   }
 
-  const MIN_EDITOR_H   = 100; // px mínimos para el editor
-  const MIN_TERMINAL_H = 80;  // px mínimos para la terminal
+  // Limpiar cualquier flex inline que pudiera haber quedado de sesiones anteriores
+  terminalWrapper.style.flex = "";
+  terminalWrapper.style.removeProperty("flex");
+
+  const MIN_EDITOR_H   = 100;
+  const MIN_TERMINAL_H = 120;
 
   let isDragging = false;
 
-  splitter.addEventListener('mousedown', (e) => {
+  // ── Función central de resize ──────────────────────────────
+  function applyResize(clientY) {
+    const rect    = splitContainer.getBoundingClientRect();
+    let editorH   = clientY - rect.top;
+
+    editorH = Math.max(MIN_EDITOR_H, Math.min(editorH, rect.height - MIN_TERMINAL_H - splitter.offsetHeight));
+
+    // Solo fijar el editor — la terminal toma el resto automáticamente con flex:1
+    editorWrapper.style.flex = `0 0 ${editorH}px`;
+
+    // Limpiar cualquier flex inline que haya quedado en terminalWrapper
+    terminalWrapper.style.flex = "";
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        if (fitAddon && term) fitAddon.fit();
+        if (typeof editor !== "undefined" && editor.refresh) editor.refresh();
+      });
+    });
+  }
+
+  // ── Mouse ──────────────────────────────────────────────────
+  splitter.addEventListener("mousedown", (e) => {
     e.preventDefault();
     isDragging = true;
-    document.body.style.cursor = 'row-resize';
-    document.body.style.userSelect = 'none';
+    document.body.style.cursor    = "row-resize";
+    document.body.style.userSelect = "none";
   });
 
-  document.addEventListener('mousemove', (e) => {
+  document.addEventListener("mousemove", (e) => {
     if (!isDragging) return;
-
-    const rect = splitContainer.getBoundingClientRect();
-    let newH = e.clientY - rect.top;
-
-    const maxH = rect.height - MIN_TERMINAL_H - splitter.offsetHeight;
-
-    newH = Math.max(MIN_EDITOR_H, Math.min(newH, maxH));
-
-    editorWrapper.style.flex = `0 0 ${newH}px`;
-
-    // Refrescar terminal sin acumular timers
-    if (fitAddon && term) fitAddon.fit();
+    applyResize(e.clientY);
   }, { passive: true });
 
-  document.addEventListener('mouseup', () => {
+  document.addEventListener("mouseup", () => {
     if (!isDragging) return;
     isDragging = false;
-    document.body.style.cursor = '';
-    document.body.style.userSelect = '';
-    refreshTerminalFit();
+    document.body.style.cursor    = "";
+    document.body.style.userSelect = "";
+    // Al soltar: fit inmediato + segundo fit con delay para navegadores lentos
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        if (fitAddon && term) fitAddon.fit();
+        if (typeof editor !== "undefined" && editor.refresh) editor.refresh();
+        setTimeout(() => refreshTerminalFit(), 120);
+      });
+    });
   }, { passive: true });
 
-  // Soporte touch (tablets)
-  splitter.addEventListener('touchstart', (e) => {
-    isDragging = true;
-  }, { passive: true });
+  // ── Touch ──────────────────────────────────────────────────
+  splitter.addEventListener("touchstart", () => { isDragging = true; }, { passive: true });
 
-  document.addEventListener('touchmove', (e) => {
+  document.addEventListener("touchmove", (e) => {
     if (!isDragging) return;
-    const touch = e.touches[0];
-    const rect = splitContainer.getBoundingClientRect();
-    let newH = touch.clientY - rect.top;
-    const maxH = rect.height - MIN_TERMINAL_H - splitter.offsetHeight;
-    newH = Math.max(MIN_EDITOR_H, Math.min(newH, maxH));
-    editorWrapper.style.flex = `0 0 ${newH}px`;
+    applyResize(e.touches[0].clientY);
   }, { passive: true });
 
-  document.addEventListener('touchend', () => {
+  document.addEventListener("touchend", () => {
     isDragging = false;
     refreshTerminalFit();
   }, { passive: true });
 })();
 
 /* ============================================================
-   INICIALIZACIÓN AL CARGAR EL DOM
+   INICIALIZACIÓN
    ============================================================ */
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener("DOMContentLoaded", () => {
   initTerminal();
 });
 
-/* Re-ajustar cuando la ventana cambie de tamaño */
-window.addEventListener('resize', () => {
+window.addEventListener("resize", () => {
   refreshTerminalFit();
-  // CodeMirror también necesita refresh si está visible
-  if (typeof editor !== 'undefined' && editor.refresh) {
-    editor.refresh();
-  }
 });

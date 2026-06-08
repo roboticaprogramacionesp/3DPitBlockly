@@ -2001,7 +2001,7 @@ var TUTORIALS = {
     steps: [
       {
         titulo: "¿Qué es Bluetooth LE?",
-        desc: "<b>Bluetooth Low Energy (BLE)</b> permite comunicación inalámbrica de bajo consumo. Usaremos el patrón <b>BLEUART</b> que emula un puerto serial sobre BLE. Al terminar generaremos código como:<br><pre>ble = bluetooth.BLE()\nuart = BLEUART(ble, \"ESP32-BLE\")\nuart.irq(handler=datos_recibidos)</pre>",
+        desc: "<b>Bluetooth Low Energy (BLE)</b> permite comunicación inalámbrica de bajo consumo. Usaremos el patrón <b>BLEUART</b> que emula un puerto serial sobre BLE.",
         highlightCat: null, bloque: null
       },
       {
