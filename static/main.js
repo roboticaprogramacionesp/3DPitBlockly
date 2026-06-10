@@ -397,7 +397,7 @@ function showMessageModal(message) {
   if (!modal || !msg || !btnAccept) { console.log(message); return; }
   msg.textContent = message;
   btnCancel.style.display = "none";
-  btnAccept.textContent = "OK";
+  btnAccept.textContent = "OK: ";
   modal.style.display = "flex";
   btnAccept.onclick = () => { modal.style.display = "none"; };
 }
@@ -675,8 +675,8 @@ async function sendViaRawRepl(codeStr, chunkSz = 256) {
     await _waitLocal("\x04", 10000);
 
     // 5. Volver a friendly REPL
-    await sendSerial("\x02");
-    await sleep(100);
+    //await sendSerial("\x02");
+    //await sleep(100);
 
     return true;
 
@@ -766,7 +766,7 @@ document.getElementById("btnUploadCode").addEventListener("click", async () => {
       `_f.write(${JSON.stringify(codeStr)})`,
       `_f.close()`,
       `del _f`,
-      `print('OK:${fileName}')`,
+      `print('OK :${fileName}')`,
     ].join("\n");
 
     const scriptBytes = encoder.encode(writeScript);

@@ -2015,26 +2015,26 @@ var TUTORIALS = {
         highlightCat: "Comunicación Inalambrica", expandCat: null, bloque: null
       },
       {
-        titulo: "Abre: BLE",
+        titulo: "Abre: BluetoothBLE",
         desc: "Dentro de <b>Comunicación Inalambrica</b>, selecciona la subcategoría <b>BLE</b> para ver sus bloques.",
-        highlightCat: "BLE", expandCat: "Comunicación Inalambrica", bloque: null
+        highlightCat: "BluetoothBLE", expandCat: "Comunicación Inalambrica", bloque: null
       },
       {
         titulo: "Arrastra: Inicializar BLE (bluetooth.BLE)",
-        desc: "Arrastra el bloque <em>Inicializar BLE</em> al área de trabajo. Crea la instancia del hardware BLE del ESP32. Va al inicio, antes de cualquier otro bloque BLE.",
-        highlightCat: "BLE", expandCat: "Comunicación Inalambrica",
-        bloque: "ble_init_uart", bloqueLabel: "Inicializar BLE"
+        desc: "Arrastra el bloque <em>Inicializar BluetoothBLE</em> al área de trabajo. Crea la instancia del hardware BLE del ESP32. Va al inicio, antes de cualquier otro bloque BLE.",
+        highlightCat: "BluetoothBLE", expandCat: "Comunicación Inalambrica",
+        bloque: "ble_init_uart", bloqueLabel: "Inicializar BluetoothBLE"
       },
       {
         titulo: "Arrastra: Establecer nombre BLE (BLEUART)",
         desc: "Arrastra el bloque <em>Establecer nombre BLE</em>. Escribe el nombre con el que aparecerá en el celular, por ejemplo <b>ESP32-BLE</b>.",
-        highlightCat: "BLE", expandCat: "Comunicación Inalambrica",
+        highlightCat: "BluetoothBLE", expandCat: "Comunicación Inalambrica",
         bloque: "ble_set_name", bloqueLabel: "Establecer nombre BLE"
       },
       {
         titulo: "Arrastra: Registrar callback (uart.irq)",
-        desc: "Ve a <b>Comunicación Inalambrica</b> → <b>BLE</b> y arrastra el bloque <em>Al recibir datos BLE</em>. En el campo <b>función</b> escribe <b>datos_recibidos</b> y en el campo <b>variable RX</b> escribe <b>rx_buffer</b>. Esto conecta tu función al evento de recepción y define la variable donde se guardarán los bytes.",
-        highlightCat: "BLE", expandCat: "Comunicación Inalambrica",
+        desc: "Ve a <b>Comunicación Inalambrica</b> → <b>BluetoothBLE</b> y arrastra el bloque <em>Al recibir datos BLE</em>. En el campo <b>función</b> escribe <b>datos_recibidos</b> y en el campo <b>variable RX</b> escribe <b>rx_buffer</b>. Esto conecta tu función al evento de recepción y define la variable donde se guardarán los bytes.",
+        highlightCat: "BluetoothBLE", expandCat: "Comunicación Inalambrica",
         bloque: "ble_on_receive", bloqueLabel: "Al recibir datos BLE"
       },
       {
@@ -2050,14 +2050,14 @@ var TUTORIALS = {
       },
       {
         titulo: "Dentro de la función: Decodificar los bytes recibidos",
-        desc: "Ve a <b>Textos</b> y arrastra el bloque <em>Decodificar bytes (text_decode)</em> para conectarlo al hueco de <em>establecer rx_buffer a</em>. Activa la opción <b>strip = VERDADERO</b> para eliminar espacios en blanco al inicio y al final.",
+        desc: "Ve a <b>Textos</b> y arrastra el bloque <em>Decodificar bytes (text_decode)</em> para conectarlo al hueco de <em>establecer rx_buffer a</em>. Activa la opción <b>limpiar \\r\\n = VERDADERO</b> para eliminar espacios en blanco al inicio y al final.",
         highlightCat: "Textos", expandCat: null,
         bloque: "text_decode", bloqueLabel: "Decodificar bytes"
       },
       {
         titulo: "Dentro del decodificador: Leer datos BLE",
         desc: "Ve a <b>Comunicación Inalambrica</b> → <b>BLE</b> y arrastra el bloque <em>Leer datos BLE</em>. Conéctalo al hueco <b>bytes</b> del bloque <em>Decodificar bytes</em>. Este bloque obtiene los bytes crudos recibidos del celular.",
-        highlightCat: "BLE", expandCat: "Comunicación Inalambrica",
+        highlightCat: "BluetoothBLE", expandCat: "Comunicación Inalambrica",
         bloque: "ble_read", bloqueLabel: "Leer datos BLE"
       },
       {
