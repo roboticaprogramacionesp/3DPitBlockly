@@ -16,21 +16,21 @@
 var SerialMonitor = (() => {
 
   /* ── Estado interno ────────────────────────────────────────── */
-  let smTerm        = null;
-  let smFit         = null;
-  let smResizeObs   = null;
-  let autoScroll    = true;
-  let isOpen        = false;
+  let smTerm = null;
+  let smFit = null;
+  let smResizeObs = null;
+  let autoScroll = true;
+  let isOpen = false;
   let showTimestamp = false;
-  let lineBuffer    = "";
+  let lineBuffer = "";
   let suppressingPaste = false;
 
   /* Archivo cargado localmente */
   let _loadedFileContent = null;
-  let _loadedFileName    = null;
+  let _loadedFileName = null;
 
   /* Dependencias inyectables */
-  let _sendFn        = null;
+  let _sendFn = null;
   let _isConnectedFn = null;
 
   function getSendFn() {
@@ -65,10 +65,10 @@ var SerialMonitor = (() => {
         <div id="smToolbar">
           <span class="sm-toolbar-label">Fin de l&iacute;nea</span>
           <select class="sm-toolbar-select" id="smLineEnding">
-            <option value="\r\n">NL + CR</option>
-            <option value="\n">Nueva l&iacute;nea</option>
-            <option value="\r">Retorno</option>
-            <option value="">Sin fin</option>
+            <option value="CRLF">NL + CR</option>
+            <option value="LF">Nueva l&iacute;nea</option>
+            <option value="CR">Retorno</option>
+            <option value="NONE">Sin fin</option>
           </select>
           <div class="sm-toolbar-sep"></div>
           <label class="sm-toolbar-check-label">
@@ -123,7 +123,7 @@ var SerialMonitor = (() => {
       return;
     }
 
-    smFit  = new FitAddon.FitAddon();
+    smFit = new FitAddon.FitAddon();
     smTerm = new Terminal({
       cursorBlink: false,
       scrollback: 10000,
@@ -134,16 +134,16 @@ var SerialMonitor = (() => {
       fontFamily: 'Consolas, "Courier New", monospace',
       rightClickSelectsWord: true,
       theme: {
-        background: "#0a0c18",  foreground: "#c8d8ff",
-        cursor:     "#3454d1",  selectionBackground: "rgba(52,84,209,0.3)",
-        black: "#000000",       red:     "#cd3131",
-        green: "#00e676",       yellow:  "#e5e510",
-        blue:  "#3454d1",       magenta: "#bc3fbc",
-        cyan:  "#11a8cd",       white:   "#e5e5e5",
-        brightBlack:   "#555",  brightRed:     "#f14c4c",
-        brightGreen:   "#23d18b", brightYellow: "#f5f543",
-        brightBlue:    "#4466e8", brightMagenta: "#d670d6",
-        brightCyan:    "#29b8db", brightWhite:   "#ffffff",
+        background: "#0a0c18", foreground: "#c8d8ff",
+        cursor: "#3454d1", selectionBackground: "rgba(52,84,209,0.3)",
+        black: "#000000", red: "#cd3131",
+        green: "#00e676", yellow: "#e5e510",
+        blue: "#3454d1", magenta: "#bc3fbc",
+        cyan: "#11a8cd", white: "#e5e5e5",
+        brightBlack: "#555", brightRed: "#f14c4c",
+        brightGreen: "#23d18b", brightYellow: "#f5f543",
+        brightBlue: "#4466e8", brightMagenta: "#d670d6",
+        brightCyan: "#29b8db", brightWhite: "#ffffff",
       },
     });
 
@@ -155,15 +155,15 @@ var SerialMonitor = (() => {
     document.getElementById("smTerminal").addEventListener("contextmenu", async (e) => {
       e.preventDefault();
       const selected = smTerm.getSelection();
-      const text     = selected || _getFullTerminalText();
+      const text = selected || _getFullTerminalText();
       if (!text) return;
 
       let copied = false;
       if (navigator.clipboard?.writeText) {
-        try { await navigator.clipboard.writeText(text); copied = true; } catch (_) {}
+        try { await navigator.clipboard.writeText(text); copied = true; } catch (_) { }
       }
       if (!copied && window.pywebview?.api?.set_clipboard) {
-        try { const r = await window.pywebview.api.set_clipboard(text); copied = r?.status === "ok"; } catch (_) {}
+        try { const r = await window.pywebview.api.set_clipboard(text); copied = r?.status === "ok"; } catch (_) { }
       }
       if (!copied) {
         try {
@@ -174,7 +174,7 @@ var SerialMonitor = (() => {
           ta.select();
           copied = document.execCommand("copy");
           document.body.removeChild(ta);
-        } catch (_) {}
+        } catch (_) { }
       }
       if (copied) { blinkDot(); _smToast(selected ? "Selección copiada" : "Todo copiado"); }
     });
@@ -211,10 +211,10 @@ var SerialMonitor = (() => {
   let prevWidth = null, prevHeight = null;
 
   function minimize() {
-    const modal  = document.getElementById("serialMonitorModal");
-    const btn    = document.getElementById("smMinBtn");
-    prevWidth    = modal.offsetWidth  + "px";
-    prevHeight   = modal.offsetHeight + "px";
+    const modal = document.getElementById("serialMonitorModal");
+    const btn = document.getElementById("smMinBtn");
+    prevWidth = modal.offsetWidth + "px";
+    prevHeight = modal.offsetHeight + "px";
 
     ["smTerminalWrapper", "smToolbar", "smNameFile", "smSizeBar", "smInputBar"].forEach((id) => {
       const el = document.getElementById(id);
@@ -228,7 +228,7 @@ var SerialMonitor = (() => {
 
   function restore() {
     const modal = document.getElementById("serialMonitorModal");
-    const btn   = document.getElementById("smMinBtn");
+    const btn = document.getElementById("smMinBtn");
 
     ["smTerminalWrapper", "smToolbar", "smNameFile", "smSizeBar", "smInputBar"].forEach((id) => {
       const el = document.getElementById(id);
@@ -236,7 +236,7 @@ var SerialMonitor = (() => {
     });
 
     modal.classList.remove("sm-minimized");
-    if (prevWidth)  modal.style.width  = prevWidth;
+    if (prevWidth) modal.style.width = prevWidth;
     if (prevHeight) modal.style.height = prevHeight;
     if (btn) { btn.title = "Minimizar"; btn.innerHTML = "&#x2500;"; }
 
@@ -261,27 +261,27 @@ var SerialMonitor = (() => {
       const rect = modal.getBoundingClientRect();
       startX = e.clientX; startY = e.clientY;
       modal.style.right = "auto"; modal.style.bottom = "auto";
-      modal.style.left  = rect.left + "px";
-      modal.style.top   = rect.top  + "px";
+      modal.style.left = rect.left + "px";
+      modal.style.top = rect.top + "px";
       document.addEventListener("mousemove", onMove);
-      document.addEventListener("mouseup",   onUp);
+      document.addEventListener("mouseup", onUp);
     });
 
     function onMove(e) {
       if (!dragging) return;
       const newLeft = parseFloat(modal.style.left) + e.clientX - startX;
-      const newTop  = parseFloat(modal.style.top)  + e.clientY - startY;
-      const maxLeft = window.innerWidth  - modal.offsetWidth;
-      const maxTop  = window.innerHeight - modal.offsetHeight;
+      const newTop = parseFloat(modal.style.top) + e.clientY - startY;
+      const maxLeft = window.innerWidth - modal.offsetWidth;
+      const maxTop = window.innerHeight - modal.offsetHeight;
       modal.style.left = Math.max(0, Math.min(newLeft, maxLeft)) + "px";
-      modal.style.top  = Math.max(0, Math.min(newTop,  maxTop))  + "px";
+      modal.style.top = Math.max(0, Math.min(newTop, maxTop)) + "px";
       startX = e.clientX; startY = e.clientY;
     }
 
     function onUp() {
       dragging = false;
       document.removeEventListener("mousemove", onMove);
-      document.removeEventListener("mouseup",   onUp);
+      document.removeEventListener("mouseup", onUp);
     }
   }
 
@@ -311,7 +311,7 @@ var SerialMonitor = (() => {
   /* ── Enviar comando ───────────────────────────────────────── */
   async function sendCommand(raw) {
     const input = document.getElementById("smCommandInput");
-    const cmd   = raw != null ? raw : (input?.value.trim() ?? "");
+    const cmd = raw != null ? raw : (input?.value.trim() ?? "");
 
     if (!smTerm) initSmTerminal();
 
@@ -322,7 +322,16 @@ var SerialMonitor = (() => {
 
     if (!cmd) return;
 
-    const lineEnding = document.getElementById("smLineEnding")?.value ?? "\r\n";
+    // Fin de línea: el selector puede tener o vacío.
+    // MicroPython necesita al menos para ejecutar — garantizamos siempre.
+    // Decodificar valor del selector a chars de control reales.
+    // El HTML está en template literal: los del option value son 4 chars literales.
+    // Usamos claves simbólicas mapeadas aquí a los chars reales.
+
+    const _endMap = { "CRLF": "\r\n", "LF": "\n", "CR": "\r", "NONE": "\n" };
+    const ending = _endMap[document.getElementById("smLineEnding")?.value] ?? "\n";
+
+    //console.log("[SerialMonitor] sendCommand:", { cmd, ending });
 
     smTerm?.writeln(`\x1b[33m>>> ${cmd}\x1b[0m`);
     if (autoScroll) smTerm?.scrollToBottom();
@@ -331,17 +340,31 @@ var SerialMonitor = (() => {
     if (input) input.value = "";
 
     const fn = getSendFn();
-    if (fn) {
-      try { await fn(cmd + lineEnding); }
-      catch (e) { smTerm?.writeln(`\x1b[31mError al enviar: ${e.message}\x1b[0m`); }
-    } else {
+    if (!fn) {
       smTerm?.writeln("\x1b[31m⚠ No hay conexión serial activa\x1b[0m");
+      return;
     }
+
+    // No enviar durante una transferencia de código (evita corrupción del protocolo)
+    if (typeof isSendingCode !== "undefined" && isSendingCode) {
+      smTerm?.writeln("\x1b[33m⚠ Esperando que termine el envío de código...\x1b[0m");
+      return;
+    }
+
+    try {
+      // Interrumpir cualquier programa en ejecución para tener prompt limpio
+      // Solo si no estamos ya en modo normal (>>>)
+      // Enviamos Ctrl+C silencioso + pequeña pausa antes del comando
+      await fn("\x03");
+      await new Promise(r => setTimeout(r, 80));
+      await fn(cmd + ending);
+    }
+    catch (e) { smTerm?.writeln(`\x1b[31mError al enviar: ${e.message}\x1b[0m`); }
   }
 
   /* ── Control de tamaño de texto ──────────────────────────── */
-  const SM_SIZES     = ["S", "M", "L", "XL"];
-  const SM_FONTSIZES = [10,   12,  15,  19];
+  const SM_SIZES = ["S", "M", "L", "XL"];
+  const SM_FONTSIZES = [10, 12, 15, 19];
   let smSizeIdx = 1;
 
   function smApplySize() {
@@ -350,7 +373,7 @@ var SerialMonitor = (() => {
     if (disp) disp.textContent = SM_SIZES[smSizeIdx];
     if (fill) fill.style.width = (smSizeIdx / (SM_SIZES.length - 1) * 100) + "%";
     if (smTerm) { smTerm.options.fontSize = SM_FONTSIZES[smSizeIdx]; smFit?.fit(); }
-    try { localStorage.setItem("sm-font-size", smSizeIdx); } catch (_) {}
+    try { localStorage.setItem("sm-font-size", smSizeIdx); } catch (_) { }
   }
 
   /* ── Subir código al ESP32 ────────────────────────────────── */
@@ -371,8 +394,8 @@ var SerialMonitor = (() => {
     }
 
     // ── Leer fuente seleccionada ──────────────────────────────
-    const srcFile   = document.getElementById("smSrcFile");
-    const source    = srcFile?.checked ? "file" : "blocks";
+    const srcFile = document.getElementById("smSrcFile");
+    const source = srcFile?.checked ? "file" : "blocks";
 
     let codeStr = "";
 
@@ -399,15 +422,15 @@ var SerialMonitor = (() => {
 
     // ── Nombre del archivo destino ────────────────────────────
     const nameInput = document.getElementById("smFileNameInput");
-    const rawName   = nameInput?.value.trim() || _loadedFileName || "test.py";
+    const rawName = nameInput?.value.trim() || _loadedFileName || "test.py";
 
     if (typeof isSafeFileName === "function" && !isSafeFileName(rawName)) {
       smTerm.writeln(`\x1b[31m⚠  Nombre no válido: "${rawName}"\x1b[0m`);
       return;
     }
 
-    const fileName  = rawName;
-    const fn        = getSendFn();
+    const fileName = rawName;
+    const fn = getSendFn();
     if (!fn) { smTerm.writeln("\x1b[31m⚠  No hay función serial activa\x1b[0m"); return; }
 
     const srcLabel = source === "blocks" ? "⬛ Bloques" : "📂 Archivo";
@@ -488,9 +511,9 @@ var SerialMonitor = (() => {
 
   function colorizeErrors(line) {
     const isError =
-      /^Traceback/.test(line)  ||
-      /^\s+File "/.test(line)  ||
-      /\w+Error:/.test(line)   ||
+      /^Traceback/.test(line) ||
+      /^\s+File "/.test(line) ||
+      /\w+Error:/.test(line) ||
       /^Exception/.test(line);
     return isError ? `\x1b[31m${line}\x1b[0m` : line;
   }
@@ -499,7 +522,7 @@ var SerialMonitor = (() => {
   function _getFullTerminalText() {
     if (!smTerm) return "";
     const buffer = smTerm.buffer.active;
-    const lines  = [];
+    const lines = [];
     for (let i = 0; i < buffer.length; i++) {
       const line = buffer.getLine(i);
       if (line) lines.push(line.translateToString(true));
@@ -526,7 +549,7 @@ var SerialMonitor = (() => {
     if (modal) {
       const r = modal.getBoundingClientRect();
       toast.style.left = (r.left + 10) + "px";
-      toast.style.top  = (r.top  - 28) + "px";
+      toast.style.top = (r.top - 28) + "px";
     } else {
       toast.style.bottom = "72px"; toast.style.right = "28px";
     }
@@ -548,29 +571,49 @@ var SerialMonitor = (() => {
     if (!cleaned) return;
 
     blinkDot();
-    lineBuffer += cleaned;
+    const normalized = cleaned.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+    lineBuffer += normalized;
 
     const parts = lineBuffer.split("\n");
-    lineBuffer  = parts.pop(); // fragmento incompleto
+    lineBuffer = parts.pop(); // fragmento incompleto
 
     const now = showTimestamp ? new Date().toLocaleTimeString() : null;
+    const isGameMode = typeof window !== "undefined" && window.gameMode;
 
     for (const rawLine of parts) {
       const line = rawLine.replace(/\r/g, "");
+      const trimmed = line.trim();
+
+      if (isGameMode) {
+        if (/^C:-?\d+,-?\d+$/.test(trimmed)) continue;
+        if (/^\d{1,4}$/.test(trimmed) && parseInt(trimmed, 10) <= 1023) continue;
+      }
 
       // ── Máquina de estados paste-mode ──
-      if (/paste mode/i.test(line))        { suppressingPaste = true;  continue; }
-      if (suppressingPaste && /^={3,}\s*$/.test(line)) { suppressingPaste = false; continue; }
-      if (suppressingPaste)                              { continue; }
+      let _pasteSuppressTimer = null;
+
+      // dentro de feed(), donde se activa:
+      if (/paste mode/i.test(line)) {
+        suppressingPaste = true;
+        clearTimeout(_pasteSuppressTimer);
+        _pasteSuppressTimer = setTimeout(() => { suppressingPaste = false; }, 1500);
+        continue;
+      }
+      if (suppressingPaste && /^={3,}\s*$/.test(line)) {
+        suppressingPaste = false;
+        clearTimeout(_pasteSuppressTimer);
+        continue;
+      }
 
       // Suprimir prompt vacío y eco del REPL
       if (/^>>>\s*$/.test(line)) continue;
+      if (/^>>>\s+/.test(line)) continue;
 
       // Línea vacía
-      if (!line.trim()) continue;
+      if (!trimmed) continue;
 
       const colored = colorizeErrors(line);
-      const output  = now ? `\x1b[2m[${now}]\x1b[0m ${colored}` : colored;
+      const output = now ? `\x1b[2m[${now}]\x1b[0m ${colored}` : colored;
       smTerm.writeln(output);
     }
 
@@ -579,7 +622,7 @@ var SerialMonitor = (() => {
 
   /* ── notifySending / notifyDone ───────────────────────────── */
   function notifySending(code) {
-    lineBuffer       = "";
+    lineBuffer = "";
     suppressingPaste = false;
 
     // Mostrar las líneas del código en el monitor (igual que BIPES)
@@ -596,7 +639,7 @@ var SerialMonitor = (() => {
 
   function notifyDone() {
     suppressingPaste = false;
-    lineBuffer       = "";
+    lineBuffer = "";
   }
 
   /* ── warn ─────────────────────────────────────────────────── */
@@ -615,21 +658,21 @@ var SerialMonitor = (() => {
 
   /* ── initDeps ─────────────────────────────────────────────── */
   function initDeps({ sendFn, isConnectedFn } = {}) {
-    if (sendFn)        _sendFn        = sendFn;
+    if (sendFn) _sendFn = sendFn;
     if (isConnectedFn) _isConnectedFn = isConnectedFn;
   }
 
   /* ── Eventos de UI ────────────────────────────────────────── */
   function bindEvents() {
-    const modal    = document.getElementById("serialMonitorModal");
+    const modal = document.getElementById("serialMonitorModal");
     const titleBar = document.getElementById("smTitleBar");
     const closeBtn = document.getElementById("smCloseBtn");
-    const minBtn   = document.getElementById("smMinBtn");
+    const minBtn = document.getElementById("smMinBtn");
     const clearBtn = document.getElementById("smClearBtn");
-    const sendBtn  = document.getElementById("smSendBtn");
+    const sendBtn = document.getElementById("smSendBtn");
     const cmdInput = document.getElementById("smCommandInput");
-    const autoChk  = document.getElementById("smAutoScroll");
-    const tsChk    = document.getElementById("smTimestamp");
+    const autoChk = document.getElementById("smAutoScroll");
+    const tsChk = document.getElementById("smTimestamp");
 
     closeBtn?.addEventListener("click", close);
     minBtn?.addEventListener("click", () => {
@@ -640,7 +683,7 @@ var SerialMonitor = (() => {
     try {
       const saved = parseInt(localStorage.getItem("sm-font-size"), 10);
       if (!isNaN(saved) && saved >= 0 && saved < SM_SIZES.length) smSizeIdx = saved;
-    } catch (_) {}
+    } catch (_) { }
 
     document.getElementById("smSizeUp")?.addEventListener("click", () => {
       if (smSizeIdx < SM_SIZES.length - 1) { smSizeIdx++; smApplySize(); }
@@ -650,8 +693,8 @@ var SerialMonitor = (() => {
     });
     document.getElementById("smSizeTrack")?.addEventListener("click", (e) => {
       const rect = document.getElementById("smSizeTrack").getBoundingClientRect();
-      smSizeIdx  = Math.round((e.clientX - rect.left) / rect.width * (SM_SIZES.length - 1));
-      smSizeIdx  = Math.max(0, Math.min(SM_SIZES.length - 1, smSizeIdx));
+      smSizeIdx = Math.round((e.clientX - rect.left) / rect.width * (SM_SIZES.length - 1));
+      smSizeIdx = Math.max(0, Math.min(SM_SIZES.length - 1, smSizeIdx));
       smApplySize();
     });
 
@@ -660,7 +703,8 @@ var SerialMonitor = (() => {
       lineBuffer = ""; suppressingPaste = false;
     });
 
-    sendBtn?.addEventListener("click",  () => sendCommand());
+    sendBtn?.addEventListener("click", () => sendCommand());
+
     cmdInput?.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
         e.preventDefault(); sendCommand();
@@ -677,14 +721,14 @@ var SerialMonitor = (() => {
       }
     });
 
-    autoChk?.addEventListener("change", (e) => { autoScroll    = e.target.checked; });
-    tsChk?.addEventListener("change",   (e) => { showTimestamp = e.target.checked; });
+    autoChk?.addEventListener("change", (e) => { autoScroll = e.target.checked; });
+    tsChk?.addEventListener("change", (e) => { showTimestamp = e.target.checked; });
 
     document.getElementById("smUploadBtn")?.addEventListener("click", () => uploadCode());
 
     // 📂 Cargar archivo local
-    const pickBtn      = document.getElementById("smPickFileBtn");
-    const pickerInput  = document.getElementById("smFilePickerInput");
+    const pickBtn = document.getElementById("smPickFileBtn");
+    const pickerInput = document.getElementById("smFilePickerInput");
 
     pickBtn?.addEventListener("click", () => pickerInput?.click());
     pickerInput?.addEventListener("change", (e) => {
@@ -698,9 +742,9 @@ var SerialMonitor = (() => {
       const reader = new FileReader();
       reader.onload = (ev) => {
         _loadedFileContent = ev.target.result;
-        _loadedFileName    = file.name;
+        _loadedFileName = file.name;
         if (!smTerm) initSmTerminal();
-        const lines   = _loadedFileContent.split("\n");
+        const lines = _loadedFileContent.split("\n");
         const preview = lines.slice(0, 6).map((l) => "  " + l).join("\r\n");
         smTerm.writeln(`\x1b[36m📂 Archivo cargado: ${file.name} (${lines.length} líneas)\x1b[0m`);
         smTerm.writeln("\x1b[2m" + preview + (lines.length > 6 ? "\r\n  ..." : "") + "\x1b[0m");

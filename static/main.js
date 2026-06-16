@@ -8,7 +8,9 @@
 // ─────────────────────────────────────────────────────────────
 var Code = {};
 let IS_DESKTOP = typeof window.pywebview !== "undefined";
-window.addEventListener("pywebviewready", () => { IS_DESKTOP = true; });
+window.addEventListener("pywebviewready", () => {
+  IS_DESKTOP = true;
+});
 
 const DEBUG = false;
 
@@ -34,7 +36,11 @@ Code.workspace = Blockly.inject("blocklyDiv", {
 });
 
 const screenshotBtnEl = addScreenshotButton(Code.workspace);
-const { container: undoRedoContainer, undoBtn, redoBtn } = addUndoRedoButtons(Code.workspace);
+const {
+  container: undoRedoContainer,
+  undoBtn,
+  redoBtn,
+} = addUndoRedoButtons(Code.workspace);
 window.FLOATING = [screenshotBtnEl, undoRedoContainer].filter(Boolean);
 
 Code.generateCode = function (generator = Blockly.Python) {
@@ -58,7 +64,8 @@ if (!navigator.serial && !IS_DESKTOP) {
 // ─────────────────────────────────────────────────────────────
 // VALIDACIÓN DE NOMBRES DE ARCHIVO
 // ─────────────────────────────────────────────────────────────
-const SAFE_FILENAME_RE = /^[\w\-][.\w\-]{0,62}\.(py|txt|json|csv|log|mpy|html|js|css)$/i;
+const SAFE_FILENAME_RE =
+  /^[\w\-][.\w\-]{0,62}\.(py|txt|json|csv|log|mpy|html|js|css)$/i;
 
 function isSafeFileName(name) {
   return typeof name === "string" && SAFE_FILENAME_RE.test(name);
@@ -80,7 +87,7 @@ function blurBlockly() {
   try {
     const svg = Code.workspace?.getParentSvg?.();
     if (svg) svg.blur();
-  } catch (e) { }
+  } catch (e) {}
 }
 
 function updateCodeFromBlockly() {
@@ -164,8 +171,12 @@ document.getElementById("btnCode").addEventListener("click", function () {
   });
 });
 
-document.getElementById("btnBlocks").addEventListener("click", () => showView("viewBlocks"));
-document.getElementById("btnWiring").addEventListener("click", () => showView("viewWiring"));
+document
+  .getElementById("btnBlocks")
+  .addEventListener("click", () => showView("viewBlocks"));
+document
+  .getElementById("btnWiring")
+  .addEventListener("click", () => showView("viewWiring"));
 
 // ─────────────────────────────────────────────────────────────
 // AUTOSAVE
@@ -191,7 +202,8 @@ function autoSaveWorkspacePython() {
 Code.workspace.addChangeListener((event) => {
   if (event.isUiEvent || event.type === Blockly.Events.UI) return;
   if (isRestoring) return;
-  const isDesktop = typeof window.pywebview !== "undefined" && !!window.pywebview?.api;
+  const isDesktop =
+    typeof window.pywebview !== "undefined" && !!window.pywebview?.api;
   if (isDesktop) {
     clearTimeout(autosaveTimer);
     autosaveTimer = setTimeout(autoSaveWorkspacePython, AUTOSAVE_DELAY);
@@ -203,11 +215,63 @@ Code.workspace.addChangeListener((event) => {
 function restoreWorkspaceFromLocal() {
   const xmlText = localStorage.getItem(AUTOSAVE_KEY);
   if (!xmlText) return;
+
+  let dom;
   try {
-    Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(xmlText), Code.workspace);
+    dom = Blockly.Xml.textToDom(xmlText);
   } catch (e) {
-    console.warn("No se pudo restaurar el workspace");
+    console.warn("No se pudo parsear el workspace guardado");
+    return;
   }
+
+  const blockNodes = Array.from(dom.children).filter(
+    (n) => n.tagName === "block" || n.tagName === "shadow"
+  );
+  if (blockNodes.length === 0) return;
+
+  isRestoring = true;
+  Blockly.Events.disable();
+
+  // Ocultar el SVG mientras se insertan los bloques elimina el costo
+  // de reflow/repaint por cada bloque — puede reducir 60-80% el tiempo
+  const blocklyDiv = document.getElementById("blocklyDiv");
+  const svg = blocklyDiv?.querySelector("svg.blocklySvg");
+  if (svg) svg.style.visibility = "hidden";
+
+  const makeWrapper = () => {
+    const w = document.createElement("xml");
+    w.setAttribute("xmlns", "https://developers.google.com/blockly/xml");
+    return w;
+  };
+
+  let index = 0;
+
+  function insertNext() {
+    if (index >= blockNodes.length) {
+      // Todo insertado — mostrar SVG y terminar
+      if (svg) svg.style.visibility = "";
+      Blockly.Events.enable();
+      isRestoring = false;
+      Code.workspace.scrollCenter();
+      return;
+    }
+
+    // Un bloque por frame — si el bloque es muy complejo igual tardará,
+    // pero el violation será del bloque puntual, no acumulado
+    const wrapper = makeWrapper();
+    wrapper.appendChild(blockNodes[index].cloneNode(true));
+
+    try {
+      Blockly.Xml.domToWorkspace(wrapper, Code.workspace);
+    } catch (e) {
+      console.warn("Error restaurando bloque", index, e);
+    }
+
+    index++;
+    requestAnimationFrame(insertNext);
+  }
+
+  requestAnimationFrame(insertNext);
 }
 
 async function restoreWorkspaceFromPython() {
@@ -223,7 +287,7 @@ async function restoreWorkspaceFromPython() {
     isRestoring = true;
     Blockly.Xml.clearWorkspaceAndLoadFromXml(
       Blockly.Xml.textToDom(xmlText),
-      Blockly.getMainWorkspace()
+      Blockly.getMainWorkspace(),
     );
   } catch (e) {
     console.warn("No se pudo restaurar autosave", e);
@@ -238,8 +302,11 @@ window.addEventListener("pywebviewready", () => {
   startTutorial();
 });
 
+// Y el setTimeout con más margen para que Blockly termine de inicializar
 if (!IS_DESKTOP) {
-  setTimeout(() => { if (!IS_DESKTOP) restoreWorkspaceFromLocal(); }, 500);
+  setTimeout(() => {
+    if (!IS_DESKTOP) restoreWorkspaceFromLocal();
+  }, 800);
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -254,9 +321,13 @@ document.getElementById("btnNew").addEventListener("click", async function () {
   try {
     Code.workspace?.clear();
     if (typeof editor !== "undefined") editor.setValue("");
-    else { const a = document.getElementById("codeArea"); if (a) a.value = ""; }
+    else {
+      const a = document.getElementById("codeArea");
+      if (a) a.value = "";
+    }
     localStorage.removeItem(AUTOSAVE_KEY);
-    if (window.pywebview?.api?.clear_autosave) await window.pywebview.api.clear_autosave();
+    if (window.pywebview?.api?.clear_autosave)
+      await window.pywebview.api.clear_autosave();
   } catch (error) {
     console.error("Error al crear nuevo archivo:", error);
   }
@@ -268,22 +339,41 @@ document.getElementById("btnNew").addEventListener("click", async function () {
 // ─────────────────────────────────────────────────────────────
 async function saveFileAuto(content, fileName = "") {
   try {
-    let extension = "txt", mimeType = "text/plain", isBase64 = false;
+    let extension = "txt",
+      mimeType = "text/plain",
+      isBase64 = false;
     if (typeof content === "string" && content.startsWith("data:image/png")) {
-      extension = "png"; mimeType = "image/png"; isBase64 = true;
+      extension = "png";
+      mimeType = "image/png";
+      isBase64 = true;
     } else {
       const ext = fileName.split(".").pop().toLowerCase();
-      if (ext === "xml")  { extension = "xml";  mimeType = "text/xml"; }
-      else if (ext === "py") { extension = "py"; mimeType = "text/x-python"; }
-      else if (ext === "json") { extension = "json"; mimeType = "application/json"; }
+      if (ext === "xml") {
+        extension = "xml";
+        mimeType = "text/xml";
+      } else if (ext === "py") {
+        extension = "py";
+        mimeType = "text/x-python";
+      } else if (ext === "json") {
+        extension = "json";
+        mimeType = "application/json";
+      }
       if (extension === "txt" && content.trim().startsWith("<")) {
-        extension = "xml"; mimeType = "text/xml";
+        extension = "xml";
+        mimeType = "text/xml";
       }
     }
-    const suggestedName = fileName?.includes(".") ? fileName : `archivo.${extension}`;
+    const suggestedName = fileName?.includes(".")
+      ? fileName
+      : `archivo.${extension}`;
     const handle = await window.showSaveFilePicker({
       suggestedName,
-      types: [{ description: `Archivo ${extension.toUpperCase()}`, accept: { [mimeType]: [`.${extension}`] } }],
+      types: [
+        {
+          description: `Archivo ${extension.toUpperCase()}`,
+          accept: { [mimeType]: [`.${extension}`] },
+        },
+      ],
     });
     const writable = await handle.createWritable();
     if (isBase64) {
@@ -302,16 +392,21 @@ async function saveFileAuto(content, fileName = "") {
 
 document.getElementById("btnSave").addEventListener("click", async (e) => {
   e.preventDefault();
-  const xmlText = Blockly.Xml.domToPrettyText(Blockly.Xml.workspaceToDom(Blockly.getMainWorkspace()));
+  const xmlText = Blockly.Xml.domToPrettyText(
+    Blockly.Xml.workspaceToDom(Blockly.getMainWorkspace()),
+  );
   if (window.pywebview?.api?.save_xml) {
     const result = await window.pywebview.api.save_xml(xmlText);
-    if (result?.status === "ok" && DEBUG) console.log("Guardado en:", result.path);
+    if (result?.status === "ok" && DEBUG)
+      console.log("Guardado en:", result.path);
   } else {
     await saveFileAuto(xmlText, "proyecto.xml");
   }
 });
 
-document.getElementById("btnLoad").addEventListener("click", () => document.getElementById("loadXML").click());
+document
+  .getElementById("btnLoad")
+  .addEventListener("click", () => document.getElementById("loadXML").click());
 
 document.getElementById("loadXML").addEventListener("change", function (event) {
   const file = event.target.files[0];
@@ -320,10 +415,15 @@ document.getElementById("loadXML").addEventListener("change", function (event) {
   reader.onload = function (e) {
     try {
       Code.workspace.clear();
-      Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(e.target.result), Code.workspace);
+      Blockly.Xml.domToWorkspace(
+        Blockly.Xml.textToDom(e.target.result),
+        Code.workspace,
+      );
       updateCodeFromBlockly();
       requestAnimationFrame(() => editor.refresh());
-    } catch (err) { console.error(err); }
+    } catch (err) {
+      console.error(err);
+    }
   };
   reader.readAsText(file);
   event.target.value = "";
@@ -337,20 +437,29 @@ async function reloadWorkspace() {
       ? await window.pywebview.api.load_autosave()
       : localStorage.getItem("blockly_autosave_workspace");
     if (!xmlText) return;
-    Blockly.Xml.clearWorkspaceAndLoadFromXml(Blockly.Xml.textToDom(xmlText), Code.workspace);
-  } catch (e) { console.error("Error al recargar workspace", e); }
+    Blockly.Xml.clearWorkspaceAndLoadFromXml(
+      Blockly.Xml.textToDom(xmlText),
+      Code.workspace,
+    );
+  } catch (e) {
+    console.error("Error al recargar workspace", e);
+  }
   Blockly.Events.enable();
 }
 
-document.getElementById("btnReload").addEventListener("click", () => location.reload());
+document
+  .getElementById("btnReload")
+  .addEventListener("click", () => location.reload());
 
 document.getElementById("btnSavePy").addEventListener("click", async (e) => {
   e.preventDefault();
-  const fileName = document.getElementById("fileNameInput").value.trim() || "test.py";
+  const fileName =
+    document.getElementById("fileNameInput").value.trim() || "test.py";
   const code = editor.getValue();
   if (window.pywebview?.api?.save_py) {
     const result = await window.pywebview.api.save_py(code, fileName);
-    if (result?.status === "ok" && DEBUG) console.log(`Guardado ${fileName} en:`, result.path);
+    if (result?.status === "ok" && DEBUG)
+      console.log(`Guardado ${fileName} en:`, result.path);
   } else {
     await saveFileAuto(code, fileName);
   }
@@ -379,13 +488,22 @@ function showCustomConfirm(message = "¿Deseas continuar?") {
     const msg = document.getElementById("modalMessage");
     const btnAccept = document.getElementById("modalAccept");
     const btnCancel = document.getElementById("modalCancel");
-    if (!modal || !msg || !btnAccept || !btnCancel) { resolve(false); return; }
+    if (!modal || !msg || !btnAccept || !btnCancel) {
+      resolve(false);
+      return;
+    }
     msg.textContent = message;
     btnCancel.style.display = "inline-block";
     btnAccept.textContent = "Aceptar";
     modal.style.display = "flex";
-    btnAccept.onclick = () => { modal.style.display = "none"; resolve(true); };
-    btnCancel.onclick = () => { modal.style.display = "none"; resolve(false); };
+    btnAccept.onclick = () => {
+      modal.style.display = "none";
+      resolve(true);
+    };
+    btnCancel.onclick = () => {
+      modal.style.display = "none";
+      resolve(false);
+    };
   });
 }
 
@@ -394,31 +512,39 @@ function showMessageModal(message) {
   const msg = document.getElementById("modalMessage");
   const btnAccept = document.getElementById("modalAccept");
   const btnCancel = document.getElementById("modalCancel");
-  if (!modal || !msg || !btnAccept) { console.log(message); return; }
+  if (!modal || !msg || !btnAccept) {
+    console.log(message);
+    return;
+  }
   msg.textContent = message;
   btnCancel.style.display = "none";
-  btnAccept.textContent = "OK: ";
+  btnAccept.textContent = "OK";
   modal.style.display = "flex";
-  btnAccept.onclick = () => { modal.style.display = "none"; };
+  btnAccept.onclick = () => {
+    modal.style.display = "none";
+  };
 }
 
-window.addEventListener("DOMContentLoaded", () => { startTutorial(); });
+window.addEventListener("DOMContentLoaded", () => {
+  startTutorial();
+});
 
 // ─────────────────────────────────────────────────────────────
 // WEBSERIAL — Estado global
 // ─────────────────────────────────────────────────────────────
-let serialPort   = null;
+let serialPort = null;
 let serialReader = null;
 let serialWriter = null;
-let isConnected  = false;
+let isConnected = false;
 let isSendingCode = false;
-let isWorkSpace2 = true;  // alias interno para claridad
+let _stopRequested = false;  // abort flag para cancelar sendCodeToDevice
+let isWorkSpace2 = true; // alias interno para claridad
 let serialConnected = false;
 
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 
-let serialBuffer    = "";
+let serialBuffer = "";
 let waitingResponse = false;
 let isFileOperationBusy = false;
 
@@ -427,10 +553,19 @@ let isFileOperationBusy = false;
 // ─────────────────────────────────────────────────────────────
 async function connectSerial() {
   try {
-    if (!term) { initTerminal(); enableTerminalInput(); }
+    if (!term) {
+      initTerminal();
+      enableTerminalInput();
+    }
 
     serialPort = await navigator.serial.requestPort();
-    await serialPort.open({ baudRate: 115200, dataBits: 8, stopBits: 1, parity: "none", flowControl: "none" });
+    await serialPort.open({
+      baudRate: 115200,
+      dataBits: 8,
+      stopBits: 1,
+      parity: "none",
+      flowControl: "none",
+    });
 
     serialWriter = serialPort.writable.getWriter();
     serialReader = serialPort.readable.getReader();
@@ -461,23 +596,35 @@ async function disconnectSerial() {
     updateConnectionIcon(false);
 
     if (serialReader) {
-      try { await serialReader.cancel(); } catch { }
-      try { serialReader.releaseLock(); } catch { }
+      try {
+        await serialReader.cancel();
+      } catch {}
+      try {
+        serialReader.releaseLock();
+      } catch {}
       serialReader = null;
     }
     if (serialWriter) {
-      try { await serialWriter.close(); } catch { }
-      try { serialWriter.releaseLock(); } catch { }
+      try {
+        await serialWriter.close();
+      } catch {}
+      try {
+        serialWriter.releaseLock();
+      } catch {}
       serialWriter = null;
     }
-    if (serialPort?.readable) { try { await serialPort.close(); } catch { } }
+    if (serialPort?.readable) {
+      try {
+        await serialPort.close();
+      } catch {}
+    }
     serialPort = null;
 
     term.writeln("\r\nDesconectado\r\n");
 
-    const btnConnect    = document.getElementById("btnConnect");
+    const btnConnect = document.getElementById("btnConnect");
     const btnDisconnect = document.getElementById("btnDisconnect");
-    if (btnConnect)    btnConnect.disabled = false;
+    if (btnConnect) btnConnect.disabled = false;
     if (btnDisconnect) btnDisconnect.disabled = true;
 
     clearExplorer();
@@ -499,7 +646,11 @@ async function readSerialLoop() {
   try {
     while (isConnected) {
       const { value, done } = await serialReader.read();
-      if (done) { term.writeln("\r\nPuerto cerrado\r\n"); await disconnectSerial(); break; }
+      if (done) {
+        term.writeln("\r\nPuerto cerrado\r\n");
+        await disconnectSerial();
+        break;
+      }
       if (value) {
         const chunk = decoder.decode(value, { stream: true });
 
@@ -510,7 +661,8 @@ async function readSerialLoop() {
         if (typeof SerialMonitor !== "undefined") SerialMonitor.feed(chunk);
 
         // Hook para raw REPL (buffer local aislado)
-        if (typeof window._rawReplHook === "function") window._rawReplHook(chunk);
+        if (typeof window._rawReplHook === "function")
+          window._rawReplHook(chunk);
 
         // Buffer para operaciones de archivo
         if (waitingResponse) serialBuffer += chunk;
@@ -538,6 +690,12 @@ async function sendSerial(data) {
 function enableTerminalInput() {
   term.onData(async (data) => {
     if (!isConnected || isSendingCode) return;
+    // Bloquear también durante sesiones raw/paste REPL para evitar corrupción
+    if (
+      typeof window._rawReplHook === "function" &&
+      window._rawReplHook._isRawReplHook
+    )
+      return;
     if (DEBUG) console.log("DATA:", JSON.stringify(data));
     await sendSerial(data);
   });
@@ -613,11 +771,14 @@ async function sendViaRawRepl(codeStr, chunkSz = 256) {
 
   // Buffer local — no comparte estado con Files ni readResponse
   let _localBuf = "";
-  window._rawReplHook = (chunk) => { _localBuf += chunk; };
+  window._rawReplHook = (chunk) => {
+    _localBuf += chunk;
+  };
 
   async function _waitLocal(token, timeoutMs) {
     const end = Date.now() + timeoutMs;
     while (Date.now() < end) {
+      if (_stopRequested) return false;
       if (_localBuf.includes(token)) return true;
       await sleep(20);
     }
@@ -626,15 +787,18 @@ async function sendViaRawRepl(codeStr, chunkSz = 256) {
 
   try {
     // 1. Interrumpir ejecución actual
-    await sendSerial("\x03"); await sleep(80);
-    await sendSerial("\x03"); await sleep(80);
+    await sendSerial("\x03");
+    await sleep(80);
+    await sendSerial("\x03");
+    await sleep(80);
 
     // 2. Entrar en raw REPL
     _localBuf = "";
     await sendSerial("\x01");
     let gotPrompt = await _waitLocal(">", 2000);
     if (!gotPrompt) {
-      await sendSerial("\r\n"); await sleep(60);
+      await sendSerial("\r\n");
+      await sleep(60);
       _localBuf = "";
       await sendSerial("\x01");
       gotPrompt = await _waitLocal(">", 2000);
@@ -642,23 +806,23 @@ async function sendViaRawRepl(codeStr, chunkSz = 256) {
     }
 
     // 3. Enviar código en bloques con progreso
-    const bytes  = encoder.encode(codeStr);
-    const total  = bytes.length;
-    let sent     = 0;
+    const bytes = encoder.encode(codeStr);
+    const total = bytes.length;
+    let sent = 0;
 
     // Mostrar barra de inicio
     term.write(`\r\n\x1b[36m↑ Enviando ${total} bytes\x1b[0m `);
 
     while (sent < total) {
-      const end   = Math.min(sent + chunkSz, total);
+      const end = Math.min(sent + chunkSz, total);
       const slice = bytes.slice(sent, end);
       await serialWriter.write(slice);
       sent = end;
 
       // Actualizar barra de progreso en la misma línea
-      const pct   = Math.round((sent / total) * 100);
-      const bars  = Math.round(pct / 5);          // 20 bloques máx
-      const bar   = "█".repeat(bars) + "░".repeat(20 - bars);
+      const pct = Math.round((sent / total) * 100);
+      const bars = Math.round(pct / 5); // 20 bloques máx
+      const bar = "█".repeat(bars) + "░".repeat(20 - bars);
       term.write(`\r\x1b[36m↑ [${bar}] ${pct}% (${sent}/${total} B)\x1b[0m `);
 
       // Pequeña pausa cada 4 KB para no saturar el buffer USB
@@ -674,12 +838,13 @@ async function sendViaRawRepl(codeStr, chunkSz = 256) {
     await sendSerial("\x04");
     await _waitLocal("\x04", 10000);
 
-    // 5. Volver a friendly REPL
-    //await sendSerial("\x02");
-    //await sleep(100);
+    // 5. Volver a friendly REPL y esperar el prompt ">>>"
+    _localBuf = "";
+    await sendSerial("\x02");
+    await _waitLocal(">>>", 3000);
+    await sleep(100);
 
     return true;
-
   } finally {
     window._rawReplHook = null;
   }
@@ -688,44 +853,142 @@ async function sendViaRawRepl(codeStr, chunkSz = 256) {
 // ─────────────────────────────────────────────────────────────
 // BOTÓN: EJECUTAR
 // ─────────────────────────────────────────────────────────────
-btnRun.addEventListener("click", async () => {
+
+/**
+ * Envía el código actual al ESP32 sin cambiar de vista.
+ * Expuesto como window.sendCodeToDevice() para que otros
+ * módulos (ej. game-ui.js) puedan llamarlo directamente.
+ */
+async function sendCodeToDevice() {
+  _stopRequested = false;  // reset abort flag
   if (!isConnected || !serialWriter) {
     if (typeof SerialMonitor !== "undefined")
       SerialMonitor.warn("Sin conexión — conecta el dispositivo primero");
-    return;
+    return false;
   }
 
   const code = getCode();
-  if (!code?.trim()) { term.writeln("\r\nNo hay código para ejecutar\r\n"); return; }
+  if (!code?.trim()) {
+    term.writeln("\r\nNo hay código para ejecutar\r\n");
+    return false;
+  }
 
   try {
     isSendingCode = true;
     // Mostrar las líneas del código en la terminal (igual que BIPES)
-    term.writeln("\r\n\x1b[36m─────────────── Enviando código ───────────────\x1b[0m");
-    code.replace(/\r/g, "").split("\n").forEach((line) => {
-      if (line.trim()) term.writeln("\x1b[96m  " + line + "\x1b[0m");
-    });
-    term.writeln("\x1b[36m───────────────────────────────────────────────\x1b[0m\r\n");
+    term.writeln(
+      "\r\n\x1b[36m─────────────── Enviando código ───────────────\x1b[0m",
+    );
+    code
+      .replace(/\r/g, "")
+      .split("\n")
+      .forEach((line) => {
+        if (line.trim()) term.writeln("\x1b[96m  " + line + "\x1b[0m");
+      });
+    term.writeln(
+      "\x1b[36m───────────────────────────────────────────────\x1b[0m\r\n",
+    );
     if (typeof SerialMonitor !== "undefined") SerialMonitor.notifySending(code);
 
     const bytes = encoder.encode(code);
 
     if (bytes.length < 256) {
-      // Paste mode — rápido para código pequeño
-      await sendSerial("\x03"); await sleep(80);
-      await sendSerial("\x05"); await sleep(60);
-      await sendSerial(code);
-      await sendSerial("\r\n");
+      // ── Paste mode ────────────────────────────────────────────
+      // El protocolo MicroPython paste mode es:
+      //   Ctrl+C x2  → interrumpir
+      //   Ctrl+E     → entrar (responde "paste mode; ... ===")
+      //   <código>   → enviar TODO de una vez (sin \r\n extra entre líneas)
+      //   Ctrl+D     → ejecutar → ESP responde con output + "\r\n>>>" o solo ">>>"
+      //
+      // IMPORTANTE: NO enviar línea por línea — cada \r\n intermedio
+      // hace que el ESP muestre "===" y puede confundir la detección del fin.
+      // IMPORTANTE: El ">>>" que aparece DENTRO del eco paste no es el prompt
+      // final; solo el que llega DESPUÉS del Ctrl+D cuenta.
+
+      let _pmBuf = "";
+      let _pmDone = false; // se activa tras enviar Ctrl+D
+      let _pmFoundPrompt = false;
+
+      window._rawReplHook = (chunk) => {
+        _pmBuf += chunk;
+        // Solo contar ">>>" como prompt final si ya mandamos Ctrl+D
+        if (_pmDone && _pmBuf.includes(">>>")) _pmFoundPrompt = true;
+      };
+
+      async function _waitPm(checkFn, ms) {
+        const end = Date.now() + ms;
+        while (Date.now() < end) {
+          if (_stopRequested) return false;
+          if (checkFn()) return true;
+          await sleep(20);
+        }
+        return false;
+      }
+
+      // 1. Interrumpir ejecución actual (doble Ctrl+C)
+      await sendSerial("\x03");
+      await sleep(100);
+      await sendSerial("\x03");
+      await sleep(100);
+
+      // 2. Entrar en paste mode — esperar el "==="
+      _pmBuf = "";
+      await sendSerial("\x05");
+      const gotPaste = await _waitPm(() => _pmBuf.includes("==="), 2000);
+      if (!gotPaste) {
+        // Reintento: forzar prompt limpio primero
+        await sendSerial("\r\n");
+        await sleep(80);
+        _pmBuf = "";
+        await sendSerial("\x05");
+        const retry = await _waitPm(() => _pmBuf.includes("==="), 2000);
+        if (!retry) {
+          term.writeln("\r\n⚠ No se pudo entrar en paste mode. Reintenta.\r\n");
+          window._rawReplHook = null;
+          return;
+        }
+      }
+
+      // 3. Enviar TODO el código de una sola vez (sin \r\n extra)
+      //    El paste mode acepta el bloque completo hasta Ctrl+D
+      const normalized = code.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+      await sendSerial(normalized);
+
+      // 4. Ctrl+D → ejecutar; a partir de aquí buscamos el ">>>" real
+      _pmBuf = "";
+      _pmDone = true;
       await sendSerial("\x04");
+
+      // 5. Esperar el prompt ">>>" posterior al Ctrl+D (máx 10 s para scripts lentos)
+      await _waitPm(() => _pmFoundPrompt, 10000);
+
+      window._rawReplHook = null;
+      await sleep(150); // margen para que el ESP termine de imprimir
     } else {
       // Raw REPL — sin límite de tamaño, con progreso
       const ok = await sendViaRawRepl(code);
-      if (!ok) term.writeln("\r\n⚠ No se pudo entrar en raw REPL. Reintenta.\r\n");
+      if (!ok)
+        term.writeln("\r\n⚠ No se pudo entrar en raw REPL. Reintenta.\r\n");
     }
+    return true;
   } finally {
+    window._rawReplHook = null;
     isSendingCode = false;
     if (typeof SerialMonitor !== "undefined") SerialMonitor.notifyDone();
     term.focus();
+  }
+}
+window.sendCodeToDevice = sendCodeToDevice;
+window.stopExecution = stopExecution;  // exponer para game-ui.js y serial-monitor.js
+
+// NOTA: game-ui.js registra este evento en fase capture y llama
+// window.globalRun() que delega a sendCodeToDevice() según la vista.
+// Este listener queda como respaldo para entornos sin game-ui.js.
+btnRun.addEventListener("click", async () => {
+  // Si game-ui.js ya está cargado, globalRun() habrá sido llamado
+  // desde el listener capture. Solo actuamos si no existe.
+  if (typeof window.globalRun !== "function") {
+    await sendCodeToDevice();
   }
 });
 
@@ -740,16 +1003,19 @@ document.getElementById("btnUploadCode").addEventListener("click", async () => {
   }
 
   // Obtener código del editor
-  const codeStr = (typeof editor !== "undefined" && editor.getDoc)
-    ? editor.getDoc().getValue()
-    : document.getElementById("codeEditor").value;
+  const codeStr =
+    typeof editor !== "undefined" && editor.getDoc
+      ? editor.getDoc().getValue()
+      : document.getElementById("codeEditor").value;
 
   // Nombre del archivo
   const fileNameInput = document.getElementById("fileNameInput");
   const rawFileName = fileNameInput?.value.trim() || "test.py";
 
   if (!isSafeFileName(rawFileName)) {
-    term.writeln(`\r\n⚠ Nombre de archivo no válido: "${rawFileName}"\r\nUsa solo letras, números, guiones y extensión válida.\r\n`);
+    term.writeln(
+      `\r\n⚠ Nombre de archivo no válido: "${rawFileName}"\r\nUsa solo letras, números, guiones y extensión válida.\r\n`,
+    );
     return;
   }
 
@@ -758,7 +1024,8 @@ document.getElementById("btnUploadCode").addEventListener("click", async () => {
 
   try {
     isSendingCode = true;
-    if (typeof SerialMonitor !== "undefined") SerialMonitor.notifySending(codeStr);
+    if (typeof SerialMonitor !== "undefined")
+      SerialMonitor.notifySending(codeStr);
 
     // Script que escribe el archivo en MicroPython
     const writeScript = [
@@ -766,15 +1033,17 @@ document.getElementById("btnUploadCode").addEventListener("click", async () => {
       `_f.write(${JSON.stringify(codeStr)})`,
       `_f.close()`,
       `del _f`,
-      `print('OK :${fileName}')`,
+      `print('OK:${fileName}')`,
     ].join("\n");
 
     const scriptBytes = encoder.encode(writeScript);
 
     if (scriptBytes.length < 256) {
       // Paste mode directo
-      await sendSerial("\x03"); await sleep(80);
-      await sendSerial("\x05"); await sleep(60);
+      await sendSerial("\x03");
+      await sleep(80);
+      await sendSerial("\x05");
+      await sleep(60);
       await sendSerial(writeScript);
       await sendSerial("\r\n");
       await sendSerial("\x04");
@@ -802,9 +1071,24 @@ document.getElementById("btnUploadCode").addEventListener("click", async () => {
 // STOP (Ctrl+C)
 // ─────────────────────────────────────────────────────────────
 async function stopExecution() {
-  if (!serialWriter) { term.writeln("\r\nNo conectado\r\n"); return; }
+  if (!serialWriter) {
+    term.writeln("\r\nNo conectado\r\n");
+    return;
+  }
   try {
+    // Abortar cualquier sendCodeToDevice en curso inmediatamente
+    _stopRequested = true;
+    window._rawReplHook = null;
+    isSendingCode = false;
+    if (typeof SerialMonitor !== "undefined") SerialMonitor.notifyDone();
+
+    // Ctrl+C doble sin esperas largas para respuesta inmediata
     await sendSerial("\x03");
+    await sleep(50);
+    await sendSerial("\x03");
+    await sleep(50);
+    await sendSerial("\r\n");
+
     term.writeln("\r\nEjecución detenida\r\n");
   } catch (error) {
     console.error("Error enviando Ctrl+C:", error);
@@ -814,22 +1098,25 @@ async function stopExecution() {
 document.getElementById("btnStop").addEventListener("click", stopExecution);
 
 btnConsoleReset.addEventListener("click", async () => {
-  await sendSerial("\x03"); await sleep(100);
+  await sendSerial("\x03");
+  await sleep(100);
   await sendSerial("\x04");
 });
 
-btnConsoleClear.addEventListener("click", () => { term.clear(); });
+btnConsoleClear.addEventListener("click", () => {
+  term.clear();
+});
 
 // ─────────────────────────────────────────────────────────────
 // RESET DE ESTADO SERIAL
 // ─────────────────────────────────────────────────────────────
 function resetSerialState() {
-  serialReader  = null;
-  serialWriter  = null;
-  serialPort    = null;
-  isConnected   = false;
+  serialReader = null;
+  serialWriter = null;
+  serialPort = null;
+  isConnected = false;
   serialConnected = false;
-  serialBuffer  = "";
+  serialBuffer = "";
   waitingResponse = false;
   isFileOperationBusy = false;
   window._rawReplHook = null;
@@ -860,7 +1147,8 @@ const Files = {
     term.writeln("\r\nListando archivos...");
 
     try {
-      await sendSerial("\x03"); await sleep(100);
+      await sendSerial("\x03");
+      await sleep(100);
       await sendSerial("import os\r\n");
       await sendSerial("print(os.listdir())\r\n");
 
@@ -880,14 +1168,16 @@ const Files = {
    * Usa evento en lugar de busy-wait puro para mayor eficiencia.
    */
   async readResponse(timeout = 5000) {
-    serialBuffer  = "";
+    serialBuffer = "";
     waitingResponse = true;
 
     return new Promise((resolve) => {
-      const start   = Date.now();
-      const check   = () => {
-        if ((serialBuffer.includes("]") && serialBuffer.includes(">>>")) ||
-            Date.now() - start >= timeout) {
+      const start = Date.now();
+      const check = () => {
+        if (
+          (serialBuffer.includes("]") && serialBuffer.includes(">>>")) ||
+          Date.now() - start >= timeout
+        ) {
           waitingResponse = false;
           resolve(serialBuffer);
         } else {
@@ -910,7 +1200,9 @@ const Files = {
         if (name.includes(".")) files.push(name);
       }
       return files;
-    } catch { return []; }
+    } catch {
+      return [];
+    }
   },
 
   updateExplorer(files) {
@@ -918,32 +1210,43 @@ const Files = {
     container.innerHTML = "";
 
     files.forEach((file) => {
-      const row     = document.createElement("div");
+      const row = document.createElement("div");
       row.className = "file-row";
 
       const nameDiv = document.createElement("div");
       nameDiv.className = "file-name";
       nameDiv.textContent = file;
       nameDiv.title = "Abrir " + file;
-      nameDiv.onclick = () => { if (!this.isOpening) this.openFile(file); };
+      nameDiv.onclick = () => {
+        if (!this.isOpening) this.openFile(file);
+      };
 
-      const iconsDiv  = document.createElement("div");
+      const iconsDiv = document.createElement("div");
       iconsDiv.className = "file-icons";
 
       const runBtn = document.createElement("span");
       runBtn.className = "icon-btn icon-run";
       runBtn.title = "Ejecutar " + file;
-      runBtn.onclick = (e) => { e.stopPropagation(); this.runFile(file); };
+      runBtn.onclick = (e) => {
+        e.stopPropagation();
+        this.runFile(file);
+      };
 
       const downloadBtn = document.createElement("span");
       downloadBtn.className = "icon-btn icon-save-py";
       downloadBtn.title = "Descargar " + file;
-      downloadBtn.onclick = (e) => { e.stopPropagation(); this.downloadFile(file); };
+      downloadBtn.onclick = (e) => {
+        e.stopPropagation();
+        this.downloadFile(file);
+      };
 
       const deleteBtn = document.createElement("span");
       deleteBtn.className = "icon-btn icon-clear";
       deleteBtn.title = "Eliminar " + file;
-      deleteBtn.onclick = (e) => { e.stopPropagation(); this.deleteFile(file); };
+      deleteBtn.onclick = (e) => {
+        e.stopPropagation();
+        this.deleteFile(file);
+      };
 
       iconsDiv.append(runBtn, downloadBtn, deleteBtn);
       row.append(nameDiv, iconsDiv);
@@ -952,15 +1255,25 @@ const Files = {
   },
 
   async openFile(fileName) {
-    try { requireSafeFileName(fileName); } catch { return; }
+    try {
+      requireSafeFileName(fileName);
+    } catch {
+      return;
+    }
     if (this.isOpening) return;
     this.isOpening = true;
-    if (!isConnected) { term.writeln("\r\nESP32 no conectado"); this.isOpening = false; return; }
+    if (!isConnected) {
+      term.writeln("\r\nESP32 no conectado");
+      this.isOpening = false;
+      return;
+    }
 
     term.writeln(`\r\nAbriendo ${fileName}...\r\n`);
     try {
-      await sendSerial("\x03"); await sleep(100);
-      serialBuffer = ""; waitingResponse = true;
+      await sendSerial("\x03");
+      await sleep(100);
+      serialBuffer = "";
+      waitingResponse = true;
       await sendSerial(`print(open('${fileName}').read())\r\n`);
 
       const start = Date.now();
@@ -971,7 +1284,10 @@ const Files = {
       waitingResponse = false;
 
       let content = serialBuffer
-        .replace(new RegExp(`print\\(open\\('${fileName}'\\)\\.read\\(\\)\\)`), "")
+        .replace(
+          new RegExp(`print\\(open\\('${fileName}'\\)\\.read\\(\\)\\)`),
+          "",
+        )
         .replace(/>>>/g, "")
         .trim();
 
@@ -991,19 +1307,32 @@ const Files = {
   },
 
   async runFile(fileName) {
-    try { requireSafeFileName(fileName); } catch { return; }
+    try {
+      requireSafeFileName(fileName);
+    } catch {
+      return;
+    }
     if (!isConnected) return;
     term.writeln(`\r\nEjecutando ${fileName}...\r\n`);
-    await sendSerial("\x03"); await sleep(100);
+    await sendSerial("\x03");
+    await sleep(100);
     await sendSerial(`exec(open('${fileName}').read())\r\n`);
   },
 
   async deleteFile(fileName) {
-    try { requireSafeFileName(fileName); } catch { return; }
+    try {
+      requireSafeFileName(fileName);
+    } catch {
+      return;
+    }
     if (!confirm("¿Eliminar " + fileName + "?")) return;
-    if (fileName === "boot.py") { console.log("No se recomienda eliminar boot.py"); return; }
+    if (fileName === "boot.py") {
+      console.log("No se recomienda eliminar boot.py");
+      return;
+    }
     term.writeln(`\r\nEliminando ${fileName}...\r\n`);
-    await sendSerial("\x03"); await sleep(100);
+    await sendSerial("\x03");
+    await sleep(100);
     await sendSerial("import os\r\n");
     await sendSerial(`os.remove('${fileName}')\r\n`);
     term.writeln("Archivo eliminado\r\n");
@@ -1011,14 +1340,23 @@ const Files = {
   },
 
   async downloadFile(fileName) {
-    try { requireSafeFileName(fileName); } catch { return; }
-    if (!isConnected) { term.writeln("\r\nESP32 no conectado\r\n"); return; }
+    try {
+      requireSafeFileName(fileName);
+    } catch {
+      return;
+    }
+    if (!isConnected) {
+      term.writeln("\r\nESP32 no conectado\r\n");
+      return;
+    }
     if (isFileOperationBusy) return;
     isFileOperationBusy = true;
 
     try {
-      await sendSerial("\x03"); await sleep(100);
-      serialBuffer = ""; waitingResponse = true;
+      await sendSerial("\x03");
+      await sleep(100);
+      serialBuffer = "";
+      waitingResponse = true;
       await sendSerial(`print(open('${fileName}').read())\r\n`);
 
       const start = Date.now();
@@ -1029,7 +1367,10 @@ const Files = {
       waitingResponse = false;
 
       let content = serialBuffer
-        .replace(new RegExp(`print\\(open\\('${fileName}'\\)\\.read\\(\\)\\)`), "")
+        .replace(
+          new RegExp(`print\\(open\\('${fileName}'\\)\\.read\\(\\)\\)`),
+          "",
+        )
         .replace(/>>>/g, "")
         .trim();
 
@@ -1053,7 +1394,9 @@ const Files = {
 // ─────────────────────────────────────────────────────────────
 function toggleFloating(show) {
   if (window.FLOATING?.length) {
-    window.FLOATING.forEach((el) => { if (el) el.style.display = show ? "" : "none"; });
+    window.FLOATING.forEach((el) => {
+      if (el) el.style.display = show ? "" : "none";
+    });
   } else {
     document.querySelectorAll(".floating-tools").forEach((el) => {
       el.style.display = show ? "" : "none";
@@ -1086,7 +1429,11 @@ function saveLog(type, message, extra = {}) {
 }
 
 window.addEventListener("error", (event) => {
-  saveLog("JS_ERROR", event.message, { file: event.filename, line: event.lineno, column: event.colno });
+  saveLog("JS_ERROR", event.message, {
+    file: event.filename,
+    line: event.lineno,
+    column: event.colno,
+  });
 });
 window.addEventListener("unhandledrejection", (event) => {
   saveLog("PROMISE_ERROR", event.reason?.message || event.reason);
@@ -1096,13 +1443,15 @@ window.addEventListener("unhandledrejection", (event) => {
 // COMPARTIR ENLACE
 // ─────────────────────────────────────────────────────────────
 function generarLinkCompartir() {
-  const xmlText = Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(Code.workspace));
+  const xmlText = Blockly.Xml.domToText(
+    Blockly.Xml.workspaceToDom(Code.workspace),
+  );
   const compressed = LZString.compressToEncodedURIComponent(xmlText);
   return window.location.origin + window.location.pathname + "#" + compressed;
 }
 
 function compartir() {
-  const url   = generarLinkCompartir();
+  const url = generarLinkCompartir();
   const modal = document.getElementById("shareModal");
   const input = document.getElementById("shareInput");
   input.value = url;
@@ -1130,15 +1479,24 @@ document.addEventListener("DOMContentLoaded", () => {
 function cargarDesdeURL() {
   if (window.location.hash.length > 1) {
     try {
-      const xmlText = LZString.decompressFromEncodedURIComponent(window.location.hash.substring(1));
-      Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(xmlText), Code.workspace);
-    } catch (e) { console.error("Error al cargar desde URL:", e); }
+      const xmlText = LZString.decompressFromEncodedURIComponent(
+        window.location.hash.substring(1),
+      );
+      Blockly.Xml.domToWorkspace(
+        Blockly.Xml.textToDom(xmlText),
+        Code.workspace,
+      );
+    } catch (e) {
+      console.error("Error al cargar desde URL:", e);
+    }
   }
 }
 
 window.addEventListener("load", () => {
   cargarDesdeURL();
-  document.querySelectorAll(".icon-btn").forEach((el) => { el.style.visibility = "visible"; });
+  document.querySelectorAll(".icon-btn").forEach((el) => {
+    el.style.visibility = "visible";
+  });
 });
 
 // ─────────────────────────────────────────────────────────────
@@ -1155,17 +1513,23 @@ window.addEventListener(
     toggleFloating(!tooSmall);
     refreshBlockly();
     refreshTerminalFit();
-  }, 150)
+  }, 150),
 );
 
 document.addEventListener("visibilitychange", () => {
   const hidden = document.visibilityState !== "visible";
   toggleFloating(!hidden);
-  if (!hidden) requestAnimationFrame(() => { refreshBlockly(); refreshTerminalFit(); });
+  if (!hidden)
+    requestAnimationFrame(() => {
+      refreshBlockly();
+      refreshTerminalFit();
+    });
 });
 
 window.addEventListener("orientationchange", () => {
-  setTimeout(() => { if (Code.workspace) Blockly.svgResize(Code.workspace); }, 200);
+  setTimeout(() => {
+    if (Code.workspace) Blockly.svgResize(Code.workspace);
+  }, 200);
 });
 
 // ─────────────────────────────────────────────────────────────
