@@ -1,6 +1,7 @@
 # PyInstaller
 build/
 dist/
+Imagnes de Bloques
 
 # Python
 __pycache__/
