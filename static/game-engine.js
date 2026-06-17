@@ -2,6 +2,12 @@
    game-engine.js  —  Motor de canvas 2D para 3DPit
    Extraído de index.html para mantenerlo separado y versionable.
    Cargar ANTES de animation.js y main.js.
+   
+   SISTEMA DE COORDENADAS:
+   - Origen (0,0): esquina superior izquierda del canvas
+   - Sprite (x,y): esquina superior izquierda del sprite, no el centro
+   - Ángulo (en grados): 0°=derecha, 90°=abajo, 180°=izquierda, 270°=arriba
+   - Canvas: (0,0) arriba-izq, (width,height) abajo-derecho
 ══════════════════════════════════════════════════════════════ */
 
 /* ══════════════════════════════════════════
@@ -193,8 +199,9 @@ window.GameEngine = (function () {
       _running = true;
 
       /* Reiniciar estado del sprite para que cada ejecución
-         comience desde un estado limpio y predecible */
-      _sprite.x = 240; _sprite.y = 180;
+         comience desde un estado limpio y predecible 
+         (ahora x,y es esquina superior izquierda, no centro) */
+      _sprite.x = 216; _sprite.y = 156;
       _sprite.w = 48;  _sprite.h = 48;
       _sprite.color    = '#00ff88';
       _sprite.img      = null;
@@ -245,8 +252,8 @@ window.GameEngine = (function () {
     /* ── Sprite ── */
     createSprite: function(x, y, w, h, colorOrImg) {
       var v = String(colorOrImg || '#00ff88');
-      _sprite.x = Number(x)||240;
-      _sprite.y = Number(y)||180;
+      _sprite.x = Number(x)||216;
+      _sprite.y = Number(y)||156;
       _sprite.w = Number(w)||48;
       _sprite.h = Number(h)||48;
       _sprite.flipX = false;
@@ -273,11 +280,13 @@ window.GameEngine = (function () {
       _sprite.y += Number(dy)||0;
       if (ndx < 0) _sprite.flipX = true;
       if (ndx > 0) _sprite.flipX = false;
+      /* Opcional: clamping para mantener el sprite dentro del canvas (esquina superior izquierda) */
+      /*
       if (_canvas) {
-        var hw = _sprite.w/2, hh = _sprite.h/2;
-        _sprite.x = Math.max(hw, Math.min(_canvas.width  - hw, _sprite.x));
-        _sprite.y = Math.max(hh, Math.min(_canvas.height - hh, _sprite.y));
+        _sprite.x = Math.max(0, Math.min(_canvas.width  - _sprite.w, _sprite.x));
+        _sprite.y = Math.max(0, Math.min(_canvas.height - _sprite.h, _sprite.y));
       }
+      */
       if (_pen.down && _ctx) {
         var fromX = (_pen.lastX !== null) ? _pen.lastX : prevX;
         var fromY = (_pen.lastY !== null) ? _pen.lastY : prevY;
@@ -294,7 +303,12 @@ window.GameEngine = (function () {
       _pen.lastY = _sprite.y;
     },
 
-    setPos: function(x,y) { _sprite.x=Number(x)||0; _sprite.y=Number(y)||0; },
+    setPos: function(x,y) {
+      _sprite.x = Number(x) || 0;
+      _sprite.y = Number(y) || 0;
+      _pen.lastX = _sprite.x;
+      _pen.lastY = _sprite.y;
+    },
     getX:   function()    { return _sprite.x; },
     getY:   function()    { return _sprite.y; },
 
@@ -310,10 +324,15 @@ window.GameEngine = (function () {
       _sprite.angle = (_sprite.angle + Number(deg)||0) % 360;
       if (_sprite.angle < 0) _sprite.angle += 360;
     },
+    getAngle: function() {
+      return _sprite.angle;
+    },
+    setAngle: function(deg) {
+      _sprite.angle = ((Number(deg)||0) % 360 + 360) % 360;
+    },
     moveSteps: function(steps) {
-      /* Convención tipo "tortuga": 0° = arriba, los grados aumentan
-         en sentido horario (igual que girar derecha). */
-      var rad = (_sprite.angle - 90) * Math.PI / 180;
+      /* Convención: 0° = derecha, 90° = arriba, 180° = izquierda, 270° = abajo. */
+      var rad = -(_sprite.angle) * Math.PI / 180;
       var dx  = Math.cos(rad) * (Number(steps)||0);
       var dy  = Math.sin(rad) * (Number(steps)||0);
       this.moveSprite(dx, dy);
@@ -329,27 +348,27 @@ window.GameEngine = (function () {
       if (_sprite.imgReady && _sprite.img) {
         ctx.save();
         if (_sprite.flipX) {
-          ctx.translate(x, 0);
+          ctx.translate(x + w, y);
           ctx.scale(-1, 1);
-          ctx.drawImage(_sprite.img, -w/2, y-h/2, w, h);
+          ctx.drawImage(_sprite.img, -w, 0, w, h);
         } else {
-          ctx.drawImage(_sprite.img, x-w/2, y-h/2, w, h);
+          ctx.drawImage(_sprite.img, x, y, w, h);
         }
         ctx.restore();
       } else if (_sprite.img === null && !_sprite.imgReady && _sprite.color) {
         ctx.fillStyle = _sprite.color;
-        _fillRoundRect(ctx, x-w/2, y-h/2, w, h, 4);
+        _fillRoundRect(ctx, x, y, w, h, 4);
         ctx.fill();
         ctx.strokeStyle = 'rgba(255,255,255,0.7)';
         ctx.lineWidth = 1.5;
         ctx.stroke();
       } else {
         ctx.fillStyle = 'rgba(255,255,255,0.15)';
-        _fillRoundRect(ctx, x-w/2, y-h/2, w, h, 4);
+        _fillRoundRect(ctx, x, y, w, h, 4);
         ctx.fill();
         ctx.fillStyle = '#fff';
         ctx.font = '10px monospace';
-        ctx.fillText('...', x-8, y+4);
+        ctx.fillText('...', x+8, y+12);
       }
     },
 
@@ -376,9 +395,11 @@ window.GameEngine = (function () {
     touchingColor: function(hexColor) {
       var ctx = _getCtx(); if (!ctx) return false;
       var w = _sprite.w, h = _sprite.h;
-      var hw = w*0.6/2, hh = h*0.6/2;
-      var px = Math.max(0, Math.round(_sprite.x - hw));
-      var py = Math.max(0, Math.round(_sprite.y - hh));
+      /* Verificar desde la esquina superior izquierda con un pequeño margen */
+      var dx = Math.round(w * 0.2);
+      var dy = Math.round(h * 0.2);
+      var px = Math.max(0, Math.round(_sprite.x + dx));
+      var py = Math.max(0, Math.round(_sprite.y + dy));
       var sw = Math.min(Math.round(w*0.6), _canvas.width  - px);
       var sh = Math.min(Math.round(h*0.6), _canvas.height - py);
       if (sw<=0||sh<=0) return false;
@@ -396,9 +417,9 @@ window.GameEngine = (function () {
     touchingEdge: function() {
       _getCtx();
       if (!_canvas) return false;
-      var hw = _sprite.w/2, hh = _sprite.h/2;
-      return _sprite.x-hw<=0 || _sprite.x+hw>=_canvas.width ||
-             _sprite.y-hh<=0 || _sprite.y+hh>=_canvas.height;
+      /* Verificar si la esquina superior izquierda o inferior derecha toca el borde */
+      return _sprite.x <= 0 || _sprite.x + _sprite.w >= _canvas.width ||
+             _sprite.y <= 0 || _sprite.y + _sprite.h >= _canvas.height;
     },
 
     colorAtPosHex: function(x,y) {
@@ -456,16 +477,33 @@ window.GameEngine = (function () {
     penDown:  function(x, y) {
       if (x !== undefined && x !== null && x !== '' &&
           y !== undefined && y !== null && y !== '') {
-        /* Teletransportar sin dibujar — subir lápiz momentáneamente */
+        /* Teletransportar: mover sprite y limpiar lastX/lastY para que
+           el primer trazo parta desde el nuevo punto, sin diagonal */
         _pen.down  = false;
+        _pen.lastX = null;
+        _pen.lastY = null;
         _sprite.x  = Number(x) || 0;
         _sprite.y  = Number(y) || 0;
       }
       _pen.down  = true;
       _pen.lastX = _sprite.x;
       _pen.lastY = _sprite.y;
+      console.log('[GameEngine] penDown:', _sprite.x, _sprite.y);
     },
     penUp:    function() { _pen.down = false; },
+    penMoveTo: function(x, y) {
+      /* Mueve el lapiz a X,Y SIN dibujar, aunque este bajado */
+      var wasDown = _pen.down;
+      _pen.down  = false;
+      _pen.lastX = null;
+      _pen.lastY = null;
+      _sprite.x  = Number(x) || 0;
+      _sprite.y  = Number(y) || 0;
+      _pen.down  = wasDown;
+      _pen.lastX = _sprite.x;
+      _pen.lastY = _sprite.y;
+      console.log('[GameEngine] penMoveTo:', _sprite.x, _sprite.y);
+    },
     penSetColor: function(color) { _pen.color = String(color||'#ff0000'); },
     penSetSize:  function(size)  { _pen.size  = Math.max(1, Number(size)||3); },
     penClear: function() {

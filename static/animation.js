@@ -1025,13 +1025,13 @@ Blockly.JavaScript["sprite_set_pos"] = function (block) {
       block,
       "X",
       Blockly.JavaScript.ORDER_ATOMIC,
-    ) || "240";
+    ) || "216";
   const y =
     Blockly.JavaScript.valueToCode(
       block,
       "Y",
       Blockly.JavaScript.ORDER_ATOMIC,
-    ) || "180";
+    ) || "156";
   return "GameEngine.setPos(" + x + ", " + y + ");\n";
 };
 
@@ -1078,6 +1078,7 @@ Blockly.JavaScript["sprite_move_steps"] = function (block) {
       "STEPS",
       Blockly.JavaScript.ORDER_ATOMIC,
     ) || "10";
+  console.log("sprite_move_steps: steps = " + steps);
   return "GameEngine.moveSteps(" + steps + ");\n";
 };
 Blockly.JavaScript["sprite_turn_left"] = function (block) {
@@ -1087,7 +1088,8 @@ Blockly.JavaScript["sprite_turn_left"] = function (block) {
       "DEG",
       Blockly.JavaScript.ORDER_ATOMIC,
     ) || "15";
-  return "GameEngine.turnAngle(-(" + deg + "));\n";
+  console.log("sprite_turn_left: deg = " + deg);
+  return "GameEngine.turnAngle(" + deg + ");\n";
 };
 Blockly.JavaScript["sprite_turn_right"] = function (block) {
   const deg =
@@ -1096,10 +1098,19 @@ Blockly.JavaScript["sprite_turn_right"] = function (block) {
       "DEG",
       Blockly.JavaScript.ORDER_ATOMIC,
     ) || "15";
-  return "GameEngine.turnAngle(" + deg + ");\n";
+  return "GameEngine.turnAngle(-(" + deg + "));\n";
 };
 Blockly.JavaScript["sprite_get_angle"] = function (block) {
   return ["GameEngine.getAngle()", Blockly.JavaScript.ORDER_ATOMIC];
+};
+Blockly.JavaScript["sprite_set_angle"] = function (block) {
+  const deg = Blockly.JavaScript.valueToCode(block, "DEG", Blockly.JavaScript.ORDER_ATOMIC) || "0";
+  return "GameEngine.setAngle(" + deg + ");\n";
+};
+Blockly.JavaScript["pen_move_to"] = function (block) {
+  const x = Blockly.JavaScript.valueToCode(block, "X", Blockly.JavaScript.ORDER_ATOMIC) || "0";
+  const y = Blockly.JavaScript.valueToCode(block, "Y", Blockly.JavaScript.ORDER_ATOMIC) || "0";
+  return "GameEngine.penMoveTo(" + x + ", " + y + ");\n";
 };
 
 /* ── Colisiones ── */
@@ -1208,6 +1219,10 @@ Blockly.JavaScript["game_show_text"] = function (block) {
       Blockly.JavaScript.ORDER_ATOMIC,
     ) || "'#ffffff'";
   /* String() explícito garantiza conversión correcta aunque sea número */
+  console.log("game_show_text: text = " + text);
+  console.log("game_show_text: x = " + x);
+  console.log("game_show_text: y = " + y);
+  console.log("game_show_text: color = " + color);
   return (
     "GameEngine.showText(String(" + text + "), " + x + ", " + y + ", " + color + ");\n"
   );
@@ -1294,13 +1309,13 @@ Blockly.JavaScript["game_draw_circle"] = function (block) {
 
 /* ── Lápiz ── */
 Blockly.JavaScript["pen_down"] = function (block) {
-  const x = Blockly.JavaScript.valueToCode(
-    block, "X", Blockly.JavaScript.ORDER_ATOMIC
-  );
-  const y = Blockly.JavaScript.valueToCode(
-    block, "Y", Blockly.JavaScript.ORDER_ATOMIC
-  );
-  if (x && y) {
+  /* Usar getInputTargetBlock para detectar si hay un bloque conectado.
+     valueToCode devuelve el string "0" que es truthy aunque el valor sea cero. */
+  var hasX = block.getInputTargetBlock("X") !== null;
+  var hasY = block.getInputTargetBlock("Y") !== null;
+  if (hasX && hasY) {
+    const x = Blockly.JavaScript.valueToCode(block, "X", Blockly.JavaScript.ORDER_ATOMIC) || "0";
+    const y = Blockly.JavaScript.valueToCode(block, "Y", Blockly.JavaScript.ORDER_ATOMIC) || "0";
     return "GameEngine.penDown(" + x + ", " + y + ");\n";
   }
   return "GameEngine.penDown();\n";
@@ -2072,6 +2087,20 @@ function initInterpreter(code) {
         return GE.getAngle();
       }),
     );
+    interpreter.setProperty(
+      geObj,
+      "setAngle",
+      interpreter.createNativeFunction(function (deg) {
+        GE.setAngle(_n(deg));
+      }),
+    );
+    interpreter.setProperty(
+      geObj,
+      "penMoveTo",
+      interpreter.createNativeFunction(function (x, y) {
+        GE.penMoveTo(_n(x), _n(y));
+      }),
+    );
 
     /* Colisiones */
     interpreter.setProperty(
@@ -2196,7 +2225,10 @@ function initInterpreter(code) {
       geObj,
       "penDown",
       interpreter.createNativeFunction(function (x, y) {
-        GE.penDown(x, y);
+        /* _n() convierte valores del intérprete a número nativo JS */
+        var xv = (x !== null && x !== undefined) ? _n(x) : undefined;
+        var yv = (y !== null && y !== undefined) ? _n(y) : undefined;
+        GE.penDown(xv, yv);
       }),
     );
     interpreter.setProperty(

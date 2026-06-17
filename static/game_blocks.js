@@ -84,7 +84,7 @@ Blockly.defineBlocksWithJsonArray([
     nextStatement: null,
     colour: 20,
     tooltip:
-      "Crea el personaje. En imagen/color pon el nombre del archivo (car.png) o un color (#00ff88).",
+      "Crea el personaje. X,Y es la esquina superior izquierda. En imagen/color pon el nombre del archivo (car.png) o un color (#00ff88).",
   },
   {
     type: "sprite_load_image",
@@ -136,7 +136,7 @@ Blockly.defineBlocksWithJsonArray([
     previousStatement: null,
     nextStatement: null,
     colour: 20,
-    tooltip: "Teletransporta el personaje a la posición X, Y.",
+    tooltip: "Teletransporta el personaje (esquina superior izquierda) a la posición X, Y.",
   },
   {
     type: "sprite_get_x",
@@ -314,7 +314,24 @@ Blockly.defineBlocksWithJsonArray([
   ────────────────────────────── */
   {
     type: "pen_down",
-    message0: "✏️ bajar lápiz %1 %2",
+    message0: "✏️ bajar lápiz",
+    previousStatement: null,
+    nextStatement: null,
+    colour: 65,
+    tooltip:
+      "Baja el lápiz. El personaje dibujará una línea al moverse desde su posición actual.",
+  },
+  {
+    type: "pen_up",
+    message0: "✏️ subir lápiz",
+    previousStatement: null,
+    nextStatement: null,
+    colour: 65,
+    tooltip: "Sube el lápiz. El personaje se moverá sin dibujar.",
+  },
+  {
+    type: "pen_move_to",
+    message0: "✏️ mover lápiz a  X %1  Y %2",
     args0: [
       { type: "input_value", name: "X", check: "Number" },
       { type: "input_value", name: "Y", check: "Number" },
@@ -323,16 +340,7 @@ Blockly.defineBlocksWithJsonArray([
     previousStatement: null,
     nextStatement: null,
     colour: 65,
-    tooltip:
-      "Activa el lápiz: el personaje dibujará al moverse. Si conectas X y Y, el personaje se posiciona ahí antes de empezar a dibujar (deja los huecos vacíos para usar la posición actual).",
-  },
-  {
-    type: "pen_up",
-    message0: "✏️ subir lápiz",
-    previousStatement: null,
-    nextStatement: null,
-    colour: 65,
-    tooltip: "Desactiva el lápiz: el personaje deja de dibujar.",
+    tooltip: "Mueve el lápiz a la posición X,Y SIN dibujar, aunque esté bajado. Útil para saltar a otro punto sin trazar una línea.",
   },
   {
     type: "pen_set_color",
@@ -442,7 +450,7 @@ Blockly.defineBlocksWithJsonArray([
     nextStatement: null,
     colour: 20,
     tooltip:
-      "Mueve el personaje hacia adelante según su ángulo actual (0° = arriba, los grados aumentan girando a la derecha).",
+      "Mueve el personaje hacia adelante según su ángulo actual (0° = derecha, 90° = arriba, 180° = izquierda, 270° = abajo).",
   },
   {
     type: "sprite_turn_left",
@@ -452,7 +460,7 @@ Blockly.defineBlocksWithJsonArray([
     nextStatement: null,
     colour: 20,
     tooltip:
-      "Gira el personaje a la izquierda (sentido antihorario) los grados indicados.",
+      "Gira el personaje a la izquierda (sentido antihorario). 0° = derecha, 90° = arriba, 180° = izquierda, 270° = abajo.",
   },
   {
     type: "sprite_turn_right",
@@ -462,13 +470,23 @@ Blockly.defineBlocksWithJsonArray([
     nextStatement: null,
     colour: 20,
     tooltip:
-      "Gira el personaje a la derecha (sentido horario) los grados indicados.",
+      "Gira el personaje a la derecha (sentido horario). 0° = derecha, 90° = arriba, 180° = izquierda, 270° = abajo.",
   },
   {
     type: "sprite_get_angle",
     message0: "📐 ángulo del personaje",
     output: "Number",
     colour: 20,
-    tooltip: "Devuelve el ángulo actual del personaje en grados (0° = arriba).",
+    tooltip: "Devuelve el ángulo actual del personaje en grados (0° = derecha).",
+  },
+  {
+    type: "sprite_set_angle",
+    message0: "🧭 poner ángulo %1 °",
+    args0: [{ type: "input_value", name: "DEG", check: "Number" }],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: 20,
+    tooltip: "Pone el ángulo del personaje (0° = derecha, 90° = arriba, 180° = izquierda, 270° = abajo).",
   },
 ]);

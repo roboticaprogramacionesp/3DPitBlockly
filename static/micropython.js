@@ -5037,6 +5037,11 @@ Blockly.Python["sprite_set_flip"] = function (block) {
 /* ── Lápiz — stubs Python (solo funcionan en la animación) ── */
 Blockly.Python["pen_down"]      = function () { return "# [Juego] bajar lápiz\n"; };
 Blockly.Python["pen_up"]        = function () { return "# [Juego] subir lápiz\n"; };
+Blockly.Python["pen_move_to"]   = function () { return "# [Juego] mover lápiz\n"; };
+Blockly.Python["sprite_set_angle"] = function (block) {
+  const angle = Blockly.Python.valueToCode(block, "ANGLE", Blockly.Python.ORDER_NONE) || "0";
+  return `# [Juego] ángulo = ${angle}\n`;
+};
 Blockly.Python["pen_clear"]     = function () { return "# [Juego] borrar trazos\n"; };
 Blockly.Python["pen_stamp"]     = function () { return "# [Juego] sellar personaje\n"; };
 Blockly.Python["pen_set_color"] = function (block) {

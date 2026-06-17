@@ -245,8 +245,8 @@
 /* ── Botón de conexiones en el footer del panel tutorial ─── */
 .ts-btn-wiring {
   flex: 0 0 auto;
-  width: 36px;
-  height: 36px;
+  width: 45px;
+  height: 45px;
   display: flex;
   align-items: center;
   justify-content: center;
