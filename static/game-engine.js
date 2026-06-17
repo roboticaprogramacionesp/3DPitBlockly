@@ -85,7 +85,7 @@ window.GameEngine = (function () {
       callback(null);
     };
     /* Ruta: /static/img/<filename> */
-    img.src = '/static/img/' + filename;
+    img.src = 'static/img/' + filename;
   }
 
   /* ── Helpers color ── */
