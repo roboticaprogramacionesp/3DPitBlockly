@@ -4867,7 +4867,6 @@ Blockly.Python["gc_collect"] = function (_block) {
    En Python generan comentarios explicativos para que el
    generador no falle al abrir la vista Código.
 ══════════════════════════════════════════════════════════════ */
-
 const _gameComment = "# [Juego] Este bloque solo funciona en la animación del navegador\n";
 const _gamePy = (msg) => `# ${msg}\n`;
 
@@ -4885,13 +4884,25 @@ Blockly.Python["select_imgs"] = function(block) {
   return ["'" + img + "'", Blockly.Python.ORDER_ATOMIC];
 };
 
+Blockly.Python["game_set_bg_image"] = function (block) {
+  const f = Blockly.Python.valueToCode(block, "FILE", Blockly.Python.ORDER_NONE) || "'road.png'";
+  return `# [Juego] fondo imagen = ${f}\n`;
+};
 Blockly.Python["game_set_bg"] = function (block) {
   const c = Blockly.Python.valueToCode(block, "COLOR", Blockly.Python.ORDER_NONE) || "(0,0,0)";
   return `# [Juego] fondo = ${c}\n`;
 };
 Blockly.Python["game_clear"]        = function () { return _gameComment; };
+Blockly.Python["game_frame"] = function () {
+  return "# [Juego] siguiente frame\n";
+};
 
 /* Sprite */
+Blockly.Python["sprite_load_image"] = function (block) {
+  const f = Blockly.Python.valueToCode(block, "FILE", Blockly.Python.ORDER_NONE) || "'sprite.png'";
+  return `# [Juego] precargar imagen ${f}\n`;
+};
+
 Blockly.Python["sprite_create"] = function (block) {
   const x   = Blockly.Python.valueToCode(block, "X",   Blockly.Python.ORDER_NONE) || "240";
   const y   = Blockly.Python.valueToCode(block, "Y",   Blockly.Python.ORDER_NONE) || "180";
@@ -4916,6 +4927,11 @@ Blockly.Python["sprite_set_pos"] = function (block) {
   const x = Blockly.Python.valueToCode(block, "X", Blockly.Python.ORDER_NONE) || "0";
   const y = Blockly.Python.valueToCode(block, "Y", Blockly.Python.ORDER_NONE) || "0";
   return `sprite_x = ${x}\nsprite_y = ${y}\n`;
+};
+
+Blockly.Python["sprite_set_flip"] = function (block) {
+  const flip = block.getFieldValue("FLIP");
+  return `# [Juego] flip = ${flip}\n`;
 };
 Blockly.Python["sprite_get_x"]  = function () { return ["sprite_x", Blockly.Python.ORDER_ATOMIC]; };
 Blockly.Python["sprite_get_y"]  = function () { return ["sprite_y", Blockly.Python.ORDER_ATOMIC]; };
@@ -4976,91 +4992,6 @@ Blockly.Python["key_is_pressed"] = function (block) {
   return [`_tecla('${ch}')`, Blockly.Python.ORDER_FUNCTION_CALL];
 };
 
-/* Colisiones */
-Blockly.Python["touching_color"] = function (block) {
-  Blockly.Python.definitions_['_serial_helper'] = _SERIAL_HELPER;
-  const c = Blockly.Python.valueToCode(block, "COLOR", Blockly.Python.ORDER_NONE) || "(0,0,0)";
-  /* _color_en devuelve (r,g,b), color_picker también — comparación directa */
-  return [`(_color_en(sprite_x, sprite_y) == ${c})`, Blockly.Python.ORDER_RELATIONAL];
-};
-
-Blockly.Python["touching_edge"] = function () { return ["False", Blockly.Python.ORDER_ATOMIC]; };
-
-Blockly.Python["color_at_pos"] = function (block) {
-  Blockly.Python.definitions_['_serial_helper'] = _SERIAL_HELPER;
-  const x = Blockly.Python.valueToCode(block, "X", Blockly.Python.ORDER_NONE) || "0";
-  const y = Blockly.Python.valueToCode(block, "Y", Blockly.Python.ORDER_NONE) || "0";
-  /* Devuelve '#rrggbb' — para comparar con color de bloque usar _rgb_a_hex(r,g,b) */
-  return [`_color_en(${x}, ${y})`, Blockly.Python.ORDER_FUNCTION_CALL];
-};
-
-/* Puntaje */
-Blockly.Python["game_add_score"] = function (block) {
-  const pts = Blockly.Python.valueToCode(block, "POINTS", Blockly.Python.ORDER_NONE) || "1";
-  return `# [Juego] sumar ${pts} punto(s)\n`;
-};
-Blockly.Python["game_get_score"]   = function () { return ["0", Blockly.Python.ORDER_ATOMIC]; };
-Blockly.Python["game_reset_score"] = function () { return _gameComment; };
-Blockly.Python["game_show_text"] = function (block) {
-  const txt = Blockly.Python.valueToCode(block, "TEXT", Blockly.Python.ORDER_NONE) || "''";
-  /* str() envuelve cualquier valor (tupla, número, string) para evitar TypeError */
-  return `print(str(${txt}))\n`;
-};
-
-/* Formas */
-Blockly.Python["game_draw_rect"] = function (block) {
-  const x = Blockly.Python.valueToCode(block, "X", Blockly.Python.ORDER_NONE) || "0";
-  const y = Blockly.Python.valueToCode(block, "Y", Blockly.Python.ORDER_NONE) || "0";
-  const w = Blockly.Python.valueToCode(block, "W", Blockly.Python.ORDER_NONE) || "40";
-  const h = Blockly.Python.valueToCode(block, "H", Blockly.Python.ORDER_NONE) || "40";
-  return `# [Juego] rectángulo (${x},${y}) ${w}x${h}\n`;
-};
-Blockly.Python["game_draw_circle"] = function (block) {
-  const x = Blockly.Python.valueToCode(block, "X", Blockly.Python.ORDER_NONE) || "0";
-  const y = Blockly.Python.valueToCode(block, "Y", Blockly.Python.ORDER_NONE) || "0";
-  const r = Blockly.Python.valueToCode(block, "R", Blockly.Python.ORDER_NONE) || "20";
-  return `# [Juego] círculo (${x},${y}) r=${r}\n`;
-};
-Blockly.Python["game_frame"] = function () {
-  return "# [Juego] siguiente frame\n";
-};
-
-Blockly.Python["sprite_load_image"] = function (block) {
-  const f = Blockly.Python.valueToCode(block, "FILE", Blockly.Python.ORDER_NONE) || "'sprite.png'";
-  return `# [Juego] precargar imagen ${f}\n`;
-};
-Blockly.Python["sprite_set_flip"] = function (block) {
-  const flip = block.getFieldValue("FLIP");
-  return `# [Juego] flip = ${flip}\n`;
-};
-
-/* ── Lápiz — stubs Python (solo funcionan en la animación) ── */
-Blockly.Python["pen_down"]      = function () { return "# [Juego] bajar lápiz\n"; };
-Blockly.Python["pen_up"]        = function () { return "# [Juego] subir lápiz\n"; };
-Blockly.Python["pen_move_to"]   = function () { return "# [Juego] mover lápiz\n"; };
-Blockly.Python["sprite_set_angle"] = function (block) {
-  const angle = Blockly.Python.valueToCode(block, "ANGLE", Blockly.Python.ORDER_NONE) || "0";
-  return `# [Juego] ángulo = ${angle}\n`;
-};
-Blockly.Python["pen_clear"]     = function () { return "# [Juego] borrar trazos\n"; };
-Blockly.Python["pen_stamp"]     = function () { return "# [Juego] sellar personaje\n"; };
-Blockly.Python["pen_set_color"] = function (block) {
-  const c = Blockly.Python.valueToCode(block, "COLOR", Blockly.Python.ORDER_NONE) || "(255,0,0)";
-  return `# [Juego] color lápiz = ${c}\n`;
-};
-Blockly.Python["pen_set_size"]  = function (block) {
-  const s = Blockly.Python.valueToCode(block, "SIZE", Blockly.Python.ORDER_NONE) || "3";
-  return `# [Juego] tamaño lápiz = ${s}\n`;
-};
-Blockly.Python["game_set_bg_image"] = function (block) {
-  const f = Blockly.Python.valueToCode(block, "FILE", Blockly.Python.ORDER_NONE) || "'road.png'";
-  return `# [Juego] fondo imagen = ${f}\n`;
-};
-
-Blockly.Python["pixel_channel"] = function (block) {
-  return ["0", Blockly.Python.ORDER_ATOMIC];
-};
-
 /* ── Ratón — stubs Python (solo funcionan en la animación) ── */
 Blockly.Python["mouse_clicked"] = function () { return ["False", Blockly.Python.ORDER_ATOMIC]; };
 Blockly.Python["mouse_down"]    = function () { return ["False", Blockly.Python.ORDER_ATOMIC]; };
@@ -5081,3 +5012,134 @@ Blockly.Python["sprite_turn_right"] = function (block) {
   return `# [Juego] girar derecha ${deg}°\n`;
 };
 Blockly.Python["sprite_get_angle"] = function () { return ["0", Blockly.Python.ORDER_ATOMIC]; };
+
+Blockly.Python["sprite_set_angle"] = function (block) {
+  const angle = Blockly.Python.valueToCode(block, "ANGLE", Blockly.Python.ORDER_NONE) || "0";
+  return `# [Juego] ángulo = ${angle}\n`;
+};
+
+/* Colisiones */
+Blockly.Python["touching_color"] = function (block) {
+  Blockly.Python.definitions_['_serial_helper'] = _SERIAL_HELPER;
+  const c = Blockly.Python.valueToCode(block, "COLOR", Blockly.Python.ORDER_NONE) || "(0,0,0)";
+  /* _color_en devuelve (r,g,b), color_picker también — comparación directa */
+  return [`(_color_en(sprite_x, sprite_y) == ${c})`, Blockly.Python.ORDER_RELATIONAL];
+};
+
+Blockly.Python["touching_edge"] = function () { return ["False", Blockly.Python.ORDER_ATOMIC]; };
+
+Blockly.Python["color_at_pos"] = function (block) {
+  Blockly.Python.definitions_['_serial_helper'] = _SERIAL_HELPER;
+  const x = Blockly.Python.valueToCode(block, "X", Blockly.Python.ORDER_NONE) || "0";
+  const y = Blockly.Python.valueToCode(block, "Y", Blockly.Python.ORDER_NONE) || "0";
+  /* Devuelve '#rrggbb' — para comparar con color de bloque usar _rgb_a_hex(r,g,b) */
+  return [`_color_en(${x}, ${y})`, Blockly.Python.ORDER_FUNCTION_CALL];
+};
+
+Blockly.Python["pixel_channel"] = function (block) {
+  return ["0", Blockly.Python.ORDER_ATOMIC];
+};
+
+/* ── Mostrar texto — en la animación se muestra sobre el canvas, aquí solo lo imprime en consola ── */ 
+Blockly.Python["game_show_text"] = function (block) {
+  const txt = Blockly.Python.valueToCode(block, "TEXT", Blockly.Python.ORDER_NONE) || "''";
+  /* str() envuelve cualquier valor (tupla, número, string) para evitar TypeError */
+  return `print(str(${txt}))\n`;
+};
+
+/* ── Lápiz — stubs Python (solo funcionan en la animación) ── */
+Blockly.Python["pen_down"]      = function () { return "# [Juego] bajar lápiz\n"; };
+Blockly.Python["pen_up"]        = function () { return "# [Juego] subir lápiz\n"; };
+Blockly.Python["pen_move_to"]   = function () { return "# [Juego] mover lápiz\n"; };
+
+Blockly.Python["pen_set_color"] = function (block) {
+  const c = Blockly.Python.valueToCode(block, "COLOR", Blockly.Python.ORDER_NONE) || "(255,0,0)";
+  return `# [Juego] color lápiz = ${c}\n`;
+};
+Blockly.Python["pen_set_size"]  = function (block) {
+  const s = Blockly.Python.valueToCode(block, "SIZE", Blockly.Python.ORDER_NONE) || "3";
+  return `# [Juego] tamaño lápiz = ${s}\n`;
+};
+Blockly.Python["pen_stamp"]     = function () { return "# [Juego] sellar personaje\n"; };
+Blockly.Python["pen_clear"]     = function () { return "# [Juego] borrar trazos\n"; };
+
+/* Formas */
+Blockly.Python["game_draw_rect"] = function (block) {
+  const x = Blockly.Python.valueToCode(block, "X", Blockly.Python.ORDER_NONE) || "0";
+  const y = Blockly.Python.valueToCode(block, "Y", Blockly.Python.ORDER_NONE) || "0";
+  const w = Blockly.Python.valueToCode(block, "W", Blockly.Python.ORDER_NONE) || "40";
+  const h = Blockly.Python.valueToCode(block, "H", Blockly.Python.ORDER_NONE) || "40";
+  return `# [Juego] rectángulo (${x},${y}) ${w}x${h}\n`;
+};
+
+Blockly.Python["game_draw_rect_outline"] = function (block) {
+  const x = Blockly.Python.valueToCode(block, "X", Blockly.Python.ORDER_NONE) || "0";
+  const y = Blockly.Python.valueToCode(block, "Y", Blockly.Python.ORDER_NONE) || "0";
+  const width = Blockly.Python.valueToCode(block, "WIDTH", Blockly.Python.ORDER_NONE) || "40";
+  const height = Blockly.Python.valueToCode(block, "HEIGHT", Blockly.Python.ORDER_NONE) || "40";
+  return `# [Juego] contorno rectángulo (${x},${y}) ancho=${width}, alto=${height}\n`;
+};
+
+Blockly.Python["game_draw_circle"] = function (block) {
+  const x = Blockly.Python.valueToCode(block, "X", Blockly.Python.ORDER_NONE) || "0";
+  const y = Blockly.Python.valueToCode(block, "Y", Blockly.Python.ORDER_NONE) || "0";
+  const r = Blockly.Python.valueToCode(block, "R", Blockly.Python.ORDER_NONE) || "20";
+  return `# [Juego] círculo (${x},${y}) r=${r}\n`;
+};
+
+Blockly.Python["game_draw_circle_outline"] = function (block) {
+  const x = Blockly.Python.valueToCode(block, "X", Blockly.Python.ORDER_NONE) || "0";
+  const y = Blockly.Python.valueToCode(block, "Y", Blockly.Python.ORDER_NONE) || "0";
+  const radius = Blockly.Python.valueToCode(block, "RADIUS", Blockly.Python.ORDER_NONE) || "10";
+  return `# [Juego] contorno círculo (${x},${y}), radio=${radius}\n`;
+};
+
+Blockly.Python["game_draw_triangle"] = function (block) {
+  const x1 = Blockly.Python.valueToCode(block, "X1", Blockly.Python.ORDER_NONE) || "0";
+  const y1 = Blockly.Python.valueToCode(block, "Y1", Blockly.Python.ORDER_NONE) || "0";
+  const x2 = Blockly.Python.valueToCode(block, "X2", Blockly.Python.ORDER_NONE) || "40";
+  const y2 = Blockly.Python.valueToCode(block, "Y2", Blockly.Python.ORDER_NONE) || "40";
+  const x3 = Blockly.Python.valueToCode(block, "X3", Blockly.Python.ORDER_NONE) || "80";
+  const y3 = Blockly.Python.valueToCode(block, "Y3", Blockly.Python.ORDER_NONE) || "40";
+  return `# [Juego] triángulo (${x1},${y1})-(${x2},${y2})-(${x3},${y3})\n`;
+};
+
+Blockly.Python["game_draw_triangle_outline"] = function (block) {
+  const x1 = Blockly.Python.valueToCode(block, "X1", Blockly.Python.ORDER_NONE) || "0";
+  const y1 = Blockly.Python.valueToCode(block, "Y1", Blockly.Python.ORDER_NONE) || "0";
+  const x2 = Blockly.Python.valueToCode(block, "X2", Blockly.Python.ORDER_NONE) || "40";
+  const y2 = Blockly.Python.valueToCode(block, "Y2", Blockly.Python.ORDER_NONE) || "40";
+  const x3 = Blockly.Python.valueToCode(block, "X3", Blockly.Python.ORDER_NONE) || "80";
+  const y3 = Blockly.Python.valueToCode(block, "Y3", Blockly.Python.ORDER_NONE) || "40";
+  return `# [Juego] contorno triángulo (${x1},${y1})-(${x2},${y2})-(${x3},${y3})\n`;
+};
+
+Blockly.Python["game_draw_line"] = function (block) {
+  const x1 = Blockly.Python.valueToCode(block, "X1", Blockly.Python.ORDER_NONE) || "0";
+  const y1 = Blockly.Python.valueToCode(block, "Y1", Blockly.Python.ORDER_NONE) || "0";
+  const x2 = Blockly.Python.valueToCode(block, "X2", Blockly.Python.ORDER_NONE) || "40";
+  const y2 = Blockly.Python.valueToCode(block, "Y2", Blockly.Python.ORDER_NONE) || "40";
+  return `# [Juego] línea (${x1},${y1}) a (${x2},${y2})\n`;
+};
+
+Blockly.Python["game_random_int"] = function (block) {
+  const min = Blockly.Python.valueToCode(block, "MIN", Blockly.Python.ORDER_NONE) || "0";
+  const max = Blockly.Python.valueToCode(block, "MAX", Blockly.Python.ORDER_NONE) || "100";
+  return [`# [Juego] random.randint(${min}, ${max})`, Blockly.Python.ORDER_FUNCTION_CALL];
+};
+
+Blockly.Python["game_random_float"] = function () { return ["0.0", Blockly.Python.ORDER_ATOMIC]; }; 
+
+Blockly.Python["game_distance"] = function (block) {
+  const x1 = Blockly.Python.valueToCode(block, "X1", Blockly.Python.ORDER_NONE) || "0";
+  const y1 = Blockly.Python.valueToCode(block, "Y1", Blockly.Python.ORDER_NONE) || "0";
+  const x2 = Blockly.Python.valueToCode(block, "X2", Blockly.Python.ORDER_NONE) || "40";
+  const y2 = Blockly.Python.valueToCode(block, "Y2", Blockly.Python.ORDER_NONE) || "40";
+  return `# [Juego] distancia (${x1},${y1}) a (${x2},${y2})\n`;
+};
+
+Blockly.Python["game_play_tone"] = function (block) {
+  const frequency = Blockly.Python.valueToCode(block, "FREQUENCY", Blockly.Python.ORDER_NONE) || "440";
+  const duration = Blockly.Python.valueToCode(block, "DURATION", Blockly.Python.ORDER_NONE) || "500";
+  return `# [Juego] reproducir tono ${frequency} Hz durante ${duration} ms\n`;
+};

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Prueba WebREPL — ESP32 por WiFi</title>
+<style>
+  body { background:#1e1e1e; color:#d4d4d4; font-family: Consolas, monospace; padding: 20px; }
+  input, button { font-family: inherit; font-size: 14px; padding: 6px; margin: 4px 0; }
+  #ip { width: 200px; }
+  #pass { width: 120px; }
+  #log {
+    background:#111; border:1px solid #444; padding:10px; height: 320px;
+    overflow-y:auto; white-space: pre-wrap; margin-top: 10px;
+  }
+  button { background:#333; color:white; border:none; cursor:pointer; padding:6px 12px; border-radius:3px; }
+  button:hover { background:#555; }
+</style>
+</head>
+<body>
+  <h2>Prueba de conexión WebREPL (WiFi)</h2>
+  <div>
+    IP de la ESP32: <input id="ip" placeholder="192.168.1.45" value="192.168.1.45">
+    Contraseña: <input id="pass" type="password" placeholder="webrepl pass">
+    <button onclick="conectar()">Conectar</button>
+    <button onclick="desconectar()">Desconectar</button>
+  </div>
+
+  <div>
+    <input id="cmd" style="width:480px" placeholder="código python, ej: print('hola')" onkeydown="if(event.key==='Enter') enviar()">
+    <button onclick="enviar()">Enviar (Ctrl+D)</button>
+  </div>
+
+  <div id="log"></div>
+
+<script>
+let ws = null;
+let passSent = false;
+
+function log(msg) {
+  const el = document.getElementById("log");
+  el.textContent += msg;
+  el.scrollTop = el.scrollHeight;
+}
+
+function conectar() {
+  const ip = document.getElementById("ip").value.trim();
+  if (!ip) return alert("Pon la IP de la ESP32");
+
+  ws = new WebSocket(`ws://${ip}:8266`);
+  passSent = false;
+
+  ws.onopen = () => log("\n[Conectado al socket, esperando prompt de password...]\n");
+
+  ws.onmessage = (event) => {
+    const text = event.data;
+    log(text);
+
+    // WebREPL pide la contraseña la primera vez que ve "Password:"
+    if (!passSent && text.includes("Password:")) {
+      const pass = document.getElementById("pass").value;
+      ws.send(pass + "\r");
+      passSent = true;
+    }
+  };
+
+  ws.onclose = () => log("\n[Conexión cerrada]\n");
+  ws.onerror = (e) => log("\n[Error de conexión — revisa IP/red]\n");
+}
+
+function desconectar() {
+  if (ws) ws.close();
+}
+
+function enviar() {
+  if (!ws || ws.readyState !== WebSocket.OPEN) return alert("No conectado");
+  const cmd = document.getElementById("cmd").value;
+  // Enviamos el comando + Enter, como si tipearas en el REPL normal
+  ws.send(cmd + "\r\n");
+  document.getElementById("cmd").value = "";
+}
+</script>
+</body>
+</html>

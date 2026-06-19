@@ -1,3 +1,96 @@
+Blockly.JavaScript["game_draw_rect"] = function (block) {
+  const x = Blockly.JavaScript.valueToCode(block,"X",Blockly.JavaScript.ORDER_NONE)||"0";
+  const y = Blockly.JavaScript.valueToCode(block,"Y",Blockly.JavaScript.ORDER_NONE)||"0";
+  const w = Blockly.JavaScript.valueToCode(block,"W",Blockly.JavaScript.ORDER_NONE)||"10";
+  const h = Blockly.JavaScript.valueToCode(block,"H",Blockly.JavaScript.ORDER_NONE)||"10";
+  const c = Blockly.JavaScript.valueToCode(block,"COLOR",Blockly.JavaScript.ORDER_NONE)||"'#ffffff'";
+  return "GameEngine.drawRect("+x+","+y+","+w+","+h+","+c+");\n";
+};
+Blockly.JavaScript["game_draw_rect_outline"] = function (block) {
+  const x  = Blockly.JavaScript.valueToCode(block,"X",Blockly.JavaScript.ORDER_NONE)||"0";
+  const y  = Blockly.JavaScript.valueToCode(block,"Y",Blockly.JavaScript.ORDER_NONE)||"0";
+  const w  = Blockly.JavaScript.valueToCode(block,"W",Blockly.JavaScript.ORDER_NONE)||"10";
+  const h  = Blockly.JavaScript.valueToCode(block,"H",Blockly.JavaScript.ORDER_NONE)||"10";
+  const c  = Blockly.JavaScript.valueToCode(block,"COLOR",Blockly.JavaScript.ORDER_NONE)||"'#ffffff'";
+  const lw = Blockly.JavaScript.valueToCode(block,"LW",Blockly.JavaScript.ORDER_NONE)||"2";
+  return "GameEngine.drawRectOutline("+x+","+y+","+w+","+h+","+c+","+lw+");\n";
+};
+Blockly.JavaScript["game_draw_circle"] = function (block) {
+  const x = Blockly.JavaScript.valueToCode(block,"X",Blockly.JavaScript.ORDER_NONE)||"0";
+  const y = Blockly.JavaScript.valueToCode(block,"Y",Blockly.JavaScript.ORDER_NONE)||"0";
+  const r = Blockly.JavaScript.valueToCode(block,"R",Blockly.JavaScript.ORDER_NONE)||"10";
+  const c = Blockly.JavaScript.valueToCode(block,"COLOR",Blockly.JavaScript.ORDER_NONE)||"'#ffffff'";
+  return "GameEngine.drawCircle("+x+","+y+","+r+","+c+");\n";
+};
+Blockly.JavaScript["game_draw_circle_outline"] = function (block) {
+  const x  = Blockly.JavaScript.valueToCode(block,"X",Blockly.JavaScript.ORDER_NONE)||"0";
+  const y  = Blockly.JavaScript.valueToCode(block,"Y",Blockly.JavaScript.ORDER_NONE)||"0";
+  const r  = Blockly.JavaScript.valueToCode(block,"R",Blockly.JavaScript.ORDER_NONE)||"10";
+  const c  = Blockly.JavaScript.valueToCode(block,"COLOR",Blockly.JavaScript.ORDER_NONE)||"'#ffffff'";
+  const lw = Blockly.JavaScript.valueToCode(block,"LW",Blockly.JavaScript.ORDER_NONE)||"2";
+  return "GameEngine.drawCircleOutline("+x+","+y+","+r+","+c+","+lw+");\n";
+};
+Blockly.JavaScript["game_draw_triangle"] = function (block) {
+  const x1 = Blockly.JavaScript.valueToCode(block,"X1",Blockly.JavaScript.ORDER_NONE)||"0";
+  const y1 = Blockly.JavaScript.valueToCode(block,"Y1",Blockly.JavaScript.ORDER_NONE)||"0";
+  const x2 = Blockly.JavaScript.valueToCode(block,"X2",Blockly.JavaScript.ORDER_NONE)||"0";
+  const y2 = Blockly.JavaScript.valueToCode(block,"Y2",Blockly.JavaScript.ORDER_NONE)||"0";
+  const x3 = Blockly.JavaScript.valueToCode(block,"X3",Blockly.JavaScript.ORDER_NONE)||"0";
+  const y3 = Blockly.JavaScript.valueToCode(block,"Y3",Blockly.JavaScript.ORDER_NONE)||"0";
+  const c  = Blockly.JavaScript.valueToCode(block,"COLOR",Blockly.JavaScript.ORDER_NONE)||"'#ffffff'";
+  return "GameEngine.drawTriangle("+x1+","+y1+","+x2+","+y2+","+x3+","+y3+","+c+");\n";
+};
+Blockly.JavaScript["game_draw_triangle_outline"] = function (block) {
+  const x1 = Blockly.JavaScript.valueToCode(block,"X1",Blockly.JavaScript.ORDER_NONE)||"0";
+  const y1 = Blockly.JavaScript.valueToCode(block,"Y1",Blockly.JavaScript.ORDER_NONE)||"0";
+  const x2 = Blockly.JavaScript.valueToCode(block,"X2",Blockly.JavaScript.ORDER_NONE)||"0";
+  const y2 = Blockly.JavaScript.valueToCode(block,"Y2",Blockly.JavaScript.ORDER_NONE)||"0";
+  const x3 = Blockly.JavaScript.valueToCode(block,"X3",Blockly.JavaScript.ORDER_NONE)||"0";
+  const y3 = Blockly.JavaScript.valueToCode(block,"Y3",Blockly.JavaScript.ORDER_NONE)||"0";
+  const c  = Blockly.JavaScript.valueToCode(block,"COLOR",Blockly.JavaScript.ORDER_NONE)||"'#ffffff'";
+  const lw = Blockly.JavaScript.valueToCode(block,"LW",Blockly.JavaScript.ORDER_NONE)||"2";
+  return "GameEngine.drawTriangleOutline("+x1+","+y1+","+x2+","+y2+","+x3+","+y3+","+c+","+lw+");\n";
+};
+Blockly.JavaScript["game_draw_line"] = function (block) {
+  const x1 = Blockly.JavaScript.valueToCode(block,"X1",Blockly.JavaScript.ORDER_NONE)||"0";
+  const y1 = Blockly.JavaScript.valueToCode(block,"Y1",Blockly.JavaScript.ORDER_NONE)||"0";
+  const x2 = Blockly.JavaScript.valueToCode(block,"X2",Blockly.JavaScript.ORDER_NONE)||"0";
+  const y2 = Blockly.JavaScript.valueToCode(block,"Y2",Blockly.JavaScript.ORDER_NONE)||"0";
+  const c  = Blockly.JavaScript.valueToCode(block,"COLOR",Blockly.JavaScript.ORDER_NONE)||"'#ffffff'";
+  const lw = Blockly.JavaScript.valueToCode(block,"LW",Blockly.JavaScript.ORDER_NONE)||"2";
+  return "GameEngine.drawLine("+x1+","+y1+","+x2+","+y2+","+c+","+lw+");\n";
+};
+Blockly.JavaScript["game_show_text"] = function (block) {
+  const text  = Blockly.JavaScript.valueToCode(block,"TEXT",Blockly.JavaScript.ORDER_NONE)||"''";
+  const x     = Blockly.JavaScript.valueToCode(block,"X",Blockly.JavaScript.ORDER_NONE)||"0";
+  const y     = Blockly.JavaScript.valueToCode(block,"Y",Blockly.JavaScript.ORDER_NONE)||"20";
+  const color = Blockly.JavaScript.valueToCode(block,"COLOR",Blockly.JavaScript.ORDER_NONE)||"'#ffffff'";
+  const size  = Blockly.JavaScript.valueToCode(block,"SIZE",Blockly.JavaScript.ORDER_NONE)||"16";
+  return "GameEngine.showText("+text+","+x+","+y+","+color+","+size+");\n";
+};
+Blockly.JavaScript["game_random_int"] = function (block) {
+  const min = Blockly.JavaScript.valueToCode(block,"MIN",Blockly.JavaScript.ORDER_NONE)||"0";
+  const max = Blockly.JavaScript.valueToCode(block,"MAX",Blockly.JavaScript.ORDER_NONE)||"100";
+  return ["GameEngine.randomInt("+min+","+max+")", Blockly.JavaScript.ORDER_FUNCTION_CALL];
+};
+Blockly.JavaScript["game_random_float"] = function (block) {
+  const min = Blockly.JavaScript.valueToCode(block,"MIN",Blockly.JavaScript.ORDER_NONE)||"0";
+  const max = Blockly.JavaScript.valueToCode(block,"MAX",Blockly.JavaScript.ORDER_NONE)||"1";
+  return ["GameEngine.randomFloat("+min+","+max+")", Blockly.JavaScript.ORDER_FUNCTION_CALL];
+};
+Blockly.JavaScript["game_distance"] = function (block) {
+  const x1 = Blockly.JavaScript.valueToCode(block,"X1",Blockly.JavaScript.ORDER_NONE)||"0";
+  const y1 = Blockly.JavaScript.valueToCode(block,"Y1",Blockly.JavaScript.ORDER_NONE)||"0";
+  const x2 = Blockly.JavaScript.valueToCode(block,"X2",Blockly.JavaScript.ORDER_NONE)||"0";
+  const y2 = Blockly.JavaScript.valueToCode(block,"Y2",Blockly.JavaScript.ORDER_NONE)||"0";
+  return ["GameEngine.distance("+x1+","+y1+","+x2+","+y2+")", Blockly.JavaScript.ORDER_FUNCTION_CALL];
+};
+Blockly.JavaScript["game_play_tone"] = function (block) {
+  const freq = Blockly.JavaScript.valueToCode(block,"FREQ",Blockly.JavaScript.ORDER_NONE)||"440";
+  const dur  = Blockly.JavaScript.valueToCode(block,"DUR",Blockly.JavaScript.ORDER_NONE)||"0.3";
+  return "GameEngine.playTone("+freq+","+dur+");\n";
+};
+
 Blockly.JavaScript["time_sleep"] = function (block) {
   const time = block.getFieldValue("VALUE");
   const id = block.id;
@@ -973,6 +1066,7 @@ Blockly.JavaScript["sprite_create"] = function (block) {
       "IMG",
       Blockly.JavaScript.ORDER_ATOMIC,
     ) || "'#00ff88'";
+  console.log("sprite_create: x=" + x + ", y=" + y + ", w=" + w + ", h=" + h + ", img=" + img);
   return (
     "GameEngine.createSprite(" +
     x +
@@ -1172,140 +1266,9 @@ Blockly.JavaScript["pixel_channel"] = function (block) {
   ];
 };
 
-/* ── Puntaje ── */
-Blockly.JavaScript["game_add_score"] = function (block) {
-  const id = block.id;
-  const pts =
-    Blockly.JavaScript.valueToCode(
-      block,
-      "POINTS",
-      Blockly.JavaScript.ORDER_ATOMIC,
-    ) || "1";
-  return "GameEngine.addScore(" + pts + ");\n";
-};
-
-Blockly.JavaScript["game_get_score"] = function (block) {
-  return ["GameEngine.getScore()", Blockly.JavaScript.ORDER_ATOMIC];
-};
-
-Blockly.JavaScript["game_reset_score"] = function (block) {
-  return "GameEngine.resetScore();\n";
-};
-
-Blockly.JavaScript["game_show_text"] = function (block) {
-  const id = block.id;
-  const text =
-    Blockly.JavaScript.valueToCode(
-      block,
-      "TEXT",
-      Blockly.JavaScript.ORDER_NONE,
-    ) || "''";
-  const x =
-    Blockly.JavaScript.valueToCode(
-      block,
-      "X",
-      Blockly.JavaScript.ORDER_ATOMIC,
-    ) || "10";
-  const y =
-    Blockly.JavaScript.valueToCode(
-      block,
-      "Y",
-      Blockly.JavaScript.ORDER_ATOMIC,
-    ) || "20";
-  const color =
-    Blockly.JavaScript.valueToCode(
-      block,
-      "COLOR",
-      Blockly.JavaScript.ORDER_ATOMIC,
-    ) || "'#ffffff'";
-  /* String() explícito garantiza conversión correcta aunque sea número */
-  console.log("game_show_text: text = " + text);
-  console.log("game_show_text: x = " + x);
-  console.log("game_show_text: y = " + y);
-  console.log("game_show_text: color = " + color);
-  return (
-    "GameEngine.showText(String(" + text + "), " + x + ", " + y + ", " + color + ");\n"
-  );
-};
-
-/* ── Formas / Obstáculos ── */
-Blockly.JavaScript["game_draw_rect"] = function (block) {
-  const id = block.id;
-  const x =
-    Blockly.JavaScript.valueToCode(
-      block,
-      "X",
-      Blockly.JavaScript.ORDER_ATOMIC,
-    ) || "0";
-  const y =
-    Blockly.JavaScript.valueToCode(
-      block,
-      "Y",
-      Blockly.JavaScript.ORDER_ATOMIC,
-    ) || "0";
-  const w =
-    Blockly.JavaScript.valueToCode(
-      block,
-      "W",
-      Blockly.JavaScript.ORDER_ATOMIC,
-    ) || "40";
-  const h =
-    Blockly.JavaScript.valueToCode(
-      block,
-      "H",
-      Blockly.JavaScript.ORDER_ATOMIC,
-    ) || "40";
-  const color =
-    Blockly.JavaScript.valueToCode(
-      block,
-      "COLOR",
-      Blockly.JavaScript.ORDER_ATOMIC,
-    ) || "'#ff0000'";
-  return (
-    "GameEngine.drawRect(" +
-    x +
-    ", " +
-    y +
-    ", " +
-    w +
-    ", " +
-    h +
-    ", " +
-    color +
-    ");\n"
-  );
-};
-
-Blockly.JavaScript["game_draw_circle"] = function (block) {
-  const id = block.id;
-  const x =
-    Blockly.JavaScript.valueToCode(
-      block,
-      "X",
-      Blockly.JavaScript.ORDER_ATOMIC,
-    ) || "0";
-  const y =
-    Blockly.JavaScript.valueToCode(
-      block,
-      "Y",
-      Blockly.JavaScript.ORDER_ATOMIC,
-    ) || "0";
-  const r =
-    Blockly.JavaScript.valueToCode(
-      block,
-      "R",
-      Blockly.JavaScript.ORDER_ATOMIC,
-    ) || "20";
-  const color =
-    Blockly.JavaScript.valueToCode(
-      block,
-      "COLOR",
-      Blockly.JavaScript.ORDER_ATOMIC,
-    ) || "'#ffff00'";
-  return (
-    "GameEngine.drawCircle(" + x + ", " + y + ", " + r + ", " + color + ");\n"
-  );
-};
+/* ── game_show_text, game_draw_rect, game_draw_circle:
+     definidos arriba (al inicio del archivo) con soporte de
+     tamaño de texto y variantes de contorno. No duplicar aquí. ── */
 
 /* ── Lápiz ── */
 Blockly.JavaScript["pen_down"] = function (block) {
@@ -2149,35 +2112,12 @@ function initInterpreter(code) {
       }),
     );
 
-    /* Puntaje */
-    interpreter.setProperty(
-      geObj,
-      "addScore",
-      interpreter.createNativeFunction(function (pts) {
-        GE.addScore(_n(pts));
-      }),
-    );
-    interpreter.setProperty(
-      geObj,
-      "getScore",
-      interpreter.createNativeFunction(function () {
-        return GE.getScore();
-      }),
-    );
-    interpreter.setProperty(
-      geObj,
-      "resetScore",
-      interpreter.createNativeFunction(function () {
-        GE.resetScore();
-      }),
-    );
-
     /* Texto y formas */
     interpreter.setProperty(
       geObj,
       "showText",
-      interpreter.createNativeFunction(function (text, x, y, color) {
-        GE.showText(_s(text), _n(x), _n(y), _color(color));
+      interpreter.createNativeFunction(function (text, x, y, color, size) {
+        GE.showText(_s(text), _n(x), _n(y), _color(color), _n(size));
       }),
     );
     interpreter.setProperty(
@@ -2189,9 +2129,72 @@ function initInterpreter(code) {
     );
     interpreter.setProperty(
       geObj,
+      "drawRectOutline",
+      interpreter.createNativeFunction(function (x, y, w, h, color, lw) {
+        GE.drawRectOutline(_n(x), _n(y), _n(w), _n(h), _color(color), _n(lw));
+      }),
+    );
+    interpreter.setProperty(
+      geObj,
       "drawCircle",
       interpreter.createNativeFunction(function (x, y, r, color) {
         GE.drawCircle(_n(x), _n(y), _n(r), _color(color));
+      }),
+    );
+    interpreter.setProperty(
+      geObj,
+      "drawCircleOutline",
+      interpreter.createNativeFunction(function (x, y, r, color, lw) {
+        GE.drawCircleOutline(_n(x), _n(y), _n(r), _color(color), _n(lw));
+      }),
+    );
+    interpreter.setProperty(
+      geObj,
+      "drawTriangle",
+      interpreter.createNativeFunction(function (x1, y1, x2, y2, x3, y3, color) {
+        GE.drawTriangle(_n(x1), _n(y1), _n(x2), _n(y2), _n(x3), _n(y3), _color(color));
+      }),
+    );
+    interpreter.setProperty(
+      geObj,
+      "drawTriangleOutline",
+      interpreter.createNativeFunction(function (x1, y1, x2, y2, x3, y3, color, lw) {
+        GE.drawTriangleOutline(_n(x1), _n(y1), _n(x2), _n(y2), _n(x3), _n(y3), _color(color), _n(lw));
+      }),
+    );
+    interpreter.setProperty(
+      geObj,
+      "drawLine",
+      interpreter.createNativeFunction(function (x1, y1, x2, y2, color, lw) {
+        GE.drawLine(_n(x1), _n(y1), _n(x2), _n(y2), _color(color), _n(lw));
+      }),
+    );
+    interpreter.setProperty(
+      geObj,
+      "randomInt",
+      interpreter.createNativeFunction(function (min, max) {
+        return GE.randomInt(_n(min), _n(max));
+      }),
+    );
+    interpreter.setProperty(
+      geObj,
+      "randomFloat",
+      interpreter.createNativeFunction(function (min, max) {
+        return GE.randomFloat(_n(min), _n(max));
+      }),
+    );
+    interpreter.setProperty(
+      geObj,
+      "distance",
+      interpreter.createNativeFunction(function (x1, y1, x2, y2) {
+        return GE.distance(_n(x1), _n(y1), _n(x2), _n(y2));
+      }),
+    );
+    interpreter.setProperty(
+      geObj,
+      "playTone",
+      interpreter.createNativeFunction(function (freq, dur) {
+        GE.playTone(_n(freq), _n(dur));
       }),
     );
 

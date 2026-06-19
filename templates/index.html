@@ -459,6 +459,29 @@
       letter-spacing: 0.05em;
     }
 
+    .gameImgBtn {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #1e1e38;
+      border: 1px solid #3454d1;
+      border-radius: 6px;
+      padding: 5px 10px;
+      font-size: 12px;
+      color: #a0a8ff;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .gameImgBtn:first-of-type { margin-left: auto; }
+    .gameImgBtn + .gameImgBtn { margin-left: 0; }
+    .gameImgBtn:hover {
+      background: #2a2a52;
+      border-color: #5470ff;
+    }
+    .gameImgBtn:active { transform: translateY(1px); }
+
     #gameContent {
       flex: 1;
       display: flex;
@@ -766,8 +789,29 @@
       <div id="gameContainer">
         <div id="gameHeader">
           <span id="gameTitle">🎮 Juego</span>
+          <button type="button" class="gameImgBtn" onclick="document.getElementById('gameBgFileInput').click()" title="Cargar imagen de tu computadora como fondo">
+            🖼️ Fondo
+          </button>
+          <button type="button" class="gameImgBtn" onclick="document.getElementById('gameSpriteFileInput').click()" title="Cargar imagen de tu computadora como personaje">
+            🐱 Personaje
+          </button>
+          <input type="file" id="gameBgFileInput" accept="image/*" style="display:none"
+            onchange="
+              if(!this.files||!this.files[0]) return;
+              GameEngine.loadLocalImage(this.files[0], '__bg_local__', function(ok){
+                if(ok) GameEngine.setBgImage('__bg_local__');
+              });
+              this.value='';
+            ">
+          <input type="file" id="gameSpriteFileInput" accept="image/*" style="display:none"
+            onchange="
+              if(!this.files||!this.files[0]) return;
+              GameEngine.loadLocalImage(this.files[0], '__sprite_local__', function(ok){
+                if(ok) GameEngine.createSprite(GameEngine.getX(), GameEngine.getY(), 48, 48, '__sprite_local__');
+              });
+              this.value='';
+            ">
         </div>
-        <span id="gameScoreDisplay" style="display:none"></span>
         <div id="gameContent">
           <canvas id="gameCanvas" width="480" height="360"></canvas>
           <!-- gameKeyHints desactivado temporalmente
@@ -926,17 +970,13 @@
           <value name="Y"><shadow type="math_number"><field name="NUM">180</field></shadow></value>
         </block>
 
-        <label text="▸ Puntaje"></label>
-        <block type="game_add_score">
-          <value name="POINTS"><shadow type="math_number"><field name="NUM">1</field></shadow></value>
-        </block>
-        <block type="game_get_score"></block>
-        <block type="game_reset_score"></block>
+        <label text="▸ Texto en pantalla"></label>
         <block type="game_show_text">
           <value name="TEXT"><shadow type="text"><field name="TEXT">¡Hola!</field></shadow></value>
           <value name="X"><shadow type="math_number"><field name="NUM">10</field></shadow></value>
           <value name="Y"><shadow type="math_number"><field name="NUM">20</field></shadow></value>
           <value name="COLOR"><shadow type="color_picker"><field name="COLOR">#ffffff</field></shadow></value>
+          <value name="SIZE"><shadow type="math_number"><field name="NUM">16</field></shadow></value>
         </block>
 
         <label text="▸ Lápiz / Pintar"></label>
@@ -955,7 +995,7 @@
         <block type="pen_stamp"></block>
         <block type="pen_clear"></block>
 
-        <label text="▸ Obstáculos"></label>
+        <label text="▸ Obstáculos / Formas"></label>
         <block type="game_draw_rect">
           <value name="X"><shadow type="math_number"><field name="NUM">100</field></shadow></value>
           <value name="Y"><shadow type="math_number"><field name="NUM">100</field></shadow></value>
@@ -963,11 +1003,75 @@
           <value name="H"><shadow type="math_number"><field name="NUM">40</field></shadow></value>
           <value name="COLOR"><shadow type="color_picker"><field name="COLOR">#ff0000</field></shadow></value>
         </block>
+        <block type="game_draw_rect_outline">
+          <value name="X"><shadow type="math_number"><field name="NUM">100</field></shadow></value>
+          <value name="Y"><shadow type="math_number"><field name="NUM">100</field></shadow></value>
+          <value name="W"><shadow type="math_number"><field name="NUM">40</field></shadow></value>
+          <value name="H"><shadow type="math_number"><field name="NUM">40</field></shadow></value>
+          <value name="COLOR"><shadow type="color_picker"><field name="COLOR">#ff0000</field></shadow></value>
+          <value name="LW"><shadow type="math_number"><field name="NUM">2</field></shadow></value>
+        </block>
         <block type="game_draw_circle">
           <value name="X"><shadow type="math_number"><field name="NUM">200</field></shadow></value>
           <value name="Y"><shadow type="math_number"><field name="NUM">150</field></shadow></value>
           <value name="R"><shadow type="math_number"><field name="NUM">20</field></shadow></value>
           <value name="COLOR"><shadow type="color_picker"><field name="COLOR">#ffff00</field></shadow></value>
+        </block>
+        <block type="game_draw_circle_outline">
+          <value name="X"><shadow type="math_number"><field name="NUM">200</field></shadow></value>
+          <value name="Y"><shadow type="math_number"><field name="NUM">150</field></shadow></value>
+          <value name="R"><shadow type="math_number"><field name="NUM">20</field></shadow></value>
+          <value name="COLOR"><shadow type="color_picker"><field name="COLOR">#ffff00</field></shadow></value>
+          <value name="LW"><shadow type="math_number"><field name="NUM">2</field></shadow></value>
+        </block>
+        <block type="game_draw_triangle">
+          <value name="X1"><shadow type="math_number"><field name="NUM">150</field></shadow></value>
+          <value name="Y1"><shadow type="math_number"><field name="NUM">100</field></shadow></value>
+          <value name="X2"><shadow type="math_number"><field name="NUM">120</field></shadow></value>
+          <value name="Y2"><shadow type="math_number"><field name="NUM">160</field></shadow></value>
+          <value name="X3"><shadow type="math_number"><field name="NUM">180</field></shadow></value>
+          <value name="Y3"><shadow type="math_number"><field name="NUM">160</field></shadow></value>
+          <value name="COLOR"><shadow type="color_picker"><field name="COLOR">#00ff88</field></shadow></value>
+        </block>
+        <block type="game_draw_triangle_outline">
+          <value name="X1"><shadow type="math_number"><field name="NUM">150</field></shadow></value>
+          <value name="Y1"><shadow type="math_number"><field name="NUM">100</field></shadow></value>
+          <value name="X2"><shadow type="math_number"><field name="NUM">120</field></shadow></value>
+          <value name="Y2"><shadow type="math_number"><field name="NUM">160</field></shadow></value>
+          <value name="X3"><shadow type="math_number"><field name="NUM">180</field></shadow></value>
+          <value name="Y3"><shadow type="math_number"><field name="NUM">160</field></shadow></value>
+          <value name="COLOR"><shadow type="color_picker"><field name="COLOR">#00ff88</field></shadow></value>
+          <value name="LW"><shadow type="math_number"><field name="NUM">2</field></shadow></value>
+        </block>
+        <block type="game_draw_line">
+          <value name="X1"><shadow type="math_number"><field name="NUM">50</field></shadow></value>
+          <value name="Y1"><shadow type="math_number"><field name="NUM">50</field></shadow></value>
+          <value name="X2"><shadow type="math_number"><field name="NUM">250</field></shadow></value>
+          <value name="Y2"><shadow type="math_number"><field name="NUM">50</field></shadow></value>
+          <value name="COLOR"><shadow type="color_picker"><field name="COLOR">#ffffff</field></shadow></value>
+          <value name="LW"><shadow type="math_number"><field name="NUM">2</field></shadow></value>
+        </block>
+
+        <label text="▸ Aleatorio / Matemáticas"></label>
+        <block type="game_random_int">
+          <value name="MIN"><shadow type="math_number"><field name="NUM">1</field></shadow></value>
+          <value name="MAX"><shadow type="math_number"><field name="NUM">10</field></shadow></value>
+        </block>
+        <block type="game_random_float">
+          <value name="MIN"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
+          <value name="MAX"><shadow type="math_number"><field name="NUM">1</field></shadow></value>
+        </block>
+        <block type="game_distance">
+          <value name="X1"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
+          <value name="Y1"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
+          <value name="X2"><shadow type="math_number"><field name="NUM">100</field></shadow></value>
+          <value name="Y2"><shadow type="math_number"><field name="NUM">100</field></shadow></value>
+        </block>
+
+        <label text="▸ Sonido"></label>
+        <block type="game_play_tone">
+          <value name="FREQ"><shadow type="math_number"><field name="NUM">440</field></shadow></value>
+          <value name="DUR"><shadow type="math_number"><field name="NUM">0.3</field></shadow></value>
         </block>
 
       </category>

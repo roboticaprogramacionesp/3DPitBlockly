@@ -223,46 +223,20 @@ Blockly.defineBlocksWithJsonArray([
     tooltip: "Devuelve el color HEX del píxel en la posición X, Y del canvas.",
   },
 
-  /* ──────────────────────────────
-     PUNTAJE
-  ────────────────────────────── */
-  {
-    type: "game_add_score",
-    message0: "🏆 sumar %1 punto(s)",
-    args0: [{ type: "input_value", name: "POINTS", check: "Number" }],
-    previousStatement: null,
-    nextStatement: null,
-    colour: 20,
-    tooltip: "Aumenta el puntaje y lo muestra en la barra superior.",
-  },
-  {
-    type: "game_get_score",
-    message0: "🏆 puntaje actual",
-    output: "Number",
-    colour: 20,
-    tooltip: "Devuelve el puntaje actual.",
-  },
-  {
-    type: "game_reset_score",
-    message0: "🔄 reiniciar puntaje",
-    previousStatement: null,
-    nextStatement: null,
-    colour: 20,
-    tooltip: "Pone el puntaje en 0.",
-  },
   {
     type: "game_show_text",
-    message0: "✏️ escribir %1  en  X %2  Y %3  color %4",
+    message0: "✏️ escribir %1  en  X %2  Y %3  color %4  tamaño %5",
     args0: [
       { type: "input_value", name: "TEXT" },
       { type: "input_value", name: "X", check: "Number" },
       { type: "input_value", name: "Y", check: "Number" },
       { type: "input_value", name: "COLOR", check: "Colour" },
+      { type: "input_value", name: "SIZE", check: "Number" },
     ],
     previousStatement: null,
     nextStatement: null,
     colour: 20,
-    tooltip: "Escribe texto en el canvas en la posición indicada.",
+    tooltip: "Escribe texto en el canvas. Tamaño en píxeles (ej: 16).",
   },
 
   /* ──────────────────────────────
@@ -270,7 +244,7 @@ Blockly.defineBlocksWithJsonArray([
   ────────────────────────────── */
   {
     type: "game_draw_rect",
-    message0: "⬛ dibujar rectángulo  X %1  Y %2  ancho %3  alto %4  color %5",
+    message0: "⬛ rectángulo sólido  X %1  Y %2  ancho %3  alto %4  color %5",
     args0: [
       { type: "input_value", name: "X", check: "Number" },
       { type: "input_value", name: "Y", check: "Number" },
@@ -281,11 +255,27 @@ Blockly.defineBlocksWithJsonArray([
     previousStatement: null,
     nextStatement: null,
     colour: 20,
-    tooltip: "Dibuja un rectángulo sólido — útil como pared u obstáculo.",
+    tooltip: "Dibuja un rectángulo relleno — útil como pared u obstáculo sólido.",
+  },
+  {
+    type: "game_draw_rect_outline",
+    message0: "⬜ rectángulo contorno  X %1  Y %2  ancho %3  alto %4  color %5  grosor %6",
+    args0: [
+      { type: "input_value", name: "X", check: "Number" },
+      { type: "input_value", name: "Y", check: "Number" },
+      { type: "input_value", name: "W", check: "Number" },
+      { type: "input_value", name: "H", check: "Number" },
+      { type: "input_value", name: "COLOR", check: "Colour" },
+      { type: "input_value", name: "LW", check: "Number" },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 20,
+    tooltip: "Dibuja solo el borde de un rectángulo (sin relleno).",
   },
   {
     type: "game_draw_circle",
-    message0: "🔴 dibujar círculo  X %1  Y %2  radio %3  color %4",
+    message0: "🔴 círculo sólido  X %1  Y %2  radio %3  color %4",
     args0: [
       { type: "input_value", name: "X", check: "Number" },
       { type: "input_value", name: "Y", check: "Number" },
@@ -295,7 +285,73 @@ Blockly.defineBlocksWithJsonArray([
     previousStatement: null,
     nextStatement: null,
     colour: 20,
-    tooltip: "Dibuja un círculo sólido — útil como moneda o enemigo.",
+    tooltip: "Dibuja un círculo relleno — útil como moneda o enemigo.",
+  },
+  {
+    type: "game_draw_circle_outline",
+    message0: "⭕ círculo contorno  X %1  Y %2  radio %3  color %4  grosor %5",
+    args0: [
+      { type: "input_value", name: "X", check: "Number" },
+      { type: "input_value", name: "Y", check: "Number" },
+      { type: "input_value", name: "R", check: "Number" },
+      { type: "input_value", name: "COLOR", check: "Colour" },
+      { type: "input_value", name: "LW", check: "Number" },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 20,
+    tooltip: "Dibuja solo el borde de un círculo (sin relleno).",
+  },
+  {
+    type: "game_draw_triangle",
+    message0: "🔺 triángulo sólido  X1 %1  Y1 %2  X2 %3  Y2 %4  X3 %5  Y3 %6  color %7",
+    args0: [
+      { type: "input_value", name: "X1", check: "Number" },
+      { type: "input_value", name: "Y1", check: "Number" },
+      { type: "input_value", name: "X2", check: "Number" },
+      { type: "input_value", name: "Y2", check: "Number" },
+      { type: "input_value", name: "X3", check: "Number" },
+      { type: "input_value", name: "Y3", check: "Number" },
+      { type: "input_value", name: "COLOR", check: "Colour" },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 20,
+    tooltip: "Dibuja un triángulo relleno con tres vértices (X1,Y1), (X2,Y2), (X3,Y3).",
+  },
+  {
+    type: "game_draw_triangle_outline",
+    message0: "△ triángulo contorno  X1 %1  Y1 %2  X2 %3  Y2 %4  X3 %5  Y3 %6  color %7  grosor %8",
+    args0: [
+      { type: "input_value", name: "X1", check: "Number" },
+      { type: "input_value", name: "Y1", check: "Number" },
+      { type: "input_value", name: "X2", check: "Number" },
+      { type: "input_value", name: "Y2", check: "Number" },
+      { type: "input_value", name: "X3", check: "Number" },
+      { type: "input_value", name: "Y3", check: "Number" },
+      { type: "input_value", name: "COLOR", check: "Colour" },
+      { type: "input_value", name: "LW", check: "Number" },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 20,
+    tooltip: "Dibuja solo el borde de un triángulo (sin relleno).",
+  },
+  {
+    type: "game_draw_line",
+    message0: "📏 línea  X1 %1  Y1 %2  X2 %3  Y2 %4  color %5  grosor %6",
+    args0: [
+      { type: "input_value", name: "X1", check: "Number" },
+      { type: "input_value", name: "Y1", check: "Number" },
+      { type: "input_value", name: "X2", check: "Number" },
+      { type: "input_value", name: "Y2", check: "Number" },
+      { type: "input_value", name: "COLOR", check: "Colour" },
+      { type: "input_value", name: "LW", check: "Number" },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 20,
+    tooltip: "Dibuja una línea recta entre dos puntos.",
   },
   /* ──────────────────────────────
      FRAME — sincronizador 60fps
@@ -488,5 +544,58 @@ Blockly.defineBlocksWithJsonArray([
     nextStatement: null,
     colour: 20,
     tooltip: "Pone el ángulo del personaje (0° = derecha, 90° = arriba, 180° = izquierda, 270° = abajo).",
+  },
+  /* ──────────────────────────────
+     UTILIDADES MATEMÁTICAS
+  ────────────────────────────── */
+  {
+    type: "game_random_int",
+    message0: "🎲 número entero aleatorio entre %1 y %2",
+    args0: [
+      { type: "input_value", name: "MIN", check: "Number" },
+      { type: "input_value", name: "MAX", check: "Number" },
+    ],
+    output: "Number",
+    colour: 20,
+    tooltip: "Devuelve un número entero al azar entre MIN y MAX (incluidos).",
+  },
+  {
+    type: "game_random_float",
+    message0: "🎲 número decimal aleatorio entre %1 y %2",
+    args0: [
+      { type: "input_value", name: "MIN", check: "Number" },
+      { type: "input_value", name: "MAX", check: "Number" },
+    ],
+    output: "Number",
+    colour: 20,
+    tooltip: "Devuelve un número decimal al azar entre MIN y MAX.",
+  },
+  {
+    type: "game_distance",
+    message0: "📐 distancia de ( %1 , %2 ) a ( %3 , %4 )",
+    args0: [
+      { type: "input_value", name: "X1", check: "Number" },
+      { type: "input_value", name: "Y1", check: "Number" },
+      { type: "input_value", name: "X2", check: "Number" },
+      { type: "input_value", name: "Y2", check: "Number" },
+    ],
+    output: "Number",
+    colour: 20,
+    tooltip: "Calcula la distancia entre dos puntos (fórmula Pitágoras).",
+  },
+  /* ──────────────────────────────
+     SONIDO
+  ────────────────────────────── */
+  {
+    type: "game_play_tone",
+    message0: "🔊 tocar nota  freq %1 Hz  duración %2 s",
+    args0: [
+      { type: "input_value", name: "FREQ", check: "Number" },
+      { type: "input_value", name: "DUR",  check: "Number" },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 160,
+    tooltip: "Reproduce un tono (frecuencia en Hz, duración en segundos). Ej: 440 Hz = La.",
   },
 ]);
