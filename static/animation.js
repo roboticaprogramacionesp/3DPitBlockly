@@ -60,6 +60,54 @@ Blockly.JavaScript["game_draw_line"] = function (block) {
   const lw = Blockly.JavaScript.valueToCode(block,"LW",Blockly.JavaScript.ORDER_NONE)||"2";
   return "GameEngine.drawLine("+x1+","+y1+","+x2+","+y2+","+c+","+lw+");\n";
 };
+Blockly.JavaScript["game_draw_star"] = function (block) {
+  const x = Blockly.JavaScript.valueToCode(block,"X",Blockly.JavaScript.ORDER_NONE)||"0";
+  const y = Blockly.JavaScript.valueToCode(block,"Y",Blockly.JavaScript.ORDER_NONE)||"0";
+  const len = Blockly.JavaScript.valueToCode(block,"LENGTH",Blockly.JavaScript.ORDER_NONE)||"10";
+  const ang = Blockly.JavaScript.valueToCode(block,"ANGLE",Blockly.JavaScript.ORDER_NONE)||"0";
+  const c  = Blockly.JavaScript.valueToCode(block,"COLOR",Blockly.JavaScript.ORDER_NONE)||"'#ffffff'";
+  return "GameEngine.drawStar("+x+","+y+","+len+","+ang+","+c+");\n";
+};
+Blockly.JavaScript["game_draw_ellipse"] = function (block) {
+  const x = Blockly.JavaScript.valueToCode(block,"X",Blockly.JavaScript.ORDER_NONE)||"0";
+  const y = Blockly.JavaScript.valueToCode(block,"Y",Blockly.JavaScript.ORDER_NONE)||"0";
+  const w = Blockly.JavaScript.valueToCode(block,"WIDTH",Blockly.JavaScript.ORDER_NONE)||"20";
+  const h = Blockly.JavaScript.valueToCode(block,"HEIGHT",Blockly.JavaScript.ORDER_NONE)||"12";
+  const ang = Blockly.JavaScript.valueToCode(block,"ANGLE",Blockly.JavaScript.ORDER_NONE)||"0";
+  const c  = Blockly.JavaScript.valueToCode(block,"COLOR",Blockly.JavaScript.ORDER_NONE)||"'#ffffff'";
+  return "GameEngine.drawEllipse("+x+","+y+","+w+","+h+","+ang+","+c+");\n";
+};
+Blockly.JavaScript["game_draw_quad"] = function (block) {
+  const x1 = Blockly.JavaScript.valueToCode(block,"X1",Blockly.JavaScript.ORDER_NONE)||"0";
+  const y1 = Blockly.JavaScript.valueToCode(block,"Y1",Blockly.JavaScript.ORDER_NONE)||"0";
+  const x2 = Blockly.JavaScript.valueToCode(block,"X2",Blockly.JavaScript.ORDER_NONE)||"0";
+  const y2 = Blockly.JavaScript.valueToCode(block,"Y2",Blockly.JavaScript.ORDER_NONE)||"0";
+  const x3 = Blockly.JavaScript.valueToCode(block,"X3",Blockly.JavaScript.ORDER_NONE)||"0";
+  const y3 = Blockly.JavaScript.valueToCode(block,"Y3",Blockly.JavaScript.ORDER_NONE)||"0";
+  const x4 = Blockly.JavaScript.valueToCode(block,"X4",Blockly.JavaScript.ORDER_NONE)||"0";
+  const y4 = Blockly.JavaScript.valueToCode(block,"Y4",Blockly.JavaScript.ORDER_NONE)||"0";
+  const c  = Blockly.JavaScript.valueToCode(block,"COLOR",Blockly.JavaScript.ORDER_NONE)||"'#ffffff'";
+  return "GameEngine.drawQuad("+x1+","+y1+","+x2+","+y2+","+x3+","+y3+","+x4+","+y4+","+c+");\n";
+};
+Blockly.JavaScript["game_draw_regular_polygon"] = function (block) {
+  const x = Blockly.JavaScript.valueToCode(block,"X",Blockly.JavaScript.ORDER_NONE)||"0";
+  const y = Blockly.JavaScript.valueToCode(block,"Y",Blockly.JavaScript.ORDER_NONE)||"0";
+  const n = Blockly.JavaScript.valueToCode(block,"N",Blockly.JavaScript.ORDER_NONE)||"6";
+  const len = Blockly.JavaScript.valueToCode(block,"LENGTH",Blockly.JavaScript.ORDER_NONE)||"10";
+  const ang = Blockly.JavaScript.valueToCode(block,"ANGLE",Blockly.JavaScript.ORDER_NONE)||"0";
+  const c  = Blockly.JavaScript.valueToCode(block,"COLOR",Blockly.JavaScript.ORDER_NONE)||"'#ffffff'";
+  return "GameEngine.drawRegularPolygon("+x+","+y+","+n+","+len+","+ang+","+c+");\n";
+};
+Blockly.JavaScript["game_draw_table"] = function (block) {
+  const x = Blockly.JavaScript.valueToCode(block,"X",Blockly.JavaScript.ORDER_NONE)||"0";
+  const y = Blockly.JavaScript.valueToCode(block,"Y",Blockly.JavaScript.ORDER_NONE)||"0";
+  const w = Blockly.JavaScript.valueToCode(block,"WIDTH",Blockly.JavaScript.ORDER_NONE)||"40";
+  const h = Blockly.JavaScript.valueToCode(block,"HEIGHT",Blockly.JavaScript.ORDER_NONE)||"40";
+  const row = Blockly.JavaScript.valueToCode(block,"ROW",Blockly.JavaScript.ORDER_NONE)||"1";
+  const col = Blockly.JavaScript.valueToCode(block,"COLUMN",Blockly.JavaScript.ORDER_NONE)||"1";
+  const c  = Blockly.JavaScript.valueToCode(block,"COLOR",Blockly.JavaScript.ORDER_NONE)||"'#ffffff'";
+  return "GameEngine.drawTable("+x+","+y+","+w+","+h+","+row+","+col+","+c+");\n";
+};
 Blockly.JavaScript["game_show_text"] = function (block) {
   const text  = Blockly.JavaScript.valueToCode(block,"TEXT",Blockly.JavaScript.ORDER_NONE)||"''";
   const x     = Blockly.JavaScript.valueToCode(block,"X",Blockly.JavaScript.ORDER_NONE)||"0";
@@ -1030,6 +1078,14 @@ Blockly.JavaScript["game_set_bg_image"] = function (block) {
   return "GameEngine.setBgImage(" + file + ");\n";
 };
 
+Blockly.JavaScript["game_get_bg_image_name"] = function (block) {
+  return ["GameEngine.getBgImageName()", Blockly.JavaScript.ORDER_FUNCTION_CALL];
+};
+
+Blockly.JavaScript["game_get_sprite_image_name"] = function (block) {
+  return ["GameEngine.getSpriteImageName()", Blockly.JavaScript.ORDER_FUNCTION_CALL];
+};
+
 Blockly.JavaScript["game_clear"] = function (block) {
   return "GameEngine.clear();\n";
 };
@@ -1066,7 +1122,6 @@ Blockly.JavaScript["sprite_create"] = function (block) {
       "IMG",
       Blockly.JavaScript.ORDER_ATOMIC,
     ) || "'#00ff88'";
-  console.log("sprite_create: x=" + x + ", y=" + y + ", w=" + w + ", h=" + h + ", img=" + img);
   return (
     "GameEngine.createSprite(" +
     x +
@@ -1095,6 +1150,57 @@ Blockly.JavaScript["sprite_load_image"] = function (block) {
 Blockly.JavaScript["sprite_set_flip"] = function (block) {
   const flip = block.getFieldValue("FLIP") === "TRUE" ? "true" : "false";
   return "GameEngine.setFlip(" + flip + ");\n";
+};
+
+Blockly.JavaScript["sprite_set_flip_vertical"] = function (block) {
+  const flip = block.getFieldValue("FLIP") === "TRUE" ? "true" : "false";
+  return "GameEngine.setFlipY(" + flip + ");\n";
+};
+
+Blockly.JavaScript["sprite_set_scale"] = function (block) {
+  const scale =
+    Blockly.JavaScript.valueToCode(block, "SCALE", Blockly.JavaScript.ORDER_NONE) || "1";
+  return "GameEngine.setScale(" + scale + ");\n";
+};
+
+Blockly.JavaScript["game_draw_image"] = function (block) {
+  const file =
+    Blockly.JavaScript.valueToCode(block, "FILE", Blockly.JavaScript.ORDER_NONE) || "''";
+  const x = Blockly.JavaScript.valueToCode(block, "X", Blockly.JavaScript.ORDER_NONE) || "0";
+  const y = Blockly.JavaScript.valueToCode(block, "Y", Blockly.JavaScript.ORDER_NONE) || "0";
+  const w = Blockly.JavaScript.valueToCode(block, "W", Blockly.JavaScript.ORDER_NONE) || "32";
+  const h = Blockly.JavaScript.valueToCode(block, "H", Blockly.JavaScript.ORDER_NONE) || "32";
+  const angle =
+    Blockly.JavaScript.valueToCode(block, "ANGLE", Blockly.JavaScript.ORDER_NONE) || "0";
+  return (
+    "GameEngine.drawImage(" + file + "," + x + "," + y + "," + w + "," + h + "," + angle + ");\n"
+  );
+};
+
+Blockly.JavaScript["game_play_melody"] = function (block) {
+  const notes =
+    Blockly.JavaScript.valueToCode(block, "NOTES", Blockly.JavaScript.ORDER_NONE) || "''";
+  const dur = Blockly.JavaScript.valueToCode(block, "DUR", Blockly.JavaScript.ORDER_NONE) || "0.3";
+  return "GameEngine.playMelody(" + notes + "," + dur + ");\n";
+};
+
+Blockly.JavaScript["game_stop_sound"] = function () {
+  return "GameEngine.stopSound();\n";
+};
+
+Blockly.JavaScript["game_wait"] = function (block) {
+  const seconds =
+    Blockly.JavaScript.valueToCode(block, "SECONDS", Blockly.JavaScript.ORDER_NONE) || "1";
+  return "sleep((" + seconds + ")*1000);\n";
+};
+
+Blockly.JavaScript["game_wait_frames"] = function (block) {
+  const frames =
+    Blockly.JavaScript.valueToCode(block, "FRAMES", Blockly.JavaScript.ORDER_NONE) || "1";
+  const i = "_wf_" + block.id.replace(/[^a-zA-Z0-9]/g, "");
+  return (
+    "for (var " + i + " = 0; " + i + " < (" + frames + "); " + i + "++) { gameFrameEnd(); }\n"
+  );
 };
 
 Blockly.JavaScript["sprite_move"] = function (block) {
@@ -1162,6 +1268,24 @@ Blockly.JavaScript["mouse_x"] = function (block) {
 };
 Blockly.JavaScript["mouse_y"] = function (block) {
   return ["GameEngine.mouseY()", Blockly.JavaScript.ORDER_ATOMIC];
+};
+Blockly.JavaScript["mouse_left_clicked"] = function (block) {
+  return ["GameEngine.mouseLeftClicked()", Blockly.JavaScript.ORDER_ATOMIC];
+};
+Blockly.JavaScript["mouse_left_down"] = function (block) {
+  return ["GameEngine.mouseLeftDown()", Blockly.JavaScript.ORDER_ATOMIC];
+};
+Blockly.JavaScript["mouse_right_clicked"] = function (block) {
+  return ["GameEngine.mouseRightClicked()", Blockly.JavaScript.ORDER_ATOMIC];
+};
+Blockly.JavaScript["mouse_right_down"] = function (block) {
+  return ["GameEngine.mouseRightDown()", Blockly.JavaScript.ORDER_ATOMIC];
+};
+Blockly.JavaScript["mouse_wheel_up"] = function (block) {
+  return ["GameEngine.mouseWheelUp()", Blockly.JavaScript.ORDER_ATOMIC];
+};
+Blockly.JavaScript["mouse_wheel_down"] = function (block) {
+  return ["GameEngine.mouseWheelDown()", Blockly.JavaScript.ORDER_ATOMIC];
 };
 
 /* ── Movimiento por pasos / giro ── */
@@ -1922,6 +2046,20 @@ function initInterpreter(code) {
     );
     interpreter.setProperty(
       geObj,
+      "getBgImageName",
+      interpreter.createNativeFunction(function () {
+        return GE.getBgImageName() || '';
+      }),
+    );
+    interpreter.setProperty(
+      geObj,
+      "getSpriteImageName",
+      interpreter.createNativeFunction(function () {
+        return GE.getSpriteImageName() || '';
+      }),
+    );
+    interpreter.setProperty(
+      geObj,
       "clear",
       interpreter.createNativeFunction(function () {
         GE.clear();
@@ -1978,6 +2116,41 @@ function initInterpreter(code) {
         GE.setFlip(!!flip);
       }),
     );
+    interpreter.setProperty(
+      geObj,
+      "setFlipY",
+      interpreter.createNativeFunction(function (flip) {
+        GE.setFlipY(!!flip);
+      }),
+    );
+    interpreter.setProperty(
+      geObj,
+      "setScale",
+      interpreter.createNativeFunction(function (scale) {
+        GE.setScale(_n(scale));
+      }),
+    );
+    interpreter.setProperty(
+      geObj,
+      "drawImage",
+      interpreter.createNativeFunction(function (file, x, y, w, h, angle) {
+        GE.drawImage(_s(file), _n(x), _n(y), _n(w), _n(h), _n(angle));
+      }),
+    );
+    interpreter.setProperty(
+      geObj,
+      "playMelody",
+      interpreter.createNativeFunction(function (notes, dur) {
+        GE.playMelody(_s(notes), _n(dur));
+      }),
+    );
+    interpreter.setProperty(
+      geObj,
+      "stopSound",
+      interpreter.createNativeFunction(function () {
+        GE.stopSound();
+      }),
+    );
     /* loadImage es async: precarga la imagen y avisa cuando termina */
     interpreter.setProperty(
       geObj,
@@ -2025,6 +2198,48 @@ function initInterpreter(code) {
       "mouseY",
       interpreter.createNativeFunction(function () {
         return GE.mouseY();
+      }),
+    );
+    interpreter.setProperty(
+      geObj,
+      "mouseLeftClicked",
+      interpreter.createNativeFunction(function () {
+        return GE.mouseLeftClicked();
+      }),
+    );
+    interpreter.setProperty(
+      geObj,
+      "mouseLeftDown",
+      interpreter.createNativeFunction(function () {
+        return GE.mouseLeftDown();
+      }),
+    );
+    interpreter.setProperty(
+      geObj,
+      "mouseRightClicked",
+      interpreter.createNativeFunction(function () {
+        return GE.mouseRightClicked();
+      }),
+    );
+    interpreter.setProperty(
+      geObj,
+      "mouseRightDown",
+      interpreter.createNativeFunction(function () {
+        return GE.mouseRightDown();
+      }),
+    );
+    interpreter.setProperty(
+      geObj,
+      "mouseWheelUp",
+      interpreter.createNativeFunction(function () {
+        return GE.mouseWheelUp();
+      }),
+    );
+    interpreter.setProperty(
+      geObj,
+      "mouseWheelDown",
+      interpreter.createNativeFunction(function () {
+        return GE.mouseWheelDown();
       }),
     );
 
@@ -2171,6 +2386,41 @@ function initInterpreter(code) {
     );
     interpreter.setProperty(
       geObj,
+      "drawStar",
+      interpreter.createNativeFunction(function (x, y, length, angle, color) {
+        GE.drawStar(_n(x), _n(y), _n(length), _n(angle), _color(color));
+      }),
+    );
+    interpreter.setProperty(
+      geObj,
+      "drawEllipse",
+      interpreter.createNativeFunction(function (x, y, w, h, angle, color) {
+        GE.drawEllipse(_n(x), _n(y), _n(w), _n(h), _n(angle), _color(color));
+      }),
+    );
+    interpreter.setProperty(
+      geObj,
+      "drawQuad",
+      interpreter.createNativeFunction(function (x1, y1, x2, y2, x3, y3, x4, y4, color) {
+        GE.drawQuad(_n(x1), _n(y1), _n(x2), _n(y2), _n(x3), _n(y3), _n(x4), _n(y4), _color(color));
+      }),
+    );
+    interpreter.setProperty(
+      geObj,
+      "drawRegularPolygon",
+      interpreter.createNativeFunction(function (x, y, n, length, angle, color) {
+        GE.drawRegularPolygon(_n(x), _n(y), _n(n), _n(length), _n(angle), _color(color));
+      }),
+    );
+    interpreter.setProperty(
+      geObj,
+      "drawTable",
+      interpreter.createNativeFunction(function (x, y, w, h, row, col, color) {
+        GE.drawTable(_n(x), _n(y), _n(w), _n(h), _n(row), _n(col), _color(color));
+      }),
+    );
+    interpreter.setProperty(
+      geObj,
       "randomInt",
       interpreter.createNativeFunction(function (min, max) {
         return GE.randomInt(_n(min), _n(max));
@@ -2301,6 +2551,12 @@ function _detectGameMode() {
       t === "game_clear" ||
       t === "mouse_clicked" ||
       t === "mouse_down" ||
+      t === "mouse_left_clicked" ||
+      t === "mouse_left_down" ||
+      t === "mouse_right_clicked" ||
+      t === "mouse_right_down" ||
+      t === "mouse_wheel_up" ||
+      t === "mouse_wheel_down" ||
       t === "sprite_move_steps" ||
       t === "sprite_turn_left" ||
       t === "sprite_turn_right"

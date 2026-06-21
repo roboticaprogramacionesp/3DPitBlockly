@@ -54,11 +54,12 @@ Code.generateCode = function (generator = Blockly.Python) {
 };
 
 // ─────────────────────────────────────────────────────────────
-// WEB SERIAL CHECK
+// WEB SERIAL CHECK — si no hay Web Serial, usamos WiFi (tablet/móvil)
 // ─────────────────────────────────────────────────────────────
-if (!navigator.serial && !IS_DESKTOP) {
-  console.log("Tu navegador no soporta Web Serial...");
-  throw new Error("Web Serial no disponible");
+const HAS_WEB_SERIAL = !!navigator.serial;
+const USE_WIFI_FALLBACK = !HAS_WEB_SERIAL && !IS_DESKTOP;
+if (USE_WIFI_FALLBACK) {
+  console.log("Web Serial no disponible: usando modo WiFi (WebREPL)");
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -639,6 +640,167 @@ async function disconnectSerial() {
   }
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+  const btnWifi = document.getElementById("btnConnectionWifi");
+  if (!btnWifi) return;
+
+  btnWifi.addEventListener("click", async () => {
+    if (serialConnected) {
+      await disconnectSerial();
+      return;
+    }
+    const saved = JSON.parse(localStorage.getItem("esp32_wifi") || "{}");
+    const host = prompt(
+      "IP del ESP32 (la que imprimió 'WebREPL server started on http://...'):",
+      saved.host || "192.168.0.113"
+    );
+    if (!host) return;
+    const password = prompt("Contraseña WebREPL:", saved.password || "blockly1");
+    if (password === null) return;
+    localStorage.setItem("esp32_wifi", JSON.stringify({ host, password }));
+    await connectWifiSerial(host, password);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────
+// CONEXIÓN WIFI (WebREPL) — adaptador compatible con el resto
+// del código serial: rellena serialWriter/serialReader-equivalentes
+// y reutiliza isConnected, sendSerial(), el pipeline de lectura,
+// _rawReplHook, SerialMonitor, etc. Así btnRun y todo lo demás
+// funcionan igual que por USB sin tocar ni una línea más.
+// ─────────────────────────────────────────────────────────────
+let wifiSocket = null;
+let _wifiLoginBuffer = "";
+let _wifiLoggedIn = false;
+
+function connectWifiSerial(host, password) {
+  return new Promise((resolve, reject) => {
+    try {
+      if (!term) {
+        initTerminal();
+        enableTerminalInput();
+      }
+
+      term.writeln(`\r\nConectando a ws://${host}:8266 ...\r\n`);
+
+      const ws = new WebSocket(`ws://${host}:8266`);
+      ws.binaryType = "arraybuffer";
+
+      _wifiLoginBuffer = "";
+      _wifiLoggedIn = false;
+      wifiSocket = ws;
+
+      // ── Timeout de conexión (red no disponible, IP incorrecta, etc.) ──
+      const connectTimeout = setTimeout(() => {
+        if (ws.readyState !== WebSocket.OPEN) {
+          ws.close();
+          term.writeln("\r\n⚠ Tiempo de espera agotado conectando por WiFi\r\n");
+          reject(new Error("timeout"));
+        }
+      }, 8000);
+
+      ws.onopen = () => {
+        clearTimeout(connectTimeout);
+        term.writeln("Socket WiFi abierto, autenticando...\r\n");
+      };
+
+      // ── "Writer" compatible con serialWriter.write(Uint8Array) ──
+      // OJO: WebREPL de MicroPython espera frames de TEXTO, no binarios.
+      // Convertimos los bytes de vuelta a string antes de enviar (igual
+      // que el script de consola que sí funcionaba con ws.send(string)).
+      const txDecoder = new TextDecoder();
+      wifiSocket.write = async (bytes) => {
+        if (ws.readyState !== WebSocket.OPEN) return;
+        const text = txDecoder.decode(bytes);
+        if (window._wifiDebug) console.log("📤 WIFI TX:", JSON.stringify(text));
+        ws.send(text);
+      };
+      wifiSocket.close = async () => {
+        try { ws.close(); } catch {}
+      };
+      wifiSocket.releaseLock = () => {};
+
+      ws.onmessage = (event) => {
+        let chunk = "";
+        if (typeof event.data === "string") {
+          chunk = event.data;
+        } else {
+          chunk = decoder.decode(event.data, { stream: true });
+        }
+
+        // ── Fase de login WebREPL: detectar "Password:" y responder ──
+        if (!_wifiLoggedIn) {
+          if (window._wifiDebug) console.log("📥 WIFI RX (login):", JSON.stringify(chunk));
+          _wifiLoginBuffer += chunk;
+          if (_wifiLoginBuffer.includes("Password:")) {
+            if (window._wifiDebug) console.log("📤 WIFI TX (login): <password>\\r");
+            ws.send((password || "") + "\r");
+            _wifiLoginBuffer = "";
+            return;
+          }
+          // Tras enviar la contraseña, WebREPL responde con "\r\nWebREPL connected\r\n>>> "
+          if (_wifiLoginBuffer.includes(">>>") || _wifiLoginBuffer.includes("WebREPL connected")) {
+            _wifiLoggedIn = true;
+
+            isConnected = true;
+            serialConnected = true;
+            serialWriter = wifiSocket;   // reusa todo el código existente
+            serialReader = null;         // no se usa en modo WiFi (no hay loop por reader)
+            updateConnectionIcon(true);
+
+            term.writeln("✅ Conectado por WiFi (WebREPL)\r\n");
+
+            const btnConnect = document.getElementById("btnConnect");
+            const btnDisconnect = document.getElementById("btnDisconnect");
+            if (btnConnect) btnConnect.disabled = true;
+            if (btnDisconnect) btnDisconnect.disabled = false;
+
+            resolve(true);
+            // No retornamos: dejamos pasar el resto del buffer (ej. ">>> ") al pipeline normal
+            chunk = _wifiLoginBuffer;
+            _wifiLoginBuffer = "";
+          } else {
+            return; // seguimos esperando más datos de login
+          }
+        }
+
+        // ── Pipeline normal (igual que readSerialLoop por USB) ──
+        if (window._wifiDebug) console.log("📥 WIFI RX:", JSON.stringify(chunk));
+        term.write(chunk);
+        if (typeof SerialMonitor !== "undefined") SerialMonitor.feed(chunk);
+        if (typeof window._rawReplHook === "function") window._rawReplHook(chunk);
+        if (waitingResponse) serialBuffer += chunk;
+      };
+
+      ws.onerror = (err) => {
+        clearTimeout(connectTimeout);
+        console.error("WiFi WS error:", err);
+        if (!_wifiLoggedIn) reject(err);
+        term.writeln("\r\n❌ Error de conexión WiFi\r\n");
+      };
+
+      ws.onclose = () => {
+        clearTimeout(connectTimeout);
+        term.writeln("\r\n🔌 Desconectado (WiFi)\r\n");
+        if (serialWriter === wifiSocket) {
+          isConnected = false;
+          serialConnected = false;
+          serialWriter = null;
+          updateConnectionIcon(false);
+          const btnConnect = document.getElementById("btnConnect");
+          const btnDisconnect = document.getElementById("btnDisconnect");
+          if (btnConnect) btnConnect.disabled = false;
+          if (btnDisconnect) btnDisconnect.disabled = true;
+        }
+        wifiSocket = null;
+      };
+    } catch (error) {
+      term.writeln("\r\nError conexión WiFi: " + error);
+      reject(error);
+    }
+  });
+}
+
 // ─────────────────────────────────────────────────────────────
 // READ LOOP
 // ─────────────────────────────────────────────────────────────
@@ -701,16 +863,26 @@ function enableTerminalInput() {
   });
 }
 
-// ─────────────────────────────────────────────────────────────
-// BOTÓN CONEXIÓN
-// ─────────────────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", () => {
   const btnConnection = document.getElementById("btnConnection");
   if (!btnConnection) return;
   updateConnectionIcon(false);
   btnConnection.addEventListener("click", async () => {
-    if (serialConnected) await disconnectSerial();
-    else await connectSerial();
+    if (serialConnected) {
+      await disconnectSerial();
+      return;
+    }
+    if (USE_WIFI_FALLBACK) {
+      const saved = JSON.parse(localStorage.getItem("esp32_wifi") || "{}");
+      const host = prompt("IP del ESP32 (revisa el monitor serie o tu router):", saved.host || "192.168.1.");
+      if (!host) return;
+      const password = prompt("Contraseña WebREPL:", saved.password || "blockly123");
+      if (password === null) return;
+      localStorage.setItem("esp32_wifi", JSON.stringify({ host, password }));
+      await connectWifiSerial(host, password);
+    } else {
+      await connectSerial();
+    }
   });
 });
 
@@ -926,22 +1098,25 @@ async function sendCodeToDevice() {
       }
 
       // 1. Interrumpir ejecución actual (doble Ctrl+C)
+      const isWifi = serialWriter === wifiSocket;
+      const d = isWifi ? 2.5 : 1; // WiFi/WebREPL es más lento que USB: damos más margen
+
       await sendSerial("\x03");
-      await sleep(100);
+      await sleep(100 * d);
       await sendSerial("\x03");
-      await sleep(100);
+      await sleep(100 * d);
 
       // 2. Entrar en paste mode — esperar el "==="
       _pmBuf = "";
       await sendSerial("\x05");
-      const gotPaste = await _waitPm(() => _pmBuf.includes("==="), 2000);
+      const gotPaste = await _waitPm(() => _pmBuf.includes("==="), 2000 * d);
       if (!gotPaste) {
         // Reintento: forzar prompt limpio primero
         await sendSerial("\r\n");
-        await sleep(80);
+        await sleep(80 * d);
         _pmBuf = "";
         await sendSerial("\x05");
-        const retry = await _waitPm(() => _pmBuf.includes("==="), 2000);
+        const retry = await _waitPm(() => _pmBuf.includes("==="), 2000 * d);
         if (!retry) {
           term.writeln("\r\n⚠ No se pudo entrar en paste mode. Reintenta.\r\n");
           window._rawReplHook = null;
@@ -953,6 +1128,7 @@ async function sendCodeToDevice() {
       //    El paste mode acepta el bloque completo hasta Ctrl+D
       const normalized = code.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
       await sendSerial(normalized);
+      if (isWifi) await sleep(50); // margen para que WebREPL procese el bloque
 
       // 4. Ctrl+D → ejecutar; a partir de aquí buscamos el ">>>" real
       _pmBuf = "";
@@ -963,7 +1139,7 @@ async function sendCodeToDevice() {
       await _waitPm(() => _pmFoundPrompt, 10000);
 
       window._rawReplHook = null;
-      await sleep(150); // margen para que el ESP termine de imprimir
+      await sleep(150 * d); // margen para que el ESP termine de imprimir
     } else {
       // Raw REPL — sin límite de tamaño, con progreso
       const ok = await sendViaRawRepl(code);

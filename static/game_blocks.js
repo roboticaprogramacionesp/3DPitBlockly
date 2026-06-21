@@ -115,6 +115,34 @@ Blockly.defineBlocksWithJsonArray([
     tooltip: "Voltea el sprite horizontalmente.",
   },
   {
+    type: "sprite_set_flip_vertical",
+    message0: "↕️ espejo vertical %1",
+    args0: [
+      {
+        type: "field_dropdown",
+        name: "FLIP",
+        options: [
+          ["activado", "TRUE"],
+          ["desactivado", "FALSE"],
+        ],
+      },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 20,
+    tooltip: "Voltea el sprite verticalmente.",
+  },
+  {
+    type: "sprite_set_scale",
+    message0: "🔍 escala del personaje %1",
+    args0: [{ type: "input_value", name: "SCALE", check: "Number" }],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 20,
+    tooltip:
+      "Cambia el tamaño del sprite como múltiplo del tamaño original (1 = tamaño original, 2 = el doble, 0.5 = la mitad).",
+  },
+  {
     type: "sprite_move",
     message0: "🏃 mover personaje  dx %1  dy %2",
     args0: [
@@ -353,6 +381,116 @@ Blockly.defineBlocksWithJsonArray([
     colour: 20,
     tooltip: "Dibuja una línea recta entre dos puntos.",
   },
+  {
+    type: "game_draw_image",
+    message0:
+      "🖼️ dibujar imagen %1  X %2  Y %3  ancho %4  alto %5  ángulo (horario) %6 °",
+    args0: [
+      { type: "input_value", name: "FILE", check: "String" },
+      { type: "input_value", name: "X", check: "Number" },
+      { type: "input_value", name: "Y", check: "Number" },
+      { type: "input_value", name: "W", check: "Number" },
+      { type: "input_value", name: "H", check: "Number" },
+      { type: "input_value", name: "ANGLE", check: "Number" },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: false,
+    colour: 20,
+    tooltip:
+      "Dibuja una imagen suelta en la pantalla (no necesita 'crear personaje'). Útil para decoraciones, íconos o fondos parciales. El ángulo gira la imagen en SENTIDO HORARIO (90° = un cuarto de vuelta a la derecha); usa números negativos para girar antihorario.",
+  },
+  {
+    type: "game_draw_star",
+    message0: "⭐ estrella  X %1  Y %2  longitud %3  ángulo %4  color %5",
+    args0: [
+      { type: "input_value", name: "X", check: "Number" },
+      { type: "input_value", name: "Y", check: "Number" },
+      { type: "input_value", name: "LENGTH", check: "Number" },
+      { type: "input_value", name: "ANGLE", check: "Number" },
+      { type: "input_value", name: "COLOR", check: "Colour" },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 20,
+    tooltip:
+      "Dibuja una estrella de 5 puntas centrada en (X,Y). 'longitud' controla el tamaño (radio de las puntas) y 'ángulo' la rota.",
+  },
+  {
+    type: "game_draw_ellipse",
+    message0: "🥚 elipse  X %1  Y %2  ancho %3  alto %4  ángulo %5  color %6",
+    args0: [
+      { type: "input_value", name: "X", check: "Number" },
+      { type: "input_value", name: "Y", check: "Number" },
+      { type: "input_value", name: "WIDTH", check: "Number" },
+      { type: "input_value", name: "HEIGHT", check: "Number" },
+      { type: "input_value", name: "ANGLE", check: "Number" },
+      { type: "input_value", name: "COLOR", check: "Colour" },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 20,
+    tooltip:
+      "Dibuja una elipse rellena centrada en (X,Y), con ancho y alto independientes. 'ángulo' la rota.",
+  },
+  {
+    type: "game_draw_quad",
+    message0:
+      "🔷 cuadrilátero  X1 %1  Y1 %2  X2 %3  Y2 %4  X3 %5  Y3 %6  X4 %7  Y4 %8  color %9",
+    args0: [
+      { type: "input_value", name: "X1", check: "Number" },
+      { type: "input_value", name: "Y1", check: "Number" },
+      { type: "input_value", name: "X2", check: "Number" },
+      { type: "input_value", name: "Y2", check: "Number" },
+      { type: "input_value", name: "X3", check: "Number" },
+      { type: "input_value", name: "Y3", check: "Number" },
+      { type: "input_value", name: "X4", check: "Number" },
+      { type: "input_value", name: "Y4", check: "Number" },
+      { type: "input_value", name: "COLOR", check: "Colour" },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: false,
+    colour: 20,
+    tooltip:
+      "Dibuja un cuadrilátero relleno (cualquier forma de 4 lados: trapecio, rombo, etc.) a partir de 4 vértices, en orden.",
+  },
+  {
+    type: "game_draw_regular_polygon",
+    message0: "🔶 polígono regular  X %1  Y %2  lados %3  longitud %4  ángulo %5  color %6",
+    args0: [
+      { type: "input_value", name: "X", check: "Number" },
+      { type: "input_value", name: "Y", check: "Number" },
+      { type: "input_value", name: "N", check: "Number" },
+      { type: "input_value", name: "LENGTH", check: "Number" },
+      { type: "input_value", name: "ANGLE", check: "Number" },
+      { type: "input_value", name: "COLOR", check: "Colour" },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 20,
+    tooltip:
+      "Dibuja un polígono regular (pentágono, hexágono, etc.) centrado en (X,Y). 'lados' = número de lados, 'longitud' = tamaño de cada lado.",
+  },
+  {
+    type: "game_draw_table",
+    message0: "▦ tabla  X %1  Y %2  ancho %3  alto %4  filas %5  columnas %6  color %7",
+    args0: [
+      { type: "input_value", name: "X", check: "Number" },
+      { type: "input_value", name: "Y", check: "Number" },
+      { type: "input_value", name: "WIDTH", check: "Number" },
+      { type: "input_value", name: "HEIGHT", check: "Number" },
+      { type: "input_value", name: "ROW", check: "Number" },
+      { type: "input_value", name: "COLUMN", check: "Number" },
+      { type: "input_value", name: "COLOR", check: "Colour" },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: false,
+    colour: 20,
+    tooltip:
+      "Dibuja una cuadrícula/tablero de 'filas' x 'columnas' dentro del rectángulo (X,Y,ancho,alto). Útil para tableros de juego (gato, ajedrez, etc.).",
+  },
   /* ──────────────────────────────
      FRAME — sincronizador 60fps
   ────────────────────────────── */
@@ -443,6 +581,22 @@ Blockly.defineBlocksWithJsonArray([
       "Pone una imagen como fondo del juego. Escribe el nombre del archivo (ej: road.png). La imagen debe estar en /static/img/",
   },
   {
+    type: "game_get_bg_image_name",
+    message0: "🖼️ nombre del fondo actual",
+    output: "String",
+    colour: 20,
+    tooltip:
+      "Devuelve el nombre/identificador de la imagen de fondo actual (o vacío si es un color). Útil para guardarlo en una variable.",
+  },
+  {
+    type: "game_get_sprite_image_name",
+    message0: "🐱 nombre del sprite actual",
+    output: "String",
+    colour: 20,
+    tooltip:
+      "Devuelve el nombre/identificador de la imagen del personaje actual (o vacío si es un color). Útil para guardarlo en una variable.",
+  },
+  {
     type: "pixel_channel",
     message0: "🔬 canal %1 del pixel en X %2  Y %3",
     args0: [
@@ -494,6 +648,52 @@ Blockly.defineBlocksWithJsonArray([
     output: "Number",
     colour: 20,
     tooltip: "Coordenada Y actual del ratón sobre el canvas.",
+  },
+  {
+    type: "mouse_left_clicked",
+    message0: "🖱️◀ ¿clic izquierdo?",
+    output: "Boolean",
+    colour: 20,
+    tooltip:
+      "Verdadero si el usuario hizo clic con el botón IZQUIERDO. Se consume tras la primera lectura por frame.",
+  },
+  {
+    type: "mouse_left_down",
+    message0: "🖱️◀ ¿botón izquierdo presionado?",
+    output: "Boolean",
+    colour: 20,
+    tooltip: "Verdadero mientras el botón IZQUIERDO del ratón esté presionado.",
+  },
+  {
+    type: "mouse_right_clicked",
+    message0: "🖱️▶ ¿clic derecho?",
+    output: "Boolean",
+    colour: 20,
+    tooltip:
+      "Verdadero si el usuario hizo clic con el botón DERECHO. Se consume tras la primera lectura por frame.",
+  },
+  {
+    type: "mouse_right_down",
+    message0: "🖱️▶ ¿botón derecho presionado?",
+    output: "Boolean",
+    colour: 20,
+    tooltip: "Verdadero mientras el botón DERECHO del ratón esté presionado.",
+  },
+  {
+    type: "mouse_wheel_up",
+    message0: "🖱️🔼 ¿rueda hacia arriba?",
+    output: "Boolean",
+    colour: 20,
+    tooltip:
+      "Verdadero si la rueda del ratón giró hacia arriba. Se consume tras la primera lectura por frame.",
+  },
+  {
+    type: "mouse_wheel_down",
+    message0: "🖱️🔽 ¿rueda hacia abajo?",
+    output: "Boolean",
+    colour: 20,
+    tooltip:
+      "Verdadero si la rueda del ratón giró hacia abajo. Se consume tras la primera lectura por frame.",
   },
   /* ──────────────────────────────
      MOVIMIENTO POLAR (pasos + ángulo)
@@ -597,5 +797,50 @@ Blockly.defineBlocksWithJsonArray([
     nextStatement: null,
     colour: 160,
     tooltip: "Reproduce un tono (frecuencia en Hz, duración en segundos). Ej: 440 Hz = La.",
+  },
+  {
+    type: "game_play_melody",
+    message0: "🎵 tocar melodía notas(Hz, separadas por coma)%1duración por nota %2s",
+    args0: [
+      { type: "input_value", name: "NOTES", check: "String" },
+      { type: "input_value", name: "DUR", check: "Number" },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: false,
+    colour: 160,
+    tooltip:
+      "Reproduce una secuencia de notas, una tras otra, sin bloquear el juego. Ej: notas '262,330,392,523' (Do, Mi, Sol, Do agudo).",
+  },
+  {
+    type: "game_stop_sound",
+    message0: "🔇 detener sonido",
+    previousStatement: null,
+    nextStatement: null,
+    colour: 160,
+    tooltip: "Detiene cualquier tono o melodía que esté sonando en ese momento.",
+  },
+  /* ──────────────────────────────
+     CONTROL DE TIEMPO
+  ────────────────────────────── */
+  {
+    type: "game_wait",
+    message0: "⏳ esperar %1 segundos",
+    args0: [{ type: "input_value", name: "SECONDS", check: "Number" }],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 120,
+    tooltip:
+      "Pausa la ejecución del programa durante el número de segundos indicado, sin congelar el navegador.",
+  },
+  {
+    type: "game_wait_frames",
+    message0: "⏳ esperar %1 frames",
+    args0: [{ type: "input_value", name: "FRAMES", check: "Number" }],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 120,
+    tooltip:
+      "Espera N cuadros (frames) del juego, sincronizado a 60fps. Útil para timings precisos de animación.",
   },
 ]);

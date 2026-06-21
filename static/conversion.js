@@ -185,6 +185,26 @@ Blockly.defineBlocksWithJsonArray([
     colour: 290,
   },
   {
+    // Ejecuta código Python dinámicamente con exec(codigo, globals()).
+    // El dropdown elige la fuente: texto/código directo, o archivo .py leído con open().read()
+    type: "exec_globals",
+    message0: "ejecutar %1",
+    args0: [
+      {
+        type: "field_input",
+        name: "FILENAME",
+        text: "main.py",
+      },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 230,
+    tooltip:
+      "Ejecuta código Python dinámicamente usando exec(codigo, globals()). " +
+      "Permite que el código ejecutado vea/modifique las variables globales actuales.",
+    helpUrl: "",
+  },
+  {
     type: "file_open",
     message0: "abrir archivo %1 modo %2 binario %3",
     args0: [
@@ -2141,7 +2161,17 @@ Blockly.defineBlocksWithJsonArray([
     colour: "#2ECC71",
     tooltip: "Encender/Apagar LED",
   },
-
+  {
+    type: "toggle_led",
+    message0: "%1 alternar",  
+    args0: [
+      { type: "field_input", name: "NAME", text: "led" },
+    ],  
+    previousStatement: null,
+    nextStatement: null,
+    colour: "#2ECC71",
+    tooltip: "Alternar estado del LED",
+  },
   /* ======================== LED BICOLOR RG ======================== */
   {
     type: "rg_init",

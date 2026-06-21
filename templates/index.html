@@ -474,13 +474,23 @@
       font-family: inherit;
       transition: background 0.15s, border-color 0.15s;
     }
-    .gameImgBtn:first-of-type { margin-left: auto; }
-    .gameImgBtn + .gameImgBtn { margin-left: 0; }
+
+    .gameImgBtn:first-of-type {
+      margin-left: auto;
+    }
+
+    .gameImgBtn+.gameImgBtn {
+      margin-left: 0;
+    }
+
     .gameImgBtn:hover {
       background: #2a2a52;
       border-color: #5470ff;
     }
-    .gameImgBtn:active { transform: translateY(1px); }
+
+    .gameImgBtn:active {
+      transform: translateY(1px);
+    }
 
     #gameContent {
       flex: 1;
@@ -687,12 +697,15 @@
 
         </div>
       </div>
-      <button id="btnOpenSerialMonitor" title="Monitor Serial" onclick="SerialMonitor.toggle()"><span class="icon-btn icon-munitor"></span></button>
+      <button id="btnOpenSerialMonitor" title="Monitor Serial" onclick="SerialMonitor.toggle()"><span
+          class="icon-btn icon-munitor"></span></button>
       <button id="btnWiring" title="Conexiones eléctricas">
         <span class="icon-btn icon-conexiones"></span>
       </button>
       <button id="btnGame" title="Vista Juego 🎮"><span class="icon-btn icon-games"></span></button>
-
+      <button id="btnConnectionWifi" title="Conectar a ESP32 por WiFi (WebREPL)">
+        📶
+      </button>
     </div>
   </div>
 
@@ -789,25 +802,28 @@
       <div id="gameContainer">
         <div id="gameHeader">
           <span id="gameTitle">🎮 Juego</span>
-          <button type="button" class="gameImgBtn" onclick="document.getElementById('gameBgFileInput').click()" title="Cargar imagen de tu computadora como fondo">
+          <button type="button" class="gameImgBtn" onclick="document.getElementById('gameBgFileInput').click()"
+            title="Cargar imagen de tu computadora como fondo">
             🖼️ Fondo
           </button>
-          <button type="button" class="gameImgBtn" onclick="document.getElementById('gameSpriteFileInput').click()" title="Cargar imagen de tu computadora como personaje">
+          <button type="button" class="gameImgBtn" onclick="document.getElementById('gameSpriteFileInput').click()"
+            title="Cargar imagen de tu computadora como personaje">
             🐱 Personaje
           </button>
-          <input type="file" id="gameBgFileInput" accept="image/*" style="display:none"
-            onchange="
+          <input type="file" id="gameBgFileInput" accept="image/*" style="display:none" onchange="
               if(!this.files||!this.files[0]) return;
               GameEngine.loadLocalImage(this.files[0], '__bg_local__', function(ok){
                 if(ok) GameEngine.setBgImage('__bg_local__');
               });
               this.value='';
             ">
-          <input type="file" id="gameSpriteFileInput" accept="image/*" style="display:none"
-            onchange="
+          <input type="file" id="gameSpriteFileInput" accept="image/*" style="display:none" onchange="
               if(!this.files||!this.files[0]) return;
               GameEngine.loadLocalImage(this.files[0], '__sprite_local__', function(ok){
-                if(ok) GameEngine.createSprite(GameEngine.getX(), GameEngine.getY(), 48, 48, '__sprite_local__');
+                if(ok){
+                  GameEngine.createSprite(GameEngine.getX(), GameEngine.getY(), 48, 48, '__sprite_local__');
+                  GameEngine.drawSprite();
+                }
               });
               this.value='';
             ">
@@ -839,20 +855,38 @@
 
         <label text="▸ Pantalla"></label>
         <block type="game_start">
-          <value name="WIDTH"><shadow type="math_number"><field name="NUM">600</field></shadow></value>
-          <value name="HEIGHT"><shadow type="math_number"><field name="NUM">600</field></shadow></value>
+          <value name="WIDTH">
+            <shadow type="math_number">
+              <field name="NUM">600</field>
+            </shadow>
+          </value>
+          <value name="HEIGHT">
+            <shadow type="math_number">
+              <field name="NUM">600</field>
+            </shadow>
+          </value>
         </block>
-        
+
         <block type="select_imgs">
           <field name="IMG">laberinto.png</field>
         </block>
 
         <block type="game_set_bg">
-          <value name="COLOR"><shadow type="color_picker"><field name="COLOR">#1a1a2e</field></shadow></value>
+          <value name="COLOR">
+            <shadow type="color_picker">
+              <field name="COLOR">#1a1a2e</field>
+            </shadow>
+          </value>
         </block>
         <block type="game_set_bg_image">
-          <value name="FILE"><shadow type="text"><field name="TEXT">road.png</field></shadow></value>
+          <value name="FILE">
+            <shadow type="text">
+              <field name="TEXT">road.png</field>
+            </shadow>
+          </value>
         </block>
+        <block type="game_get_bg_image_name"></block>
+        <block type="game_get_sprite_image_name"></block>
         <block type="game_clear"></block>
         <block type="game_frame"></block>
 
@@ -861,30 +895,72 @@
         <block type="runstart">
           <next>
             <block type="game_start">
-              <value name="WIDTH"><shadow type="math_number"><field name="NUM">480</field></shadow></value>
-              <value name="HEIGHT"><shadow type="math_number"><field name="NUM">360</field></shadow></value>
+              <value name="WIDTH">
+                <shadow type="math_number">
+                  <field name="NUM">480</field>
+                </shadow>
+              </value>
+              <value name="HEIGHT">
+                <shadow type="math_number">
+                  <field name="NUM">360</field>
+                </shadow>
+              </value>
               <next>
                 <block type="sprite_create">
-                  <value name="X"><shadow type="math_number"><field name="NUM">240</field></shadow></value>
-                  <value name="Y"><shadow type="math_number"><field name="NUM">180</field></shadow></value>
-                  <value name="W"><shadow type="math_number"><field name="NUM">48</field></shadow></value>
-                  <value name="H"><shadow type="math_number"><field name="NUM">48</field></shadow></value>
-                  <value name="IMG"><shadow type="text"><field name="TEXT">car.png</field></shadow></value>
+                  <value name="X">
+                    <shadow type="math_number">
+                      <field name="NUM">240</field>
+                    </shadow>
+                  </value>
+                  <value name="Y">
+                    <shadow type="math_number">
+                      <field name="NUM">180</field>
+                    </shadow>
+                  </value>
+                  <value name="W">
+                    <shadow type="math_number">
+                      <field name="NUM">48</field>
+                    </shadow>
+                  </value>
+                  <value name="H">
+                    <shadow type="math_number">
+                      <field name="NUM">48</field>
+                    </shadow>
+                  </value>
+                  <value name="IMG">
+                    <shadow type="text">
+                      <field name="TEXT">car.png</field>
+                    </shadow>
+                  </value>
                   <next>
                     <block type="controls_whileUntil">
                       <field name="MODE">WHILE</field>
-                      <value name="BOOL"><block type="logic_boolean"><field name="BOOL">TRUE</field></block></value>
+                      <value name="BOOL">
+                        <block type="logic_boolean">
+                          <field name="BOOL">TRUE</field>
+                        </block>
+                      </value>
                       <statement name="DO">
                         <block type="game_clear">
                           <next>
                             <block type="controls_if">
                               <value name="IF0">
-                                <block type="key_is_pressed"><field name="KEY">ArrowLeft</field></block>
+                                <block type="key_is_pressed">
+                                  <field name="KEY">ArrowLeft</field>
+                                </block>
                               </value>
                               <statement name="DO0">
                                 <block type="sprite_move">
-                                  <value name="DX"><shadow type="math_number"><field name="NUM">-4</field></shadow></value>
-                                  <value name="DY"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
+                                  <value name="DX">
+                                    <shadow type="math_number">
+                                      <field name="NUM">-4</field>
+                                    </shadow>
+                                  </value>
+                                  <value name="DY">
+                                    <shadow type="math_number">
+                                      <field name="NUM">0</field>
+                                    </shadow>
+                                  </value>
                                 </block>
                               </statement>
                               <next>
@@ -908,24 +984,72 @@
 
         <label text="▸ Personaje / Sprite"></label>
         <block type="sprite_load_image">
-          <value name="FILE"><shadow type="text"><field name="TEXT">car.png</field></shadow></value>
+          <value name="FILE">
+            <shadow type="text">
+              <field name="TEXT">car.png</field>
+            </shadow>
+          </value>
         </block>
         <block type="sprite_create">
-          <value name="X"><shadow type="math_number"><field name="NUM">240</field></shadow></value>
-          <value name="Y"><shadow type="math_number"><field name="NUM">180</field></shadow></value>
-          <value name="W"><shadow type="math_number"><field name="NUM">48</field></shadow></value>
-          <value name="H"><shadow type="math_number"><field name="NUM">48</field></shadow></value>
-          <value name="IMG"><shadow type="text"><field name="TEXT">car.png</field></shadow></value>
+          <value name="X">
+            <shadow type="math_number">
+              <field name="NUM">240</field>
+            </shadow>
+          </value>
+          <value name="Y">
+            <shadow type="math_number">
+              <field name="NUM">180</field>
+            </shadow>
+          </value>
+          <value name="W">
+            <shadow type="math_number">
+              <field name="NUM">48</field>
+            </shadow>
+          </value>
+          <value name="H">
+            <shadow type="math_number">
+              <field name="NUM">48</field>
+            </shadow>
+          </value>
+          <value name="IMG">
+            <shadow type="text">
+              <field name="TEXT">car.png</field>
+            </shadow>
+          </value>
         </block>
         <block type="sprite_move">
-          <value name="DX"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
-          <value name="DY"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
+          <value name="DX">
+            <shadow type="math_number">
+              <field name="NUM">0</field>
+            </shadow>
+          </value>
+          <value name="DY">
+            <shadow type="math_number">
+              <field name="NUM">0</field>
+            </shadow>
+          </value>
         </block>
         <block type="sprite_set_pos">
-          <value name="X"><shadow type="math_number"><field name="NUM">240</field></shadow></value>
-          <value name="Y"><shadow type="math_number"><field name="NUM">180</field></shadow></value>
+          <value name="X">
+            <shadow type="math_number">
+              <field name="NUM">240</field>
+            </shadow>
+          </value>
+          <value name="Y">
+            <shadow type="math_number">
+              <field name="NUM">180</field>
+            </shadow>
+          </value>
         </block>
         <block type="sprite_set_flip"></block>
+        <block type="sprite_set_flip_vertical"></block>
+        <block type="sprite_set_scale">
+          <value name="SCALE">
+            <shadow type="math_number">
+              <field name="NUM">1</field>
+            </shadow>
+          </value>
+        </block>
         <block type="sprite_get_x"></block>
         <block type="sprite_get_y"></block>
         <block type="sprite_draw"></block>
@@ -937,141 +1061,659 @@
 
         <label text="▸ Ratón"></label>
         <block type="mouse_clicked"></block>
+        <block type="mouse_left_clicked"></block>
+        <block type="mouse_left_down"></block>
+        <block type="mouse_right_clicked"></block>
+        <block type="mouse_right_down"></block>
+        <block type="mouse_wheel_up"></block>
+        <block type="mouse_wheel_down"></block>
         <block type="mouse_down"></block>
         <block type="mouse_x"></block>
         <block type="mouse_y"></block>
 
         <label text="▸ Movimiento por pasos"></label>
         <block type="sprite_move_steps">
-          <value name="STEPS"><shadow type="math_number"><field name="NUM">10</field></shadow></value>
+          <value name="STEPS">
+            <shadow type="math_number">
+              <field name="NUM">10</field>
+            </shadow>
+          </value>
         </block>
         <block type="sprite_turn_left">
-          <value name="DEG"><shadow type="math_number"><field name="NUM">15</field></shadow></value>
+          <value name="DEG">
+            <shadow type="math_number">
+              <field name="NUM">15</field>
+            </shadow>
+          </value>
         </block>
         <block type="sprite_turn_right">
-          <value name="DEG"><shadow type="math_number"><field name="NUM">15</field></shadow></value>
+          <value name="DEG">
+            <shadow type="math_number">
+              <field name="NUM">15</field>
+            </shadow>
+          </value>
         </block>
         <block type="sprite_get_angle"></block>
         <block type="sprite_set_angle">
-          <value name="DEG"><shadow type="math_number"><field name="NUM">90</field></shadow></value>
+          <value name="DEG">
+            <shadow type="math_number">
+              <field name="NUM">90</field>
+            </shadow>
+          </value>
         </block>
 
         <label text="▸ Colisiones / Colores"></label>
         <block type="touching_color">
-          <value name="COLOR"><shadow type="color_picker"><field name="COLOR">#ff0000</field></shadow></value>
+          <value name="COLOR">
+            <shadow type="color_picker">
+              <field name="COLOR">#ff0000</field>
+            </shadow>
+          </value>
         </block>
         <block type="touching_edge"></block>
         <block type="color_at_pos">
-          <value name="X"><shadow type="math_number"><field name="NUM">240</field></shadow></value>
-          <value name="Y"><shadow type="math_number"><field name="NUM">180</field></shadow></value>
+          <value name="X">
+            <shadow type="math_number">
+              <field name="NUM">240</field>
+            </shadow>
+          </value>
+          <value name="Y">
+            <shadow type="math_number">
+              <field name="NUM">180</field>
+            </shadow>
+          </value>
         </block>
         <block type="pixel_channel">
-          <value name="X"><shadow type="math_number"><field name="NUM">240</field></shadow></value>
-          <value name="Y"><shadow type="math_number"><field name="NUM">180</field></shadow></value>
+          <value name="X">
+            <shadow type="math_number">
+              <field name="NUM">240</field>
+            </shadow>
+          </value>
+          <value name="Y">
+            <shadow type="math_number">
+              <field name="NUM">180</field>
+            </shadow>
+          </value>
         </block>
 
         <label text="▸ Texto en pantalla"></label>
         <block type="game_show_text">
-          <value name="TEXT"><shadow type="text"><field name="TEXT">¡Hola!</field></shadow></value>
-          <value name="X"><shadow type="math_number"><field name="NUM">10</field></shadow></value>
-          <value name="Y"><shadow type="math_number"><field name="NUM">20</field></shadow></value>
-          <value name="COLOR"><shadow type="color_picker"><field name="COLOR">#ffffff</field></shadow></value>
-          <value name="SIZE"><shadow type="math_number"><field name="NUM">16</field></shadow></value>
+          <value name="TEXT">
+            <shadow type="text">
+              <field name="TEXT">¡Hola!</field>
+            </shadow>
+          </value>
+          <value name="X">
+            <shadow type="math_number">
+              <field name="NUM">10</field>
+            </shadow>
+          </value>
+          <value name="Y">
+            <shadow type="math_number">
+              <field name="NUM">20</field>
+            </shadow>
+          </value>
+          <value name="COLOR">
+            <shadow type="color_picker">
+              <field name="COLOR">#ffffff</field>
+            </shadow>
+          </value>
+          <value name="SIZE">
+            <shadow type="math_number">
+              <field name="NUM">16</field>
+            </shadow>
+          </value>
         </block>
 
         <label text="▸ Lápiz / Pintar"></label>
         <block type="pen_down"></block>
         <block type="pen_up"></block>
         <block type="pen_move_to">
-          <value name="X"><shadow type="math_number"><field name="NUM">300</field></shadow></value>
-          <value name="Y"><shadow type="math_number"><field name="NUM">300</field></shadow></value>
+          <value name="X">
+            <shadow type="math_number">
+              <field name="NUM">300</field>
+            </shadow>
+          </value>
+          <value name="Y">
+            <shadow type="math_number">
+              <field name="NUM">300</field>
+            </shadow>
+          </value>
         </block>
         <block type="pen_set_color">
-          <value name="COLOR"><shadow type="color_picker"><field name="COLOR">#ff0000</field></shadow></value>
+          <value name="COLOR">
+            <shadow type="color_picker">
+              <field name="COLOR">#ff0000</field>
+            </shadow>
+          </value>
         </block>
         <block type="pen_set_size">
-          <value name="SIZE"><shadow type="math_number"><field name="NUM">3</field></shadow></value>
+          <value name="SIZE">
+            <shadow type="math_number">
+              <field name="NUM">3</field>
+            </shadow>
+          </value>
         </block>
         <block type="pen_stamp"></block>
         <block type="pen_clear"></block>
 
         <label text="▸ Obstáculos / Formas"></label>
         <block type="game_draw_rect">
-          <value name="X"><shadow type="math_number"><field name="NUM">100</field></shadow></value>
-          <value name="Y"><shadow type="math_number"><field name="NUM">100</field></shadow></value>
-          <value name="W"><shadow type="math_number"><field name="NUM">40</field></shadow></value>
-          <value name="H"><shadow type="math_number"><field name="NUM">40</field></shadow></value>
-          <value name="COLOR"><shadow type="color_picker"><field name="COLOR">#ff0000</field></shadow></value>
+          <value name="X">
+            <shadow type="math_number">
+              <field name="NUM">100</field>
+            </shadow>
+          </value>
+          <value name="Y">
+            <shadow type="math_number">
+              <field name="NUM">100</field>
+            </shadow>
+          </value>
+          <value name="W">
+            <shadow type="math_number">
+              <field name="NUM">40</field>
+            </shadow>
+          </value>
+          <value name="H">
+            <shadow type="math_number">
+              <field name="NUM">40</field>
+            </shadow>
+          </value>
+          <value name="COLOR">
+            <shadow type="color_picker">
+              <field name="COLOR">#ff0000</field>
+            </shadow>
+          </value>
         </block>
         <block type="game_draw_rect_outline">
-          <value name="X"><shadow type="math_number"><field name="NUM">100</field></shadow></value>
-          <value name="Y"><shadow type="math_number"><field name="NUM">100</field></shadow></value>
-          <value name="W"><shadow type="math_number"><field name="NUM">40</field></shadow></value>
-          <value name="H"><shadow type="math_number"><field name="NUM">40</field></shadow></value>
-          <value name="COLOR"><shadow type="color_picker"><field name="COLOR">#ff0000</field></shadow></value>
-          <value name="LW"><shadow type="math_number"><field name="NUM">2</field></shadow></value>
+          <value name="X">
+            <shadow type="math_number">
+              <field name="NUM">100</field>
+            </shadow>
+          </value>
+          <value name="Y">
+            <shadow type="math_number">
+              <field name="NUM">100</field>
+            </shadow>
+          </value>
+          <value name="W">
+            <shadow type="math_number">
+              <field name="NUM">40</field>
+            </shadow>
+          </value>
+          <value name="H">
+            <shadow type="math_number">
+              <field name="NUM">40</field>
+            </shadow>
+          </value>
+          <value name="COLOR">
+            <shadow type="color_picker">
+              <field name="COLOR">#ff0000</field>
+            </shadow>
+          </value>
+          <value name="LW">
+            <shadow type="math_number">
+              <field name="NUM">2</field>
+            </shadow>
+          </value>
         </block>
         <block type="game_draw_circle">
-          <value name="X"><shadow type="math_number"><field name="NUM">200</field></shadow></value>
-          <value name="Y"><shadow type="math_number"><field name="NUM">150</field></shadow></value>
-          <value name="R"><shadow type="math_number"><field name="NUM">20</field></shadow></value>
-          <value name="COLOR"><shadow type="color_picker"><field name="COLOR">#ffff00</field></shadow></value>
+          <value name="X">
+            <shadow type="math_number">
+              <field name="NUM">200</field>
+            </shadow>
+          </value>
+          <value name="Y">
+            <shadow type="math_number">
+              <field name="NUM">150</field>
+            </shadow>
+          </value>
+          <value name="R">
+            <shadow type="math_number">
+              <field name="NUM">20</field>
+            </shadow>
+          </value>
+          <value name="COLOR">
+            <shadow type="color_picker">
+              <field name="COLOR">#ffff00</field>
+            </shadow>
+          </value>
         </block>
         <block type="game_draw_circle_outline">
-          <value name="X"><shadow type="math_number"><field name="NUM">200</field></shadow></value>
-          <value name="Y"><shadow type="math_number"><field name="NUM">150</field></shadow></value>
-          <value name="R"><shadow type="math_number"><field name="NUM">20</field></shadow></value>
-          <value name="COLOR"><shadow type="color_picker"><field name="COLOR">#ffff00</field></shadow></value>
-          <value name="LW"><shadow type="math_number"><field name="NUM">2</field></shadow></value>
+          <value name="X">
+            <shadow type="math_number">
+              <field name="NUM">200</field>
+            </shadow>
+          </value>
+          <value name="Y">
+            <shadow type="math_number">
+              <field name="NUM">150</field>
+            </shadow>
+          </value>
+          <value name="R">
+            <shadow type="math_number">
+              <field name="NUM">20</field>
+            </shadow>
+          </value>
+          <value name="COLOR">
+            <shadow type="color_picker">
+              <field name="COLOR">#ffff00</field>
+            </shadow>
+          </value>
+          <value name="LW">
+            <shadow type="math_number">
+              <field name="NUM">2</field>
+            </shadow>
+          </value>
         </block>
         <block type="game_draw_triangle">
-          <value name="X1"><shadow type="math_number"><field name="NUM">150</field></shadow></value>
-          <value name="Y1"><shadow type="math_number"><field name="NUM">100</field></shadow></value>
-          <value name="X2"><shadow type="math_number"><field name="NUM">120</field></shadow></value>
-          <value name="Y2"><shadow type="math_number"><field name="NUM">160</field></shadow></value>
-          <value name="X3"><shadow type="math_number"><field name="NUM">180</field></shadow></value>
-          <value name="Y3"><shadow type="math_number"><field name="NUM">160</field></shadow></value>
-          <value name="COLOR"><shadow type="color_picker"><field name="COLOR">#00ff88</field></shadow></value>
+          <value name="X1">
+            <shadow type="math_number">
+              <field name="NUM">150</field>
+            </shadow>
+          </value>
+          <value name="Y1">
+            <shadow type="math_number">
+              <field name="NUM">100</field>
+            </shadow>
+          </value>
+          <value name="X2">
+            <shadow type="math_number">
+              <field name="NUM">120</field>
+            </shadow>
+          </value>
+          <value name="Y2">
+            <shadow type="math_number">
+              <field name="NUM">160</field>
+            </shadow>
+          </value>
+          <value name="X3">
+            <shadow type="math_number">
+              <field name="NUM">180</field>
+            </shadow>
+          </value>
+          <value name="Y3">
+            <shadow type="math_number">
+              <field name="NUM">160</field>
+            </shadow>
+          </value>
+          <value name="COLOR">
+            <shadow type="color_picker">
+              <field name="COLOR">#00ff88</field>
+            </shadow>
+          </value>
         </block>
         <block type="game_draw_triangle_outline">
-          <value name="X1"><shadow type="math_number"><field name="NUM">150</field></shadow></value>
-          <value name="Y1"><shadow type="math_number"><field name="NUM">100</field></shadow></value>
-          <value name="X2"><shadow type="math_number"><field name="NUM">120</field></shadow></value>
-          <value name="Y2"><shadow type="math_number"><field name="NUM">160</field></shadow></value>
-          <value name="X3"><shadow type="math_number"><field name="NUM">180</field></shadow></value>
-          <value name="Y3"><shadow type="math_number"><field name="NUM">160</field></shadow></value>
-          <value name="COLOR"><shadow type="color_picker"><field name="COLOR">#00ff88</field></shadow></value>
-          <value name="LW"><shadow type="math_number"><field name="NUM">2</field></shadow></value>
+          <value name="X1">
+            <shadow type="math_number">
+              <field name="NUM">150</field>
+            </shadow>
+          </value>
+          <value name="Y1">
+            <shadow type="math_number">
+              <field name="NUM">100</field>
+            </shadow>
+          </value>
+          <value name="X2">
+            <shadow type="math_number">
+              <field name="NUM">120</field>
+            </shadow>
+          </value>
+          <value name="Y2">
+            <shadow type="math_number">
+              <field name="NUM">160</field>
+            </shadow>
+          </value>
+          <value name="X3">
+            <shadow type="math_number">
+              <field name="NUM">180</field>
+            </shadow>
+          </value>
+          <value name="Y3">
+            <shadow type="math_number">
+              <field name="NUM">160</field>
+            </shadow>
+          </value>
+          <value name="COLOR">
+            <shadow type="color_picker">
+              <field name="COLOR">#00ff88</field>
+            </shadow>
+          </value>
+          <value name="LW">
+            <shadow type="math_number">
+              <field name="NUM">2</field>
+            </shadow>
+          </value>
         </block>
         <block type="game_draw_line">
-          <value name="X1"><shadow type="math_number"><field name="NUM">50</field></shadow></value>
-          <value name="Y1"><shadow type="math_number"><field name="NUM">50</field></shadow></value>
-          <value name="X2"><shadow type="math_number"><field name="NUM">250</field></shadow></value>
-          <value name="Y2"><shadow type="math_number"><field name="NUM">50</field></shadow></value>
-          <value name="COLOR"><shadow type="color_picker"><field name="COLOR">#ffffff</field></shadow></value>
-          <value name="LW"><shadow type="math_number"><field name="NUM">2</field></shadow></value>
+          <value name="X1">
+            <shadow type="math_number">
+              <field name="NUM">50</field>
+            </shadow>
+          </value>
+          <value name="Y1">
+            <shadow type="math_number">
+              <field name="NUM">50</field>
+            </shadow>
+          </value>
+          <value name="X2">
+            <shadow type="math_number">
+              <field name="NUM">250</field>
+            </shadow>
+          </value>
+          <value name="Y2">
+            <shadow type="math_number">
+              <field name="NUM">50</field>
+            </shadow>
+          </value>
+          <value name="COLOR">
+            <shadow type="color_picker">
+              <field name="COLOR">#ffffff</field>
+            </shadow>
+          </value>
+          <value name="LW">
+            <shadow type="math_number">
+              <field name="NUM">2</field>
+            </shadow>
+          </value>
+        </block>
+        <block type="game_draw_image">
+          <value name="FILE">
+            <shadow type="text">
+              <field name="TEXT">icono.png</field>
+            </shadow>
+          </value>
+          <value name="X">
+            <shadow type="math_number">
+              <field name="NUM">100</field>
+            </shadow>
+          </value>
+          <value name="Y">
+            <shadow type="math_number">
+              <field name="NUM">100</field>
+            </shadow>
+          </value>
+          <value name="W">
+            <shadow type="math_number">
+              <field name="NUM">40</field>
+            </shadow>
+          </value>
+          <value name="H">
+            <shadow type="math_number">
+              <field name="NUM">40</field>
+            </shadow>
+          </value>
+          <value name="ANGLE">
+            <shadow type="math_number">
+              <field name="NUM">0</field>
+            </shadow>
+          </value>
+        </block>
+        <block type="game_draw_star">
+          <value name="X">
+            <shadow type="math_number">
+              <field name="NUM">150</field>
+            </shadow>
+          </value>
+          <value name="Y">
+            <shadow type="math_number">
+              <field name="NUM">100</field>
+            </shadow>
+          </value>
+          <value name="LENGTH">
+            <shadow type="math_number">
+              <field name="NUM">20</field>
+            </shadow>
+          </value>
+          <value name="ANGLE">
+            <shadow type="math_number">
+              <field name="NUM">0</field>
+            </shadow>
+          </value>
+          <value name="COLOR">
+            <shadow type="color_picker">
+              <field name="COLOR">#ffdd00</field>
+            </shadow>
+          </value>
+        </block>
+        <block type="game_draw_ellipse">
+          <value name="X">
+            <shadow type="math_number">
+              <field name="NUM">150</field>
+            </shadow>
+          </value>
+          <value name="Y">
+            <shadow type="math_number">
+              <field name="NUM">100</field>
+            </shadow>
+          </value>
+          <value name="WIDTH">
+            <shadow type="math_number">
+              <field name="NUM">40</field>
+            </shadow>
+          </value>
+          <value name="HEIGHT">
+            <shadow type="math_number">
+              <field name="NUM">24</field>
+            </shadow>
+          </value>
+          <value name="ANGLE">
+            <shadow type="math_number">
+              <field name="NUM">0</field>
+            </shadow>
+          </value>
+          <value name="COLOR">
+            <shadow type="color_picker">
+              <field name="COLOR">#ff0000</field>
+            </shadow>
+          </value>
+        </block>
+        <block type="game_draw_quad">
+          <value name="X1">
+            <shadow type="math_number">
+              <field name="NUM">50</field>
+            </shadow>
+          </value>
+          <value name="Y1">
+            <shadow type="math_number">
+              <field name="NUM">50</field>
+            </shadow>
+          </value>
+          <value name="X2">
+            <shadow type="math_number">
+              <field name="NUM">150</field>
+            </shadow>
+          </value>
+          <value name="Y2">
+            <shadow type="math_number">
+              <field name="NUM">50</field>
+            </shadow>
+          </value>
+          <value name="X3">
+            <shadow type="math_number">
+              <field name="NUM">130</field>
+            </shadow>
+          </value>
+          <value name="Y3">
+            <shadow type="math_number">
+              <field name="NUM">120</field>
+            </shadow>
+          </value>
+          <value name="X4">
+            <shadow type="math_number">
+              <field name="NUM">70</field>
+            </shadow>
+          </value>
+          <value name="Y4">
+            <shadow type="math_number">
+              <field name="NUM">120</field>
+            </shadow>
+          </value>
+          <value name="COLOR">
+            <shadow type="color_picker">
+              <field name="COLOR">#00aaff</field>
+            </shadow>
+          </value>
+        </block>
+        <block type="game_draw_regular_polygon">
+          <value name="X">
+            <shadow type="math_number">
+              <field name="NUM">150</field>
+            </shadow>
+          </value>
+          <value name="Y">
+            <shadow type="math_number">
+              <field name="NUM">100</field>
+            </shadow>
+          </value>
+          <value name="N">
+            <shadow type="math_number">
+              <field name="NUM">6</field>
+            </shadow>
+          </value>
+          <value name="LENGTH">
+            <shadow type="math_number">
+              <field name="NUM">20</field>
+            </shadow>
+          </value>
+          <value name="ANGLE">
+            <shadow type="math_number">
+              <field name="NUM">0</field>
+            </shadow>
+          </value>
+          <value name="COLOR">
+            <shadow type="color_picker">
+              <field name="COLOR">#00cc66</field>
+            </shadow>
+          </value>
+        </block>
+        <block type="game_draw_table">
+          <value name="X">
+            <shadow type="math_number">
+              <field name="NUM">50</field>
+            </shadow>
+          </value>
+          <value name="Y">
+            <shadow type="math_number">
+              <field name="NUM">50</field>
+            </shadow>
+          </value>
+          <value name="WIDTH">
+            <shadow type="math_number">
+              <field name="NUM">120</field>
+            </shadow>
+          </value>
+          <value name="HEIGHT">
+            <shadow type="math_number">
+              <field name="NUM">120</field>
+            </shadow>
+          </value>
+          <value name="ROW">
+            <shadow type="math_number">
+              <field name="NUM">3</field>
+            </shadow>
+          </value>
+          <value name="COLUMN">
+            <shadow type="math_number">
+              <field name="NUM">3</field>
+            </shadow>
+          </value>
+          <value name="COLOR">
+            <shadow type="color_picker">
+              <field name="COLOR">#ffffff</field>
+            </shadow>
+          </value>
         </block>
 
         <label text="▸ Aleatorio / Matemáticas"></label>
         <block type="game_random_int">
-          <value name="MIN"><shadow type="math_number"><field name="NUM">1</field></shadow></value>
-          <value name="MAX"><shadow type="math_number"><field name="NUM">10</field></shadow></value>
+          <value name="MIN">
+            <shadow type="math_number">
+              <field name="NUM">1</field>
+            </shadow>
+          </value>
+          <value name="MAX">
+            <shadow type="math_number">
+              <field name="NUM">10</field>
+            </shadow>
+          </value>
         </block>
         <block type="game_random_float">
-          <value name="MIN"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
-          <value name="MAX"><shadow type="math_number"><field name="NUM">1</field></shadow></value>
+          <value name="MIN">
+            <shadow type="math_number">
+              <field name="NUM">0</field>
+            </shadow>
+          </value>
+          <value name="MAX">
+            <shadow type="math_number">
+              <field name="NUM">1</field>
+            </shadow>
+          </value>
         </block>
         <block type="game_distance">
-          <value name="X1"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
-          <value name="Y1"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
-          <value name="X2"><shadow type="math_number"><field name="NUM">100</field></shadow></value>
-          <value name="Y2"><shadow type="math_number"><field name="NUM">100</field></shadow></value>
+          <value name="X1">
+            <shadow type="math_number">
+              <field name="NUM">0</field>
+            </shadow>
+          </value>
+          <value name="Y1">
+            <shadow type="math_number">
+              <field name="NUM">0</field>
+            </shadow>
+          </value>
+          <value name="X2">
+            <shadow type="math_number">
+              <field name="NUM">100</field>
+            </shadow>
+          </value>
+          <value name="Y2">
+            <shadow type="math_number">
+              <field name="NUM">100</field>
+            </shadow>
+          </value>
         </block>
 
         <label text="▸ Sonido"></label>
         <block type="game_play_tone">
-          <value name="FREQ"><shadow type="math_number"><field name="NUM">440</field></shadow></value>
-          <value name="DUR"><shadow type="math_number"><field name="NUM">0.3</field></shadow></value>
+          <value name="FREQ">
+            <shadow type="math_number">
+              <field name="NUM">440</field>
+            </shadow>
+          </value>
+          <value name="DUR">
+            <shadow type="math_number">
+              <field name="NUM">0.3</field>
+            </shadow>
+          </value>
+        </block>
+        <block type="game_play_melody">
+          <value name="NOTES">
+            <shadow type="text">
+              <field name="TEXT">262,330,392,523</field>
+            </shadow>
+          </value>
+          <value name="DUR">
+            <shadow type="math_number">
+              <field name="NUM">0.3</field>
+            </shadow>
+          </value>
+        </block>
+        <block type="game_stop_sound"></block>
+
+        <label text="▸ Espera"></label>
+        <block type="game_wait">
+          <value name="SECONDS">
+            <shadow type="math_number">
+              <field name="NUM">1</field>
+            </shadow>
+          </value>
+        </block>
+        <block type="game_wait_frames">
+          <value name="FRAMES">
+            <shadow type="math_number">
+              <field name="NUM">30</field>
+            </shadow>
+          </value>
         </block>
 
       </category>
@@ -1402,6 +2044,7 @@
       </category>
 
       <category name="Archivos" colour="#8e44ad">
+        <block type="exec_globals"> </block>
         <block type="file_open"></block>
         <block type="file_write">
           <field name="file">f</field>
@@ -1511,6 +2154,7 @@
           <block type="set_led">
             <field name="STATE">1</field>
           </block>
+          <block type="toggle_led"></block>
         </category>
         <category name="LED RG">
           <block type="rg_init">
@@ -3338,10 +3982,10 @@
 
   <script src="{{ url_for('static', filename='lz-string.js') }}"></script>
 
-<!-- ── Motor de juego (canvas, sprites, teclado, ratón) ── -->
+  <!-- ── Motor de juego (canvas, sprites, teclado, ratón) ── -->
   <script src="{{ url_for('static', filename='game-engine.js') }}"></script>
 
-    <!-- ── Bloques y generadores de juego ── -->
+  <!-- ── Bloques y generadores de juego ── -->
   <script src="{{ url_for('static', filename='game_blocks.js') }}"></script>
 
   <script src="{{ url_for('static', filename='animation.js') }}"></script>
@@ -3787,182 +4431,225 @@
       applyTransform();
     });
   })();
-/* ── Parche: diferir restoreWorkspaceFromLocal para evitar setTimeout lento ── */
-/* No se puede redefinir si main.js ya la declaró — se omite el override */
+  /* ── Parche: diferir restoreWorkspaceFromLocal para evitar setTimeout lento ── */
+  /* No se puede redefinir si main.js ya la declaró — se omite el override */
 
-/* btnStop y btnRun en modo juego → manejados por game-ui.js */
+  /* btnStop y btnRun en modo juego → manejados por game-ui.js */
 
-/* ── Interceptor serial: ADC + color de canvas ────────────────────────────
-   Usamos Object.defineProperty para que window._rawReplHook NO pueda
-   ser sobreescrito por main.js. Cada asignación encadena el nuevo callback
-   sin perder nuestra lógica de captura de ADC y pixel.
-──────────────────────────────────────────────────────────────────────────── */
-(function () {
+  /* ── Interceptor serial: ADC + color de canvas ────────────────────────────
+     Usamos Object.defineProperty para que window._rawReplHook NO pueda
+     ser sobreescrito por main.js. Cada asignación encadena el nuevo callback
+     sin perder nuestra lógica de captura de ADC y pixel.
+  ──────────────────────────────────────────────────────────────────────────── */
+  (function () {
 
-  /* ══════════════════════════════════════════════════════════
-     Almacén global de sensores — leído por getSensorValue()
-     en el sandbox vía native function.
-  ══════════════════════════════════════════════════════════ */
-  window._serialSensors = {
-    pins: {}, adc: {}, dhtTemp: {}, dhtHum: {},
-    touch: {}, ultrasonic: {}, encoder: {}, mpu: {},
-    ky023: {}, bmp: {}, bh1750: {}, tcs: {}, qmc: {},
-    rtc: {}, ow: {}, uart: {}, i2c: {}, spi: {},
-    ble: {}, ir: {}, flow: {}, gps: {}, keypad: {}
-  };
+    /* ══════════════════════════════════════════════════════════
+       Almacén global de sensores — leído por getSensorValue()
+       en el sandbox vía native function.
+    ══════════════════════════════════════════════════════════ */
+    window._serialSensors = {
+      pins: {}, adc: {}, dhtTemp: {}, dhtHum: {},
+      touch: {}, ultrasonic: {}, encoder: {}, mpu: {},
+      ky023: {}, bmp: {}, bh1750: {}, tcs: {}, qmc: {},
+      rtc: {}, ow: {}, uart: {}, i2c: {}, spi: {},
+      ble: {}, ir: {}, flow: {}, gps: {}, keypad: {}
+    };
 
-  /* ── Acumulador de líneas seriales ── */
-  var _adcBuf = '';
-  var _ss = window._serialSensors;   /* alias corto */
+    /* ── Acumulador de líneas seriales ── */
+    var _adcBuf = '';
+    var _ss = window._serialSensors;   /* alias corto */
 
-  /* Patrones serial → _serialSensors
-     Cada ESP32 imprime una línea con el formato acordado.
-     El interceptor la parsea y guarda el valor. */
-  var _PATTERNS = [
-    /* Pixel canvas:  C:x,y  → responde rrggbb\n */
-    { re: /^C:(-?\d+),(-?\d+)$/, fn: function(m) {
-        var x=+m[1], y=+m[2], color='000000';
-        try {
-          var cv=document.getElementById('gameCanvas');
-          if(cv){ var d=cv.getContext('2d').getImageData(Math.max(0,x),Math.max(0,y),1,1).data;
-            color=[d[0],d[1],d[2]].map(function(v){return('0'+v.toString(16)).slice(-2);}).join(''); }
-        }catch(e){}
-        try{ var r=color+'\n';
-          if(typeof sendSerial==='function') sendSerial(r);
-          else if(typeof serialWriter!=='undefined'&&serialWriter)
-            serialWriter.write(new TextEncoder().encode(r));
-        }catch(e){}
-        return true;  /* consume — no mostrar en terminal */
-    }},
-    /* ADC genérico:  ADC:pin:valor  (ej: ADC:34:2048) */
-    { re: /^ADC:([\w]+):(\d+)$/, fn: function(m) {
-        _ss.adc[m[1]] = +m[2];
-        window._serialAdcValue = +m[2];   /* compat analog_sensor_read */
-        return true;
-    }},
-    /* GPIO digital:  PIN:num:0|1  (ej: PIN:13:1) */
-    { re: /^PIN:(\d+):([01])$/, fn: function(m) {
-        _ss.pins[m[1]] = +m[2]; return true;
-    }},
-    /* DHT:  TEMP:pin:valor  HUM:pin:valor */
-    { re: /^TEMP:([\w]+):([\d.-]+)$/, fn: function(m) {
-        _ss.dhtTemp[m[1]] = +m[2]; return true;
-    }},
-    { re: /^HUM:([\w]+):([\d.-]+)$/, fn: function(m) {
-        _ss.dhtHum[m[1]] = +m[2]; return true;
-    }},
-    /* Touch:  TOUCH:pin:valor */
-    { re: /^TOUCH:(\d+):(\d+)$/, fn: function(m) {
-        _ss.touch[m[1]] = +m[2]; return true;
-    }},
-    /* Ultrasonico:  US:name:valor_cm */
-    { re: /^US:([\w]+):([\d.]+)$/, fn: function(m) {
-        _ss.ultrasonic[m[1]] = +m[2]; return true;
-    }},
-    /* Encoder:  ENC:name:valor */
-    { re: /^ENC:([\w]+):(-?\d+)$/, fn: function(m) {
-        _ss.encoder[m[1]] = +m[2]; return true;
-    }},
-    /* MPU6050:  MPU:axis:valor  (axis= AX|AY|AZ|GX|GY|GZ|T) */
-    { re: /^MPU:([\w]+):([\d.-]+)$/, fn: function(m) {
-        _ss.mpu[m[1]] = +m[2]; return true;
-    }},
-    /* KY-023 / Joystick:  KY:name:X|Y|S:valor */
-    { re: /^KY:([\w]+):([XYS]):(-?\d+)$/, fn: function(m) {
-        _ss.ky023[m[1]+'_'+m[2]] = +m[3]; return true;
-    }},
-    /* BMP:  BMP:temp|pres|alt:valor */
-    { re: /^BMP:([\w]+):([\d.-]+)$/, fn: function(m) {
-        _ss.bmp[m[1]] = +m[2]; return true;
-    }},
-    /* BH1750:  LUX:valor */
-    { re: /^LUX:([\d.]+)$/, fn: function(m) {
-        _ss.bh1750['lux'] = +m[1]; return true;
-    }},
-    /* TCS34725:  TCS:r|g|b|c:valor */
-    { re: /^TCS:([\w]+):([\d]+)$/, fn: function(m) {
-        _ss.tcs[m[1]] = +m[2]; return true;
-    }},
-    /* QMC5883L:  QMC:x|y|z:valor */
-    { re: /^QMC:([xyz]):([\d.-]+)$/, fn: function(m) {
-        _ss.qmc[m[1]] = +m[2]; return true;
-    }},
-    /* RTC:  RTC:h|m|s|dt:valor */
-    { re: /^RTC:([\w]+):([\d:/-]+)$/, fn: function(m) {
-        _ss.rtc[m[1]] = m[2]; return true;
-    }},
-    /* KEYPAD:  KEY:tecla */
-    { re: /^KEY:([\w*#]+)$/, fn: function(m) {
-        _ss.keypad['key'] = m[1]; return true;
-    }},
-    /* Infrarojo:  IR:codigo_hex */
-    { re: /^IR:([\dA-Fa-f]+)$/, fn: function(m) {
-        _ss.ir['code'] = parseInt(m[1],16); return true;
-    }},
-    /* Flujo:  FLOW:rate|total:valor */
-    { re: /^FLOW:([\w]+):([\d.]+)$/, fn: function(m) {
-        _ss.flow[m[1]] = +m[2]; return true;
-    }},
-    /* GPS:  GPS:lat|lng|time:valor */
-    { re: /^GPS:([\w]+):([\d.:\-]+)$/, fn: function(m) {
-        _ss.gps[m[1]] = m[2]; return true;
-    }},
-    /* Número ADC legacy (compat lab3):  solo dígitos 0-1023 */
-    { re: /^(\d{1,4})$/, fn: function(m) {
-        var v=+m[1];
-        if(v>=0&&v<=1023){ window._serialAdcValue=v; return true; }
-        return false;
-    }},
-  ];
+    /* Patrones serial → _serialSensors
+       Cada ESP32 imprime una línea con el formato acordado.
+       El interceptor la parsea y guarda el valor. */
+    var _PATTERNS = [
+      /* Pixel canvas:  C:x,y  → responde rrggbb\n */
+      {
+        re: /^C:(-?\d+),(-?\d+)$/, fn: function (m) {
+          var x = +m[1], y = +m[2], color = '000000';
+          try {
+            var cv = document.getElementById('gameCanvas');
+            if (cv) {
+              var d = cv.getContext('2d').getImageData(Math.max(0, x), Math.max(0, y), 1, 1).data;
+              color = [d[0], d[1], d[2]].map(function (v) { return ('0' + v.toString(16)).slice(-2); }).join('');
+            }
+          } catch (e) { }
+          try {
+            var r = color + '\n';
+            if (typeof sendSerial === 'function') sendSerial(r);
+            else if (typeof serialWriter !== 'undefined' && serialWriter)
+              serialWriter.write(new TextEncoder().encode(r));
+          } catch (e) { }
+          return true;  /* consume — no mostrar en terminal */
+        }
+      },
+      /* ADC genérico:  ADC:pin:valor  (ej: ADC:34:2048) */
+      {
+        re: /^ADC:([\w]+):(\d+)$/, fn: function (m) {
+          _ss.adc[m[1]] = +m[2];
+          window._serialAdcValue = +m[2];   /* compat analog_sensor_read */
+          return true;
+        }
+      },
+      /* GPIO digital:  PIN:num:0|1  (ej: PIN:13:1) */
+      {
+        re: /^PIN:(\d+):([01])$/, fn: function (m) {
+          _ss.pins[m[1]] = +m[2]; return true;
+        }
+      },
+      /* DHT:  TEMP:pin:valor  HUM:pin:valor */
+      {
+        re: /^TEMP:([\w]+):([\d.-]+)$/, fn: function (m) {
+          _ss.dhtTemp[m[1]] = +m[2]; return true;
+        }
+      },
+      {
+        re: /^HUM:([\w]+):([\d.-]+)$/, fn: function (m) {
+          _ss.dhtHum[m[1]] = +m[2]; return true;
+        }
+      },
+      /* Touch:  TOUCH:pin:valor */
+      {
+        re: /^TOUCH:(\d+):(\d+)$/, fn: function (m) {
+          _ss.touch[m[1]] = +m[2]; return true;
+        }
+      },
+      /* Ultrasonico:  US:name:valor_cm */
+      {
+        re: /^US:([\w]+):([\d.]+)$/, fn: function (m) {
+          _ss.ultrasonic[m[1]] = +m[2]; return true;
+        }
+      },
+      /* Encoder:  ENC:name:valor */
+      {
+        re: /^ENC:([\w]+):(-?\d+)$/, fn: function (m) {
+          _ss.encoder[m[1]] = +m[2]; return true;
+        }
+      },
+      /* MPU6050:  MPU:axis:valor  (axis= AX|AY|AZ|GX|GY|GZ|T) */
+      {
+        re: /^MPU:([\w]+):([\d.-]+)$/, fn: function (m) {
+          _ss.mpu[m[1]] = +m[2]; return true;
+        }
+      },
+      /* KY-023 / Joystick:  KY:name:X|Y|S:valor */
+      {
+        re: /^KY:([\w]+):([XYS]):(-?\d+)$/, fn: function (m) {
+          _ss.ky023[m[1] + '_' + m[2]] = +m[3]; return true;
+        }
+      },
+      /* BMP:  BMP:temp|pres|alt:valor */
+      {
+        re: /^BMP:([\w]+):([\d.-]+)$/, fn: function (m) {
+          _ss.bmp[m[1]] = +m[2]; return true;
+        }
+      },
+      /* BH1750:  LUX:valor */
+      {
+        re: /^LUX:([\d.]+)$/, fn: function (m) {
+          _ss.bh1750['lux'] = +m[1]; return true;
+        }
+      },
+      /* TCS34725:  TCS:r|g|b|c:valor */
+      {
+        re: /^TCS:([\w]+):([\d]+)$/, fn: function (m) {
+          _ss.tcs[m[1]] = +m[2]; return true;
+        }
+      },
+      /* QMC5883L:  QMC:x|y|z:valor */
+      {
+        re: /^QMC:([xyz]):([\d.-]+)$/, fn: function (m) {
+          _ss.qmc[m[1]] = +m[2]; return true;
+        }
+      },
+      /* RTC:  RTC:h|m|s|dt:valor */
+      {
+        re: /^RTC:([\w]+):([\d:/-]+)$/, fn: function (m) {
+          _ss.rtc[m[1]] = m[2]; return true;
+        }
+      },
+      /* KEYPAD:  KEY:tecla */
+      {
+        re: /^KEY:([\w*#]+)$/, fn: function (m) {
+          _ss.keypad['key'] = m[1]; return true;
+        }
+      },
+      /* Infrarojo:  IR:codigo_hex */
+      {
+        re: /^IR:([\dA-Fa-f]+)$/, fn: function (m) {
+          _ss.ir['code'] = parseInt(m[1], 16); return true;
+        }
+      },
+      /* Flujo:  FLOW:rate|total:valor */
+      {
+        re: /^FLOW:([\w]+):([\d.]+)$/, fn: function (m) {
+          _ss.flow[m[1]] = +m[2]; return true;
+        }
+      },
+      /* GPS:  GPS:lat|lng|time:valor */
+      {
+        re: /^GPS:([\w]+):([\d.:\-]+)$/, fn: function (m) {
+          _ss.gps[m[1]] = m[2]; return true;
+        }
+      },
+      /* Número ADC legacy (compat lab3):  solo dígitos 0-1023 */
+      {
+        re: /^(\d{1,4})$/, fn: function (m) {
+          var v = +m[1];
+          if (v >= 0 && v <= 1023) { window._serialAdcValue = v; return true; }
+          return false;
+        }
+      },
+    ];
 
-  function _onSerialChunk(chunk) {
-    _adcBuf += chunk;
-    var parts = _adcBuf.split('\n');
-    _adcBuf   = parts.pop();
-    for (var i = 0; i < parts.length; i++) {
-      var line = parts[i].replace(/\r/g, '').trim();
-      if (!line) continue;
-      for (var p = 0; p < _PATTERNS.length; p++) {
-        var m = line.match(_PATTERNS[p].re);
-        if (m) { _PATTERNS[p].fn(m); break; }
+    function _onSerialChunk(chunk) {
+      _adcBuf += chunk;
+      var parts = _adcBuf.split('\n');
+      _adcBuf = parts.pop();
+      for (var i = 0; i < parts.length; i++) {
+        var line = parts[i].replace(/\r/g, '').trim();
+        if (!line) continue;
+        for (var p = 0; p < _PATTERNS.length; p++) {
+          var m = line.match(_PATTERNS[p].re);
+          if (m) { _PATTERNS[p].fn(m); break; }
+        }
       }
     }
-  }
 
-  /* ── Reemplazar _rawReplHook con getter/setter protegido ── */
-  var _innerHook = null;
+    /* ── Reemplazar _rawReplHook con getter/setter protegido ── */
+    var _innerHook = null;
 
-  Object.defineProperty(window, '_rawReplHook', {
-    configurable: false,
-    enumerable:   true,
-    get: function () { return _innerHook; },
-    set: function (fn) {
-      /* Siempre envolvemos el nuevo valor para que _onSerialChunk
-         se llame primero, luego la función que main.js quiera asignar. */
-      if (fn === null || fn === undefined) {
-        /* main.js limpia el hook → dejamos solo nuestro capturador */
-        _innerHook = function(chunk) { _onSerialChunk(chunk); };
-        _innerHook._si = true;
-        _innerHook._isRawReplHook = false;
-      } else if (fn._si) {
-        /* Es nuestro propio hook — no envolver de nuevo */
-        _innerHook = fn;
-      } else {
-        /* Es un hook de main.js (paste mode, raw REPL, etc.)
-           Lo encadenamos: primero nuestro capturador, luego el suyo. */
-        _innerHook = function(chunk) {
-          _onSerialChunk(chunk);
-          fn(chunk);
-        };
-        _innerHook._si = true;
-        _innerHook._isRawReplHook = true;
+    Object.defineProperty(window, '_rawReplHook', {
+      configurable: false,
+      enumerable: true,
+      get: function () { return _innerHook; },
+      set: function (fn) {
+        /* Siempre envolvemos el nuevo valor para que _onSerialChunk
+           se llame primero, luego la función que main.js quiera asignar. */
+        if (fn === null || fn === undefined) {
+          /* main.js limpia el hook → dejamos solo nuestro capturador */
+          _innerHook = function (chunk) { _onSerialChunk(chunk); };
+          _innerHook._si = true;
+          _innerHook._isRawReplHook = false;
+        } else if (fn._si) {
+          /* Es nuestro propio hook — no envolver de nuevo */
+          _innerHook = fn;
+        } else {
+          /* Es un hook de main.js (paste mode, raw REPL, etc.)
+             Lo encadenamos: primero nuestro capturador, luego el suyo. */
+          _innerHook = function (chunk) {
+            _onSerialChunk(chunk);
+            fn(chunk);
+          };
+          _innerHook._si = true;
+          _innerHook._isRawReplHook = true;
+        }
       }
-    }
-  });
+    });
 
-  /* Activar el hook inicial */
-  window._rawReplHook = null;   /* dispara el setter → instala el wrapper */
+    /* Activar el hook inicial */
+    window._rawReplHook = null;   /* dispara el setter → instala el wrapper */
 
-})();
+  })();
 
 </script>

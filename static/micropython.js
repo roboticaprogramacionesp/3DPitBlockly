@@ -152,6 +152,15 @@ Blockly.Python["yield"] = function (block) {
   return [`yield ${val}`, Blockly.Python.ORDER_NONE];
 };
 
+Blockly.Python["exec_globals"] = function (block) {
+  let exprToExec;
+
+  const file = block.getFieldValue("FILENAME").replace(/'/g, "\\'");
+  exprToExec = "open('" + file + "').read()";
+
+  return `exec(${exprToExec}, globals())\n`;
+};
+
 Blockly.Python["file_open"] = function (block) {
   const file = block.getFieldValue("FILENAME").replace(/'/g, "\\'");
   let mode = block.getFieldValue("MODE");
@@ -895,7 +904,7 @@ Blockly.Python["time_sleep"] = function (block) {
 
     const merged = [...new Set([...current, ...imports])];
 
-    Blockly.Python.definitions_["import_time"] =`from time import ${merged.join(", ")}`;
+    Blockly.Python.definitions_["import_time"] = `from time import ${merged.join(", ")}`;
   }
 
   return code;
@@ -1059,6 +1068,12 @@ Blockly.Python["set_led"] = function (block) {
   const code = `${name}.value(${st})\n`;
   return code;
 };
+
+Blockly.Python["toggle_led"] = function (block) {
+  const name = block.getFieldValue("NAME");
+  const code = `${name}.value(not ${name}.value())\n`;
+  return code;
+}
 
 /* ======================== LED BICOLOR RG ======================== */
 Blockly.Python["rg_init"] = function (block) {
@@ -1922,8 +1937,8 @@ Blockly.Python["i2c_read"] = function (block) {
 //    Se agrega `block.getFieldValue("ID")` que faltaba.
 Blockly.Python["spi_init"] = function (block) {
   const name = block.getFieldValue("NAME");
-  const id   = block.getFieldValue("ID");   // ← faltaba esta línea
-  const sck  = block.getFieldValue("SCK");
+  const id = block.getFieldValue("ID");   // ← faltaba esta línea
+  const sck = block.getFieldValue("SCK");
   const mosi = block.getFieldValue("MOSI");
   const miso = block.getFieldValue("MISO");
   const baud = block.getFieldValue("BAUD");
@@ -2144,7 +2159,7 @@ Blockly.Python["wifi_define_connect"] = function (block) {
   Blockly.Python.definitions_["wifi_imports"] =
     "import network\nimport time";
 
-    const code =
+  const code =
     "def do_connect():\n" +
     "    wlan = network.WLAN(network.STA_IF)\n" +
     "    wlan.active(True)\n" +
@@ -3686,7 +3701,7 @@ Blockly.Python["tft_polygon_center"] = function (block) {
   return [code, Blockly.Python.ORDER_ATOMIC];
 };
 
-Blockly.Python["shield_set_motor"] = function(block) {
+Blockly.Python["shield_set_motor"] = function (block) {
   const pinA = block.getFieldValue("PINA");
   const pinSpeedA = block.getFieldValue("PINPWMA");
   const pinB = block.getFieldValue("PINB");
@@ -3705,7 +3720,7 @@ motorB_pwm = PWM(Pin(${pinSpeedB}), freq=2000, duty=0)
 `;
 };
 
-Blockly.Python["set_speed_motorA"] = function(block) {
+Blockly.Python["set_speed_motorA"] = function (block) {
   const dir = block.getFieldValue("DIR");
   const speed = block.getFieldValue("SPEED");
 
@@ -3715,7 +3730,7 @@ motorA_pwm.duty(${speed})
 `;
 };
 
-Blockly.Python["set_speed_motorB"] = function(block) {
+Blockly.Python["set_speed_motorB"] = function (block) {
   const dir = block.getFieldValue("DIR");
   const speed = block.getFieldValue("SPEED");
 
@@ -4690,10 +4705,10 @@ Blockly.Python["yf201_reset"] = function (block) {
 
 // Configuración del AP (genera las constantes globales)
 Blockly.Python["wifi_ap_config"] = function (block) {
-  const ssid     = block.getFieldValue("SSID")     || "ESP32_AP";
+  const ssid = block.getFieldValue("SSID") || "ESP32_AP";
   const password = block.getFieldValue("PASSWORD") || "12345678";
-  const ip       = block.getFieldValue("IP")       || "192.168.0.1";
-  const subnet   = block.getFieldValue("SUBNET")   || "255.255.255.0";
+  const ip = block.getFieldValue("IP") || "192.168.0.1";
+  const subnet = block.getFieldValue("SUBNET") || "255.255.255.0";
 
   Blockly.Python.definitions_["import_network"] = "import network";
 
@@ -4726,14 +4741,14 @@ Blockly.Python["portal_set_page"] = function (block) {
 
 // Iniciar portal cautivo completo
 Blockly.Python["portal_run"] = function (_block) {
-  Blockly.Python.definitions_["import_network"]  = "import network";
-  Blockly.Python.definitions_["import_socket"]   = "import socket";
-  Blockly.Python.definitions_["import_gc"]       = "import gc";
-  Blockly.Python.definitions_["import_asyncio"]  = "import uasyncio as asyncio";
+  Blockly.Python.definitions_["import_network"] = "import network";
+  Blockly.Python.definitions_["import_socket"] = "import socket";
+  Blockly.Python.definitions_["import_gc"] = "import gc";
+  Blockly.Python.definitions_["import_asyncio"] = "import uasyncio as asyncio";
 
   // Inyecta DNSQuery + run_dns_server + handle_http + portal_main como bloque fijo
   Blockly.Python.definitions_["portal_core"] =
-`class DNSQuery:
+    `class DNSQuery:
     def __init__(self, data):
         self.data = data
     def response(self, ip):
@@ -4872,14 +4887,14 @@ const _gamePy = (msg) => `# ${msg}\n`;
 
 /* Pantalla */
 Blockly.Python["game_start"] = function (block) {
-  const w = Blockly.Python.valueToCode(block, "WIDTH",  Blockly.Python.ORDER_NONE) || "480";
+  const w = Blockly.Python.valueToCode(block, "WIDTH", Blockly.Python.ORDER_NONE) || "480";
   const h = Blockly.Python.valueToCode(block, "HEIGHT", Blockly.Python.ORDER_NONE) || "360";
   // Declara variables globales de posición del sprite
   //Blockly.Python.definitions_['sprite_pos'] ='sprite_x = 240\nsprite_y = 180\n';
   return `# [Juego] iniciar canvas ${w}x${h}\n`;
 };
 
-Blockly.Python["select_imgs"] = function(block) {
+Blockly.Python["select_imgs"] = function (block) {
   const img = block.getFieldValue("IMG");
   return ["'" + img + "'", Blockly.Python.ORDER_ATOMIC];
 };
@@ -4892,7 +4907,7 @@ Blockly.Python["game_set_bg"] = function (block) {
   const c = Blockly.Python.valueToCode(block, "COLOR", Blockly.Python.ORDER_NONE) || "(0,0,0)";
   return `# [Juego] fondo = ${c}\n`;
 };
-Blockly.Python["game_clear"]        = function () { return _gameComment; };
+Blockly.Python["game_clear"] = function () { return _gameComment; };
 Blockly.Python["game_frame"] = function () {
   return "# [Juego] siguiente frame\n";
 };
@@ -4904,10 +4919,10 @@ Blockly.Python["sprite_load_image"] = function (block) {
 };
 
 Blockly.Python["sprite_create"] = function (block) {
-  const x   = Blockly.Python.valueToCode(block, "X",   Blockly.Python.ORDER_NONE) || "240";
-  const y   = Blockly.Python.valueToCode(block, "Y",   Blockly.Python.ORDER_NONE) || "180";
-  const w   = Blockly.Python.valueToCode(block, "W",   Blockly.Python.ORDER_NONE) || "48";
-  const h   = Blockly.Python.valueToCode(block, "H",   Blockly.Python.ORDER_NONE) || "48";
+  const x = Blockly.Python.valueToCode(block, "X", Blockly.Python.ORDER_NONE) || "240";
+  const y = Blockly.Python.valueToCode(block, "Y", Blockly.Python.ORDER_NONE) || "180";
+  const w = Blockly.Python.valueToCode(block, "W", Blockly.Python.ORDER_NONE) || "48";
+  const h = Blockly.Python.valueToCode(block, "H", Blockly.Python.ORDER_NONE) || "48";
   const img = Blockly.Python.valueToCode(block, "IMG", Blockly.Python.ORDER_NONE) || "'car.png'";
   //Blockly.Python.definitions_['sprite_pos'] = `sprite_x = ${x}\nsprite_y = ${y}\n`;
   return `sprite_x = ${x}\nsprite_y = ${y}\n# [Juego] tamaño ${w}x${h} img=${img}\n`;
@@ -4933,9 +4948,9 @@ Blockly.Python["sprite_set_flip"] = function (block) {
   const flip = block.getFieldValue("FLIP");
   return `# [Juego] flip = ${flip}\n`;
 };
-Blockly.Python["sprite_get_x"]  = function () { return ["sprite_x", Blockly.Python.ORDER_ATOMIC]; };
-Blockly.Python["sprite_get_y"]  = function () { return ["sprite_y", Blockly.Python.ORDER_ATOMIC]; };
-Blockly.Python["sprite_draw"]   = function () { return _gameComment; };
+Blockly.Python["sprite_get_x"] = function () { return ["sprite_x", Blockly.Python.ORDER_ATOMIC]; };
+Blockly.Python["sprite_get_y"] = function () { return ["sprite_y", Blockly.Python.ORDER_ATOMIC]; };
+Blockly.Python["sprite_draw"] = function () { return _gameComment; };
 
 /* ═══════════════════════════════════════════════════════
    HELPERS DE COMUNICACIÓN SERIAL CON EL NAVEGADOR
@@ -4947,7 +4962,7 @@ Blockly.Python["sprite_draw"]   = function () { return _gameComment; };
 
 /* Helper compartido — se inyecta una sola vez aunque se usen los 3 bloques */
 const _SERIAL_HELPER =
-`import sys, select as _sel
+  `import sys, select as _sel
 
 # ── Teclado ──────────────────────────────────────────
 _last_key = ''
@@ -4994,9 +5009,15 @@ Blockly.Python["key_is_pressed"] = function (block) {
 
 /* ── Ratón — stubs Python (solo funcionan en la animación) ── */
 Blockly.Python["mouse_clicked"] = function () { return ["False", Blockly.Python.ORDER_ATOMIC]; };
-Blockly.Python["mouse_down"]    = function () { return ["False", Blockly.Python.ORDER_ATOMIC]; };
-Blockly.Python["mouse_x"]       = function () { return ["0",     Blockly.Python.ORDER_ATOMIC]; };
-Blockly.Python["mouse_y"]       = function () { return ["0",     Blockly.Python.ORDER_ATOMIC]; };
+Blockly.Python["mouse_down"] = function () { return ["False", Blockly.Python.ORDER_ATOMIC]; };
+Blockly.Python["mouse_left_clicked"] = function () { return ["False", Blockly.Python.ORDER_ATOMIC]; };
+Blockly.Python["mouse_left_down"] = function () { return ["False", Blockly.Python.ORDER_ATOMIC]; };
+Blockly.Python["mouse_right_clicked"] = function () { return ["False", Blockly.Python.ORDER_ATOMIC]; };
+Blockly.Python["mouse_right_down"] = function () { return ["False", Blockly.Python.ORDER_ATOMIC]; };
+Blockly.Python["mouse_wheel_up"] = function () { return ["False", Blockly.Python.ORDER_ATOMIC]; };
+Blockly.Python["mouse_wheel_down"] = function () { return ["False", Blockly.Python.ORDER_ATOMIC]; };
+Blockly.Python["mouse_x"] = function () { return ["0", Blockly.Python.ORDER_ATOMIC]; };
+Blockly.Python["mouse_y"] = function () { return ["0", Blockly.Python.ORDER_ATOMIC]; };
 
 /* ── Movimiento por pasos / giro — stubs Python ── */
 Blockly.Python["sprite_move_steps"] = function (block) {
@@ -5040,7 +5061,7 @@ Blockly.Python["pixel_channel"] = function (block) {
   return ["0", Blockly.Python.ORDER_ATOMIC];
 };
 
-/* ── Mostrar texto — en la animación se muestra sobre el canvas, aquí solo lo imprime en consola ── */ 
+/* ── Mostrar texto — en la animación se muestra sobre el canvas, aquí solo lo imprime en consola ── */
 Blockly.Python["game_show_text"] = function (block) {
   const txt = Blockly.Python.valueToCode(block, "TEXT", Blockly.Python.ORDER_NONE) || "''";
   /* str() envuelve cualquier valor (tupla, número, string) para evitar TypeError */
@@ -5048,20 +5069,20 @@ Blockly.Python["game_show_text"] = function (block) {
 };
 
 /* ── Lápiz — stubs Python (solo funcionan en la animación) ── */
-Blockly.Python["pen_down"]      = function () { return "# [Juego] bajar lápiz\n"; };
-Blockly.Python["pen_up"]        = function () { return "# [Juego] subir lápiz\n"; };
-Blockly.Python["pen_move_to"]   = function () { return "# [Juego] mover lápiz\n"; };
+Blockly.Python["pen_down"] = function () { return "# [Juego] bajar lápiz\n"; };
+Blockly.Python["pen_up"] = function () { return "# [Juego] subir lápiz\n"; };
+Blockly.Python["pen_move_to"] = function () { return "# [Juego] mover lápiz\n"; };
 
 Blockly.Python["pen_set_color"] = function (block) {
   const c = Blockly.Python.valueToCode(block, "COLOR", Blockly.Python.ORDER_NONE) || "(255,0,0)";
   return `# [Juego] color lápiz = ${c}\n`;
 };
-Blockly.Python["pen_set_size"]  = function (block) {
+Blockly.Python["pen_set_size"] = function (block) {
   const s = Blockly.Python.valueToCode(block, "SIZE", Blockly.Python.ORDER_NONE) || "3";
   return `# [Juego] tamaño lápiz = ${s}\n`;
 };
-Blockly.Python["pen_stamp"]     = function () { return "# [Juego] sellar personaje\n"; };
-Blockly.Python["pen_clear"]     = function () { return "# [Juego] borrar trazos\n"; };
+Blockly.Python["pen_stamp"] = function () { return "# [Juego] sellar personaje\n"; };
+Blockly.Python["pen_clear"] = function () { return "# [Juego] borrar trazos\n"; };
 
 /* Formas */
 Blockly.Python["game_draw_rect"] = function (block) {
@@ -5122,13 +5143,57 @@ Blockly.Python["game_draw_line"] = function (block) {
   return `# [Juego] línea (${x1},${y1}) a (${x2},${y2})\n`;
 };
 
+Blockly.Python["game_draw_image"] = function (block) {
+  const x = Blockly.Python.valueToCode(block, "X", Blockly.Python.ORDER_NONE) || "0";
+  const y = Blockly.Python.valueToCode(block, "Y", Blockly.Python.ORDER_NONE) || "0";
+  const image = Blockly.Python.valueToCode(block, "IMAGE", Blockly.Python.ORDER_NONE) || "None";
+  return `# [Juego] imagen (${x},${y}) ${image}\n`;
+};
+
+Blockly.Python["game_draw_star"] = function (block) {
+  const x = Blockly.Python.valueToCode(block, "X", Blockly.Python.ORDER_NONE) || "0";
+  const y = Blockly.Python.valueToCode(block, "Y", Blockly.Python.ORDER_NONE) || "0";
+  const size = Blockly.Python.valueToCode(block, "SIZE", Blockly.Python.ORDER_NONE) || "20";
+  return `# [Juego] estrella (${x},${y}) tamaño=${size}\n`;
+};
+
+Blockly.Python["game_draw_ellipse"] = function (block) {
+  const x = Blockly.Python.valueToCode(block, "X", Blockly.Python.ORDER_NONE) || "0";
+  const y = Blockly.Python.valueToCode(block, "Y", Blockly.Python.ORDER_NONE) || "0";
+  const width = Blockly.Python.valueToCode(block, "WIDTH", Blockly.Python.ORDER_NONE) || "40";
+  const height = Blockly.Python.valueToCode(block, "HEIGHT", Blockly.Python.ORDER_NONE) || "40";
+  return `# [Juego] elipse (${x},${y}) ancho=${width}, alto=${height}\n`;
+};
+
+Blockly.Python["game_draw_quad"] = function (block) {
+  const x1 = Blockly.Python.valueToCode(block, "X1", Blockly.Python.ORDER_NONE) || "0";
+  const y1 = Blockly.Python.valueToCode(block, "Y1", Blockly.Python.ORDER_NONE) || "0";
+  const x2 = Blockly.Python.valueToCode(block, "X2", Blockly.Python.ORDER_NONE) || "40";
+  const y2 =Blockly.Python.valueToCode(block, "Y2",Blockly.Python.ORDER_NONE) || "40";
+  const x3 =Blockly.Python.valueToCode(block, "X3",Blockly.Python.ORDER_NONE) ||"80";
+  const y3 =Blockly.Python.valueToCode(block,("Y3"),Blockly.Python.ORDER.NONE)||"40";
+  const x4=Blockly.Python.valueToCode(block,"X4",Blockly.Python.ORDER.NONE)||"120"
+  const y4=Blockly.Python.valueToCode(block,"Y4",Blockly.Python.ORDER.NONE)||"80"
+ return `# [Juego] cuadrilátero (${x1},${y1})-(${x2},${y2})-(${x3},${y3})-(${x4},${y4})\n`;
+};
+
+Blockly.Python["game_draw_regular_polygon"] = function (block) {
+  const x = BlockchainPython.valueToCode(block,("X"),BlockchainPython.ORDER.NONE)||"0"
+  const y = BlockchainPython.valueToCode(block,("Y"),BlockchainPython.ORDER.NONE)||"0"
+  const radius=BlockchainPython.valueToCode(block,"RADIUS",BlockchainPython.ORDER.NONE)||"20"
+  const sides=BlockchainPython.valueToCode(block,"SIDES",BlockchainPython.ORDER.NONE)||"5"
+  return `# [Juego] polígono regular (${x},${y}) radio=${radius} lados=${sides}\n`;
+}
+
 Blockly.Python["game_random_int"] = function (block) {
   const min = Blockly.Python.valueToCode(block, "MIN", Blockly.Python.ORDER_NONE) || "0";
   const max = Blockly.Python.valueToCode(block, "MAX", Blockly.Python.ORDER_NONE) || "100";
   return [`# [Juego] random.randint(${min}, ${max})`, Blockly.Python.ORDER_FUNCTION_CALL];
 };
 
-Blockly.Python["game_random_float"] = function () { return ["0.0", Blockly.Python.ORDER_ATOMIC]; }; 
+Blockly.Python["game_random_float"] = function () { 
+  return [`# [Juego] random.random()`, Blockly.Python.ORDER_FUNCTION_CALL];
+};
 
 Blockly.Python["game_distance"] = function (block) {
   const x1 = Blockly.Python.valueToCode(block, "X1", Blockly.Python.ORDER_NONE) || "0";
@@ -5142,4 +5207,23 @@ Blockly.Python["game_play_tone"] = function (block) {
   const frequency = Blockly.Python.valueToCode(block, "FREQUENCY", Blockly.Python.ORDER_NONE) || "440";
   const duration = Blockly.Python.valueToCode(block, "DURATION", Blockly.Python.ORDER_NONE) || "500";
   return `# [Juego] reproducir tono ${frequency} Hz durante ${duration} ms\n`;
+};
+
+Blockly.Python["game_play_melody"] = function (block) {
+  const melody = Blockly.Python.valueToCode(block, "MELODY", Blockly.Python.ORDER_NONE) || "[]";
+  return `# [Juego] reproducir melodía ${melody}\n`;
+};
+
+Blockly.Python["game_stop_sound"] = function () {
+  return `# [Juego] detener sonido\n`;
+};
+
+Blockly.Python["game_wait"] = function (block) {
+  const duration = Blockly.Python.valueToCode(block, "DURATION", Blockly.Python.ORDER_NONE) || "1000";
+  return `# [Juego] esperar ${duration} ms\n`;
+};
+
+Blockly.Python["game_wait_frames"] = function (block) {
+  const frames = Blockly.Python.valueToCode(block, "FRAMES", Blockly.Python.ORDER_NONE) || "30";
+  return `# [Juego] esperar ${frames} cuadros\n`;
 };
