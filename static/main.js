@@ -88,7 +88,7 @@ function blurBlockly() {
   try {
     const svg = Code.workspace?.getParentSvg?.();
     if (svg) svg.blur();
-  } catch (e) {}
+  } catch (e) { }
 }
 
 function updateCodeFromBlockly() {
@@ -599,25 +599,25 @@ async function disconnectSerial() {
     if (serialReader) {
       try {
         await serialReader.cancel();
-      } catch {}
+      } catch { }
       try {
         serialReader.releaseLock();
-      } catch {}
+      } catch { }
       serialReader = null;
     }
     if (serialWriter) {
       try {
         await serialWriter.close();
-      } catch {}
+      } catch { }
       try {
         serialWriter.releaseLock();
-      } catch {}
+      } catch { }
       serialWriter = null;
     }
     if (serialPort?.readable) {
       try {
         await serialPort.close();
-      } catch {}
+      } catch { }
     }
     serialPort = null;
 
@@ -716,9 +716,9 @@ function connectWifiSerial(host, password) {
         ws.send(text);
       };
       wifiSocket.close = async () => {
-        try { ws.close(); } catch {}
+        try { ws.close(); } catch { }
       };
-      wifiSocket.releaseLock = () => {};
+      wifiSocket.releaseLock = () => { };
 
       ws.onmessage = (event) => {
         let chunk = "";
@@ -1063,8 +1063,13 @@ async function sendCodeToDevice() {
     if (typeof SerialMonitor !== "undefined") SerialMonitor.notifySending(code);
 
     const bytes = encoder.encode(code);
+    const isWifi = serialWriter === wifiSocket;
 
-    if (bytes.length < 256) {
+    console.log("bytes a enviar", bytes.length);
+
+    // En WiFi/WebREPL SIEMPRE usar Paste Mode.
+    // En USB usar Paste Mode para códigos pequeños.
+    if (isWifi || bytes.length < 256) {
       // ── Paste mode ────────────────────────────────────────────
       // El protocolo MicroPython paste mode es:
       //   Ctrl+C x2  → interrumpir
@@ -1127,7 +1132,15 @@ async function sendCodeToDevice() {
       // 3. Enviar TODO el código de una sola vez (sin \r\n extra)
       //    El paste mode acepta el bloque completo hasta Ctrl+D
       const normalized = code.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
-      await sendSerial(normalized);
+      //await sendSerial(normalized);
+      // Enviar en bloques para evitar saturar WebREPL
+      for (let i = 0; i < normalized.length; i += 128) {
+        await sendSerial(normalized.slice(i, i + 128));
+
+        if (isWifi) {
+          await sleep(15);
+        }
+      }
       if (isWifi) await sleep(50); // margen para que WebREPL procese el bloque
 
       // 4. Ctrl+D → ejecutar; a partir de aquí buscamos el ">>>" real
@@ -1141,10 +1154,17 @@ async function sendCodeToDevice() {
       window._rawReplHook = null;
       await sleep(150 * d); // margen para que el ESP termine de imprimir
     } else {
-      // Raw REPL — sin límite de tamaño, con progreso
+      // USB -> Raw REPL
       const ok = await sendViaRawRepl(code);
-      if (!ok)
-        term.writeln("\r\n⚠ No se pudo entrar en raw REPL. Reintenta.\r\n");
+
+      if (!ok) {
+        term.writeln(
+          "\r\n⚠ No se pudo entrar en raw REPL. Intentando Paste Mode...\r\n",
+        );
+
+        // Fallback automático
+        await sendViaPasteMode(code);
+      }
     }
     return true;
   } finally {
