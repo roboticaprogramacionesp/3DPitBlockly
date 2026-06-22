@@ -8,6 +8,22 @@
   <link rel="icon" href="static/3DPit.ico" />
   <!-- icons3dpit.svg se carga bajo demanda, sin preload para evitar warning -->
 
+  <!-- ══════════════════════════════════════════════
+     AGREGAR ESTO EN EL <head> DE TU index.html
+     (reemplaza o complementa el <link rel="icon"> existente)
+     ══════════════════════════════════════════════ -->
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="/static/pwa-manifest.json" />
+
+  <!-- Color de barra en Android -->
+  <meta name="theme-color" content="#3454d1" />
+
+  <!-- iOS: comportamiento de app instalada -->
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="3DPit Blocks" />
+
   <link rel="stylesheet" href="static/css-tutorial.css" />
   <link rel="stylesheet" href="static/code-tutor.css" />
   <link rel="stylesheet" href="static/codeMirror/codemirror.css" />
@@ -21,7 +37,7 @@
   <link rel="stylesheet" href="static/tutorial-steps.css" />
   <link rel="stylesheet" href="static/serial-monitor.css" />
   <link rel="stylesheet" href="static/viewcode.css" />
-  
+
   <style>
     /* BLOQUE EN EJECUCIÓN */
     .blocklyHighlight>.blocklyPath {
@@ -533,6 +549,19 @@
   </style>
 
 </head>
+
+<!-- ══════════════════════════════════════════════
+     AGREGAR ESTO JUSTO ANTES DEL </body> DE TU index.html
+     ══════════════════════════════════════════════ -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(reg => console.log('[PWA] Service Worker registrado:', reg.scope))
+        .catch(err => console.warn('[PWA] Error al registrar SW:', err));
+    });
+  }
+</script>
 
 <body>
 
@@ -4007,7 +4036,7 @@
 
   <script src="static/serial-monitor.js"></script>
 
-  
+
   <!-- ── Custom Tutorial Dropdown logic ── -->
   <script>
     (function () {
