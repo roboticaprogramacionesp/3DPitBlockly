@@ -23,5 +23,5 @@ Desktop.ini
 
 # Archivos
 app.py
-app.spec
+*.spec
 run.py
