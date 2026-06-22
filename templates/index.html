@@ -737,7 +737,7 @@
 
             <!-- Barra de herramientas del editor -->
             <div id="codeBar">
-              <input id="fileNameInput" placeholder="test.py" />
+              <input id="fileNameInput" name="fileNameInput" placeholder="test.py" autocomplete="off" />
               <button id="btnUploadCode" title="Subir archivo a ESP32">
                 <span class="icon-btn icon-download"></span>
               </button>
@@ -851,9 +851,9 @@
 
         <!-- ── Juego ── -->
         <sep></sep>
-        <label text="─── 🎮 Juego ───"></label>
+        <label role="presentation" text="─── 🎮 Juego ───"></label>
 
-        <label text="▸ Pantalla"></label>
+        <label role="presentation" text="▸ Pantalla"></label>
         <block type="game_start">
           <value name="WIDTH">
             <shadow type="math_number">
@@ -891,7 +891,7 @@
         <block type="game_frame"></block>
 
         <sep></sep>
-        <label text="── Ejemplo completo ──"></label>
+        <label role="presentation"text="── Ejemplo completo ──"></label>
         <block type="runstart">
           <next>
             <block type="game_start">
@@ -982,7 +982,7 @@
           </next>
         </block>
 
-        <label text="▸ Personaje / Sprite"></label>
+        <label role="presentation" text="▸ Personaje / Sprite"></label>
         <block type="sprite_load_image">
           <value name="FILE">
             <shadow type="text">
@@ -1054,12 +1054,12 @@
         <block type="sprite_get_y"></block>
         <block type="sprite_draw"></block>
 
-        <label text="▸ Teclado"></label>
+        <label role="presentation" text="▸ Teclado"></label>
         <block type="key_is_pressed">
           <field name="KEY">ArrowUp</field>
         </block>
 
-        <label text="▸ Ratón"></label>
+        <label role="presentation" text="▸ Ratón"></label>
         <block type="mouse_clicked"></block>
         <block type="mouse_left_clicked"></block>
         <block type="mouse_left_down"></block>
@@ -1071,7 +1071,7 @@
         <block type="mouse_x"></block>
         <block type="mouse_y"></block>
 
-        <label text="▸ Movimiento por pasos"></label>
+        <label role="presentation" text="▸ Movimiento por pasos"></label>
         <block type="sprite_move_steps">
           <value name="STEPS">
             <shadow type="math_number">
@@ -1102,7 +1102,7 @@
           </value>
         </block>
 
-        <label text="▸ Colisiones / Colores"></label>
+        <label role="presentation" text="▸ Colisiones / Colores"></label>
         <block type="touching_color">
           <value name="COLOR">
             <shadow type="color_picker">
@@ -1136,7 +1136,7 @@
           </value>
         </block>
 
-        <label text="▸ Texto en pantalla"></label>
+        <label role="presentation" text="▸ Texto en pantalla"></label>
         <block type="game_show_text">
           <value name="TEXT">
             <shadow type="text">
@@ -1165,7 +1165,7 @@
           </value>
         </block>
 
-        <label text="▸ Lápiz / Pintar"></label>
+        <label role="presentation" text="▸ Lápiz / Pintar"></label>
         <block type="pen_down"></block>
         <block type="pen_up"></block>
         <block type="pen_move_to">
@@ -1197,7 +1197,7 @@
         <block type="pen_stamp"></block>
         <block type="pen_clear"></block>
 
-        <label text="▸ Obstáculos / Formas"></label>
+        <label role="presentation" text="▸ Obstáculos / Formas"></label>
         <block type="game_draw_rect">
           <value name="X">
             <shadow type="math_number">
@@ -1625,7 +1625,7 @@
           </value>
         </block>
 
-        <label text="▸ Aleatorio / Matemáticas"></label>
+        <label role="presentation" text="▸ Aleatorio / Matemáticas"></label>
         <block type="game_random_int">
           <value name="MIN">
             <shadow type="math_number">
@@ -1673,7 +1673,7 @@
           </value>
         </block>
 
-        <label text="▸ Sonido"></label>
+        <label role="presentation" text="▸ Sonido"></label>
         <block type="game_play_tone">
           <value name="FREQ">
             <shadow type="math_number">
@@ -1700,7 +1700,7 @@
         </block>
         <block type="game_stop_sound"></block>
 
-        <label text="▸ Espera"></label>
+        <label role="presentation" text="▸ Espera"></label>
         <block type="game_wait">
           <value name="SECONDS">
             <shadow type="math_number">
@@ -2051,7 +2051,7 @@
         </block>
         <block type="file_read"></block>
         <block type="file_close"></block>
-        <label text="(Craer / Eliminar) (Archivos/Folder)"></label>
+        <label role="presentation" text="(Craer / Eliminar) (Archivos/Folder)"></label>
         <block type="create_folder"></block>
         <block type="delete_file"></block>
         <block type="listdir"> </block>

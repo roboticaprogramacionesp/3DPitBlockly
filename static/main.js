@@ -652,7 +652,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const saved = JSON.parse(localStorage.getItem("esp32_wifi") || "{}");
     const host = prompt(
       "IP del ESP32 (la que imprimió 'WebREPL server started on http://...'):",
-      saved.host || "192.168.0.113"
+      saved.host || "192.168.0.1"
     );
     if (!host) return;
     const password = prompt("Contraseña WebREPL:", saved.password || "blockly1");
