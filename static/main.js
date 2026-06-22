@@ -339,55 +339,90 @@ document.getElementById("btnNew").addEventListener("click", async function () {
 // GUARDAR ARCHIVO (web + desktop)
 // ─────────────────────────────────────────────────────────────
 async function saveFileAuto(content, fileName = "") {
+  // ── Detectar tipo y extensión ──
+  let extension = "txt",
+    mimeType = "text/plain",
+    isBase64 = false;
+
+  if (typeof content === "string" && content.startsWith("data:image/png")) {
+    extension = "png";
+    mimeType = "image/png";
+    isBase64 = true;
+  } else {
+    const ext = fileName.split(".").pop().toLowerCase();
+    if (ext === "xml") {
+      extension = "xml";
+      mimeType = "text/xml";
+    } else if (ext === "py") {
+      extension = "py";
+      mimeType = "text/x-python";
+    } else if (ext === "json") {
+      extension = "json";
+      mimeType = "application/json";
+    }
+    if (extension === "txt" && content.trim().startsWith("<")) {
+      extension = "xml";
+      mimeType = "text/xml";
+    }
+  }
+
+  const suggestedName = fileName?.includes(".")
+    ? fileName
+    : `archivo.${extension}`;
+
+  // ── Construir el Blob ──
+  let blob;
+  if (isBase64) {
+    const binary = atob(content.split(",")[1]);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    blob = new Blob([bytes], { type: mimeType });
+  } else {
+    blob = new Blob([content], { type: mimeType });
+  }
+
+  // ── Guardar: File System Access API (Chrome desktop) o descarga clásica (móvil/Safari) ──
+  if (typeof window.showSaveFilePicker === "function") {
+    // Chrome/Edge desktop — el usuario elige la ubicación
+    try {
+      const handle = await window.showSaveFilePicker({
+        suggestedName,
+        types: [
+          {
+            description: `Archivo ${extension.toUpperCase()}`,
+            accept: { [mimeType]: [`.${extension}`] },
+          },
+        ],
+      });
+      const writable = await handle.createWritable();
+      await writable.write(blob);
+      await writable.close();
+      return;
+    } catch (err) {
+      if (err.name === "AbortError") return; // usuario canceló el diálogo
+      // Si falla por cualquier otra razón, caemos al fallback
+      console.warn("[saveFileAuto] showSaveFilePicker falló, usando fallback:", err);
+    }
+  }
+
+  // Fallback universal: crear <a download> y disparar clic
+  // Funciona en móvil (Android Chrome, iOS Safari 13.4+), tablets y browsers sin File System API.
   try {
-    let extension = "txt",
-      mimeType = "text/plain",
-      isBase64 = false;
-    if (typeof content === "string" && content.startsWith("data:image/png")) {
-      extension = "png";
-      mimeType = "image/png";
-      isBase64 = true;
-    } else {
-      const ext = fileName.split(".").pop().toLowerCase();
-      if (ext === "xml") {
-        extension = "xml";
-        mimeType = "text/xml";
-      } else if (ext === "py") {
-        extension = "py";
-        mimeType = "text/x-python";
-      } else if (ext === "json") {
-        extension = "json";
-        mimeType = "application/json";
-      }
-      if (extension === "txt" && content.trim().startsWith("<")) {
-        extension = "xml";
-        mimeType = "text/xml";
-      }
-    }
-    const suggestedName = fileName?.includes(".")
-      ? fileName
-      : `archivo.${extension}`;
-    const handle = await window.showSaveFilePicker({
-      suggestedName,
-      types: [
-        {
-          description: `Archivo ${extension.toUpperCase()}`,
-          accept: { [mimeType]: [`.${extension}`] },
-        },
-      ],
-    });
-    const writable = await handle.createWritable();
-    if (isBase64) {
-      const binary = atob(content.split(",")[1]);
-      const bytes = new Uint8Array(binary.length);
-      for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-      await writable.write(bytes);
-    } else {
-      await writable.write(content);
-    }
-    await writable.close();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = suggestedName;
+    a.style.display = "none";
+    document.body.appendChild(a);
+    a.click();
+    // Revocar la URL después de un instante para liberar memoria
+    setTimeout(() => {
+      URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    }, 1500);
   } catch (err) {
-    if (err.name !== "AbortError") console.error("Error real al guardar:", err);
+    console.error("[saveFileAuto] Error al guardar archivo:", err);
+    if (term) term.writeln("\r\n⚠ No se pudo guardar el archivo en este dispositivo.\r\n");
   }
 }
 
@@ -607,10 +642,18 @@ async function disconnectSerial() {
     }
     if (serialWriter) {
       try {
-        await serialWriter.close();
+        // En modo WiFi usamos _wifiClose; en USB usamos close() nativo del writer
+        if (typeof serialWriter._wifiClose === "function") {
+          await serialWriter._wifiClose();
+        } else {
+          await serialWriter.close();
+        }
       } catch { }
       try {
-        serialWriter.releaseLock();
+        // releaseLock solo existe en WritableStreamDefaultWriter (USB)
+        if (typeof serialWriter.releaseLock === "function" && serialWriter !== wifiSocket) {
+          serialWriter.releaseLock();
+        }
       } catch { }
       serialWriter = null;
     }
@@ -649,18 +692,149 @@ document.addEventListener("DOMContentLoaded", () => {
       await disconnectSerial();
       return;
     }
+
+    // Usar modal propio en lugar de prompt() bloqueante
     const saved = JSON.parse(localStorage.getItem("esp32_wifi") || "{}");
-    const host = prompt(
-      "IP del ESP32 (la que imprimió 'WebREPL server started on http://...'):",
-      saved.host || "192.168.0.1"
-    );
-    if (!host) return;
-    const password = prompt("Contraseña WebREPL:", saved.password || "blockly1");
-    if (password === null) return;
-    localStorage.setItem("esp32_wifi", JSON.stringify({ host, password }));
-    await connectWifiSerial(host, password);
+    const result = await _showWifiModal(saved.host || "192.168.0.113", saved.password || "blockly1");
+    if (!result) return;  // usuario canceló
+
+    const { host, password } = result;
+    if (!host || !host.trim()) return;
+
+    localStorage.setItem("esp32_wifi", JSON.stringify({ host: host.trim(), password }));
+    await connectWifiSerial(host.trim(), password);
   });
 });
+
+/**
+ * Modal no-bloqueante para pedir IP y contraseña WiFi.
+ * Usa #wifiModal (inyectado en el DOM al primer uso) con estilos propios,
+ * sin depender del customModal del proyecto (que tiene fondo azul y título fijo).
+ * Retorna { host, password } o null si se cancela.
+ */
+function _showWifiModal(defaultHost, defaultPassword) {
+  return new Promise((resolve) => {
+
+    // ── Crear el modal la primera vez ──
+    if (!document.getElementById("wifiModal")) {
+      const style = document.createElement("style");
+      style.textContent = `
+        #wifiModal {
+          display: none; position: fixed; inset: 0; z-index: 99999;
+          background: rgba(0,0,0,0.55);
+          align-items: center; justify-content: center;
+        }
+        #wifiModal.open { display: flex; }
+        #wifiModalBox {
+          background: #fff; color: #222; border-radius: 12px;
+          padding: 24px 28px; width: 320px; max-width: 92vw;
+          box-shadow: 0 8px 32px rgba(0,0,0,0.28);
+          font-family: 'Segoe UI', system-ui, sans-serif;
+          display: flex; flex-direction: column; gap: 16px;
+        }
+        #wifiModalBox h3 {
+          margin: 0; font-size: 17px; font-weight: 700;
+          display: flex; align-items: center; gap: 8px; color: #1a1a2e;
+        }
+        #wifiModalBox label {
+          display: flex; flex-direction: column;
+          font-size: 13px; font-weight: 600; color: #444; gap: 5px;
+        }
+        #wifiModalBox input {
+          padding: 9px 11px; border: 1.5px solid #ccc; border-radius: 7px;
+          font-size: 15px; outline: none; transition: border-color .2s;
+          color: #111; background: #fafafa;
+        }
+        #wifiModalBox input:focus { border-color: #3454d1; background: #fff; }
+        #wifiModalActions {
+          display: flex; justify-content: flex-end; gap: 10px; margin-top: 4px;
+        }
+        #wifiBtnCancel {
+          padding: 8px 18px; border: 1.5px solid #ccc; border-radius: 7px;
+          background: #fff; color: #555; font-size: 14px; cursor: pointer;
+          font-weight: 600; transition: background .15s;
+        }
+        #wifiBtnCancel:hover { background: #f0f0f0; }
+        #wifiBtnConnect {
+          padding: 8px 20px; border: none; border-radius: 7px;
+          background: #3454d1; color: #fff; font-size: 14px; cursor: pointer;
+          font-weight: 700; transition: background .15s;
+        }
+        #wifiBtnConnect:hover { background: #2340b0; }
+      `;
+      document.head.appendChild(style);
+
+      const modal = document.createElement("div");
+      modal.id = "wifiModal";
+      modal.innerHTML = `
+        <div id="wifiModalBox">
+          <h3>📶 Conectar por WiFi</h3>
+          <label>IP del ESP32
+            <input id="wifiHostInput" type="text" placeholder="192.168.0.x"
+              inputmode="decimal" autocomplete="off" spellcheck="false" />
+          </label>
+          <label>Contraseña WebREPL
+            <input id="wifiPwInput" type="password" placeholder="blockly1"
+              autocomplete="current-password" />
+          </label>
+          <div id="wifiModalActions">
+            <button id="wifiBtnCancel">Cancelar</button>
+            <button id="wifiBtnConnect">Conectar</button>
+          </div>
+        </div>`;
+      document.body.appendChild(modal);
+    }
+
+    // ── Rellenar valores y abrir ──
+    const modal   = document.getElementById("wifiModal");
+    const hostIn  = document.getElementById("wifiHostInput");
+    const pwIn    = document.getElementById("wifiPwInput");
+    const btnOK   = document.getElementById("wifiBtnConnect");
+    const btnCancel = document.getElementById("wifiBtnCancel");
+
+    hostIn.value = defaultHost || "";
+    pwIn.value   = defaultPassword || "";
+    modal.classList.add("open");
+    setTimeout(() => hostIn.focus(), 80);
+
+    const _close = () => modal.classList.remove("open");
+
+    const _onOK = () => {
+      const host = hostIn.value.trim();
+      const pw   = pwIn.value;
+      _close();
+      btnOK.removeEventListener("click", _onOK);
+      btnCancel.removeEventListener("click", _onCancel);
+      modal.removeEventListener("click", _onBackdrop);
+      resolve(host ? { host, password: pw } : null);
+    };
+
+    const _onCancel = () => {
+      _close();
+      btnOK.removeEventListener("click", _onOK);
+      btnCancel.removeEventListener("click", _onCancel);
+      modal.removeEventListener("click", _onBackdrop);
+      resolve(null);
+    };
+
+    // Cerrar al hacer clic en el backdrop (fuera del box)
+    const _onBackdrop = (e) => {
+      if (e.target === modal) _onCancel();
+    };
+
+    // Enter en cualquier campo = conectar
+    const _onKeydown = (e) => {
+      if (e.key === "Enter") { e.preventDefault(); _onOK(); }
+      if (e.key === "Escape") _onCancel();
+      modal.removeEventListener("keydown", _onKeydown);
+    };
+
+    btnOK.addEventListener("click", _onOK);
+    btnCancel.addEventListener("click", _onCancel);
+    modal.addEventListener("click", _onBackdrop);
+    modal.addEventListener("keydown", _onKeydown);
+  });
+}
 
 // ─────────────────────────────────────────────────────────────
 // CONEXIÓN WIFI (WebREPL) — adaptador compatible con el resto
@@ -715,7 +889,10 @@ function connectWifiSerial(host, password) {
         if (window._wifiDebug) console.log("📤 WIFI TX:", JSON.stringify(text));
         ws.send(text);
       };
-      wifiSocket.close = async () => {
+      // NOTA: NO sobreescribimos ws.close() para no romper el método nativo.
+      // disconnectSerial() llama a serialWriter.write (inexistente en close) —
+      // usamos un método separado _wifiClose para el cierre controlado.
+      wifiSocket._wifiClose = async () => {
         try { ws.close(); } catch { }
       };
       wifiSocket.releaseLock = () => { };
@@ -873,32 +1050,35 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
     if (USE_WIFI_FALLBACK) {
+      // En dispositivos sin Web Serial (tablet/móvil), este botón también abre el modal WiFi
       const saved = JSON.parse(localStorage.getItem("esp32_wifi") || "{}");
-      const host = prompt("IP del ESP32 (revisa el monitor serie o tu router):", saved.host || "192.168.1.");
-      if (!host) return;
-      const password = prompt("Contraseña WebREPL:", saved.password || "blockly123");
-      if (password === null) return;
-      localStorage.setItem("esp32_wifi", JSON.stringify({ host, password }));
-      await connectWifiSerial(host, password);
-    } else {
+      const result = await _showWifiModal(saved.host || "192.168.1.", saved.password || "blockly123");
+      if (!result) return;
+      localStorage.setItem("esp32_wifi", JSON.stringify({ host: result.host, password: result.password }));
+      await connectWifiSerial(result.host, result.password);
+    } else if (HAS_WEB_SERIAL) {
       await connectSerial();
+    } else {
+      if (term) term.writeln("\r\n⚠ Web Serial no disponible en este navegador.\r\nUsa Chrome/Edge, o conecta por WiFi con el botón 📶\r\n");
     }
   });
 });
 
 // ─────────────────────────────────────────────────────────────
-// EVENTOS USB
+// EVENTOS USB — solo si Web Serial está disponible
 // ─────────────────────────────────────────────────────────────
-navigator.serial.addEventListener("disconnect", async (event) => {
-  if (serialPort && event.target === serialPort) {
-    term.writeln("\r\nDispositivo desconectado físicamente\r\n");
-    await disconnectSerial();
-  }
-});
+if (navigator.serial) {
+  navigator.serial.addEventListener("disconnect", async (event) => {
+    if (serialPort && event.target === serialPort) {
+      term.writeln("\r\nDispositivo desconectado físicamente\r\n");
+      await disconnectSerial();
+    }
+  });
 
-navigator.serial.addEventListener("connect", () => {
-  term.writeln("\r\nDispositivo USB detectado\r\n");
-});
+  navigator.serial.addEventListener("connect", () => {
+    term.writeln("\r\nDispositivo USB detectado\r\n");
+  });
+}
 
 function updateConnectionIcon(connected) {
   const icon = document.getElementById("iconConnection");
@@ -1103,7 +1283,6 @@ async function sendCodeToDevice() {
       }
 
       // 1. Interrumpir ejecución actual (doble Ctrl+C)
-      const isWifi = serialWriter === wifiSocket;
       const d = isWifi ? 2.5 : 1; // WiFi/WebREPL es más lento que USB: damos más margen
 
       await sendSerial("\x03");
@@ -1180,13 +1359,16 @@ window.stopExecution = stopExecution;  // exponer para game-ui.js y serial-monit
 // NOTA: game-ui.js registra este evento en fase capture y llama
 // window.globalRun() que delega a sendCodeToDevice() según la vista.
 // Este listener queda como respaldo para entornos sin game-ui.js.
-btnRun.addEventListener("click", async () => {
-  // Si game-ui.js ya está cargado, globalRun() habrá sido llamado
-  // desde el listener capture. Solo actuamos si no existe.
-  if (typeof window.globalRun !== "function") {
-    await sendCodeToDevice();
-  }
-});
+const _btnRun = document.getElementById("btnRun");
+if (_btnRun) {
+  _btnRun.addEventListener("click", async () => {
+    // Si game-ui.js ya está cargado, globalRun() habrá sido llamado
+    // desde el listener capture. Solo actuamos si no existe.
+    if (typeof window.globalRun !== "function") {
+      await sendCodeToDevice();
+    }
+  });
+}
 
 // ─────────────────────────────────────────────────────────────
 // BOTÓN: SUBIR ARCHIVO
@@ -1233,17 +1415,57 @@ document.getElementById("btnUploadCode").addEventListener("click", async () => {
     ].join("\n");
 
     const scriptBytes = encoder.encode(writeScript);
+    const _uploadIsWifi = serialWriter === wifiSocket;
 
-    if (scriptBytes.length < 256) {
-      // Paste mode directo
+    // En WiFi SIEMPRE usar paste mode (sendViaRawRepl requiere serialReader, no disponible en WiFi).
+    // En USB usar paste mode para scripts pequeños, raw REPL para los grandes.
+    if (_uploadIsWifi || scriptBytes.length < 256) {
+      // Paste mode
+      let _upBuf = "";
+      let _upDone = false;
+      let _upPrompt = false;
+      window._rawReplHook = (chunk) => {
+        _upBuf += chunk;
+        if (_upDone && _upBuf.includes(">>>")) _upPrompt = true;
+      };
+      const _upWait = (checkFn, ms) => new Promise((res) => {
+        const end = Date.now() + ms;
+        const tick = () => checkFn() ? res(true) : (Date.now() < end ? setTimeout(tick, 20) : res(false));
+        tick();
+      });
+      const _upD = _uploadIsWifi ? 2.5 : 1;
+
       await sendSerial("\x03");
-      await sleep(80);
+      await sleep(100 * _upD);
+      await sendSerial("\x03");
+      await sleep(100 * _upD);
+      _upBuf = "";
       await sendSerial("\x05");
-      await sleep(60);
-      await sendSerial(writeScript);
-      await sendSerial("\r\n");
+      const gotPaste = await _upWait(() => _upBuf.includes("==="), 2000 * _upD);
+      if (!gotPaste) {
+        await sendSerial("\r\n");
+        await sleep(80 * _upD);
+        _upBuf = "";
+        await sendSerial("\x05");
+        const retry = await _upWait(() => _upBuf.includes("==="), 2000 * _upD);
+        if (!retry) {
+          window._rawReplHook = null;
+          term.writeln("\r\n⚠ No se pudo entrar en paste mode. Reintenta.\r\n");
+          return;
+        }
+      }
+      const normScript = writeScript.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+      for (let i = 0; i < normScript.length; i += 128) {
+        await sendSerial(normScript.slice(i, i + 128));
+        if (_uploadIsWifi) await sleep(15);
+      }
+      if (_uploadIsWifi) await sleep(50);
+      _upBuf = "";
+      _upDone = true;
       await sendSerial("\x04");
-      await sleep(300);
+      await _upWait(() => _upPrompt, 8000);
+      window._rawReplHook = null;
+      await sleep(150 * _upD);
     } else {
       // Raw REPL con progreso
       const ok = await sendViaRawRepl(writeScript);
@@ -1268,8 +1490,8 @@ document.getElementById("btnUploadCode").addEventListener("click", async () => {
 // ─────────────────────────────────────────────────────────────
 async function stopExecution() {
   if (!serialWriter) {
-    term.writeln("\r\nNo conectado\r\n");
-    return;
+    if (term) term.writeln("\r\nNo conectado\r\n");
+    return Promise.resolve();
   }
   try {
     // Abortar cualquier sendCodeToDevice en curso inmediatamente
@@ -1289,19 +1511,27 @@ async function stopExecution() {
   } catch (error) {
     console.error("Error enviando Ctrl+C:", error);
   }
+  // Siempre retorna Promise resuelta para que .then() nunca falle
+  return Promise.resolve();
 }
 
 document.getElementById("btnStop").addEventListener("click", stopExecution);
 
-btnConsoleReset.addEventListener("click", async () => {
-  await sendSerial("\x03");
-  await sleep(100);
-  await sendSerial("\x04");
-});
+const _btnConsoleReset = document.getElementById("btnConsoleReset");
+if (_btnConsoleReset) {
+  _btnConsoleReset.addEventListener("click", async () => {
+    await sendSerial("\x03");
+    await sleep(100);
+    await sendSerial("\x04");
+  });
+}
 
-btnConsoleClear.addEventListener("click", () => {
-  term.clear();
-});
+const _btnConsoleClear = document.getElementById("btnConsoleClear");
+if (_btnConsoleClear) {
+  _btnConsoleClear.addEventListener("click", () => {
+    term.clear();
+  });
+}
 
 // ─────────────────────────────────────────────────────────────
 // RESET DE ESTADO SERIAL

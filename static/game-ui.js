@@ -61,15 +61,15 @@
       if (typeof stopGame === 'function') stopGame();
       _gamePaused = false;
       window._serialAdcValue = -1;
-      if (typeof window !== 'undefined') window.gameMode = false;
+      window.gameMode = false;
 
       // Una sola fuente de Ctrl+C, secuencial, sin carreras
       if (typeof stopExecution === 'function') {
-        stopExecution().then(function () {
+        Promise.resolve(stopExecution()).then(function () {
           // Reset de la máquina de estados del monitor (suppressingPaste, lineBuffer)
           // por si quedó atascada tras la interrupción
           if (typeof SerialMonitor !== 'undefined') SerialMonitor.notifyDone();
-        });
+        }).catch(function () { /* silenciar — el device puede ya estar desconectado */ });
       } else if (typeof sendSerial === 'function') {
         sendSerial('\x03').then(function () { return sendSerial('\x03'); })
           .then(function () { return sendSerial('\r\n'); })
@@ -124,11 +124,12 @@
     window.showView = function (viewId) {
       var wasInGame = _inGameView();
       if (wasInGame && viewId !== 'viewGame') {
+        // Verificar con typeof para no lanzar ReferenceError si las vars no existen
         if (typeof runner !== 'undefined' && runner) { clearTimeout(runner); runner = null; }
         if (typeof _rafId !== 'undefined' && _rafId) { cancelAnimationFrame(_rafId); _rafId = null; }
         if (typeof interpreter !== 'undefined' && interpreter) _gamePaused = true;
       }
-      if (viewId !== 'viewGame' && typeof window !== 'undefined') {
+      if (viewId !== 'viewGame') {
         window.gameMode = false;
       }
       _origShowView(viewId);
