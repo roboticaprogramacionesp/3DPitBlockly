@@ -20,3 +20,8 @@ venv/
 # Windows
 Thumbs.db
 Desktop.ini
+
+# Archivos
+app.py
+app.spec
+run.py
