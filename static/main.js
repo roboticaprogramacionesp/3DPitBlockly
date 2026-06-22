@@ -338,7 +338,39 @@ document.getElementById("btnNew").addEventListener("click", async function () {
 // ─────────────────────────────────────────────────────────────
 // GUARDAR ARCHIVO (web + desktop)
 // ─────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+// DIAGNÓSTICO DE GUARDADO — log visible en terminal y consola
+// ─────────────────────────────────────────────────────────────
+function _saveLog(msg, isError = false) {
+  const prefix = isError ? "❌ [SAVE]" : "🔍 [SAVE]";
+  console[isError ? "error" : "log"](prefix, msg);
+  // Mostrar en la terminal serial si está disponible
+  try {
+    if (typeof term !== "undefined" && term) {
+      const color = isError ? "\x1b[31m" : "\x1b[90m";
+      term.writeln(`${color}${prefix} ${msg}\x1b[0m`);
+    }
+  } catch (_) {}
+  // También guardar en localStorage para recuperar después
+  try {
+    const logs = JSON.parse(localStorage.getItem("save_debug") || "[]");
+    logs.push({ t: new Date().toISOString(), msg, isError });
+    if (logs.length > 50) logs.shift();
+    localStorage.setItem("save_debug", JSON.stringify(logs));
+  } catch (_) {}
+}
+
+// Exponer función para ver logs desde la consola del navegador:
+// escribe  window.showSaveLogs()  en la consola de DevTools
+window.showSaveLogs = function () {
+  const logs = JSON.parse(localStorage.getItem("save_debug") || "[]");
+  if (!logs.length) { console.log("Sin logs de guardado aún"); return; }
+  logs.forEach((l) => console[l.isError ? "error" : "log"](l.t, l.msg));
+};
+
 async function saveFileAuto(content, fileName = "") {
+  _saveLog(`Inicio — fileName="${fileName}" contentLength=${content?.length ?? 0}`);
+
   // ── Detectar tipo y extensión ──
   let extension = "txt",
     mimeType = "text/plain",
@@ -349,88 +381,113 @@ async function saveFileAuto(content, fileName = "") {
     mimeType = "image/png";
     isBase64 = true;
   } else {
-    const ext = fileName.split(".").pop().toLowerCase();
-    if (ext === "xml") {
-      extension = "xml";
-      mimeType = "text/xml";
-    } else if (ext === "py") {
-      extension = "py";
-      mimeType = "text/x-python";
-    } else if (ext === "json") {
-      extension = "json";
-      mimeType = "application/json";
-    }
-    if (extension === "txt" && content.trim().startsWith("<")) {
-      extension = "xml";
-      mimeType = "text/xml";
+    const ext = (fileName.split(".").pop() || "").toLowerCase();
+    if (ext === "xml") { extension = "xml"; mimeType = "text/xml"; }
+    else if (ext === "py")   { extension = "py";  mimeType = "text/x-python"; }
+    else if (ext === "json") { extension = "json"; mimeType = "application/json"; }
+    if (extension === "txt" && typeof content === "string" && content.trim().startsWith("<")) {
+      extension = "xml"; mimeType = "text/xml";
     }
   }
 
-  const suggestedName = fileName?.includes(".")
-    ? fileName
-    : `archivo.${extension}`;
+  const suggestedName = fileName?.includes(".") ? fileName : `archivo.${extension}`;
+  _saveLog(`Tipo detectado: extension=${extension} mimeType=${mimeType} suggestedName=${suggestedName}`);
+
+  // ── Validar contenido — causa más común de 0 KB ──
+  if (!content || content.length === 0) {
+    _saveLog("CONTENIDO VACÍO — el archivo tendría 0 KB. Abortando.", true);
+    if (typeof term !== "undefined" && term) {
+      term.writeln("\r\n⚠ El contenido está vacío. No hay nada que guardar.\r\n");
+    }
+    return;
+  }
 
   // ── Construir el Blob ──
   let blob;
-  if (isBase64) {
-    const binary = atob(content.split(",")[1]);
-    const bytes = new Uint8Array(binary.length);
-    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-    blob = new Blob([bytes], { type: mimeType });
-  } else {
-    blob = new Blob([content], { type: mimeType });
+  try {
+    if (isBase64) {
+      const binary = atob(content.split(",")[1]);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+      blob = new Blob([bytes], { type: mimeType });
+    } else {
+      blob = new Blob([content], { type: mimeType });
+    }
+    _saveLog(`Blob creado: ${blob.size} bytes`);
+    if (blob.size === 0) {
+      _saveLog("BLOB VACÍO — revisar el contenido generado.", true);
+      return;
+    }
+  } catch (err) {
+    _saveLog(`Error creando Blob: ${err.message}`, true);
+    return;
   }
 
   // ── Guardar: File System Access API (Chrome desktop) o descarga clásica (móvil/Safari) ──
-  if (typeof window.showSaveFilePicker === "function") {
-    // Chrome/Edge desktop — el usuario elige la ubicación
+  const hasFilePicker = typeof window.showSaveFilePicker === "function";
+  _saveLog(`showSaveFilePicker disponible: ${hasFilePicker}`);
+
+  if (hasFilePicker) {
     try {
+      _saveLog("Intentando showSaveFilePicker...");
       const handle = await window.showSaveFilePicker({
         suggestedName,
-        types: [
-          {
-            description: `Archivo ${extension.toUpperCase()}`,
-            accept: { [mimeType]: [`.${extension}`] },
-          },
-        ],
+        types: [{ description: `Archivo ${extension.toUpperCase()}`, accept: { [mimeType]: [`.${extension}`] } }],
       });
       const writable = await handle.createWritable();
       await writable.write(blob);
       await writable.close();
+      _saveLog(`✅ Guardado con showSaveFilePicker: ${blob.size} bytes`);
       return;
     } catch (err) {
-      if (err.name === "AbortError") return; // usuario canceló el diálogo
-      // Si falla por cualquier otra razón, caemos al fallback
-      console.warn("[saveFileAuto] showSaveFilePicker falló, usando fallback:", err);
+      if (err.name === "AbortError") {
+        _saveLog("Usuario canceló el diálogo showSaveFilePicker");
+        return;
+      }
+      _saveLog(`showSaveFilePicker falló (${err.name}: ${err.message}), usando fallback <a download>`, true);
     }
   }
 
-  // Fallback universal: crear <a download> y disparar clic
-  // Funciona en móvil (Android Chrome, iOS Safari 13.4+), tablets y browsers sin File System API.
+  // ── Fallback universal: <a download> ──
+  // Funciona en Android Chrome, iOS Safari 13.4+, Firefox, tablets.
+  _saveLog("Usando fallback <a download>...");
   try {
     const url = URL.createObjectURL(blob);
+    _saveLog(`Object URL creada: ${url.substring(0, 40)}...`);
+
     const a = document.createElement("a");
     a.href = url;
     a.download = suggestedName;
     a.style.display = "none";
     document.body.appendChild(a);
     a.click();
-    // Revocar la URL después de un instante para liberar memoria
+    _saveLog(`✅ Click disparado — descarga iniciada (${blob.size} bytes)`);
+
     setTimeout(() => {
-      URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-    }, 1500);
+      try {
+        URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        _saveLog("Object URL revocada y elemento limpiado");
+      } catch (_) {}
+    }, 2000);
   } catch (err) {
-    console.error("[saveFileAuto] Error al guardar archivo:", err);
-    if (term) term.writeln("\r\n⚠ No se pudo guardar el archivo en este dispositivo.\r\n");
+    _saveLog(`Error en fallback <a download>: ${err.name}: ${err.message}`, true);
+    if (typeof term !== "undefined" && term) {
+      term.writeln(`\r\n⚠ No se pudo guardar: ${err.message}\r\nRevisa los logs con window.showSaveLogs() en la consola.\r\n`);
+    }
   }
 }
 
 document.getElementById("btnSave").addEventListener("click", async (e) => {
   e.preventDefault();
-  const xmlText = Blockly.Xml.domToPrettyText(
-    Blockly.Xml.workspaceToDom(Blockly.getMainWorkspace()),
-  );
+  let xmlText = "";
+  try {
+    const dom = Blockly.Xml.workspaceToDom(Blockly.getMainWorkspace());
+    xmlText = Blockly.Xml.domToPrettyText(dom);
+    _saveLog(`btnSave: xmlText generado, ${xmlText.length} chars, workspace blocks: ${Blockly.getMainWorkspace().getAllBlocks(false).length}`);
+  } catch (err) {
+    _saveLog(`btnSave: error generando XML — ${err.message}`, true);
+  }
   if (window.pywebview?.api?.save_xml) {
     const result = await window.pywebview.api.save_xml(xmlText);
     if (result?.status === "ok" && DEBUG)
@@ -492,6 +549,7 @@ document.getElementById("btnSavePy").addEventListener("click", async (e) => {
   const fileName =
     document.getElementById("fileNameInput").value.trim() || "test.py";
   const code = editor.getValue();
+  _saveLog(`btnSavePy: fileName="${fileName}" code.length=${code.length}`);
   if (window.pywebview?.api?.save_py) {
     const result = await window.pywebview.api.save_py(code, fileName);
     if (result?.status === "ok" && DEBUG)
