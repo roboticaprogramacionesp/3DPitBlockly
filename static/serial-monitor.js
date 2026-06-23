@@ -381,10 +381,33 @@ var SerialMonitor = (() => {
    * Fuente seleccionable:
    *   • Bloques → Blockly.Python al vuelo
    *   • Archivo → archivo cargado con 📂
-   * Tamaño:
-   *   • < 256 B → paste mode
-   *   • ≥ 256 B → raw REPL con barra de progreso (vía sendViaRawRepl de main.js)
+   * Tamaño / modo de conexión:
+   *   • WiFi (wifiSocket activo, serialWriter ausente) → siempre paste mode
+   *   • USB < 256 B → paste mode
+   *   • USB ≥ 256 B → raw REPL con barra de progreso (vía sendViaRawRepl de main.js)
    */
+
+  /**
+   * Devuelve true si la conexión activa es WiFi/WebSocket.
+   *
+   * En WiFi, main.js hace:
+   *   serialWriter = wifiSocket;   <- existe (el WebSocket)
+   *   serialReader = null;         <- ausente (no hay read loop por USB)
+   *
+   * sendViaRawRepl() tiene la guarda exacta:
+   *   if (!serialReader || !serialWriter) return false;
+   * Por eso falla en WiFi: serialWriter existe pero serialReader es null.
+   *
+   * Usamos la misma condición que usa sendViaRawRepl para decidir si puede correr.
+   * wifiSocket es comprobación adicional de seguridad.
+   */
+  function _isWifiMode() {
+    // serialReader === null en WiFi (main.js lo pone explícitamente a null)
+    const readerMissing = typeof serialReader === "undefined" || serialReader == null;
+    // wifiSocket activo = modo WiFi confirmado
+    const wifiActive = typeof wifiSocket !== "undefined" && wifiSocket != null;
+    return readerMissing || wifiActive;
+  }
   async function uploadCode() {
     if (!smTerm) initSmTerminal();
 
@@ -451,9 +474,11 @@ var SerialMonitor = (() => {
       ].join("\n");
 
       const scriptLen = new TextEncoder().encode(writeScript).length;
+      const wifiMode = _isWifiMode();
 
-      if (scriptLen < 256) {
-        // Paste mode directo
+      if (wifiMode || scriptLen < 256) {
+        // Paste mode: único método disponible en WiFi; también el más simple en USB < 256 B.
+        // En WiFi, sendViaRawRepl falla porque requiere serialReader/serialWriter (USB).
         await fn("\x03"); await _sleep(80);
         await fn("\x05"); await _sleep(60);
         await fn(writeScript);
@@ -461,7 +486,7 @@ var SerialMonitor = (() => {
         await fn("\x04");
         await _sleep(300);
       } else {
-        // Raw REPL con barra de progreso (delegamos a main.js)
+        // USB + script grande (≥ 256 B): raw REPL con barra de progreso (delegamos a main.js)
         if (typeof sendViaRawRepl === "function") {
           const ok = await sendViaRawRepl(writeScript);
           if (!ok) { smTerm.writeln("\x1b[31m⚠  No se pudo entrar en raw REPL. Reintenta.\x1b[0m"); return; }
@@ -472,12 +497,8 @@ var SerialMonitor = (() => {
           await fn("\x01"); await _sleep(300);
           const bytes = new TextEncoder().encode(writeScript);
           const CHUNK = 256;
-          if (typeof serialWriter !== "undefined" && serialWriter) {
-            for (let i = 0; i < bytes.length; i += CHUNK) {
-              await serialWriter.write(bytes.slice(i, i + CHUNK));
-            }
-          } else {
-            await fn(writeScript);
+          for (let i = 0; i < bytes.length; i += CHUNK) {
+            await serialWriter.write(bytes.slice(i, i + CHUNK));
           }
           await fn("\x04"); await _sleep(500);
           await fn("\x02"); await _sleep(100);
