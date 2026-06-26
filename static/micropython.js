@@ -488,7 +488,7 @@ Blockly.Python["class_call"] = function (block) {
 };
 
 Blockly.Python["color_picker"] = function (block) {
-  const hex = block.getFieldValue("COLOR");
+  const hex = block.getFieldValue("COLOR") || "#000000";
 
   const r = parseInt(hex.substr(1, 2), 16);
   const g = parseInt(hex.substr(3, 2), 16);
@@ -501,17 +501,15 @@ Blockly.Python["color_picker"] = function (block) {
 
 Blockly.Python["color_rgb"] = function (block) {
   const r =
-    Blockly.Python.valueToCode(block, "R", Blockly.Python.ORDER_ATOMIC) || 0;
+    Blockly.Python.valueToCode(block, "R", Blockly.Python.ORDER_ATOMIC) || "0";
 
   const g =
-    Blockly.Python.valueToCode(block, "G", Blockly.Python.ORDER_ATOMIC) || 0;
+    Blockly.Python.valueToCode(block, "G", Blockly.Python.ORDER_ATOMIC) || "0";
 
   const b =
-    Blockly.Python.valueToCode(block, "B", Blockly.Python.ORDER_ATOMIC) || 0;
-
-  const code = `(${r},${g},${b})`;
-
-  return [code, Blockly.Python.ORDER_ATOMIC];
+    Blockly.Python.valueToCode(block, "B", Blockly.Python.ORDER_ATOMIC) || "0";
+  console.log(`RGB values: R=${r}, G=${g}, B=${b}`);
+  return [`(${r},${g},${b})`, Blockly.Python.ORDER_ATOMIC];
 };
 
 Blockly.Python["color_split"] = function (block) {
@@ -3052,11 +3050,21 @@ Blockly.Python["tm1637_temperature"] = function (block) {
 };
 
 function hexTo565(hex) {
+  if (!hex || typeof hex !== "string") return 0;
   const r = parseInt(hex.substr(1, 2), 16);
   const g = parseInt(hex.substr(3, 2), 16);
   const b = parseInt(hex.substr(5, 2), 16);
 
   return ((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3);
+}
+
+function hexToRGB(hex) {
+  if (!hex || typeof hex !== "string") return { r: 0, g: 0, b: 0 };
+  return {
+    r: parseInt(hex.substr(1, 2), 16),
+    g: parseInt(hex.substr(3, 2), 16),
+    b: parseInt(hex.substr(5, 2), 16),
+  };
 }
 
 Blockly.Python["neopixel_init"] = function (block) {
@@ -3072,18 +3080,16 @@ Blockly.Python["neopixel_init"] = function (block) {
   return `${name} = NeoPixel(Pin(${pin}, Pin.OUT), ${num})\n`;
 };
 
+// DESPUÉS (corregido)
 Blockly.Python["neopixel_pixel_x"] = function (block) {
   const name = block.getFieldValue("NAME");
   const x =
     Blockly.Python.valueToCode(block, "X", Blockly.Python.ORDER_NONE) || "0";
 
-  const hex = block.getFieldValue("COLOR");
+  const color =
+    Blockly.Python.valueToCode(block, "COLOR", Blockly.Python.ORDER_ATOMIC) || "(0, 0, 0)";
 
-  const r = parseInt(hex.substr(1, 2), 16);
-  const g = parseInt(hex.substr(3, 2), 16);
-  const b = parseInt(hex.substr(5, 2), 16);
-
-  return `${name}[${x}] = (${r}, ${g}, ${b})\n`;
+  return `${name}[${x}] = ${color}\n`;
 };
 
 Blockly.Python["neopixel_write"] = function (block) {
@@ -3131,7 +3137,8 @@ Blockly.Python["neopixel_pixel"] = function (block) {
   const y =
     Blockly.Python.valueToCode(block, "Y", Blockly.Python.ORDER_NONE) || 0;
 
-  const color = hexTo565(block.getFieldValue("COLOR"));
+  Blockly.Python.definitions_["rgb565_fn"] = "def rgb565(r,g,b):\n  return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)\n";
+  const color = `rgb565(*${Blockly.Python.valueToCode(block, "COLOR", Blockly.Python.ORDER_ATOMIC) || "(255,0,0)"})`;
 
   return `${name}.pixel(${x},${y},${color})\n`;
 };
@@ -3148,7 +3155,8 @@ Blockly.Python["neopixel_line"] = function (block) {
   const y1 =
     Blockly.Python.valueToCode(block, "Y1", Blockly.Python.ORDER_NONE) || 0;
 
-  const color = hexTo565(block.getFieldValue("COLOR"));
+  Blockly.Python.definitions_["rgb565_fn"] = "def rgb565(r,g,b):\n  return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)\n";
+  const color = `rgb565(*${Blockly.Python.valueToCode(block, "COLOR", Blockly.Python.ORDER_ATOMIC) || "(255,0,0)"})`;
 
   return `${name}.line(${x},${y},${x1},${y1},${color})\n`;
 };
@@ -3165,7 +3173,8 @@ Blockly.Python["neopixel_rect"] = function (block) {
   const h =
     Blockly.Python.valueToCode(block, "H", Blockly.Python.ORDER_NONE) || 0;
 
-  const color = hexTo565(block.getFieldValue("COLOR"));
+  Blockly.Python.definitions_["rgb565_fn"] = "def rgb565(r,g,b):\n  return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)\n";
+  const color = `rgb565(*${Blockly.Python.valueToCode(block, "COLOR", Blockly.Python.ORDER_ATOMIC) || "(255,0,0)"})`;
 
   return `${name}.rect(${x},${y},${w},${h},${color})\n`;
 };
@@ -3182,7 +3191,8 @@ Blockly.Python["neopixel_fill_rect"] = function (block) {
   const h =
     Blockly.Python.valueToCode(block, "H", Blockly.Python.ORDER_NONE) || 0;
 
-  const color = hexTo565(block.getFieldValue("COLOR"));
+  Blockly.Python.definitions_["rgb565_fn"] = "def rgb565(r,g,b):\n  return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)\n";
+  const color = `rgb565(*${Blockly.Python.valueToCode(block, "COLOR", Blockly.Python.ORDER_ATOMIC) || "(255,0,0)"})`;
 
   return `${name}.fill_rect(${x},${y},${w},${h},${color})\n`;
 };
@@ -3200,8 +3210,10 @@ Blockly.Python["neopixel_text"] = function (block) {
   const y =
     Blockly.Python.valueToCode(block, "Y", Blockly.Python.ORDER_NONE) || 0;
 
-  const fg = hexTo565(block.getFieldValue("FG"));
-  const bg = hexTo565(block.getFieldValue("BG"));
+  Blockly.Python.definitions_["rgb565_fn"] = "def rgb565(r,g,b):\n  return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)\n";
+  const fg = `rgb565(*${Blockly.Python.valueToCode(block, "FG", Blockly.Python.ORDER_ATOMIC) || "(255,0,0)"})`;
+  Blockly.Python.definitions_["rgb565_fn"] = "def rgb565(r,g,b):\n  return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)\n";
+  const bg = `rgb565(*${Blockly.Python.valueToCode(block, "BG", Blockly.Python.ORDER_ATOMIC) || "(255,0,0)"})`;
 
   return `
 ${name}.fill(${bg})
@@ -3222,13 +3234,8 @@ Blockly.Python["neopixel_scroll"] = function (block) {
 
 Blockly.Python["neopixel_fill"] = function (block) {
   const name = block.getFieldValue("NAME");
-  const hex = block.getFieldValue("COLOR");
-
-  const r = parseInt(hex.substr(1, 2), 16);
-  const g = parseInt(hex.substr(3, 2), 16);
-  const b = parseInt(hex.substr(5, 2), 16);
-
-  const color = ((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3);
+  Blockly.Python.definitions_["rgb565_fn"] = "def rgb565(r,g,b):\n  return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)\n";
+  const color = `rgb565(*${Blockly.Python.valueToCode(block, "COLOR", Blockly.Python.ORDER_ATOMIC) || "(255,0,0)"})`;
 
   return `${name}.fill(${color})\n`;
 };
@@ -3261,13 +3268,8 @@ Blockly.Python["neopixel_ellipse"] = function (block) {
 
   let fill = block.getFieldValue("FILL") == "TRUE";
   fill = fill ? "True" : "False";
-  const hex = block.getFieldValue("COLOR");
-
-  const r = parseInt(hex.substr(1, 2), 16);
-  const g = parseInt(hex.substr(3, 2), 16);
-  const b = parseInt(hex.substr(5, 2), 16);
-
-  const color = ((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3);
+  Blockly.Python.definitions_["rgb565_fn"] = "def rgb565(r,g,b):\n  return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)\n";
+  const color = `rgb565(*${Blockly.Python.valueToCode(block, "COLOR", Blockly.Python.ORDER_ATOMIC) || "(255,0,0)"})`;
 
   return `${name}.ellipse(${x},${y},${rx},${ry},${color},${fill})\n`;
 };
@@ -3285,13 +3287,8 @@ Blockly.Python["neopixel_poly"] = function (block) {
 
   const fill = block.getFieldValue("FILL") == "TRUE";
 
-  const hex = block.getFieldValue("COLOR");
-
-  const r = parseInt(hex.substr(1, 2), 16);
-  const g = parseInt(hex.substr(3, 2), 16);
-  const b = parseInt(hex.substr(5, 2), 16);
-
-  const color = ((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3);
+  Blockly.Python.definitions_["rgb565_fn"] = "def rgb565(r,g,b):\n  return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)\n";
+  const color = `rgb565(*${Blockly.Python.valueToCode(block, "COLOR", Blockly.Python.ORDER_ATOMIC) || "(255,0,0)"})`;
 
   return `${name}.poly(${vertices},${x},${y},${color},${fill})\n`;
 };
@@ -3302,7 +3299,7 @@ Blockly.Python["neopixel_5x5"] = function (block) {
 
   for (let row = 0; row < 5; row++) {
     for (let col = 0; col < 5; col++) {
-      const hex = block.getFieldValue(`COLOR_${row}_${col}`);
+      const hex = block.getFieldValue(`COLOR_${row}_${col}`) || "#000000";
 
       const r = parseInt(hex.substring(1, 3), 16);
       const g = parseInt(hex.substring(3, 5), 16);
@@ -3334,7 +3331,7 @@ Blockly.Python["neopixel_8x8"] = function (block) {
 
   for (let row = 0; row < 8; row++) {
     for (let col = 0; col < 8; col++) {
-      const hex = block.getFieldValue(`COLOR_${row}_${col}`);
+      const hex = block.getFieldValue(`COLOR_${row}_${col}`) || "#000000";
 
       const r = parseInt(hex.substring(1, 3), 16);
       const g = parseInt(hex.substring(3, 5), 16);
@@ -3380,13 +3377,8 @@ ${name}.init()
 
 Blockly.Python["tft_fill"] = function (block) {
   const name = block.getFieldValue("NAME");
-  const hex = block.getFieldValue("COLOR");
-
-  const r = parseInt(hex.substr(1, 2), 16);
-  const g = parseInt(hex.substr(3, 2), 16);
-  const b = parseInt(hex.substr(5, 2), 16);
-
-  const color = ((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3);
+  Blockly.Python.definitions_["rgb565_fn"] = "def rgb565(r,g,b):\n  return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)\n";
+  const color = `rgb565(*${Blockly.Python.valueToCode(block, "COLOR", Blockly.Python.ORDER_ATOMIC) || "(255,0,0)"})`;
 
   return `${name}.fill(${color})\n`;
 };
@@ -3397,13 +3389,8 @@ Blockly.Python["tft_pixel"] = function (block) {
     Blockly.Python.valueToCode(block, "X", Blockly.Python.ORDER_NONE) || 0;
   const y =
     Blockly.Python.valueToCode(block, "Y", Blockly.Python.ORDER_NONE) || 0;
-  const hex = block.getFieldValue("COLOR");
-
-  const r = parseInt(hex.substr(1, 2), 16);
-  const g = parseInt(hex.substr(3, 2), 16);
-  const b = parseInt(hex.substr(5, 2), 16);
-
-  const color = ((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3);
+  Blockly.Python.definitions_["rgb565_fn"] = "def rgb565(r,g,b):\n  return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)\n";
+  const color = `rgb565(*${Blockly.Python.valueToCode(block, "COLOR", Blockly.Python.ORDER_ATOMIC) || "(255,0,0)"})`;
 
   return `${name}.pixel(${x},${y},${color})\n`;
 };
@@ -3419,13 +3406,8 @@ Blockly.Python["tft_line"] = function (block) {
   const y2 =
     Blockly.Python.valueToCode(block, "Y2", Blockly.Python.ORDER_NONE) || 0;
 
-  const hex = block.getFieldValue("COLOR");
-
-  const r = parseInt(hex.substr(1, 2), 16);
-  const g = parseInt(hex.substr(3, 2), 16);
-  const b = parseInt(hex.substr(5, 2), 16);
-
-  const c = ((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3);
+  Blockly.Python.definitions_["rgb565_fn"] = "def rgb565(r,g,b):\n  return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)\n";
+  const c = `rgb565(*${Blockly.Python.valueToCode(block, "COLOR", Blockly.Python.ORDER_ATOMIC) || "(255,0,0)"})`;
 
   return `${name}.line(${x1},${y1},${x2},${y2},${c})\n`;
 };
@@ -3441,13 +3423,8 @@ Blockly.Python["tft_rect"] = function (block) {
   const h =
     Blockly.Python.valueToCode(block, "H", Blockly.Python.ORDER_NONE) || 0;
 
-  const hex = block.getFieldValue("COLOR");
-
-  const r = parseInt(hex.substr(1, 2), 16);
-  const g = parseInt(hex.substr(3, 2), 16);
-  const b = parseInt(hex.substr(5, 2), 16);
-
-  const c = ((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3);
+  Blockly.Python.definitions_["rgb565_fn"] = "def rgb565(r,g,b):\n  return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)\n";
+  const c = `rgb565(*${Blockly.Python.valueToCode(block, "COLOR", Blockly.Python.ORDER_ATOMIC) || "(255,0,0)"})`;
 
   return `${name}.rect(${x},${y},${w},${h},${c})\n`;
 };
@@ -3463,13 +3440,8 @@ Blockly.Python["tft_fill_rect"] = function (block) {
   const h =
     Blockly.Python.valueToCode(block, "H", Blockly.Python.ORDER_NONE) || 0;
 
-  const hex = block.getFieldValue("COLOR");
-
-  const r = parseInt(hex.substr(1, 2), 16);
-  const g = parseInt(hex.substr(3, 2), 16);
-  const b = parseInt(hex.substr(5, 2), 16);
-
-  const c = ((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3);
+  Blockly.Python.definitions_["rgb565_fn"] = "def rgb565(r,g,b):\n  return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)\n";
+  const c = `rgb565(*${Blockly.Python.valueToCode(block, "COLOR", Blockly.Python.ORDER_ATOMIC) || "(255,0,0)"})`;
 
   return `${name}.fill_rect(${x},${y},${w},${h},${c})\n`;
 };
@@ -3482,13 +3454,8 @@ Blockly.Python["tft_circle"] = function (block) {
     Blockly.Python.valueToCode(block, "Y", Blockly.Python.ORDER_NONE) || 0;
   const radio =
     Blockly.Python.valueToCode(block, "R", Blockly.Python.ORDER_NONE) || 0;
-  const hex = block.getFieldValue("COLOR");
-
-  const r = parseInt(hex.substr(1, 2), 16);
-  const g = parseInt(hex.substr(3, 2), 16);
-  const b = parseInt(hex.substr(5, 2), 16);
-
-  const c = ((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3);
+  Blockly.Python.definitions_["rgb565_fn"] = "def rgb565(r,g,b):\n  return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)\n";
+  const c = `rgb565(*${Blockly.Python.valueToCode(block, "COLOR", Blockly.Python.ORDER_ATOMIC) || "(255,0,0)"})`;
 
   return `${name}.circle(${x},${y},${radio},${c})\n`;
 };
@@ -3501,13 +3468,8 @@ Blockly.Python["tft_fill_circle"] = function (block) {
     Blockly.Python.valueToCode(block, "Y", Blockly.Python.ORDER_NONE) || 0;
   const radio =
     Blockly.Python.valueToCode(block, "R", Blockly.Python.ORDER_NONE) || 0;
-  const hex = block.getFieldValue("COLOR");
-
-  const r = parseInt(hex.substr(1, 2), 16);
-  const g = parseInt(hex.substr(3, 2), 16);
-  const b = parseInt(hex.substr(5, 2), 16);
-
-  const c = ((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3);
+  Blockly.Python.definitions_["rgb565_fn"] = "def rgb565(r,g,b):\n  return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)\n";
+  const c = `rgb565(*${Blockly.Python.valueToCode(block, "COLOR", Blockly.Python.ORDER_ATOMIC) || "(255,0,0)"})`;
 
   return `${name}.fill_circle(${x},${y},${radio},${c})\n`;
 };
@@ -3527,23 +3489,12 @@ Blockly.Python["tft_text"] = function (block) {
 
   Blockly.Python.definitions_["font_" + font] = `import ${font}`;
 
-  const hex = block.getFieldValue("COLOR");
-
-  const r = parseInt(hex.substr(1, 2), 16);
-  const g = parseInt(hex.substr(3, 2), 16);
-  const b = parseInt(hex.substr(5, 2), 16);
-
-  const color = ((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3);
+  Blockly.Python.definitions_["rgb565_fn"] = "def rgb565(r,g,b):\n  return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)\n";
+  const color = `rgb565(*${Blockly.Python.valueToCode(block, "COLOR", Blockly.Python.ORDER_ATOMIC) || "(255,0,0)"})`;
 
   /* COLOR FONDO */
-
-  const hexbg = block.getFieldValue("COLOR_BG");
-
-  const rbg = parseInt(hexbg.substr(1, 2), 16);
-  const gbg = parseInt(hexbg.substr(3, 2), 16);
-  const bbg = parseInt(hexbg.substr(5, 2), 16);
-
-  const colorbg = ((rbg >> 3) << 11) | ((gbg >> 2) << 5) | (bbg >> 3);
+  Blockly.Python.definitions_["rgb565_fn"] = "def rgb565(r,g,b):\n  return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)\n";
+  const colorbg = `rgb565(*${Blockly.Python.valueToCode(block, "COLOR_BG", Blockly.Python.ORDER_ATOMIC) || "(255,0,0)"})`;
 
   return `${name}.text(${font},${text},${x},${y},${color},${colorbg})\n`;
 };
@@ -3565,18 +3516,11 @@ Blockly.Python["tft_icon"] = function (block) {
   Blockly.Python.definitions_["icons_px_import"] = "from icons_px import get_ch";
 
   /* COLOR FG */
-  const hex = block.getFieldValue("COLOR");
-  const r = parseInt(hex.substr(1, 2), 16);
-  const g = parseInt(hex.substr(3, 2), 16);
-  const b = parseInt(hex.substr(5, 2), 16);
-  const color = ((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3);
-
+  Blockly.Python.definitions_["rgb565_fn"] = "def rgb565(r,g,b):\n  return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)\n";
+  const color = `rgb565(*${Blockly.Python.valueToCode(block, "COLOR", Blockly.Python.ORDER_ATOMIC) || "(255,0,0)"})`;
   /* COLOR BG */
-  const hexbg = block.getFieldValue("COLOR_BG");
-  const rbg = parseInt(hexbg.substr(1, 2), 16);
-  const gbg = parseInt(hexbg.substr(3, 2), 16);
-  const bbg = parseInt(hexbg.substr(5, 2), 16);
-  const colorbg = ((rbg >> 3) << 11) | ((gbg >> 2) << 5) | (bbg >> 3);
+  Blockly.Python.definitions_["rgb565_fn"] = "def rgb565(r,g,b):\n  return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)\n";
+  const colorbg = `rgb565(*${Blockly.Python.valueToCode(block, "COLOR_BG", Blockly.Python.ORDER_ATOMIC) || "(255,0,0)"})`;
 
   return `${name}.draw_icon(get_ch(${icon})[0], ${x}, ${y}, 12, ${scale}, ${color}, ${colorbg})\n`;
 };
@@ -3598,11 +3542,8 @@ Blockly.Python["tft_hline"] = function (block) {
   const w =
     Blockly.Python.valueToCode(block, "W", Blockly.Python.ORDER_NONE) || 0;
 
-  const hex = block.getFieldValue("COLOR");
-  const r = parseInt(hex.substr(1, 2), 16);
-  const g = parseInt(hex.substr(3, 2), 16);
-  const b = parseInt(hex.substr(5, 2), 16);
-  const color = ((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3);
+  Blockly.Python.definitions_["rgb565_fn"] = "def rgb565(r,g,b):\n  return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)\n";
+  const color = `rgb565(*${Blockly.Python.valueToCode(block, "COLOR", Blockly.Python.ORDER_ATOMIC) || "(255,0,0)"})`;
 
   return `${name}.hline(${x}, ${y}, ${w}, ${color})\n`;
 };
@@ -3617,11 +3558,8 @@ Blockly.Python["tft_vline"] = function (block) {
   const h =
     Blockly.Python.valueToCode(block, "H", Blockly.Python.ORDER_NONE) || 0;
 
-  const hex = block.getFieldValue("COLOR");
-  const r = parseInt(hex.substr(1, 2), 16);
-  const g = parseInt(hex.substr(3, 2), 16);
-  const b = parseInt(hex.substr(5, 2), 16);
-  const color = ((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3);
+  Blockly.Python.definitions_["rgb565_fn"] = "def rgb565(r,g,b):\n  return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)\n";
+  const color = `rgb565(*${Blockly.Python.valueToCode(block, "COLOR", Blockly.Python.ORDER_ATOMIC) || "(255,0,0)"})`;
 
   return `${name}.vline(${x}, ${y}, ${h}, ${color})\n`;
 };
@@ -3659,11 +3597,8 @@ Blockly.Python["tft_polygon"] = function (block) {
   const y =
     Blockly.Python.valueToCode(block, "Y", Blockly.Python.ORDER_NONE) || 0;
 
-  const hex = block.getFieldValue("COLOR");
-  const r = parseInt(hex.substr(1, 2), 16);
-  const g = parseInt(hex.substr(3, 2), 16);
-  const b = parseInt(hex.substr(5, 2), 16);
-  const color = ((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3);
+  Blockly.Python.definitions_["rgb565_fn"] = "def rgb565(r,g,b):\n  return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)\n";
+  const color = `rgb565(*${Blockly.Python.valueToCode(block, "COLOR", Blockly.Python.ORDER_ATOMIC) || "(255,0,0)"})`;
 
   return `${name}.polygon(${points}, ${x}, ${y}, ${color})\n`;
 };
@@ -3680,11 +3615,8 @@ Blockly.Python["tft_fill_polygon"] = function (block) {
   const cy =
     Blockly.Python.valueToCode(block, "CY", Blockly.Python.ORDER_NONE) || 0;
 
-  const hex = block.getFieldValue("COLOR");
-  const r = parseInt(hex.substr(1, 2), 16);
-  const g = parseInt(hex.substr(3, 2), 16);
-  const b = parseInt(hex.substr(5, 2), 16);
-  const color = ((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3);
+  Blockly.Python.definitions_["rgb565_fn"] = "def rgb565(r,g,b):\n  return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)\n";
+  const color = `rgb565(*${Blockly.Python.valueToCode(block, "COLOR", Blockly.Python.ORDER_ATOMIC) || "(255,0,0)"})`;
 
   return `${name}.fill_polygon(${points}, ${cx}, ${cy}, ${color})\n`;
 };

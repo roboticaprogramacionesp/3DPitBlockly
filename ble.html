@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ESP32 BLE Controller</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: #0f0f13;
+    color: #e8e8f0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem 3rem;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  header h1 {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: #fff;
+  }
+  header p { font-size: 13px; color: #666; margin-top: 4px; }
+
+  .panel {
+    width: 100%;
+    max-width: 460px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .card {
+    background: #18181f;
+    border: 1px solid #2a2a35;
+    border-radius: 14px;
+    padding: 1.1rem 1.3rem;
+  }
+
+  .card-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #555;
+    margin-bottom: 0.75rem;
+  }
+
+  /* status */
+  .status-pill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #0f0f13;
+    border: 1px solid #2a2a35;
+    border-radius: 999px;
+    padding: 8px 16px;
+    width: fit-content;
+  }
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #333;
+    flex-shrink: 0;
+  }
+  .dot.connected { background: #22c55e; box-shadow: 0 0 6px #22c55e88; }
+  .dot.scanning  { background: #f59e0b; animation: pulse 0.9s infinite; }
+  .dot.error     { background: #ef4444; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.25} }
+  #status-text { font-size: 13px; color: #aaa; }
+
+  /* uuid inputs */
+  .uuid-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .field label { font-size: 11px; color: #555; display: block; margin-bottom: 5px; }
+  .field input {
+    width: 100%;
+    font-family: monospace;
+    font-size: 11px;
+    padding: 7px 10px;
+    background: #0f0f13;
+    border: 1px solid #2a2a35;
+    border-radius: 8px;
+    color: #bbb;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .field input:focus { border-color: #555; color: #eee; }
+
+  /* buttons */
+  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  button {
+    font-size: 13px;
+    font-weight: 500;
+    padding: 9px 20px;
+    border-radius: 9px;
+    border: 1px solid #2a2a35;
+    background: #222230;
+    color: #ccc;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, transform 0.1s;
+  }
+  button:hover:not(:disabled) { background: #2e2e40; color: #fff; }
+  button:active:not(:disabled) { transform: scale(0.97); }
+  button:disabled { opacity: 0.3; cursor: not-allowed; }
+  button.accent {
+    background: #4f6ef7;
+    color: #fff;
+    border-color: #4f6ef7;
+  }
+  button.accent:hover:not(:disabled) { background: #6680ff; border-color: #6680ff; }
+
+  /* send */
+  .send-row { display: flex; gap: 8px; }
+  .send-row input {
+    flex: 1;
+    font-size: 14px;
+    padding: 9px 14px;
+    background: #0f0f13;
+    border: 1px solid #2a2a35;
+    border-radius: 9px;
+    color: #eee;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .send-row input:focus { border-color: #4f6ef7; }
+  .send-row input:disabled { opacity: 0.3; }
+  .send-row input::placeholder { color: #444; }
+
+  /* log */
+  .log {
+    font-family: monospace;
+    font-size: 12px;
+    line-height: 2;
+    max-height: 190px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #2a2a35 transparent;
+  }
+  .log::-webkit-scrollbar { width: 4px; }
+  .log::-webkit-scrollbar-thumb { background: #2a2a35; border-radius: 4px; }
+  .log .sys { color: #444; }
+  .log .tx  { color: #60a5fa; }
+  .log .rx  { color: #4ade80; }
+  .log .err { color: #f87171; }
+
+  .hint { font-size: 11px; color: #444; margin-top: 8px; }
+
+  /* BLE support check banner */
+  .banner {
+    width: 100%;
+    max-width: 460px;
+    background: #1a1a10;
+    border: 1px solid #3a3a10;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: #aaa;
+    margin-bottom: 14px;
+    display: none;
+  }
+  .banner.show { display: block; }
+  .banner span { color: #f59e0b; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>ESP32 BLE Controller</h1>
+  <p>Web Bluetooth — Chrome / Edge</p>
+</header>
+
+<div class="banner" id="banner">
+  <span>Aviso:</span> <span id="banner-msg"></span>
+</div>
+
+<div class="panel">
+
+  <div class="card">
+    <div class="card-label">Estado</div>
+    <div class="status-pill">
+      <div class="dot" id="dot"></div>
+      <span id="status-text">Desconectado</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">UUIDs del servicio</div>
+    <div class="uuid-grid">
+      <div class="field">
+        <label>Service UUID</label>
+        <input type="text" id="svc-uuid" value="12345678-1234-5678-1234-56789abcdef0" />
+      </div>
+      <div class="field">
+        <label>Characteristic UUID</label>
+        <input type="text" id="char-uuid" value="abcdef01-1234-5678-1234-56789abcdef0" />
+      </div>
+    </div>
+    <p class="hint">Deben coincidir con los UUIDs en tu script MicroPython.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Conexión</div>
+    <div class="btn-row">
+      <button class="accent" id="btn-connect" onclick="conectar()">Escanear y conectar</button>
+      <button id="btn-disconnect" onclick="desconectar()" disabled>Desconectar</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Enviar mensaje</div>
+    <div class="send-row">
+      <input type="text" id="msg" placeholder="Escribe un mensaje y presiona Enter..." disabled />
+      <button id="btn-send" onclick="enviar()" disabled>Enviar</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Log</div>
+    <div class="log" id="log">
+      <div class="sys">— esperando conexión —</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let device, server, characteristic;
+
+function showBanner(msg) {
+  const b = document.getElementById('banner');
+  document.getElementById('banner-msg').textContent = msg;
+  b.classList.add('show');
+}
+
+(function checkBLE() {
+  if (!navigator.bluetooth) {
+    showBanner('Web Bluetooth no detectado. Usa Chrome o Edge, y abre el archivo desde localhost o HTTPS.');
+  }
+})();
+
+function log(msg, tipo) {
+  const el = document.getElementById('log');
+  const d = document.createElement('div');
+  d.className = tipo || 'sys';
+  const ts = new Date().toLocaleTimeString('es', {hour12:false});
+  d.textContent = ts + '  ' + msg;
+  el.appendChild(d);
+  el.scrollTop = el.scrollHeight;
+}
+
+function setStatus(texto, estado) {
+  document.getElementById('status-text').textContent = texto;
+  document.getElementById('dot').className = 'dot ' + (estado || '');
+}
+
+function setConectado(on) {
+  document.getElementById('btn-connect').disabled = on;
+  document.getElementById('btn-disconnect').disabled = !on;
+  document.getElementById('btn-send').disabled = !on;
+  document.getElementById('msg').disabled = !on;
+}
+
+async function conectar() {
+  if (!navigator.bluetooth) {
+    log('Web Bluetooth no disponible.', 'err'); return;
+  }
+  const svcUUID  = document.getElementById('svc-uuid').value.trim().toLowerCase();
+  const charUUID = document.getElementById('char-uuid').value.trim().toLowerCase();
+  try {
+    setStatus('Escaneando...', 'scanning');
+    log('Buscando dispositivos BLE...');
+    device = await navigator.bluetooth.requestDevice({
+      filters: [{ services: [svcUUID] }]
+    });
+    setStatus('Conectando...', 'scanning');
+    log('Encontrado: ' + device.name);
+    server = await device.gatt.connect();
+    const service = await server.getPrimaryService(svcUUID);
+    characteristic = await service.getCharacteristic(charUUID);
+    if (characteristic.properties.notify) {
+      await characteristic.startNotifications();
+      characteristic.addEventListener('characteristicvaluechanged', onNotify);
+    }
+    device.addEventListener('gattserverdisconnected', onDesconectado);
+    setStatus('Conectado — ' + device.name, 'connected');
+    setConectado(true);
+    log('Conexión establecida.', 'rx');
+  } catch (e) {
+    setStatus('Error', 'error');
+    log(e.message || 'Error al conectar', 'err');
+  }
+}
+
+function onNotify(e) {
+  log('← ' + new TextDecoder().decode(e.target.value), 'rx');
+}
+
+function onDesconectado() {
+  setStatus('Desconectado', 'error');
+  setConectado(false);
+  log('Dispositivo desconectado.', 'err');
+}
+
+function desconectar() {
+  if (device && device.gatt.connected) device.gatt.disconnect();
+}
+
+async function enviar() {
+  const input = document.getElementById('msg');
+  const texto = input.value.trim();
+  if (!texto || !characteristic) return;
+  try {
+    await characteristic.writeValue(new TextEncoder().encode(texto));
+    log('→ ' + texto, 'tx');
+    input.value = '';
+  } catch (e) {
+    log(e.message, 'err');
+  }
+}
+
+document.getElementById('msg').addEventListener('keydown', e => {
+  if (e.key === 'Enter') enviar();
+});
+</script>
+</body>
+</html>
