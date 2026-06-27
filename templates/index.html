@@ -8,6 +8,19 @@
   <link rel="icon" href="{{ url_for('static', filename='3DPit.ico') }}" />
   <!-- icons3dpit.svg se carga bajo demanda, sin preload para evitar warning -->
 
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="{{ url_for('static', filename='pwa-manifest.json') }}">
+
+  <!-- Color de barra en Android -->
+  <meta name="theme-color" content="#3454d1" />
+
+  <!-- iOS: comportamiento de app instalada -->
+  <!-- PWA: comportamiento de app instalada -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="3DPit Blocks">
+
   <link rel="stylesheet" href="{{ url_for('static', filename='css-tutorial.css') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='code-tutor.css') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='codeMirror/codemirror.css') }}" />
@@ -534,6 +547,19 @@
 
 </head>
 
+<!-- ══════════════════════════════════════════════
+     AGREGAR ESTO JUSTO ANTES DEL </body> DE TU index.html
+     ══════════════════════════════════════════════ -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./service-worker.js')
+        .then(reg => console.log('[PWA] Service Worker registrado:', reg.scope))
+        .catch(err => console.warn('[PWA] Error al registrar SW:', err));
+    });
+  }
+</script>
+
 <body>
 
   <div id="tutorialOverlay" class="tutorial-overlay hidden">
@@ -572,7 +598,7 @@
             <span class="icon-btn icon-save"></span>Guardar .xml</a>
           <!-- 💾 Guardar .xml -->
           <a id="btnLoad">
-            <span class="icon-btn icon-load"></span>Cargar .xml
+            <span class="icon-btn icon-load"></span>Abrir .xml
           </a>
           <!-- 📂 Cargar .xml-->
           <input type="file" id="loadXML" accept=".xml" style="display: none" />
@@ -744,7 +770,7 @@
               <button id="btnSavePy" title="Guardar .py localmente">
                 <span class="icon-btn icon-save-py"></span>
               </button>
-              <button id="btnLoadPy" title="Cargar .py local">
+              <button id="btnLoadPy" title="Abrir .py local">
                 <span class="icon-btn icon-load-py"></span>
               </button>
               <input type="file" id="loadPy" accept=".py" style="display: none" />
@@ -4504,85 +4530,9 @@
   })();
 </script>
 
-
 <!-- ── Zoom & Pan en Vista Conexiones ── -->
+<script src="{{ url_for('static', filename='wiring-zoom.js') }}"></script>
 <script>
-  (function () {
-    const content = document.getElementById('wiringContent');
-    const img = document.getElementById('wiringImg');
-
-    let scale = 1, tx = 0, ty = 0;
-    let dragging = false, startX, startY;
-
-    function applyTransform() {
-      img.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
-      img.style.transformOrigin = '0 0';
-      img.style.cursor = dragging ? 'grabbing' : 'grab';
-    }
-
-    // Zoom con rueda
-    content.addEventListener('wheel', function (e) {
-      e.preventDefault();
-      const rect = content.getBoundingClientRect();
-      const mouseX = e.clientX - rect.left;
-      const mouseY = e.clientY - rect.top;
-      const delta = e.deltaY < 0 ? 1.1 : 0.9;
-      tx = mouseX - (mouseX - tx) * delta;
-      ty = mouseY - (mouseY - ty) * delta;
-      scale = Math.min(Math.max(scale * delta, 0.2), 8);
-      applyTransform();
-    }, { passive: false });
-
-    // Arrastrar (pan)
-    content.addEventListener('mousedown', function (e) {
-      if (e.button !== 0) return;
-      dragging = true;
-      startX = e.clientX - tx;
-      startY = e.clientY - ty;
-      applyTransform();
-    });
-    window.addEventListener('mousemove', function (e) {
-      if (!dragging) return;
-      tx = e.clientX - startX;
-      ty = e.clientY - startY;
-      applyTransform();
-    });
-    window.addEventListener('mouseup', function () {
-      dragging = false;
-      applyTransform();
-    });
-
-    // Doble clic = resetear
-    content.addEventListener('dblclick', function () {
-      scale = 1; tx = 0; ty = 0;
-      applyTransform();
-    });
-
-    // Resetear cuando cambia la imagen
-    img.addEventListener('load', function () {
-      scale = 1; tx = 0; ty = 0;
-      applyTransform();
-    });
-
-    document.getElementById('btnZoomIn').addEventListener('click', function () {
-      const cx = content.clientWidth / 2, cy = content.clientHeight / 2;
-      tx = cx - (cx - tx) * 1.25;
-      ty = cy - (cy - ty) * 1.25;
-      scale = Math.min(scale * 1.25, 8);
-      applyTransform();
-    });
-    document.getElementById('btnZoomOut').addEventListener('click', function () {
-      const cx = content.clientWidth / 2, cy = content.clientHeight / 2;
-      tx = cx - (cx - tx) * 0.8;
-      ty = cy - (cy - ty) * 0.8;
-      scale = Math.max(scale * 0.8, 0.2);
-      applyTransform();
-    });
-    document.getElementById('btnZoomReset').addEventListener('click', function () {
-      scale = 1; tx = 0; ty = 0;
-      applyTransform();
-    });
-  })();
   /* ── Parche: diferir restoreWorkspaceFromLocal para evitar setTimeout lento ── */
   /* No se puede redefinir si main.js ya la declaró — se omite el override */
 
