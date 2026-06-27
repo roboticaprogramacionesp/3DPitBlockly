@@ -1,25 +1,18 @@
 /**
  * wiring-zoom.js — Zoom & Pan para la vista de Conexiones eléctricas
  * ─────────────────────────────────────────────────────────────────────
- * Estrategia: se inserta un <div id="wiringStage"> dentro de
- * #wiringContent que ocupa el 100% y sobre él se aplica el transform.
- * Así el origen (0,0) es siempre la esquina superior-izquierda del
- * contenedor, independientemente del CSS flex/padding exterior.
+ * v3 — Fix crítico:
+ *   Todos los eventos de interacción (mouse + touch) se registran en
+ *   #wiringContent (el contenedor fijo), NO en #wiringStage (que se
+ *   transforma y escala). Así el área de hit-test siempre es el 100%
+ *   del contenedor visible, independientemente del zoom o posición.
  *
- * Soporta:
- *   • Rueda del ratón  → zoom centrado al cursor
- *   • Arrastre mouse   → pan
- *   • Pinch (2 dedos)  → zoom + pan simultáneo
- *   • 1 dedo           → pan
- *   • Doble tap/clic   → resetear vista
- *   • Botones #btnZoomIn / #btnZoomOut / #btnZoomReset
- *
- * Fix v2:
- *   • centerImg() se reintenta con ResizeObserver si el contenedor
- *     aún tiene tamaño 0 (vista oculta con display:none al cargar).
- *   • Se detecta cambio de src en wiringImg para re-centrar automáticamente.
- *   • Se expone window.wiringZoom.center() para llamarlo desde main.js
- *     al mostrar la vista (opcional pero recomendado).
+ *   Problema v2:
+ *   - Mouse: mitad de la imagen mostraba cursor flecha porque el stage
+ *     escalado no cubría toda el área del content → mousedown caía en
+ *     content sin listener → no arrastraba.
+ *   - Touch: mismo problema. El dedo fuera de la imagen escalada
+ *     caía en content → touchstart no se disparaba en stage → sin pan.
  */
 
 (function () {
@@ -39,13 +32,7 @@
     return;
   }
 
-  /* ── Crear stage intermedio ────────────────────────────────────
-     El stage es un div que llena todo el contenedor.
-     Sobre él aplicamos el transform, con origin 0 0 siempre fijo.
-     La imagen vive dentro del stage sin ningún centrado flex.
-  ─────────────────────────────────────────────────────────────── */
-
-  /* Si ya existe (recarga en caliente) lo eliminamos */
+  /* ── Stage intermedio ──────────────────────────────────────── */
   var existingStage = document.getElementById('wiringStage');
   if (existingStage) existingStage.parentNode.removeChild(existingStage);
 
@@ -54,33 +41,40 @@
   stage.style.cssText = [
     'position:absolute',
     'top:0', 'left:0',
-    'width:100%', 'height:100%',
     'transform-origin:0 0',
-    'cursor:grab',
-    'touch-action:none',
+    /* El stage NO debe tener width/height 100% porque con scale
+       su área real de hit-test se agranda/reduce y causa el bug.
+       Usamos width/height:0 — solo es un contenedor de transform. */
+    'width:0', 'height:0',
     'user-select:none',
     '-webkit-user-select:none'
   ].join(';');
 
-  /* Mover la imagen al stage */
   if (img.parentNode === content) content.removeChild(img);
   stage.appendChild(img);
 
-  /* El content debe ser position:relative y sin desbordamiento */
+  /* Content: captura todos los eventos, cursor correcto siempre */
   content.style.position       = 'relative';
   content.style.overflow       = 'hidden';
   content.style.alignItems     = 'flex-start';
   content.style.justifyContent = 'flex-start';
   content.style.padding        = '0';
+  content.style.cursor         = 'grab';
+  content.style.touchAction    = 'none';
+  content.style.userSelect     = 'none';
+  content.style.webkitUserSelect = 'none';
   content.appendChild(stage);
 
-  /* La imagen no transforma por sí sola — se mueve con el stage */
+  /* Imagen: sin pointer-events para que no interfiera */
   img.style.cssText = [
     'display:block',
     'max-width:none',
     'height:auto',
     'pointer-events:none',
-    'transition:none'
+    'user-select:none',
+    '-webkit-user-select:none',
+    'transition:none',
+    '-webkit-user-drag:none'
   ].join(';');
 
   /* ── Estado ────────────────────────────────────────────────── */
@@ -98,7 +92,8 @@
 
   function applyTransform() {
     rafPending = false;
-    stage.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
+    stage.style.transform =
+      'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
   }
 
   function scheduleApply() {
@@ -148,11 +143,9 @@
     var iw = img.naturalWidth  || img.clientWidth;
     var ih = img.naturalHeight || img.clientHeight;
 
-    /* Si el contenedor aún no tiene tamaño (vista oculta),
-       esperamos con ResizeObserver hasta que lo tenga. */
     if (cw === 0 || ch === 0) {
       if (window.ResizeObserver && !_roObserver) {
-        _roObserver = new ResizeObserver(function (entries) {
+        _roObserver = new ResizeObserver(function () {
           if (content.clientWidth > 0 && content.clientHeight > 0) {
             _roObserver.disconnect();
             _roObserver = null;
@@ -175,15 +168,13 @@
     scheduleApply();
   }
 
-  /* ── Escuchar carga de imagen (incluye cambios de src) ─────── */
   img.addEventListener('load', centerImg);
   if (img.complete && img.naturalWidth) centerImg();
 
-  /* ── Detectar cambio de src desde main.js ──────────────────── */
+  /* Detectar cambio de src */
   var _srcObserver = new MutationObserver(function (mutations) {
     mutations.forEach(function (m) {
       if (m.attributeName === 'src' && img.src) {
-        /* El evento load se encargará; pero si ya estaba cargada: */
         if (img.complete && img.naturalWidth) centerImg();
       }
     });
@@ -191,7 +182,7 @@
   _srcObserver.observe(img, { attributes: true, attributeFilter: ['src'] });
 
   /* ════════════════════════════════════════════════════════════
-     RUEDA
+     RUEDA — en content
   ════════════════════════════════════════════════════════════ */
 
   content.addEventListener('wheel', function (e) {
@@ -204,16 +195,16 @@
   }, { passive: false });
 
   /* ════════════════════════════════════════════════════════════
-     MOUSE
+     MOUSE — listeners en content (no en stage)
   ════════════════════════════════════════════════════════════ */
 
-  stage.addEventListener('mousedown', function (e) {
+  content.addEventListener('mousedown', function (e) {
     if (e.button !== 0) return;
     e.preventDefault();
     mouseDragging = true;
     mouseStartX   = e.clientX - tx;
     mouseStartY   = e.clientY - ty;
-    stage.style.cursor = 'grabbing';
+    content.style.cursor = 'grabbing';
     setTransition(false);
   });
 
@@ -226,18 +217,18 @@
 
   window.addEventListener('mouseup', function () {
     if (!mouseDragging) return;
-    mouseDragging      = false;
-    stage.style.cursor = 'grab';
+    mouseDragging        = false;
+    content.style.cursor = 'grab';
     setTransition(true);
   });
 
-  stage.addEventListener('dblclick', resetView);
+  content.addEventListener('dblclick', resetView);
 
   /* ════════════════════════════════════════════════════════════
-     TOUCH
+     TOUCH — listeners en content (no en stage)
   ════════════════════════════════════════════════════════════ */
 
-  stage.addEventListener('touchstart', function (e) {
+  content.addEventListener('touchstart', function (e) {
     e.preventDefault();
     setTransition(false);
 
@@ -254,7 +245,7 @@
     }
   }, { passive: false });
 
-  stage.addEventListener('touchmove', function (e) {
+  content.addEventListener('touchmove', function (e) {
     e.preventDefault();
 
     if (e.touches.length === 2) {
@@ -289,7 +280,7 @@
     }
   }, { passive: false });
 
-  stage.addEventListener('touchend', function (e) {
+  content.addEventListener('touchend', function (e) {
     if (e.touches.length === 1) {
       prevSingle    = relToContent(e.touches[0].clientX, e.touches[0].clientY);
       lastPinchDist = null;
@@ -304,7 +295,7 @@
 
   /* Doble tap → reset */
   var lastTap = 0;
-  stage.addEventListener('touchend', function (e) {
+  content.addEventListener('touchend', function (e) {
     if (e.changedTouches.length !== 1) return;
     var now = Date.now();
     if (now - lastTap < 300) resetView();
@@ -336,23 +327,16 @@
 
   /* ════════════════════════════════════════════════════════════
      API PÚBLICA
-     Llamar window.wiringZoom.center() desde main.js al mostrar
-     la vista de conexiones garantiza el centrado correcto.
-     Ejemplo:
-       document.getElementById('btnWiring').addEventListener('click', function() {
-         showView('viewWiring');
-         if (window.wiringZoom) window.wiringZoom.center();
-       });
   ════════════════════════════════════════════════════════════ */
   window.wiringZoom = {
     center : centerImg,
     reset  : resetView,
-    zoomIn : function() {
+    zoomIn : function () {
       setTransition(true);
       zoomAt(1 + BTN_STEP, content.clientWidth / 2, content.clientHeight / 2);
       scheduleApply();
     },
-    zoomOut: function() {
+    zoomOut: function () {
       setTransition(true);
       zoomAt(1 / (1 + BTN_STEP), content.clientWidth / 2, content.clientHeight / 2);
       scheduleApply();
@@ -362,6 +346,6 @@
   /* ── Init ─────────────────────────────────────────────────── */
   setTransition(false);
   applyTransform();
-  console.log('[wiring-zoom] OK ✓ v2');
+  console.log('[wiring-zoom] OK ✓ v3');
 
 })();
