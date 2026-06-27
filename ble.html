@@ -17,29 +17,24 @@
     padding: 2rem 1rem 3rem;
   }
   header { text-align: center; margin-bottom: 2rem; }
-  header h1 { font-size: 22px; font-weight: 600; letter-spacing: 0.04em; color: #fff; }
+  header h1 { font-size: 22px; font-weight: 600; color: #fff; }
   header p { font-size: 13px; color: #555; margin-top: 4px; }
-  .panel { width: 100%; max-width: 460px; display: flex; flex-direction: column; gap: 14px; }
-  .card { background: #18181f; border: 1px solid #2a2a35; border-radius: 14px; padding: 1.1rem 1.3rem; }
-  .card-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #555; margin-bottom: 0.75rem; }
-  .status-pill { display: flex; align-items: center; gap: 10px; background: #0f0f13; border: 1px solid #2a2a35; border-radius: 999px; padding: 8px 16px; }
-  .dot { width: 8px; height: 8px; border-radius: 50%; background: #333; flex-shrink: 0; }
-  .dot.connected { background: #22c55e; box-shadow: 0 0 6px #22c55e88; }
+
+  .panel { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 12px; }
+
+  .card { background: #18181f; border: 1px solid #2a2a35; border-radius: 14px; padding: 1rem 1.2rem; }
+  .card-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #555; margin-bottom: 0.7rem; }
+
+  /* status */
+  .status-pill { display: flex; align-items: center; gap: 10px; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: #333; flex-shrink: 0; }
+  .dot.connected { background: #22c55e; box-shadow: 0 0 7px #22c55e99; }
   .dot.scanning  { background: #f59e0b; animation: pulse 0.9s infinite; }
   .dot.error     { background: #ef4444; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.25} }
-  #status-text { font-size: 13px; color: #aaa; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.2} }
+  #status-text { font-size: 14px; color: #aaa; }
 
-  .field label { font-size: 11px; color: #555; display: block; margin-bottom: 5px; }
-  .field input {
-    width: 100%; font-family: monospace; font-size: 12px;
-    padding: 8px 10px; background: #0f0f13; border: 1px solid #2a2a35;
-    border-radius: 8px; color: #bbb; outline: none; transition: border-color 0.15s;
-  }
-  .field input:focus { border-color: #4f6ef7; color: #eee; }
-  .hint { font-size: 11px; color: #444; margin-top: 8px; }
-
-  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  /* buttons */
   button {
     font-size: 13px; font-weight: 500; padding: 9px 20px;
     border-radius: 9px; border: 1px solid #2a2a35;
@@ -47,12 +42,13 @@
     transition: background 0.15s, transform 0.1s;
   }
   button:hover:not(:disabled) { background: #2e2e40; color: #fff; }
-  button:active:not(:disabled) { transform: scale(0.97); }
+  button:active:not(:disabled) { transform: scale(0.96); }
   button:disabled { opacity: 0.3; cursor: not-allowed; }
   button.accent { background: #4f6ef7; color: #fff; border-color: #4f6ef7; }
   button.accent:hover:not(:disabled) { background: #6680ff; border-color: #6680ff; }
-  button.sm { font-size: 12px; padding: 6px 14px; }
+  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
 
+  /* send */
   .send-row { display: flex; gap: 8px; }
   .send-row input {
     flex: 1; font-size: 14px; padding: 9px 14px;
@@ -63,42 +59,36 @@
   .send-row input:disabled { opacity: 0.3; }
   .send-row input::placeholder { color: #333; }
 
-  .log { font-family: monospace; font-size: 12px; line-height: 2; max-height: 200px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #2a2a35 transparent; }
+  /* dpad */
+  .dpad { display: grid; grid-template-columns: repeat(3, 72px); grid-template-rows: repeat(3, 72px); gap: 8px; justify-content: center; }
+  .dpad button {
+    width: 72px; height: 72px; padding: 0;
+    border-radius: 12px; font-size: 22px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .dpad .stop {
+    background: #3a1a1a; border-color: #6b2020; color: #f87171;
+    font-size: 13px; font-weight: 600;
+  }
+  .dpad .stop:hover:not(:disabled) { background: #4a2020; }
+  .dpad .empty { visibility: hidden; }
+
+  /* log */
+  .log { font-family: monospace; font-size: 12px; line-height: 2; max-height: 160px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #2a2a35 transparent; }
   .log::-webkit-scrollbar { width: 4px; }
   .log::-webkit-scrollbar-thumb { background: #2a2a35; border-radius: 4px; }
   .log .sys { color: #444; }
   .log .tx  { color: #60a5fa; }
   .log .rx  { color: #4ade80; }
   .log .err { color: #f87171; }
-
-  .info-box { background: #0f0f1a; border: 1px solid #1e1e35; border-radius: 9px; padding: 9px 12px; font-size: 11px; font-family: monospace; color: #555; line-height: 2; }
-  .info-box span { color: #4f6ef7; }
-
-  .banner { width: 100%; max-width: 460px; background: #1a1200; border: 1px solid #3a3000; border-radius: 10px; padding: 10px 14px; font-size: 12px; color: #999; margin-bottom: 14px; display: none; }
-  .banner.show { display: block; }
-  .banner b { color: #f59e0b; }
-
-  /* modo de escaneo toggle */
-  .toggle-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-  .toggle-label { font-size: 12px; color: #666; }
-  .toggle { position: relative; width: 36px; height: 20px; flex-shrink: 0; }
-  .toggle input { opacity: 0; width: 0; height: 0; }
-  .slider { position: absolute; inset: 0; background: #2a2a35; border-radius: 20px; cursor: pointer; transition: background 0.2s; }
-  .slider::before { content: ''; position: absolute; width: 14px; height: 14px; left: 3px; bottom: 3px; background: #666; border-radius: 50%; transition: transform 0.2s, background 0.2s; }
-  input:checked + .slider { background: #4f6ef7; }
-  input:checked + .slider::before { transform: translateX(16px); background: #fff; }
 </style>
 </head>
 <body>
 
 <header>
   <h1>ESP32 BLE UART</h1>
-  <p>Nordic UART Service — Chrome / Edge</p>
+  <p>Web Bluetooth</p>
 </header>
-
-<div class="banner" id="banner">
-  <b>Aviso:</b> <span id="banner-msg"></span>
-</div>
 
 <div class="panel">
 
@@ -111,31 +101,6 @@
   </div>
 
   <div class="card">
-    <div class="card-label">Modo de escaneo</div>
-    <div class="toggle-row">
-      <label class="toggle">
-        <input type="checkbox" id="toggle-mode" onchange="onToggleMode()" />
-        <span class="slider"></span>
-      </label>
-      <span class="toggle-label" id="mode-label">Filtrar por nombre del dispositivo</span>
-    </div>
-    <div id="name-field" class="field">
-      <label>Nombre del dispositivo BLE</label>
-      <input type="text" id="dev-name" value="P!t_Car_5" />
-    </div>
-    <p class="hint" id="mode-hint">La página buscará cualquier dispositivo BLE y se conectará al que tenga ese nombre automáticamente.</p>
-  </div>
-
-  <div class="card">
-    <div class="card-label">UUIDs (Nordic UART Service)</div>
-    <div class="info-box">
-      Service &nbsp;<span>6E400001-B5A3-F393-E0A9-E50E24DCCA9E</span><br>
-      RX &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>6E400002-B5A3-F393-E0A9-E50E24DCCA9E</span><br>
-      TX &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>6E400003-B5A3-F393-E0A9-E50E24DCCA9E</span>
-    </div>
-  </div>
-
-  <div class="card">
     <div class="card-label">Conexión</div>
     <div class="btn-row">
       <button class="accent" id="btn-connect" onclick="conectar()">Escanear y conectar</button>
@@ -144,7 +109,22 @@
   </div>
 
   <div class="card">
-    <div class="card-label">Enviar mensaje</div>
+    <div class="card-label">Control</div>
+    <div class="dpad">
+      <div class="empty"></div>
+      <button onclick="cmd('AVANZAR')" disabled id="c-up">▲</button>
+      <div class="empty"></div>
+      <button onclick="cmd('IZQUIERDA')" disabled id="c-left">◀</button>
+      <button class="stop" onclick="cmd('DETENER')" disabled id="c-stop">STOP</button>
+      <button onclick="cmd('DERECHA')" disabled id="c-right">▶</button>
+      <div class="empty"></div>
+      <button onclick="cmd('RETROCEDER')" disabled id="c-down">▼</button>
+      <div class="empty"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Mensaje libre</div>
     <div class="send-row">
       <input type="text" id="msg" placeholder="Escribe y presiona Enter..." disabled />
       <button id="btn-send" onclick="enviar()" disabled>Enviar</button>
@@ -167,25 +147,7 @@ const TX_UUID  = '6e400003-b5a3-f393-e0a9-e50e24dcca9e';
 
 let device, rxChar;
 
-(function checkBLE() {
-  if (!navigator.bluetooth) {
-    const b = document.getElementById('banner');
-    document.getElementById('banner-msg').textContent =
-      'Web Bluetooth no disponible. Usa Chrome o Edge y sirve desde HTTPS o localhost.';
-    b.classList.add('show');
-  }
-})();
-
-function onToggleMode() {
-  const checked = document.getElementById('toggle-mode').checked;
-  document.getElementById('name-field').style.display = checked ? 'none' : 'block';
-  document.getElementById('mode-label').textContent = checked
-    ? 'Mostrar todos los dispositivos BLE (selector manual)'
-    : 'Filtrar por nombre del dispositivo';
-  document.getElementById('mode-hint').textContent = checked
-    ? 'Chrome mostrará todos los dispositivos BLE cercanos. Selecciona el tuyo manualmente.'
-    : 'La página buscará cualquier dispositivo BLE y se conectará al que tenga ese nombre automáticamente.';
-}
+const ctrlBtns = ['c-up','c-down','c-left','c-right','c-stop','btn-send'];
 
 function log(msg, tipo) {
   const el = document.getElementById('log');
@@ -205,35 +167,21 @@ function setStatus(texto, estado) {
 function setConectado(on) {
   document.getElementById('btn-connect').disabled = on;
   document.getElementById('btn-disconnect').disabled = !on;
-  document.getElementById('btn-send').disabled = !on;
   document.getElementById('msg').disabled = !on;
+  ctrlBtns.forEach(id => document.getElementById(id).disabled = !on);
 }
 
 async function conectar() {
-  if (!navigator.bluetooth) { log('Web Bluetooth no disponible.', 'err'); return; }
-
-  const modoTodos = document.getElementById('toggle-mode').checked;
-  const nombre    = document.getElementById('dev-name').value.trim();
-
-  let options;
-  if (modoTodos) {
-    // Muestra todos los dispositivos BLE — el usuario elige
-    options = {
-      acceptAllDevices: true,
-      optionalServices: [SVC_UUID]
-    };
-  } else {
-    // Filtra por nombre, muestra solo ese dispositivo
-    options = {
-      filters: [{ name: nombre }],
-      optionalServices: [SVC_UUID]
-    };
+  if (!navigator.bluetooth) {
+    log('Web Bluetooth no disponible. Usa Chrome/Edge.', 'err'); return;
   }
-
   try {
     setStatus('Escaneando...', 'scanning');
     log('Abriendo selector de dispositivos...');
-    device = await navigator.bluetooth.requestDevice(options);
+    device = await navigator.bluetooth.requestDevice({
+      acceptAllDevices: true,
+      optionalServices: [SVC_UUID]
+    });
     setStatus('Conectando...', 'scanning');
     log('Seleccionado: ' + device.name);
     const server  = await device.gatt.connect();
@@ -266,15 +214,20 @@ function desconectar() {
   if (device && device.gatt.connected) device.gatt.disconnect();
 }
 
-async function enviar() {
-  const input = document.getElementById('msg');
-  const texto = input.value.trim();
-  if (!texto || !rxChar) return;
+async function cmd(texto) {
+  if (!rxChar) return;
   try {
     await rxChar.writeValue(new TextEncoder().encode(texto + '\n'));
     log('→ ' + texto, 'tx');
-    input.value = '';
   } catch (e) { log(e.message, 'err'); }
+}
+
+async function enviar() {
+  const input = document.getElementById('msg');
+  const texto = input.value.trim();
+  if (!texto) return;
+  await cmd(texto);
+  input.value = '';
 }
 
 document.getElementById('msg').addEventListener('keydown', e => {
