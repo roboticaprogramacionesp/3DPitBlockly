@@ -22,27 +22,47 @@
   .panel { width: 100%; max-width: 460px; display: flex; flex-direction: column; gap: 14px; }
   .card { background: #18181f; border: 1px solid #2a2a35; border-radius: 14px; padding: 1.1rem 1.3rem; }
   .card-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #555; margin-bottom: 0.75rem; }
-  .status-pill { display: flex; align-items: center; gap: 10px; background: #0f0f13; border: 1px solid #2a2a35; border-radius: 999px; padding: 8px 16px; width: fit-content; }
+  .status-pill { display: flex; align-items: center; gap: 10px; background: #0f0f13; border: 1px solid #2a2a35; border-radius: 999px; padding: 8px 16px; }
   .dot { width: 8px; height: 8px; border-radius: 50%; background: #333; flex-shrink: 0; }
   .dot.connected { background: #22c55e; box-shadow: 0 0 6px #22c55e88; }
   .dot.scanning  { background: #f59e0b; animation: pulse 0.9s infinite; }
   .dot.error     { background: #ef4444; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.25} }
   #status-text { font-size: 13px; color: #aaa; }
-  .info-box { background: #0f0f1a; border: 1px solid #2a2a45; border-radius: 10px; padding: 10px 14px; font-size: 11px; font-family: monospace; color: #666; line-height: 2; }
-  .info-box span { color: #4f6ef7; }
+
+  .field label { font-size: 11px; color: #555; display: block; margin-bottom: 5px; }
+  .field input {
+    width: 100%; font-family: monospace; font-size: 12px;
+    padding: 8px 10px; background: #0f0f13; border: 1px solid #2a2a35;
+    border-radius: 8px; color: #bbb; outline: none; transition: border-color 0.15s;
+  }
+  .field input:focus { border-color: #4f6ef7; color: #eee; }
+  .hint { font-size: 11px; color: #444; margin-top: 8px; }
+
   .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
-  button { font-size: 13px; font-weight: 500; padding: 9px 20px; border-radius: 9px; border: 1px solid #2a2a35; background: #222230; color: #ccc; cursor: pointer; transition: background 0.15s, transform 0.1s; }
+  button {
+    font-size: 13px; font-weight: 500; padding: 9px 20px;
+    border-radius: 9px; border: 1px solid #2a2a35;
+    background: #222230; color: #ccc; cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+  }
   button:hover:not(:disabled) { background: #2e2e40; color: #fff; }
   button:active:not(:disabled) { transform: scale(0.97); }
   button:disabled { opacity: 0.3; cursor: not-allowed; }
   button.accent { background: #4f6ef7; color: #fff; border-color: #4f6ef7; }
   button.accent:hover:not(:disabled) { background: #6680ff; border-color: #6680ff; }
+  button.sm { font-size: 12px; padding: 6px 14px; }
+
   .send-row { display: flex; gap: 8px; }
-  .send-row input { flex: 1; font-size: 14px; padding: 9px 14px; background: #0f0f13; border: 1px solid #2a2a35; border-radius: 9px; color: #eee; outline: none; transition: border-color 0.15s; }
+  .send-row input {
+    flex: 1; font-size: 14px; padding: 9px 14px;
+    background: #0f0f13; border: 1px solid #2a2a35;
+    border-radius: 9px; color: #eee; outline: none; transition: border-color 0.15s;
+  }
   .send-row input:focus { border-color: #4f6ef7; }
   .send-row input:disabled { opacity: 0.3; }
   .send-row input::placeholder { color: #333; }
+
   .log { font-family: monospace; font-size: 12px; line-height: 2; max-height: 200px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #2a2a35 transparent; }
   .log::-webkit-scrollbar { width: 4px; }
   .log::-webkit-scrollbar-thumb { background: #2a2a35; border-radius: 4px; }
@@ -50,9 +70,23 @@
   .log .tx  { color: #60a5fa; }
   .log .rx  { color: #4ade80; }
   .log .err { color: #f87171; }
+
+  .info-box { background: #0f0f1a; border: 1px solid #1e1e35; border-radius: 9px; padding: 9px 12px; font-size: 11px; font-family: monospace; color: #555; line-height: 2; }
+  .info-box span { color: #4f6ef7; }
+
   .banner { width: 100%; max-width: 460px; background: #1a1200; border: 1px solid #3a3000; border-radius: 10px; padding: 10px 14px; font-size: 12px; color: #999; margin-bottom: 14px; display: none; }
   .banner.show { display: block; }
   .banner b { color: #f59e0b; }
+
+  /* modo de escaneo toggle */
+  .toggle-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .toggle-label { font-size: 12px; color: #666; }
+  .toggle { position: relative; width: 36px; height: 20px; flex-shrink: 0; }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .slider { position: absolute; inset: 0; background: #2a2a35; border-radius: 20px; cursor: pointer; transition: background 0.2s; }
+  .slider::before { content: ''; position: absolute; width: 14px; height: 14px; left: 3px; bottom: 3px; background: #666; border-radius: 50%; transition: transform 0.2s, background 0.2s; }
+  input:checked + .slider { background: #4f6ef7; }
+  input:checked + .slider::before { transform: translateX(16px); background: #fff; }
 </style>
 </head>
 <body>
@@ -77,11 +111,27 @@
   </div>
 
   <div class="card">
-    <div class="card-label">Nordic UART Service UUIDs (fijos)</div>
+    <div class="card-label">Modo de escaneo</div>
+    <div class="toggle-row">
+      <label class="toggle">
+        <input type="checkbox" id="toggle-mode" onchange="onToggleMode()" />
+        <span class="slider"></span>
+      </label>
+      <span class="toggle-label" id="mode-label">Filtrar por nombre del dispositivo</span>
+    </div>
+    <div id="name-field" class="field">
+      <label>Nombre del dispositivo BLE</label>
+      <input type="text" id="dev-name" value="P!t_Car_5" />
+    </div>
+    <p class="hint" id="mode-hint">La página buscará cualquier dispositivo BLE y se conectará al que tenga ese nombre automáticamente.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-label">UUIDs (Nordic UART Service)</div>
     <div class="info-box">
-      Service&nbsp; <span>6E400001-B5A3-F393-E0A9-E50E24DCCA9E</span><br>
-      RX (envío) <span>6E400002-B5A3-F393-E0A9-E50E24DCCA9E</span><br>
-      TX (recibo) <span>6E400003-B5A3-F393-E0A9-E50E24DCCA9E</span>
+      Service &nbsp;<span>6E400001-B5A3-F393-E0A9-E50E24DCCA9E</span><br>
+      RX &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>6E400002-B5A3-F393-E0A9-E50E24DCCA9E</span><br>
+      TX &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>6E400003-B5A3-F393-E0A9-E50E24DCCA9E</span>
     </div>
   </div>
 
@@ -111,10 +161,9 @@
 </div>
 
 <script>
-// Nordic UART Service UUIDs
-const SVC_UUID  = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
-const RX_UUID   = '6e400002-b5a3-f393-e0a9-e50e24dcca9e'; // PC → ESP32
-const TX_UUID   = '6e400003-b5a3-f393-e0a9-e50e24dcca9e'; // ESP32 → PC
+const SVC_UUID = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
+const RX_UUID  = '6e400002-b5a3-f393-e0a9-e50e24dcca9e';
+const TX_UUID  = '6e400003-b5a3-f393-e0a9-e50e24dcca9e';
 
 let device, rxChar;
 
@@ -122,10 +171,21 @@ let device, rxChar;
   if (!navigator.bluetooth) {
     const b = document.getElementById('banner');
     document.getElementById('banner-msg').textContent =
-      'Web Bluetooth no disponible. Usa Chrome o Edge y abre el archivo desde localhost o HTTPS.';
+      'Web Bluetooth no disponible. Usa Chrome o Edge y sirve desde HTTPS o localhost.';
     b.classList.add('show');
   }
 })();
+
+function onToggleMode() {
+  const checked = document.getElementById('toggle-mode').checked;
+  document.getElementById('name-field').style.display = checked ? 'none' : 'block';
+  document.getElementById('mode-label').textContent = checked
+    ? 'Mostrar todos los dispositivos BLE (selector manual)'
+    : 'Filtrar por nombre del dispositivo';
+  document.getElementById('mode-hint').textContent = checked
+    ? 'Chrome mostrará todos los dispositivos BLE cercanos. Selecciona el tuyo manualmente.'
+    : 'La página buscará cualquier dispositivo BLE y se conectará al que tenga ese nombre automáticamente.';
+}
 
 function log(msg, tipo) {
   const el = document.getElementById('log');
@@ -151,25 +211,37 @@ function setConectado(on) {
 
 async function conectar() {
   if (!navigator.bluetooth) { log('Web Bluetooth no disponible.', 'err'); return; }
+
+  const modoTodos = document.getElementById('toggle-mode').checked;
+  const nombre    = document.getElementById('dev-name').value.trim();
+
+  let options;
+  if (modoTodos) {
+    // Muestra todos los dispositivos BLE — el usuario elige
+    options = {
+      acceptAllDevices: true,
+      optionalServices: [SVC_UUID]
+    };
+  } else {
+    // Filtra por nombre, muestra solo ese dispositivo
+    options = {
+      filters: [{ name: nombre }],
+      optionalServices: [SVC_UUID]
+    };
+  }
+
   try {
     setStatus('Escaneando...', 'scanning');
-    log('Buscando dispositivos BLE UART...');
-    device = await navigator.bluetooth.requestDevice({
-      filters: [{ services: [SVC_UUID] }]
-    });
+    log('Abriendo selector de dispositivos...');
+    device = await navigator.bluetooth.requestDevice(options);
     setStatus('Conectando...', 'scanning');
-    log('Encontrado: ' + device.name);
+    log('Seleccionado: ' + device.name);
     const server  = await device.gatt.connect();
     const service = await server.getPrimaryService(SVC_UUID);
-
-    // RX: para enviar datos a la ESP32
     rxChar = await service.getCharacteristic(RX_UUID);
-
-    // TX: para recibir datos de la ESP32
     const txChar = await service.getCharacteristic(TX_UUID);
     await txChar.startNotifications();
     txChar.addEventListener('characteristicvaluechanged', onRecibir);
-
     device.addEventListener('gattserverdisconnected', onDesconectado);
     setStatus('Conectado — ' + device.name, 'connected');
     setConectado(true);
@@ -181,8 +253,7 @@ async function conectar() {
 }
 
 function onRecibir(e) {
-  const texto = new TextDecoder().decode(e.target.value);
-  log('← ' + texto, 'rx');
+  log('← ' + new TextDecoder().decode(e.target.value), 'rx');
 }
 
 function onDesconectado() {
@@ -203,9 +274,7 @@ async function enviar() {
     await rxChar.writeValue(new TextEncoder().encode(texto + '\n'));
     log('→ ' + texto, 'tx');
     input.value = '';
-  } catch (e) {
-    log(e.message, 'err');
-  }
+  } catch (e) { log(e.message, 'err'); }
 }
 
 document.getElementById('msg').addEventListener('keydown', e => {
