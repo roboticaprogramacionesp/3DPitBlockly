@@ -14,7 +14,6 @@
      ══════════════════════════════════════════════ -->
 
   <!-- PWA Manifest -->
-  <link rel="manifest" href="/custom-esp32-blockly/static/pwa-manifest.json">
   <link rel="manifest" href="./static/pwa-manifest.json">
 
   <!-- Color de barra en Android -->
@@ -557,6 +556,16 @@
      AGREGAR ESTO JUSTO ANTES DEL </body> DE TU index.html
      ══════════════════════════════════════════════ -->
 <script>
+  /* ── Manifest dinámico ── */
+  const base = location.hostname === 'localhost' || location.hostname === '127.0.0.1'
+    ? './static/pwa-manifest.json'
+    : '/custom-esp32-blockly/static/pwa-manifest.json';
+  const link = document.createElement('link');
+  link.rel = 'manifest';
+  link.href = base;
+  document.head.appendChild(link);
+
+  /* ── Service Worker ── */
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./service-worker.js')

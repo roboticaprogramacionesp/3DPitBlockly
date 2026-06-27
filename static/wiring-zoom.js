@@ -1,15 +1,18 @@
 /**
  * wiring-zoom.js — Zoom & Pan para la vista de Conexiones eléctricas
  * ─────────────────────────────────────────────────────────────────────
+ * Estrategia: se inserta un <div id="wiringStage"> dentro de
+ * #wiringContent que ocupa el 100% y sobre él se aplica el transform.
+ * Así el origen (0,0) es siempre la esquina superior-izquierda del
+ * contenedor, independientemente del CSS flex/padding exterior.
+ *
  * Soporta:
  *   • Rueda del ratón  → zoom centrado al cursor
  *   • Arrastre mouse   → pan
- *   • Pinch (2 dedos)  → zoom centrado entre los dos dedos + pan simultáneo
+ *   • Pinch (2 dedos)  → zoom + pan simultáneo
  *   • 1 dedo           → pan
  *   • Doble tap/clic   → resetear vista
  *   • Botones #btnZoomIn / #btnZoomOut / #btnZoomReset
- *
- * Sin dependencias externas. Se puede incluir en cualquier momento tras el DOM.
  */
 
 (function () {
@@ -17,8 +20,8 @@
   /* ── Configuración ─────────────────────────────────────────── */
   var MIN_SCALE   = 0.1;
   var MAX_SCALE   = 10;
-  var WHEEL_SPEED = 0.12;   // fracción por paso de rueda
-  var BTN_STEP    = 0.25;   // fracción de zoom por botón
+  var WHEEL_SPEED = 0.12;
+  var BTN_STEP    = 0.25;
 
   /* ── Elementos DOM ─────────────────────────────────────────── */
   var content = document.getElementById('wiringContent');
@@ -29,27 +32,53 @@
     return;
   }
 
-  /* ── Estado de transformación ──────────────────────────────── */
-  var scale = 1;
-  var tx    = 0;
-  var ty    = 0;
+  /* ── Crear stage intermedio ────────────────────────────────────
+     El stage es un div que llena todo el contenedor.
+     Sobre él aplicamos el transform, con origin 0 0 siempre fijo.
+     La imagen vive dentro del stage sin ningún centrado flex.
+  ─────────────────────────────────────────────────────────────── */
+  var stage = document.createElement('div');
+  stage.id = 'wiringStage';
+  stage.style.cssText = [
+    'position:absolute',
+    'top:0', 'left:0',
+    'width:100%', 'height:100%',
+    'transform-origin:0 0',
+    'cursor:grab',
+    'touch-action:none',   // desactiva scroll nativo del navegador en el área
+    'user-select:none',
+    '-webkit-user-select:none'
+  ].join(';');
 
-  /* ── Estado mouse ──────────────────────────────────────────── */
-  var mouseDragging = false;
-  var mouseStartX   = 0;
-  var mouseStartY   = 0;
+  // Mover la imagen al stage
+  content.removeChild(img);
+  stage.appendChild(img);
 
-  /* ── Estado touch ──────────────────────────────────────────── */
-  var prevSingle    = null;   // última posición del dedo único (para pan)
-  var lastPinchDist = null;   // distancia entre 2 dedos en el frame anterior
-  var lastPinchMid  = null;   // punto medio entre 2 dedos en el frame anterior
+  // El stage vive dentro del content; el content debe ser position:relative
+  content.style.position = 'relative';
+  content.style.overflow = 'hidden';
+  // Quitar el centrado flex que desplaza el origen
+  content.style.alignItems     = 'flex-start';
+  content.style.justifyContent = 'flex-start';
+  content.style.padding        = '0';
+  content.appendChild(stage);
 
-  /* ── rAF ───────────────────────────────────────────────────── */
+  // La imagen no necesita transformación propia; se mueve con el stage
+  img.style.cssText = [
+    'display:block',
+    'max-width:none',
+    'height:auto',
+    'pointer-events:none'   // evita que la img consuma eventos de touch
+  ].join(';');
+
+  /* ── Estado ────────────────────────────────────────────────── */
+  var scale = 1, tx = 0, ty = 0;
+  var mouseDragging = false, mouseStartX = 0, mouseStartY = 0;
+  var prevSingle = null;
+  var lastPinchDist = null, lastPinchMid = null;
   var rafPending = false;
 
-  /* ════════════════════════════════════════════════════════════
-     HELPERS
-  ════════════════════════════════════════════════════════════ */
+  /* ── Helpers ───────────────────────────────────────────────── */
 
   function clampScale(s) {
     return Math.min(Math.max(s, MIN_SCALE), MAX_SCALE);
@@ -57,8 +86,7 @@
 
   function applyTransform() {
     rafPending = false;
-    img.style.transformOrigin = '0 0';
-    img.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
+    stage.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
   }
 
   function scheduleApply() {
@@ -68,21 +96,18 @@
     }
   }
 
-  /** Transición CSS: true = suave (botones/reset), false = sin lag (gestos) */
   function setTransition(on) {
-    img.style.transition = on ? 'transform 0.08s ease-out' : 'none';
+    stage.style.transition = on ? 'transform 0.08s ease-out' : 'none';
   }
 
-  /** Zoom anclado en (originX, originY) relativo al contenedor */
   function zoomAt(factor, originX, originY) {
-    var newScale  = clampScale(scale * factor);
+    var newScale   = clampScale(scale * factor);
     var realFactor = newScale / scale;
     tx    = originX - (originX - tx) * realFactor;
     ty    = originY - (originY - ty) * realFactor;
     scale = newScale;
   }
 
-  /** Coordenadas relativas al contenedor */
   function relToContent(clientX, clientY) {
     var rect = content.getBoundingClientRect();
     return { x: clientX - rect.left, y: clientY - rect.top };
@@ -103,8 +128,28 @@
     scheduleApply();
   }
 
+  /* ── Centrar imagen al cargar ──────────────────────────────── */
+  function centerImg() {
+    var cw = content.clientWidth;
+    var ch = content.clientHeight;
+    var iw = img.naturalWidth  || img.clientWidth;
+    var ih = img.naturalHeight || img.clientHeight;
+    if (!iw || !ih) { scale = 1; tx = 0; ty = 0; }
+    else {
+      scale = Math.min(cw / iw, ch / ih, 1);
+      tx    = (cw - iw * scale) / 2;
+      ty    = (ch - ih * scale) / 2;
+    }
+    setTransition(false);
+    scheduleApply();
+  }
+
+  img.addEventListener('load', centerImg);
+  // Si la imagen ya estaba cargada (src asignado antes del script)
+  if (img.complete && img.naturalWidth) centerImg();
+
   /* ════════════════════════════════════════════════════════════
-     RUEDA DEL RATÓN
+     RUEDA
   ════════════════════════════════════════════════════════════ */
 
   content.addEventListener('wheel', function (e) {
@@ -120,13 +165,13 @@
      MOUSE
   ════════════════════════════════════════════════════════════ */
 
-  content.addEventListener('mousedown', function (e) {
+  stage.addEventListener('mousedown', function (e) {
     if (e.button !== 0) return;
     e.preventDefault();
     mouseDragging = true;
     mouseStartX   = e.clientX - tx;
     mouseStartY   = e.clientY - ty;
-    img.style.cursor = 'grabbing';
+    stage.style.cursor = 'grabbing';
     setTransition(false);
   });
 
@@ -139,31 +184,26 @@
 
   window.addEventListener('mouseup', function () {
     if (!mouseDragging) return;
-    mouseDragging    = false;
-    img.style.cursor = 'grab';
+    mouseDragging      = false;
+    stage.style.cursor = 'grab';
     setTransition(true);
   });
 
-  content.addEventListener('dblclick', resetView);
-  img.addEventListener('load', resetView);
-  img.style.cursor = 'grab';
+  stage.addEventListener('dblclick', resetView);
 
   /* ════════════════════════════════════════════════════════════
      TOUCH
   ════════════════════════════════════════════════════════════ */
 
-  content.addEventListener('touchstart', function (e) {
+  stage.addEventListener('touchstart', function (e) {
     e.preventDefault();
     setTransition(false);
 
     if (e.touches.length === 1) {
-      // Iniciar pan con 1 dedo
       prevSingle    = relToContent(e.touches[0].clientX, e.touches[0].clientY);
       lastPinchDist = null;
       lastPinchMid  = null;
-
     } else if (e.touches.length === 2) {
-      // Iniciar pinch con 2 dedos
       prevSingle = null;
       var t0 = relToContent(e.touches[0].clientX, e.touches[0].clientY);
       var t1 = relToContent(e.touches[1].clientX, e.touches[1].clientY);
@@ -172,11 +212,10 @@
     }
   }, { passive: false });
 
-  content.addEventListener('touchmove', function (e) {
+  stage.addEventListener('touchmove', function (e) {
     e.preventDefault();
 
     if (e.touches.length === 2) {
-      // ── Pinch zoom + pan simultáneo ──
       var t0   = relToContent(e.touches[0].clientX, e.touches[0].clientY);
       var t1   = relToContent(e.touches[1].clientX, e.touches[1].clientY);
       var dist = pinchDist(t0, t1);
@@ -196,7 +235,8 @@
       scheduleApply();
 
     } else if (e.touches.length === 1) {
-      // ── Pan con 1 dedo ──
+      lastPinchDist = null;
+      lastPinchMid  = null;
       var cur = relToContent(e.touches[0].clientX, e.touches[0].clientY);
       if (prevSingle !== null) {
         tx += cur.x - prevSingle.x;
@@ -207,9 +247,8 @@
     }
   }, { passive: false });
 
-  content.addEventListener('touchend', function (e) {
+  stage.addEventListener('touchend', function (e) {
     if (e.touches.length === 1) {
-      // Quedó 1 dedo tras levantar el otro — reiniciar pan para evitar salto
       prevSingle    = relToContent(e.touches[0].clientX, e.touches[0].clientY);
       lastPinchDist = null;
       lastPinchMid  = null;
@@ -223,7 +262,7 @@
 
   // Doble tap → reset
   var lastTap = 0;
-  content.addEventListener('touchend', function (e) {
+  stage.addEventListener('touchend', function (e) {
     if (e.changedTouches.length !== 1) return;
     var now = Date.now();
     if (now - lastTap < 300) resetView();
