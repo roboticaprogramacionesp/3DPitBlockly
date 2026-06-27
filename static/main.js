@@ -177,7 +177,12 @@ document
   .addEventListener("click", () => showView("viewBlocks"));
 document
   .getElementById("btnWiring")
-  .addEventListener("click", () => showView("viewWiring"));
+  .addEventListener("click", () => {
+    showView("viewWiring");
+    requestAnimationFrame(() => {
+      if (window.wiringZoom) window.wiringZoom.center();
+    });
+  });
 
 // ─────────────────────────────────────────────────────────────
 // AUTOSAVE

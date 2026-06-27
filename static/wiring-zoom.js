@@ -13,12 +13,19 @@
  *   • 1 dedo           → pan
  *   • Doble tap/clic   → resetear vista
  *   • Botones #btnZoomIn / #btnZoomOut / #btnZoomReset
+ *
+ * Fix v2:
+ *   • centerImg() se reintenta con ResizeObserver si el contenedor
+ *     aún tiene tamaño 0 (vista oculta con display:none al cargar).
+ *   • Se detecta cambio de src en wiringImg para re-centrar automáticamente.
+ *   • Se expone window.wiringZoom.center() para llamarlo desde main.js
+ *     al mostrar la vista (opcional pero recomendado).
  */
 
 (function () {
 
   /* ── Configuración ─────────────────────────────────────────── */
-  var MIN_SCALE   = 0.1;
+  var MIN_SCALE   = 0.05;
   var MAX_SCALE   = 10;
   var WHEEL_SPEED = 0.12;
   var BTN_STEP    = 0.25;
@@ -37,6 +44,11 @@
      Sobre él aplicamos el transform, con origin 0 0 siempre fijo.
      La imagen vive dentro del stage sin ningún centrado flex.
   ─────────────────────────────────────────────────────────────── */
+
+  /* Si ya existe (recarga en caliente) lo eliminamos */
+  var existingStage = document.getElementById('wiringStage');
+  if (existingStage) existingStage.parentNode.removeChild(existingStage);
+
   var stage = document.createElement('div');
   stage.id = 'wiringStage';
   stage.style.cssText = [
@@ -45,30 +57,30 @@
     'width:100%', 'height:100%',
     'transform-origin:0 0',
     'cursor:grab',
-    'touch-action:none',   // desactiva scroll nativo del navegador en el área
+    'touch-action:none',
     'user-select:none',
     '-webkit-user-select:none'
   ].join(';');
 
-  // Mover la imagen al stage
-  content.removeChild(img);
+  /* Mover la imagen al stage */
+  if (img.parentNode === content) content.removeChild(img);
   stage.appendChild(img);
 
-  // El stage vive dentro del content; el content debe ser position:relative
-  content.style.position = 'relative';
-  content.style.overflow = 'hidden';
-  // Quitar el centrado flex que desplaza el origen
+  /* El content debe ser position:relative y sin desbordamiento */
+  content.style.position       = 'relative';
+  content.style.overflow       = 'hidden';
   content.style.alignItems     = 'flex-start';
   content.style.justifyContent = 'flex-start';
   content.style.padding        = '0';
   content.appendChild(stage);
 
-  // La imagen no necesita transformación propia; se mueve con el stage
+  /* La imagen no transforma por sí sola — se mueve con el stage */
   img.style.cssText = [
     'display:block',
     'max-width:none',
     'height:auto',
-    'pointer-events:none'   // evita que la img consuma eventos de touch
+    'pointer-events:none',
+    'transition:none'
   ].join(';');
 
   /* ── Estado ────────────────────────────────────────────────── */
@@ -97,7 +109,7 @@
   }
 
   function setTransition(on) {
-    stage.style.transition = on ? 'transform 0.08s ease-out' : 'none';
+    stage.style.transition = on ? 'transform 0.15s ease-out' : 'none';
   }
 
   function zoomAt(factor, originX, originY) {
@@ -123,19 +135,38 @@
   }
 
   function resetView() {
-    scale = 1; tx = 0; ty = 0;
     setTransition(true);
-    scheduleApply();
+    centerImg();
   }
 
-  /* ── Centrar imagen al cargar ──────────────────────────────── */
+  /* ── Centrar imagen ────────────────────────────────────────── */
+  var _roObserver = null;
+
   function centerImg() {
     var cw = content.clientWidth;
     var ch = content.clientHeight;
     var iw = img.naturalWidth  || img.clientWidth;
     var ih = img.naturalHeight || img.clientHeight;
-    if (!iw || !ih) { scale = 1; tx = 0; ty = 0; }
-    else {
+
+    /* Si el contenedor aún no tiene tamaño (vista oculta),
+       esperamos con ResizeObserver hasta que lo tenga. */
+    if (cw === 0 || ch === 0) {
+      if (window.ResizeObserver && !_roObserver) {
+        _roObserver = new ResizeObserver(function (entries) {
+          if (content.clientWidth > 0 && content.clientHeight > 0) {
+            _roObserver.disconnect();
+            _roObserver = null;
+            centerImg();
+          }
+        });
+        _roObserver.observe(content);
+      }
+      return;
+    }
+
+    if (!iw || !ih) {
+      scale = 1; tx = 0; ty = 0;
+    } else {
       scale = Math.min(cw / iw, ch / ih, 1);
       tx    = (cw - iw * scale) / 2;
       ty    = (ch - ih * scale) / 2;
@@ -144,9 +175,20 @@
     scheduleApply();
   }
 
+  /* ── Escuchar carga de imagen (incluye cambios de src) ─────── */
   img.addEventListener('load', centerImg);
-  // Si la imagen ya estaba cargada (src asignado antes del script)
   if (img.complete && img.naturalWidth) centerImg();
+
+  /* ── Detectar cambio de src desde main.js ──────────────────── */
+  var _srcObserver = new MutationObserver(function (mutations) {
+    mutations.forEach(function (m) {
+      if (m.attributeName === 'src' && img.src) {
+        /* El evento load se encargará; pero si ya estaba cargada: */
+        if (img.complete && img.naturalWidth) centerImg();
+      }
+    });
+  });
+  _srcObserver.observe(img, { attributes: true, attributeFilter: ['src'] });
 
   /* ════════════════════════════════════════════════════════════
      RUEDA
@@ -260,7 +302,7 @@
     }
   }, { passive: true });
 
-  // Doble tap → reset
+  /* Doble tap → reset */
   var lastTap = 0;
   stage.addEventListener('touchend', function (e) {
     if (e.changedTouches.length !== 1) return;
@@ -292,9 +334,34 @@
 
   setupBtn('btnZoomReset', resetView);
 
+  /* ════════════════════════════════════════════════════════════
+     API PÚBLICA
+     Llamar window.wiringZoom.center() desde main.js al mostrar
+     la vista de conexiones garantiza el centrado correcto.
+     Ejemplo:
+       document.getElementById('btnWiring').addEventListener('click', function() {
+         showView('viewWiring');
+         if (window.wiringZoom) window.wiringZoom.center();
+       });
+  ════════════════════════════════════════════════════════════ */
+  window.wiringZoom = {
+    center : centerImg,
+    reset  : resetView,
+    zoomIn : function() {
+      setTransition(true);
+      zoomAt(1 + BTN_STEP, content.clientWidth / 2, content.clientHeight / 2);
+      scheduleApply();
+    },
+    zoomOut: function() {
+      setTransition(true);
+      zoomAt(1 / (1 + BTN_STEP), content.clientWidth / 2, content.clientHeight / 2);
+      scheduleApply();
+    }
+  };
+
   /* ── Init ─────────────────────────────────────────────────── */
   setTransition(false);
   applyTransform();
-  console.log('[wiring-zoom] OK ✓');
+  console.log('[wiring-zoom] OK ✓ v2');
 
 })();

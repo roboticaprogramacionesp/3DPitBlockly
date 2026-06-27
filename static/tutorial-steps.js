@@ -2998,30 +2998,58 @@ var TutorialSteps = {
   },
 };
 
-/* ─── DRAG ───────────────────────────────────────────────────── */
+/* ─── DRAG (mouse + touch) ───────────────────────────────────── */
 function _tsMakeDraggable(panel) {
   var header = panel.querySelector('.ts-header');
   if (!header) return;
   header.style.cursor = 'grab';
   var drag = false, sx, sy, ol, ot;
-  header.addEventListener('mousedown', function (e) {
-    if (e.target.classList.contains('ts-close')) return;
-    drag = true; sx = e.clientX; sy = e.clientY;
+
+  function startDrag(clientX, clientY) {
+    drag = true;
+    sx = clientX; sy = clientY;
     var r = panel.getBoundingClientRect();
     ol = r.left; ot = r.top;
     panel.style.right = panel.style.bottom = 'auto';
     panel.style.left = ol + 'px'; panel.style.top = ot + 'px';
     header.style.cursor = 'grabbing';
+  }
+
+  function moveDrag(clientX, clientY) {
+    if (!drag) return;
+    panel.style.left = Math.max(0, ol + clientX - sx) + 'px';
+    panel.style.top  = Math.max(48, ot + clientY - sy) + 'px';
+  }
+
+  function endDrag() {
+    if (drag) { drag = false; header.style.cursor = 'grab'; }
+  }
+
+  /* ── Mouse ── */
+  header.addEventListener('mousedown', function (e) {
+    if (e.target.classList.contains('ts-close')) return;
+    startDrag(e.clientX, e.clientY);
     e.preventDefault();
   });
-  document.addEventListener('mousemove', function (e) {
-    if (!drag) return;
-    panel.style.left = Math.max(0, ol + e.clientX - sx) + 'px';
-    panel.style.top = Math.max(48, ot + e.clientY - sy) + 'px';
-  });
-  document.addEventListener('mouseup', function () {
-    if (drag) { drag = false; header.style.cursor = 'grab'; }
-  });
+  document.addEventListener('mousemove', function (e) { moveDrag(e.clientX, e.clientY); });
+  document.addEventListener('mouseup', endDrag);
+
+  /* ── Touch ── */
+  header.addEventListener('touchstart', function (e) {
+    if (e.target.classList.contains('ts-close')) return;
+    if (e.touches.length !== 1) return;
+    startDrag(e.touches[0].clientX, e.touches[0].clientY);
+    /* NO preventDefault aquí para no bloquear el scroll del panel */
+  }, { passive: true });
+
+  header.addEventListener('touchmove', function (e) {
+    if (!drag || e.touches.length !== 1) return;
+    moveDrag(e.touches[0].clientX, e.touches[0].clientY);
+    e.preventDefault();   /* bloquea scroll del body solo mientras arrastra */
+  }, { passive: false });
+
+  header.addEventListener('touchend', endDrag, { passive: true });
+  header.addEventListener('touchcancel', endDrag, { passive: true });
 }
 
 /* ─── INIT ───────────────────────────────────────────────────── */
@@ -3108,6 +3136,9 @@ document.addEventListener('DOMContentLoaded', function () {
     if (img) img.src = base + tut.diagram;
     if (titleEl) titleEl.textContent = tut.title + ' — Conexiones eléctricas';
     if (typeof showView === 'function') showView('viewWiring');
+    requestAnimationFrame(function () {
+      if (window.wiringZoom) window.wiringZoom.center();
+    });
   });
 
   // ── Botón de conexiones eléctricas (barra superior) ─────────
@@ -3122,6 +3153,9 @@ document.addEventListener('DOMContentLoaded', function () {
       if (img) img.src = base + tut.diagram;
       if (titleEl) titleEl.textContent = tut.title + ' — Conexiones eléctricas';
       if (typeof showView === 'function') showView('viewWiring');
+      requestAnimationFrame(function () {
+        if (window.wiringZoom) window.wiringZoom.center();
+      });
     });
   }
 
