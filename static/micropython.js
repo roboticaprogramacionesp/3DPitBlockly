@@ -3287,9 +3287,9 @@ Blockly.Python["neopixel_text"] = function (block) {
     Blockly.Python.valueToCode(block, "Y", Blockly.Python.ORDER_NONE) || 0;
 
   Blockly.Python.definitions_["rgb565_fn"] = "def rgb565(r,g,b):\n  return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)\n";
-  const fg = `rgb565(*${Blockly.Python.valueToCode(block, "FG", Blockly.Python.ORDER_ATOMIC) || "(255,0,0)"})`;
+  const fg = `rgb565(*${Blockly.Python.valueToCode(block, "COLOR", Blockly.Python.ORDER_ATOMIC) || "(255,0,0)"})`;
   Blockly.Python.definitions_["rgb565_fn"] = "def rgb565(r,g,b):\n  return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)\n";
-  const bg = `rgb565(*${Blockly.Python.valueToCode(block, "BG", Blockly.Python.ORDER_ATOMIC) || "(255,0,0)"})`;
+  const bg = `rgb565(*${Blockly.Python.valueToCode(block, "COLOR_BG", Blockly.Python.ORDER_ATOMIC) || "(255,0,0)"})`;
 
   return `
 ${name}.fill(${bg})

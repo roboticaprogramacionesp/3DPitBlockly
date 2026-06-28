@@ -2070,64 +2070,85 @@ function initInterpreter(code) {
     interpreter.setProperty(
       geObj,
       "createSprite",
-      interpreter.createNativeFunction(function (x, y, w, h, colorOrImg) {
-        GE.createSprite(_n(x), _n(y), _n(w), _n(h), _color(colorOrImg));
+      interpreter.createNativeFunction(function (x, y, w, h, colorOrImg, name) {
+        GE.createSprite(_n(x), _n(y), _n(w), _n(h), _color(colorOrImg), _s(name) || undefined);
+      }),
+    );
+    interpreter.setProperty(
+      geObj,
+      "selectSprite",
+      interpreter.createNativeFunction(function (name) {
+        GE.selectSprite(_s(name));
       }),
     );
     interpreter.setProperty(
       geObj,
       "moveSprite",
-      interpreter.createNativeFunction(function (dx, dy) {
-        GE.moveSprite(_n(dx), _n(dy));
+      interpreter.createNativeFunction(function (dx, dy, name) {
+        GE.moveSprite(_n(dx), _n(dy), _s(name) || undefined);
       }),
     );
     interpreter.setProperty(
       geObj,
       "setPos",
-      interpreter.createNativeFunction(function (x, y) {
-        GE.setPos(_n(x), _n(y));
+      interpreter.createNativeFunction(function (x, y, name) {
+        GE.setPos(_n(x), _n(y), _s(name) || undefined);
       }),
     );
     interpreter.setProperty(
       geObj,
       "getX",
-      interpreter.createNativeFunction(function () {
-        return GE.getX();
+      interpreter.createNativeFunction(function (name) {
+        return GE.getX(_s(name) || undefined);
       }),
     );
     interpreter.setProperty(
       geObj,
       "getY",
-      interpreter.createNativeFunction(function () {
-        return GE.getY();
+      interpreter.createNativeFunction(function (name) {
+        return GE.getY(_s(name) || undefined);
       }),
     );
     interpreter.setProperty(
       geObj,
       "drawSprite",
-      interpreter.createNativeFunction(function () {
-        GE.drawSprite();
+      interpreter.createNativeFunction(function (name) {
+        GE.drawSprite(_s(name) || undefined);
       }),
     );
     interpreter.setProperty(
       geObj,
       "setFlip",
-      interpreter.createNativeFunction(function (flip) {
-        GE.setFlip(!!flip);
+      interpreter.createNativeFunction(function (flip, name) {
+        GE.setFlip(!!flip, _s(name) || undefined);
       }),
     );
     interpreter.setProperty(
       geObj,
       "setFlipY",
-      interpreter.createNativeFunction(function (flip) {
-        GE.setFlipY(!!flip);
+      interpreter.createNativeFunction(function (flip, name) {
+        GE.setFlipY(!!flip, _s(name) || undefined);
       }),
     );
     interpreter.setProperty(
       geObj,
       "setScale",
-      interpreter.createNativeFunction(function (scale) {
-        GE.setScale(_n(scale));
+      interpreter.createNativeFunction(function (scale, name) {
+        GE.setScale(_n(scale), _s(name) || undefined);
+      }),
+    );
+    interpreter.setProperty(
+      geObj,
+      "touchingSprite",
+      interpreter.createNativeFunction(function (a, b) {
+        return GE.touchingSprite(_s(a), _s(b));
+      }),
+    );
+    interpreter.setProperty(
+      geObj,
+      "distanceBetween",
+      interpreter.createNativeFunction(function (a, b) {
+        return GE.distanceBetween(_s(a), _s(b));
       }),
     );
     interpreter.setProperty(
@@ -2247,29 +2268,29 @@ function initInterpreter(code) {
     interpreter.setProperty(
       geObj,
       "moveSteps",
-      interpreter.createNativeFunction(function (steps) {
-        GE.moveSteps(_n(steps));
+      interpreter.createNativeFunction(function (steps, name) {
+        GE.moveSteps(_n(steps), _s(name) || undefined);
       }),
     );
     interpreter.setProperty(
       geObj,
       "turnAngle",
-      interpreter.createNativeFunction(function (deg) {
-        GE.turnAngle(_n(deg));
+      interpreter.createNativeFunction(function (deg, name) {
+        GE.turnAngle(_n(deg), _s(name) || undefined);
       }),
     );
     interpreter.setProperty(
       geObj,
       "getAngle",
-      interpreter.createNativeFunction(function () {
-        return GE.getAngle();
+      interpreter.createNativeFunction(function (name) {
+        return GE.getAngle(_s(name) || undefined);
       }),
     );
     interpreter.setProperty(
       geObj,
       "setAngle",
-      interpreter.createNativeFunction(function (deg) {
-        GE.setAngle(_n(deg));
+      interpreter.createNativeFunction(function (deg, name) {
+        GE.setAngle(_n(deg), _s(name) || undefined);
       }),
     );
     interpreter.setProperty(
@@ -2284,15 +2305,15 @@ function initInterpreter(code) {
     interpreter.setProperty(
       geObj,
       "touchingColor",
-      interpreter.createNativeFunction(function (color) {
-        return GE.touchingColor(_color(color));
+      interpreter.createNativeFunction(function (color, name) {
+        return GE.touchingColor(_color(color), _s(name) || undefined);
       }),
     );
     interpreter.setProperty(
       geObj,
       "touchingEdge",
-      interpreter.createNativeFunction(function () {
-        return GE.touchingEdge();
+      interpreter.createNativeFunction(function (name) {
+        return GE.touchingEdge(_s(name) || undefined);
       }),
     );
     interpreter.setProperty(
@@ -2457,22 +2478,6 @@ function initInterpreter(code) {
       }),
     );
 
-    /* ── LEDs simulados ── */
-    interpreter.setProperty(
-      geObj,
-      "setLed",
-      interpreter.createNativeFunction(function (name, on) {
-        GE.setLed(_s(name), !!on);
-      }),
-    );
-    interpreter.setProperty(
-      geObj,
-      "drawLeds",
-      interpreter.createNativeFunction(function () {
-        GE.drawLeds();
-      }),
-    );
-
     /* ── Lápiz ── */
     interpreter.setProperty(
       geObj,
@@ -2559,7 +2564,12 @@ function _detectGameMode() {
       t === "mouse_wheel_down" ||
       t === "sprite_move_steps" ||
       t === "sprite_turn_left" ||
-      t === "sprite_turn_right"
+      t === "sprite_turn_right" ||
+      t === "sprite_create_named" ||
+      t === "sprite_draw_named" ||
+      t === "sprite_move_named" ||
+      t === "sprite_select" ||
+      t === "sprite_move_steps_named"
     ) {
       return true;
     }
@@ -2668,3 +2678,88 @@ function runBlocklyAnimation() {
     }
   }, 0);
 }
+
+Blockly.JavaScript['sprite_select'] = function(block) {
+  var name = Blockly.JavaScript.valueToCode(block, 'NAME',
+               Blockly.JavaScript.ORDER_ATOMIC) || "''";
+  return 'GameEngine.selectSprite(' + name + ');';
+};
+
+Blockly.JavaScript['sprite_create_named'] = function(block) {
+  var name  = Blockly.JavaScript.valueToCode(block, 'NAME',  Blockly.JavaScript.ORDER_ATOMIC) || "''";
+  var x     = Blockly.JavaScript.valueToCode(block, 'X',     Blockly.JavaScript.ORDER_ATOMIC) || '0';
+  var y     = Blockly.JavaScript.valueToCode(block, 'Y',     Blockly.JavaScript.ORDER_ATOMIC) || '0';
+  var w     = Blockly.JavaScript.valueToCode(block, 'W',     Blockly.JavaScript.ORDER_ATOMIC) || '48';
+  var h     = Blockly.JavaScript.valueToCode(block, 'H',     Blockly.JavaScript.ORDER_ATOMIC) || '48';
+  var img   = Blockly.JavaScript.valueToCode(block, 'IMG',   Blockly.JavaScript.ORDER_ATOMIC) || "'#00ff88'";
+  return 'GameEngine.createSprite(' + x + ',' + y + ',' + w + ',' + h + ',' + img + ',' + name + ');';
+};
+
+Blockly.JavaScript['sprite_draw_named'] = function(block) {
+  var name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC) || "''";
+  return 'GameEngine.drawSprite(' + name + ');';
+};
+
+Blockly.JavaScript['sprite_move_named'] = function(block) {
+  var name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC) || "''";
+  var dx   = Blockly.JavaScript.valueToCode(block, 'DX',   Blockly.JavaScript.ORDER_ATOMIC) || '0';
+  var dy   = Blockly.JavaScript.valueToCode(block, 'DY',   Blockly.JavaScript.ORDER_ATOMIC) || '0';
+  return 'GameEngine.moveSprite(' + dx + ',' + dy + ',' + name + ');';
+};
+
+Blockly.JavaScript['sprite_set_pos_named'] = function(block) {
+  var name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC) || "''";
+  var x    = Blockly.JavaScript.valueToCode(block, 'X',    Blockly.JavaScript.ORDER_ATOMIC) || '0';
+  var y    = Blockly.JavaScript.valueToCode(block, 'Y',    Blockly.JavaScript.ORDER_ATOMIC) || '0';
+  return 'GameEngine.setPos(' + x + ',' + y + ',' + name + ');';
+};
+
+Blockly.JavaScript['sprite_get_x_named'] = function(block) {
+  var name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC) || "''";
+  return ['GameEngine.getX(' + name + ')', Blockly.JavaScript.ORDER_FUNCTION_CALL];
+};
+
+Blockly.JavaScript['sprite_get_y_named'] = function(block) {
+  var name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC) || "''";
+  return ['GameEngine.getY(' + name + ')', Blockly.JavaScript.ORDER_FUNCTION_CALL];
+};
+
+Blockly.JavaScript['sprite_move_steps_named'] = function(block) {
+  var name  = Blockly.JavaScript.valueToCode(block, 'NAME',  Blockly.JavaScript.ORDER_ATOMIC) || "''";
+  var steps = Blockly.JavaScript.valueToCode(block, 'STEPS', Blockly.JavaScript.ORDER_ATOMIC) || '0';
+  return 'GameEngine.moveSteps(' + steps + ',' + name + ');';
+};
+
+Blockly.JavaScript['sprite_set_angle_named'] = function(block) {
+  var name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC) || "''";
+  var deg  = Blockly.JavaScript.valueToCode(block, 'DEG',  Blockly.JavaScript.ORDER_ATOMIC) || '0';
+  return 'GameEngine.setAngle(' + deg + ',' + name + ');';
+};
+
+Blockly.JavaScript['sprite_get_angle_named'] = function(block) {
+  var name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC) || "''";
+  return ['GameEngine.getAngle(' + name + ')', Blockly.JavaScript.ORDER_FUNCTION_CALL];
+};
+
+Blockly.JavaScript['sprite_set_scale_named'] = function(block) {
+  var name  = Blockly.JavaScript.valueToCode(block, 'NAME',  Blockly.JavaScript.ORDER_ATOMIC) || "''";
+  var scale = Blockly.JavaScript.valueToCode(block, 'SCALE', Blockly.JavaScript.ORDER_ATOMIC) || '1';
+  return 'GameEngine.setScale(' + scale + ',' + name + ');';
+};
+
+Blockly.JavaScript['touching_sprite'] = function(block) {
+  var a = Blockly.JavaScript.valueToCode(block, 'A', Blockly.JavaScript.ORDER_ATOMIC) || "''";
+  var b = Blockly.JavaScript.valueToCode(block, 'B', Blockly.JavaScript.ORDER_ATOMIC) || "''";
+  return ['GameEngine.touchingSprite(' + a + ',' + b + ')', Blockly.JavaScript.ORDER_FUNCTION_CALL];
+};
+
+Blockly.JavaScript['distance_between'] = function(block) {
+  var a = Blockly.JavaScript.valueToCode(block, 'A', Blockly.JavaScript.ORDER_ATOMIC) || "''";
+  var b = Blockly.JavaScript.valueToCode(block, 'B', Blockly.JavaScript.ORDER_ATOMIC) || "''";
+  return ['GameEngine.distanceBetween(' + a + ',' + b + ')', Blockly.JavaScript.ORDER_FUNCTION_CALL];
+};
+
+Blockly.JavaScript['touching_edge_named'] = function(block) {
+  var name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC) || "''";
+  return ['GameEngine.touchingEdge(' + name + ')', Blockly.JavaScript.ORDER_FUNCTION_CALL];
+};

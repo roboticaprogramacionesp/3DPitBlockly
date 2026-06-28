@@ -4,9 +4,10 @@
 <head>
   <meta charset="UTF-8" />
   <title>3DPit Blocks</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <link rel="stylesheet" href="{{ url_for('static', filename='viewcode.css') }}" />
   <link rel="icon" href="{{ url_for('static', filename='3DPit.ico') }}" />
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
   <!-- icons3dpit.svg se carga bajo demanda, sin preload para evitar warning -->
 
   <!-- PWA Manifest -->
@@ -67,6 +68,32 @@
 
     body.no-scroll {
       overflow: hidden;
+    }
+
+    /* ── MÓVIL: tap highlight y zoom de iOS en inputs ── */
+    * {
+      -webkit-tap-highlight-color: transparent;
+    }
+    button, a {
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    /* iOS hace zoom automático si el input tiene font-size < 16px */
+    input, textarea, select,
+    .CodeMirror, .cm-editor {
+      font-size: 16px !important;
+    }
+
+    /* ── MÓVIL: safe-area para notch (iPhone X+) ── */
+    .top-menu {
+      padding-top: max(0px, env(safe-area-inset-top));
+      padding-left: max(15px, env(safe-area-inset-left));
+      padding-right: max(15px, env(safe-area-inset-right));
+      height: calc(48px + env(safe-area-inset-top));
+    }
+    .view {
+      height: calc(100vh - 48px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
     }
 
     /* ── Menú superior ── */
@@ -158,6 +185,7 @@
       background-color: #f1f1f1;
     }
 
+    .dropdown.open .dropdown-content,
     .dropdown:hover .dropdown-content {
       display: block;
     }
@@ -194,17 +222,32 @@
         flex-wrap: wrap;
       }
 
+      /* FIX MÓVIL: scroll horizontal en lugar de wrap para que quepan todos los botones */
       .menu-buttons {
-        gap: 4px;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        gap: 6px;
+        padding-bottom: 4px;
+      }
+      .menu-buttons::-webkit-scrollbar {
+        display: none;
       }
 
+      /* Área tocable mínima 44×44 px (Apple HIG / WCAG) */
       .menu-buttons button {
-        padding: 5px 7px;
+        min-width: 44px;
+        min-height: 44px;
+        padding: 8px 10px;
         font-size: 17px;
+        flex-shrink: 0;
       }
 
       .logo {
         font-size: 18px;
+        flex-shrink: 0;
       }
     }
 
@@ -255,6 +298,7 @@
       top: calc(100% + 6px);
       right: 0;
       width: 270px;
+      max-width: calc(100vw - 16px); /* FIX MÓVIL: no desbordar pantalla */
       max-height: 70vh;
       overflow-y: auto;
       overflow-x: hidden;
@@ -446,6 +490,67 @@
     }
   </style>
 
+  <!-- ── FIX MÓVIL: media queries para vistas responsivas ── -->
+  <style>
+    /* Vista Código: en móvil apilar verticalmente y ocultar splitter */
+    @media (max-width: 700px) {
+      #codeLayout {
+        flex-direction: column !important;
+      }
+      #espExplorer {
+        width: 100% !important;
+        max-height: 140px;
+        border-right: none !important;
+        border-bottom: 1px solid #333;
+        flex-shrink: 0;
+      }
+      #codeSplitContainer {
+        width: 100% !important;
+        flex: 1;
+      }
+      #splitter {
+        display: none !important; /* el splitter es muy difícil de arrastrar en touch */
+      }
+    }
+
+    /* Game canvas: responsivo manteniendo proporción 4:3 */
+    @media (max-width: 700px) {
+      #gameCanvas {
+        max-width: 100%;
+        height: auto;
+        aspect-ratio: 4 / 3;
+      }
+      #gameContent {
+        padding: 8px;
+      }
+    }
+
+    /* Vista Wiring: reducir padding en móvil */
+    @media (max-width: 700px) {
+      #wiringContent {
+        padding: 8px !important;
+      }
+      #wiringHeader {
+        flex-wrap: wrap;
+        height: auto !important;
+        min-height: 40px;
+        padding: 4px 8px !important;
+      }
+      #wiringHeader > div {
+        margin-left: 0 !important;
+        margin-top: 4px;
+      }
+    }
+
+    /* CodeMirror: touch-action para scroll nativo en iOS */
+    @media (max-width: 700px) {
+      .CodeMirror {
+        touch-action: pan-y;
+        -webkit-overflow-scrolling: touch;
+      }
+    }
+  </style>
+
   <!-- ── Estilos Vista Juego ── -->
   <style>
     #gameContainer {
@@ -572,6 +677,57 @@
 </script>
 
 <body>
+
+  <!-- MÓVIL: toggle de dropdowns con click (reemplaza :hover que no funciona en touch) -->
+  <script>
+    (function () {
+      // Dropdown "Archivo"
+      document.querySelectorAll('.dropdown > .dropbtn').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          // cerrar otros dropdowns abiertos
+          document.querySelectorAll('.dropdown.open').forEach(function (d) {
+            if (d !== btn.parentElement) d.classList.remove('open');
+          });
+          btn.parentElement.classList.toggle('open');
+        });
+      });
+      // cerrar al tocar fuera
+      document.addEventListener('click', function () {
+        document.querySelectorAll('.dropdown.open').forEach(function (d) {
+          d.classList.remove('open');
+        });
+      });
+
+      // Custom tutorial dropdown
+      var tutTrigger = document.getElementById('tut-trigger');
+      var tutDropdown = document.getElementById('tut-dropdown');
+      if (tutTrigger && tutDropdown) {
+        tutTrigger.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var isOpen = tutDropdown.classList.toggle('open');
+          tutTrigger.classList.toggle('open', isOpen);
+          tutTrigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+          if (!e.target.closest('#tut-wrapper')) {
+            tutDropdown.classList.remove('open');
+            tutTrigger.classList.remove('open');
+            tutTrigger.setAttribute('aria-expanded', 'false');
+          }
+        });
+        // Cerrar al elegir opción
+        tutDropdown.querySelectorAll('.tut-option').forEach(function (opt) {
+          opt.addEventListener('click', function () {
+            tutDropdown.classList.remove('open');
+            tutTrigger.classList.remove('open');
+            tutTrigger.setAttribute('aria-expanded', 'false');
+          });
+        });
+      }
+    })();
+  </script>
 
   <div id="tutorialOverlay" class="tutorial-overlay hidden">
     <div id="tutorialCutout" class="tutorial-cutout"></div>
@@ -1173,6 +1329,179 @@
           <value name="Y">
             <shadow type="math_number">
               <field name="NUM">180</field>
+            </shadow>
+          </value>
+        </block>
+
+        <sep></sep>
+        <label role="presentation" text="▸ Multi-personaje"></label>
+
+        <!-- seleccionar personaje activo -->
+        <block type="sprite_select">
+          <value name="NAME">
+            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+          </value>
+        </block>
+
+        <!-- crear personaje con nombre -->
+        <block type="sprite_create_named">
+          <value name="NAME">
+            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+          </value>
+          <value name="X">
+            <shadow type="math_number"><field name="NUM">100</field></shadow>
+          </value>
+          <value name="Y">
+            <shadow type="math_number"><field name="NUM">180</field></shadow>
+          </value>
+          <value name="W">
+            <shadow type="math_number"><field name="NUM">48</field></shadow>
+          </value>
+          <value name="H">
+            <shadow type="math_number"><field name="NUM">48</field></shadow>
+          </value>
+          <value name="IMG">
+            <shadow type="text"><field name="TEXT">car.png</field></shadow>
+          </value>
+        </block>
+
+        <!-- dibujar personaje con nombre -->
+        <block type="sprite_draw_named">
+          <value name="NAME">
+            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+          </value>
+        </block>
+
+        <!-- mover personaje con nombre -->
+        <block type="sprite_move_named">
+          <value name="NAME">
+            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+          </value>
+          <value name="DX">
+            <shadow type="math_number"><field name="NUM">0</field></shadow>
+          </value>
+          <value name="DY">
+            <shadow type="math_number"><field name="NUM">0</field></shadow>
+          </value>
+        </block>
+
+        <!-- poner posición -->
+        <block type="sprite_set_pos_named">
+          <value name="NAME">
+            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+          </value>
+          <value name="X">
+            <shadow type="math_number"><field name="NUM">100</field></shadow>
+          </value>
+          <value name="Y">
+            <shadow type="math_number"><field name="NUM">180</field></shadow>
+          </value>
+        </block>
+
+        <!-- leer posición X -->
+        <block type="sprite_get_x_named">
+          <value name="NAME">
+            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+          </value>
+        </block>
+
+        <!-- leer posición Y -->
+        <block type="sprite_get_y_named">
+          <value name="NAME">
+            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+          </value>
+        </block>
+
+        <!-- mover pasos -->
+        <block type="sprite_move_steps_named">
+          <value name="NAME">
+            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+          </value>
+          <value name="STEPS">
+            <shadow type="math_number"><field name="NUM">10</field></shadow>
+          </value>
+        </block>
+
+        <!-- poner ángulo -->
+        <block type="sprite_set_angle_named">
+          <value name="NAME">
+            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+          </value>
+          <value name="DEG">
+            <shadow type="math_number"><field name="NUM">0</field></shadow>
+          </value>
+        </block>
+
+        <!-- leer ángulo -->
+        <block type="sprite_get_angle_named">
+          <value name="NAME">
+            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+          </value>
+        </block>
+
+        <!-- escala -->
+        <block type="sprite_set_scale_named">
+          <value name="NAME">
+            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+          </value>
+          <value name="SCALE">
+            <shadow type="math_number"><field name="NUM">1</field></shadow>
+          </value>
+        </block>
+
+        <!-- colisión entre sprites -->
+        <block type="touching_sprite">
+          <value name="A">
+            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+          </value>
+          <value name="B">
+            <shadow type="text"><field name="TEXT">enemigo</field></shadow>
+          </value>
+        </block>
+
+        <!-- distancia entre sprites -->
+        <block type="distance_between">
+          <value name="A">
+            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+          </value>
+          <value name="B">
+            <shadow type="text"><field name="TEXT">enemigo</field></shadow>
+          </value>
+        </block>
+
+        <!-- borde para sprite nombrado -->
+        <block type="touching_edge_named">
+          <value name="NAME">
+            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+          </value>
+        </block>
+
+        <sep></sep>
+                <label role="presentation" text="▸ Texto en pantalla"></label>
+        <block type="game_show_text">
+          <value name="TEXT">
+            <shadow type="text">
+              <field name="TEXT">¡Hola!</field>
+            </shadow>
+          </value>
+          <value name="X">
+            <shadow type="math_number">
+              <field name="NUM">10</field>
+            </shadow>
+          </value>
+          <value name="Y">
+            <shadow type="math_number">
+              <field name="NUM">20</field>
+            </shadow>
+          </value>
+          <value name="COLOR">
+            <shadow type="color_picker">
+              <field name="COLOR">#ffffff</field>
+            </shadow>
+          </value>
+          <value name="SIZE">
+            <shadow type="math_number">
+              <field name="NUM">16</field>
             </shadow>
           </value>
         </block>
@@ -3379,6 +3708,11 @@
               <value name="COLOR">
                 <shadow type="colour_picker">
                   <field name="COLOUR">#ff0000</field>
+                </shadow>
+              </value>
+              <value name="COLOR_BG">
+                <shadow type="colour_picker">
+                  <field name="COLOUR">#000000</field>
                 </shadow>
               </value>
             </block>

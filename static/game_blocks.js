@@ -40,7 +40,6 @@ Blockly.defineBlocksWithJsonArray([
           ["👻 fantasma.png", "fantasma.png"],
           ["🚀 cohete.png", "cohete.png"],
           ["🏎️ carro_rojo.png", "carro_rojo.png"],
-          ["🐸 mario.png", "mario.png"],
         ],
       },
     ],
@@ -843,4 +842,163 @@ Blockly.defineBlocksWithJsonArray([
     tooltip:
       "Espera N cuadros (frames) del juego, sincronizado a 60fps. Útil para timings precisos de animación.",
   },
+
+  /* ──────────────────────────────
+     MULTI-PERSONAJE
+  ────────────────────────────── */
+  {
+    type: "sprite_select",
+    message0: "🎭 seleccionar personaje %1",
+    args0: [{ type: "input_value", name: "NAME", check: "String" }],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 45,
+    tooltip: "Cambia el personaje activo. Los bloques siguientes operan sobre ese personaje.",
+  },
+  {
+    type: "sprite_create_named",
+    message0: "🧍 crear personaje %1  X %2  Y %3  ancho %4  alto %5  imagen/color %6",
+    args0: [
+      { type: "input_value", name: "NAME", check: "String" },
+      { type: "input_value", name: "X",    check: "Number" },
+      { type: "input_value", name: "Y",    check: "Number" },
+      { type: "input_value", name: "W",    check: "Number" },
+      { type: "input_value", name: "H",    check: "Number" },
+      { type: "input_value", name: "IMG",  check: ["Colour","String"] },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 45,
+    tooltip: "Crea un personaje con nombre. Puedes tener varios al mismo tiempo (jugador, enemigo, moneda…).",
+  },
+  {
+    type: "sprite_draw_named",
+    message0: "🖊️ dibujar personaje %1",
+    args0: [{ type: "input_value", name: "NAME", check: "String" }],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 45,
+    tooltip: "Dibuja el personaje con el nombre indicado.",
+  },
+  {
+    type: "sprite_move_named",
+    message0: "🏃 mover personaje %1  dx %2  dy %3",
+    args0: [
+      { type: "input_value", name: "NAME", check: "String" },
+      { type: "input_value", name: "DX",   check: "Number" },
+      { type: "input_value", name: "DY",   check: "Number" },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 45,
+    tooltip: "Mueve el personaje indicado deltaX / deltaY píxeles.",
+  },
+  {
+    type: "sprite_set_pos_named",
+    message0: "📍 poner personaje %1  en X %2  Y %3",
+    args0: [
+      { type: "input_value", name: "NAME", check: "String" },
+      { type: "input_value", name: "X",    check: "Number" },
+      { type: "input_value", name: "Y",    check: "Number" },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 45,
+    tooltip: "Teletransporta el personaje indicado a la posición X, Y.",
+  },
+  {
+    type: "sprite_get_x_named",
+    message0: "📐 posición X de %1",
+    args0: [{ type: "input_value", name: "NAME", check: "String" }],
+    output: "Number",
+    colour: 45,
+    tooltip: "Devuelve la coordenada X del personaje indicado.",
+  },
+  {
+    type: "sprite_get_y_named",
+    message0: "📐 posición Y de %1",
+    args0: [{ type: "input_value", name: "NAME", check: "String" }],
+    output: "Number",
+    colour: 45,
+    tooltip: "Devuelve la coordenada Y del personaje indicado.",
+  },
+  {
+    type: "sprite_move_steps_named",
+    message0: "👣 mover personaje %1  %2 pasos",
+    args0: [
+      { type: "input_value", name: "NAME",  check: "String" },
+      { type: "input_value", name: "STEPS", check: "Number" },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 45,
+    tooltip: "Mueve el personaje indicado hacia su ángulo actual.",
+  },
+  {
+    type: "sprite_set_angle_named",
+    message0: "🧭 ángulo de %1  %2 °",
+    args0: [
+      { type: "input_value", name: "NAME", check: "String" },
+      { type: "input_value", name: "DEG",  check: "Number" },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 45,
+    tooltip: "Pone el ángulo del personaje indicado (0°=derecha, 90°=arriba).",
+  },
+  {
+    type: "sprite_get_angle_named",
+    message0: "📐 ángulo de %1",
+    args0: [{ type: "input_value", name: "NAME", check: "String" }],
+    output: "Number",
+    colour: 45,
+    tooltip: "Devuelve el ángulo actual del personaje indicado.",
+  },
+  {
+    type: "sprite_set_scale_named",
+    message0: "🔍 escala de %1  %2",
+    args0: [
+      { type: "input_value", name: "NAME",  check: "String" },
+      { type: "input_value", name: "SCALE", check: "Number" },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 45,
+    tooltip: "Cambia el tamaño del personaje indicado (1=normal, 2=doble, 0.5=mitad).",
+  },
+  {
+    type: "touching_sprite",
+    message0: "💥 ¿ %1 toca a %2 ?",
+    args0: [
+      { type: "input_value", name: "A", check: "String" },
+      { type: "input_value", name: "B", check: "String" },
+    ],
+    output: "Boolean",
+    colour: 45,
+    tooltip: "Verdadero si los dos personajes se están tocando (colisión AABB).",
+  },
+  {
+    type: "distance_between",
+    message0: "📐 distancia entre %1 y %2",
+    args0: [
+      { type: "input_value", name: "A", check: "String" },
+      { type: "input_value", name: "B", check: "String" },
+    ],
+    output: "Number",
+    colour: 45,
+    tooltip: "Devuelve la distancia en píxeles entre los centros de dos personajes.",
+  },
+  {
+    type: "touching_edge_named",
+    message0: "🚧 ¿ %1 toca el borde?",
+    args0: [{ type: "input_value", name: "NAME", check: "String" }],
+    output: "Boolean",
+    colour: 45,
+    tooltip: "Verdadero si el personaje indicado tocó el límite del canvas.",
+  },
 ]);
+
+/* ══════════════════════════════════════════════════════════════
+   GENERADORES JS — MULTI-PERSONAJE
+   Se agregan aquí porque game_blocks.js ya carga antes que main.js.
+══════════════════════════════════════════════════════════════ */

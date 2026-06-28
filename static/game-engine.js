@@ -32,46 +32,31 @@ window.GameEngine = (function () {
   var _bgImageName = null;      /* nombre/archivo del fondo actual (o null si es color) */
   var _running = false;
 
-  /* ── LEDs simulados (privado) ── */
-  var _leds = {};
-  function _drawLeds() {
-    if (!_ctx) return;
-    Object.keys(_leds).forEach(function(name) {
-      var led = _leds[name];
-      var x = led.x, y = led.y;
-      _ctx.beginPath();
-      _ctx.arc(x, y, 10, 0, Math.PI * 2);
-      _ctx.fillStyle = led.on ? '#ff2222' : '#440000';
-      _ctx.fill();
-      _ctx.strokeStyle = '#ffffff44';
-      _ctx.lineWidth = 1;
-      _ctx.stroke();
-      if (led.on) {
-        _ctx.beginPath();
-        _ctx.arc(x, y, 14, 0, Math.PI * 2);
-        _ctx.fillStyle = 'rgba(255,50,50,0.18)';
-        _ctx.fill();
-      }
-      _ctx.fillStyle = '#ffffff';
-      _ctx.font = '9px monospace';
-      _ctx.textAlign = 'center';
-      _ctx.fillText(name, x, y + 22);
-    });
+  /* ── Sprite ── */
+  /* Sprites múltiples: Map( nombre -> objeto ) + sprite activo */
+  var _sprites      = new Map();
+  var _activeSprite = '__default__';
+
+  function _newSprite() {
+    return {
+      x: 240, y: 180, w: 48, h: 48,
+      color: '#00ff88',
+      img: null, imgReady: false, imgName: null,
+      flipX: false, flipY: false,
+      baseW: 48, baseH: 48,
+      angle: 0,
+      created: false
+    };
   }
 
-  /* ── Sprite ── */
-  var _sprite = {
-    x: 240, y: 180, w: 48, h: 48,
-    color: '#00ff88',
-    img: null,                  /* Image() cargada */
-    imgReady: false,
-    imgName: null,               /* nombre/archivo del sprite actual (o null si es color) */
-    flipX: false,               /* espejo horizontal */
-    flipY: false,               /* espejo vertical */
-    baseW: 48, baseH: 48,        /* tamaño original (al crear el sprite), usado por setScale */
-    angle: 0,                   /* dirección en grados (0 = derecha) */
-    created: false               /* true solo tras createSprite() o al conservar uno cargado por botón; drawSprite() no dibuja nada mientras sea false */
-  };
+  /* Devuelve el sprite por nombre, o el activo si no se pasa nombre.
+     Crea el sprite vacío si no existe todavía. */
+  function _sp(name) {
+    var key = (name !== undefined && name !== null && name !== '')
+              ? String(name) : _activeSprite;
+    if (!_sprites.has(key)) _sprites.set(key, _newSprite());
+    return _sprites.get(key);
+  }
 
   /* ── Caché de imágenes: { 'car.png': Image } ── */
   var _imageCache = {};
@@ -295,29 +280,29 @@ window.GameEngine = (function () {
          ventana de juego (📁 Fondo / 📁 Personaje), lo conservamos al
          ejecutar el código — solo se reemplaza si el propio script
          vuelve a llamar a "fondo color/imagen" o "crear personaje". */
-      var keepBg     = _bgImageName === '__bg_local__'     && _imageCache['__bg_local__'];
-      var keepSprite = _sprite.imgName === '__sprite_local__' && _imageCache['__sprite_local__'];
+      var keepBg     = _bgImageName === '__bg_local__' && _imageCache['__bg_local__'];
+      /* Conservar sprite local cargado por botón en el sprite '__default__' */
+      var defaultSp  = _sprites.get('__default__');
+      var keepSprite = defaultSp && defaultSp.imgName === '__sprite_local__'
+                       && _imageCache['__sprite_local__'];
 
       if (!keepBg) {
         _bgColor = '#1a1a2e'; _bgImage = null; _bgImageName = null;
       }
 
-      /* Reiniciar estado del sprite para que cada ejecución
-         comience desde un estado limpio y predecible 
-         (ahora x,y es esquina superior izquierda, no centro) */
-      _sprite.x = 216; _sprite.y = 156;
-      _sprite.w = 48;  _sprite.h = 48;
-      _sprite.flipX    = false;
-      _sprite.angle    = 0;
-      /* Sin "crear personaje" en el código y sin imagen cargada por
-         botón, el sprite no debe dibujarse en absoluto. */
-      _sprite.created = !!keepSprite;
-      if (!keepSprite) {
-        _sprite.color    = '#00ff88';
-        _sprite.img      = null;
-        _sprite.imgReady = false;
-        _sprite.imgName  = null;
+      /* Reiniciar TODOS los sprites al inicio de cada ejecución.
+         El sprite '__default__' puede conservar su imagen si fue
+         cargada con el botón de la ventana de juego. */
+      _sprites.clear();
+      _activeSprite = '__default__';
+      var defSp = _newSprite();
+      defSp.created = !!keepSprite;
+      if (keepSprite) {
+        defSp.img      = defaultSp.img;
+        defSp.imgReady = defaultSp.imgReady;
+        defSp.imgName  = defaultSp.imgName;
       }
+      _sprites.set('__default__', defSp);
 
       /* Reiniciar estado del lápiz */
       _pen.down  = false;
@@ -345,7 +330,7 @@ window.GameEngine = (function () {
          si el script del usuario define su propio sprite_create justo
          después, ese se encargará de redibujar lo correspondiente. */
       if (keepSprite) {
-        this.drawSprite();
+        this.drawSprite(); /* dibuja el sprite '__default__' conservado */
       }
     },
 
@@ -373,7 +358,7 @@ window.GameEngine = (function () {
 
     /* ── Consultar nombre del fondo / sprite actual (para guardarlo en una variable) ── */
     getBgImageName:     function() { return _bgImageName; },
-    getSpriteImageName: function() { return _sprite.imgName; },
+    getSpriteImageName: function(name) { return _sp(name).imgName; },
 
     clear: function() {
       var ctx = _getCtx(); if (!ctx) return;
@@ -386,51 +371,56 @@ window.GameEngine = (function () {
     },
 
     /* ── Sprite ── */
-    createSprite: function(x, y, w, h, colorOrImg) {
+    /* createSprite(x, y, w, h, colorOrImg [, name])
+       name: string opcional. Sin nombre usa el sprite activo.
+       Compatibilidad total: código sin nombre sigue funcionando. */
+    createSprite: function(x, y, w, h, colorOrImg, name) {
+      if (name !== undefined && name !== null && name !== '') {
+        _activeSprite = String(name);
+      }
+      var s = _sp();
       var v = String(colorOrImg || '#00ff88');
-      /* Usar comparación explícita contra undefined/null en vez de ||
-         para no descartar 0 como valor válido
-         (Number(0)||216 daría 216, que era el bug original) */
-      _sprite.x = (x !== undefined && x !== null) ? Number(x) : 216;
-      _sprite.y = (y !== undefined && y !== null) ? Number(y) : 156;
-      _sprite.w = (w !== undefined && w !== null) ? Number(w) : 48;
-      _sprite.h = (h !== undefined && h !== null) ? Number(h) : 48;
-      _sprite.baseW = _sprite.w;
-      _sprite.baseH = _sprite.h;
-      _sprite.flipX = false;
-      _sprite.flipY = false;
-      _sprite.created = true;
+      s.x = (x !== undefined && x !== null) ? Number(x) : 216;
+      s.y = (y !== undefined && y !== null) ? Number(y) : 156;
+      s.w = (w !== undefined && w !== null) ? Number(w) : 48;
+      s.h = (h !== undefined && h !== null) ? Number(h) : 48;
+      s.baseW = s.w;
+      s.baseH = s.h;
+      s.flipX = false;
+      s.flipY = false;
+      s.created = true;
       if (_isImageName(v)) {
-        _sprite.color = '#00ff88';
-        _sprite.imgReady = false;
-        _sprite.img = null;
-        _sprite.imgName = v;
+        s.color    = '#00ff88';
+        s.imgReady = false;
+        s.img      = null;
+        s.imgName  = v;
+        var _capturedKey = _activeSprite;
         _loadImage(v, function(img) {
-          _sprite.img = img;
-          _sprite.imgReady = !!img;
-          if (!img) _sprite.imgName = null;
+          var sp = _sprites.get(_capturedKey);
+          if (sp) { sp.img = img; sp.imgReady = !!img; if (!img) sp.imgName = null; }
         });
       } else {
-        _sprite.color    = v;
-        _sprite.img      = null;
-        _sprite.imgReady = false;
-        _sprite.imgName  = null;
+        s.color    = v;
+        s.img      = null;
+        s.imgReady = false;
+        s.imgName  = null;
       }
     },
 
-    moveSprite: function(dx, dy) {
+    moveSprite: function(dx, dy, name) {
       _getCtx();
-      var prevX = _sprite.x, prevY = _sprite.y;
+      var s = _sp(name);
+      var prevX = s.x, prevY = s.y;
       var ndx = Number(dx)||0;
-      _sprite.x += ndx;
-      _sprite.y += Number(dy)||0;
-      if (ndx < 0) _sprite.flipX = true;
-      if (ndx > 0) _sprite.flipX = false;
-      /* Opcional: clamping para mantener el sprite dentro del canvas (esquina superior izquierda) */
+      s.x += ndx;
+      s.y += Number(dy)||0;
+      if (ndx < 0) s.flipX = true;
+      if (ndx > 0) s.flipX = false;
+      /* Opcional: clamping */
       /*
       if (_canvas) {
-        _sprite.x = Math.max(0, Math.min(_canvas.width  - _sprite.w, _sprite.x));
-        _sprite.y = Math.max(0, Math.min(_canvas.height - _sprite.h, _sprite.y));
+        s.x = Math.max(0, Math.min(_canvas.width  - s.w, s.x));
+        s.y = Math.max(0, Math.min(_canvas.height - s.h, s.y));
       }
       */
       if (_pen.down && _ctx) {
@@ -442,73 +432,76 @@ window.GameEngine = (function () {
         _ctx.lineCap     = 'round';
         _ctx.lineJoin    = 'round';
         _ctx.moveTo(fromX, fromY);
-        _ctx.lineTo(_sprite.x, _sprite.y);
+        _ctx.lineTo(s.x, s.y);
         _ctx.stroke();
       }
-      _pen.lastX = _sprite.x;
-      _pen.lastY = _sprite.y;
+      _pen.lastX = s.x;
+      _pen.lastY = s.y;
     },
 
-    setPos: function(x,y) {
-      _sprite.x = Number(x) || 0;
-      _sprite.y = Number(y) || 0;
-      _pen.lastX = _sprite.x;
-      _pen.lastY = _sprite.y;
-    },
-    getX:   function()    { return _sprite.x; },
-    getY:   function()    { return _sprite.y; },
-
-    /* ── LEDs simulados ── */
-    _leds: {},
-    setLed: function(name, on) {
-      if (!_leds[name]) _leds[name] = { on: false };
-      _leds[name].on = !!on;
+    /* selectSprite(name): cambia el sprite activo para las llamadas
+       siguientes sin nombre explícito. */
+    selectSprite: function(name) {
+      _activeSprite = (name !== undefined && name !== null && name !== '')
+                      ? String(name) : '__default__';
+      return _sp(); /* crea el sprite si no existía */
     },
 
-    drawLeds: function() { /* no-op — LEDs físicos en ESP32 */ },
-    turnAngle: function(deg) {
-      _sprite.angle = (_sprite.angle + Number(deg)||0) % 360;
-      if (_sprite.angle < 0) _sprite.angle += 360;
+    /* getAllSprites(): itera todos los sprites creados */
+    getAllSprites: function() {
+      return Array.from(_sprites.keys());
     },
-    getAngle: function() {
-      return _sprite.angle;
+
+    setPos: function(x, y, name) {
+      var s = _sp(name);
+      s.x = Number(x) || 0;
+      s.y = Number(y) || 0;
+      _pen.lastX = s.x;
+      _pen.lastY = s.y;
     },
-    setAngle: function(deg) {
-      _sprite.angle = ((Number(deg)||0) % 360 + 360) % 360;
+    getX: function(name) { return _sp(name).x; },
+    getY: function(name) { return _sp(name).y; },
+
+    turnAngle: function(deg, name) {
+      var s = _sp(name);
+      s.angle = (s.angle + (Number(deg)||0)) % 360;
+      if (s.angle < 0) s.angle += 360;
     },
-    moveSteps: function(steps) {
-      /* Convención: 0° = derecha, 90° = arriba, 180° = izquierda, 270° = abajo. */
-      var rad = -(_sprite.angle) * Math.PI / 180;
+    getAngle: function(name) { return _sp(name).angle; },
+    setAngle: function(deg, name) {
+      _sp(name).angle = ((Number(deg)||0) % 360 + 360) % 360;
+    },
+    moveSteps: function(steps, name) {
+      var s   = _sp(name);
+      var rad = -(s.angle) * Math.PI / 180;
       var dx  = Math.cos(rad) * (Number(steps)||0);
       var dy  = Math.sin(rad) * (Number(steps)||0);
-      this.moveSprite(dx, dy);
+      this.moveSprite(dx, dy, name);
     },
 
-    setFlip: function(flip) { _sprite.flipX = !!flip; },
-    setFlipY: function(flip) { _sprite.flipY = !!flip; },
-    setScale: function(scale) {
-      var s = Number(scale);
-      if (!s || s <= 0) s = 1;
-      _sprite.w = _sprite.baseW * s;
-      _sprite.h = _sprite.baseH * s;
+    setFlip:  function(flip,  name) { _sp(name).flipX = !!flip; },
+    setFlipY: function(flip,  name) { _sp(name).flipY = !!flip; },
+    setScale: function(scale, name) {
+      var sp = _sp(name);
+      var sc = Number(scale); if (!sc || sc <= 0) sc = 1;
+      sp.w = sp.baseW * sc;
+      sp.h = sp.baseH * sc;
     },
 
-    drawSprite: function() {
+    drawSprite: function(name) {
       var ctx = _getCtx(); if (!ctx) return;
-      /* Sin "crear personaje" (createSprite) en el código, no se
-         dibuja nada — ni el cuadro de color por defecto ni el
-         placeholder "...". Así los programas que no usan personaje
-         (p.ej. solo dibujan con el lápiz) no muestran nada que el
-         usuario no haya pedido explícitamente. */
-      if (!_sprite.created) return;
+      /* Sin nombre: dibuja el sprite activo.
+         Con nombre: dibuja ese sprite específico.
+         Sin createSprite previo, no dibuja nada. */
+      var s = _sp(name);
+      if (!s.created) return;
 
-      var x = _sprite.x, y = _sprite.y;
-      var w = _sprite.w, h = _sprite.h;
+      var x = s.x, y = s.y, w = s.w, h = s.h;
 
-      if (_sprite.imgReady && _sprite.img) {
-        _drawSpriteImage(ctx, _sprite.img, x, y, w, h, _sprite.flipX, _sprite.flipY, _sprite.angle);
-      } else if (_sprite.img === null && !_sprite.imgReady && _sprite.color) {
-        ctx.fillStyle = _sprite.color;
+      if (s.imgReady && s.img) {
+        _drawSpriteImage(ctx, s.img, x, y, w, h, s.flipX, s.flipY, s.angle);
+      } else if (s.img === null && !s.imgReady && s.color) {
+        ctx.fillStyle = s.color;
         _fillRoundRect(ctx, x, y, w, h, 4);
         ctx.fill();
         ctx.strokeStyle = 'rgba(255,255,255,0.7)';
@@ -602,14 +595,14 @@ window.GameEngine = (function () {
     },
 
     /* ── Colisiones ── */
-    touchingColor: function(hexColor) {
+    touchingColor: function(hexColor, name) {
       var ctx = _getCtx(); if (!ctx) return false;
-      var w = _sprite.w, h = _sprite.h;
-      /* Verificar desde la esquina superior izquierda con un pequeño margen */
+      var s = _sp(name);
+      var w = s.w, h = s.h;
       var dx = Math.round(w * 0.2);
       var dy = Math.round(h * 0.2);
-      var px = Math.max(0, Math.round(_sprite.x + dx));
-      var py = Math.max(0, Math.round(_sprite.y + dy));
+      var px = Math.max(0, Math.round(s.x + dx));
+      var py = Math.max(0, Math.round(s.y + dy));
       var sw = Math.min(Math.round(w*0.6), _canvas.width  - px);
       var sh = Math.min(Math.round(h*0.6), _canvas.height - py);
       if (sw<=0||sh<=0) return false;
@@ -624,23 +617,24 @@ window.GameEngine = (function () {
       return false;
     },
 
-    touchingEdge: function() {
+    touchingEdge: function(name) {
       _getCtx();
       if (!_canvas) return false;
-      /* Verificar si la esquina superior izquierda o inferior derecha toca el borde */
-      return _sprite.x <= 0 || _sprite.x + _sprite.w >= _canvas.width ||
-             _sprite.y <= 0 || _sprite.y + _sprite.h >= _canvas.height;
+      var s = _sp(name);
+      return s.x <= 0 || s.x + s.w >= _canvas.width ||
+             s.y <= 0 || s.y + s.h >= _canvas.height;
     },
 
     /* ── Colisión contra el fondo (laberinto) usando las 4 esquinas
          reales del sprite, sea cual sea su tamaño (w,h).
-         No usa un valor fijo de 25px: siempre se ajusta a _sprite.w/_sprite.h. ── */
-    touchingColorCorners: function(hexColor) {
+         No usa un valor fijo de 25px: siempre se ajusta a _sp().w/_sp().h. ── */
+    touchingColorCorners: function(hexColor, name) {
       var ctx = _getCtx(); if (!ctx) return false;
       var target = _hexToRgb(String(hexColor));
       if (!target) return false;
 
-      var x = _sprite.x, y = _sprite.y, w = _sprite.w, h = _sprite.h;
+      var s = _sp(name);
+      var x = s.x, y = s.y, w = s.w, h = s.h;
       var maxX = _canvas.width  - 1;
       var maxY = _canvas.height - 1;
 
@@ -663,6 +657,24 @@ window.GameEngine = (function () {
         }
       }
       return false;
+    },
+
+    /* touchingSprite(nameA, nameB): colisión AABB entre dos sprites.
+       Devuelve true si sus rectángulos se solapan. */
+    touchingSprite: function(nameA, nameB) {
+      var a = _sp(nameA), b = _sp(nameB);
+      if (!a.created || !b.created) return false;
+      return !(a.x + a.w <= b.x || b.x + b.w <= a.x ||
+               a.y + a.h <= b.y || b.y + b.h <= a.y);
+    },
+
+    /* distanceBetween(nameA, nameB): distancia entre centros */
+    distanceBetween: function(nameA, nameB) {
+      var a = _sp(nameA), b = _sp(nameB);
+      var cx1 = a.x + a.w/2, cy1 = a.y + a.h/2;
+      var cx2 = b.x + b.w/2, cy2 = b.y + b.h/2;
+      var dx = cx2-cx1, dy = cy2-cy1;
+      return Math.sqrt(dx*dx + dy*dy);
     },
 
     colorAtPosHex: function(x,y) {
@@ -918,13 +930,13 @@ window.GameEngine = (function () {
         _pen.down  = false;
         _pen.lastX = null;
         _pen.lastY = null;
-        _sprite.x  = Number(x) || 0;
-        _sprite.y  = Number(y) || 0;
+        _sp().x  = Number(x) || 0;
+        _sp().y  = Number(y) || 0;
       }
       _pen.down  = true;
-      _pen.lastX = _sprite.x;
-      _pen.lastY = _sprite.y;
-      console.log('[GameEngine] penDown:', _sprite.x, _sprite.y);
+      _pen.lastX = _sp().x;
+      _pen.lastY = _sp().y;
+      console.log('[GameEngine] penDown:', _sp().x, _sp().y);
     },
     penUp:    function() { _pen.down = false; },
     penMoveTo: function(x, y) {
@@ -933,12 +945,12 @@ window.GameEngine = (function () {
       _pen.down  = false;
       _pen.lastX = null;
       _pen.lastY = null;
-      _sprite.x  = Number(x) || 0;
-      _sprite.y  = Number(y) || 0;
+      _sp().x  = Number(x) || 0;
+      _sp().y  = Number(y) || 0;
       _pen.down  = wasDown;
-      _pen.lastX = _sprite.x;
-      _pen.lastY = _sprite.y;
-      console.log('[GameEngine] penMoveTo:', _sprite.x, _sprite.y);
+      _pen.lastX = _sp().x;
+      _pen.lastY = _sp().y;
+      console.log('[GameEngine] penMoveTo:', _sp().x, _sp().y);
     },
     penSetColor: function(color) { _pen.color = String(color||'#ff0000'); },
     penSetSize:  function(size)  { _pen.size  = Math.max(1, Number(size)||3); },
@@ -950,16 +962,13 @@ window.GameEngine = (function () {
       var ctx = _getCtx(); if (!ctx) return;
       /* Igual que drawSprite(): sin "crear personaje" no hay nada
          que estampar. */
-      if (!_sprite.created) return;
-      /* x,y = esquina superior izquierda, igual que drawSprite() y el
-         resto del motor. Antes esta función trataba x,y como el
-         CENTRO del sprite, así que el sello quedaba desplazado
-         w/2,h/2 px respecto a la posición real visible del sprite. */
-      var x = _sprite.x, y = _sprite.y, w = _sprite.w, h = _sprite.h;
-      if (_sprite.imgReady && _sprite.img) {
-        _drawSpriteImage(ctx, _sprite.img, x, y, w, h, _sprite.flipX, _sprite.flipY, _sprite.angle);
+      var s = _sp();
+      if (!s.created) return;
+      var x = s.x, y = s.y, w = s.w, h = s.h;
+      if (s.imgReady && s.img) {
+        _drawSpriteImage(ctx, s.img, x, y, w, h, s.flipX, s.flipY, s.angle);
       } else {
-        ctx.fillStyle = _sprite.color;
+        ctx.fillStyle = s.color;
         _fillRoundRect(ctx, x, y, w, h, 4);
         ctx.fill();
       }

@@ -116,6 +116,10 @@ const editor = CodeMirror.fromTextArea(document.getElementById("codeEditor"), {
   lineWrapping: true,
   indentUnit: 2,
   tabSize: 2,
+  // FIX MÓVIL: viewportMargin: Infinity evita truncamiento de líneas en pantallas chicas
+  // scrollbarStyle: native usa scroll nativo de iOS (más suave que el virtual)
+  viewportMargin: Infinity,
+  scrollbarStyle: "native",
 });
 
 // ─────────────────────────────────────────────────────────────
@@ -2351,6 +2355,11 @@ window.addEventListener("load", () => {
 // ─────────────────────────────────────────────────────────────
 window.addEventListener("resize", () => {
   if (Code.workspace) Blockly.svgResize(Code.workspace);
+  // FIX MÓVIL: ajustar canvas del juego a su tamaño CSS real
+  const cv = document.getElementById("gameCanvas");
+  if (cv && typeof GameEngine !== "undefined" && GameEngine.resize) {
+    GameEngine.resize();
+  }
 });
 
 window.addEventListener(
