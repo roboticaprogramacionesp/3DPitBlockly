@@ -407,6 +407,84 @@ window.showSaveLogs = function () {
   logs.forEach((l) => console[l.isError ? "error" : "log"](l.t, l.msg));
 };
 
+// ─────────────────────────────────────────────────────────────
+// DIAGNÓSTICO DE CARGA — log visible en terminal y consola
+// ─────────────────────────────────────────────────────────────
+function _loadLog(msg, isError = false) {
+  const prefix = isError ? "❌ [LOAD]" : "📂 [LOAD]";
+  console[isError ? "error" : "log"](prefix, msg);
+  try {
+    if (typeof term !== "undefined" && term) {
+      const color = isError ? "\x1b[31m" : "\x1b[90m";
+      term.writeln(`${color}${prefix} ${msg}\x1b[0m`);
+    }
+  } catch (_) { }
+  try {
+    const logs = JSON.parse(localStorage.getItem("load_debug") || "[]");
+    logs.push({ t: new Date().toISOString(), msg, isError });
+    if (logs.length > 50) logs.shift();
+    localStorage.setItem("load_debug", JSON.stringify(logs));
+  } catch (_) { }
+}
+
+window.showLoadLogs = function () {
+  let logs = [];
+  try { logs = JSON.parse(localStorage.getItem("load_debug") || "[]"); }
+  catch (_) { localStorage.removeItem("load_debug"); }
+  if (!logs.length) { console.log("Sin logs de carga aún"); return; }
+  logs.forEach((l) => console[l.isError ? "error" : "log"](l.t, l.msg));
+};
+
+// Helper: lee un archivo de forma robusta para Android.
+// - Detecta BOM y lo elimina
+// - Usa UTF-8 explícito
+// - Devuelve el texto o lanza error con detalle
+function _readFileAsText(file) {
+  return new Promise((resolve, reject) => {
+    _loadLog(`Leyendo archivo: name="${file.name}" size=${file.size} type="${file.type || "?"}"`);
+
+    if (!file || file.size === 0) {
+      _loadLog("Archivo vacío o no seleccionado", true);
+      reject(new Error("Archivo vacío o no seleccionado"));
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      let content = e.target.result;
+      if (typeof content !== "string") {
+        _loadLog("El reader devolvió un resultado no-texto (binario)", true);
+        reject(new Error("Resultado de lectura no es texto"));
+        return;
+      }
+
+      // Quitar BOM (UTF-8: 0xFEFF al inicio) — rompe parsers XML
+      if (content.charCodeAt(0) === 0xFEFF) {
+        content = content.slice(1);
+        _loadLog("BOM detectado y eliminado");
+      }
+
+      _loadLog(`Contenido leído OK: ${content.length} chars`);
+      if (content.length < 200) {
+        _loadLog(`Primeros chars: ${JSON.stringify(content.substring(0, 200))}`);
+      } else {
+        _loadLog(`Primeros 80 chars: ${JSON.stringify(content.substring(0, 80))}…`);
+      }
+
+      resolve(content);
+    };
+
+    reader.onerror = () => {
+      _loadLog(`Error de FileReader: ${reader.error?.name}: ${reader.error?.message}`, true);
+      reject(reader.error || new Error("Error leyendo archivo"));
+    };
+
+    // Encoding explícito: importante en Android Chrome para evitar Latin-1 por defecto
+    reader.readAsText(file, "UTF-8");
+  });
+}
+
 async function saveFileAuto(content, fileName = "") {
   _saveLog(`Inicio — fileName="${fileName}" contentLength=${content?.length ?? 0}`);
 
@@ -545,26 +623,63 @@ document
   .getElementById("btnLoad")
   .addEventListener("click", () => document.getElementById("loadXML").click());
 
-document.getElementById("loadXML").addEventListener("change", function (event) {
+document.getElementById("loadXML").addEventListener("change", async function (event) {
   const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function (e) {
-    try {
-      Code.workspace.clear();
-      Blockly.Xml.domToWorkspace(
-        Blockly.Xml.textToDom(e.target.result),
-        Code.workspace,
-      );
-      updateCodeFromBlockly();
-      requestAnimationFrame(() => editor.refresh());
-    } catch (err) {
-      console.error(err);
-    }
-  };
-  reader.readAsText(file);
+  // Resetear el input para permitir recargar el mismo archivo después
   event.target.value = "";
-  showView("viewBlocks");
+
+  if (!file) {
+    _loadLog("No se seleccionó archivo");
+    return;
+  }
+
+  const isAndroid = /Android/i.test(navigator.userAgent);
+  _loadLog(`Plataforma: ${isAndroid ? "Android" : "Otro"} | file: ${file.name} (${file.size} B)`);
+
+  try {
+    const xmlText = await _readFileAsText(file);
+
+    if (!xmlText || !xmlText.trim()) {
+      _loadLog("Contenido vacío tras lectura — archivo ilegible", true);
+      if (term) term.writeln("\r\n⚠ El archivo está vacío o no se pudo leer.\r\n");
+      return;
+    }
+
+    // Parsear el XML
+    let dom;
+    try {
+      dom = Blockly.Xml.textToDom(xmlText);
+    } catch (parseErr) {
+      _loadLog(`Error parseando XML: ${parseErr.message}`, true);
+      _loadLog(`Primeros 200 chars del contenido: ${JSON.stringify(xmlText.substring(0, 200))}`, true);
+      if (term) term.writeln(`\r\n⚠ XML inválido: ${parseErr.message}\r\n`);
+      return;
+    }
+
+    const blockNodes = Array.from(dom.children || []).filter(
+      (n) => n.tagName === "block" || n.tagName === "shadow"
+    );
+    _loadLog(`XML parseado: ${blockNodes.length} bloques detectados`);
+
+    if (blockNodes.length === 0) {
+      _loadLog("XML válido pero sin bloques — workspace quedará vacío", true);
+      if (term) term.writeln("\r\n⚠ El archivo no contiene bloques de Blockly.\r\n");
+    }
+
+    // Limpiar workspace e insertar bloques
+    Code.workspace.clear();
+    Blockly.Xml.domToWorkspace(dom, Code.workspace);
+    _loadLog(`✅ Workspace cargado: ${Blockly.getMainWorkspace().getAllBlocks(false).length} bloques`);
+
+    updateCodeFromBlockly();
+    requestAnimationFrame(() => editor.refresh());
+    showView("viewBlocks");
+
+    if (term) term.writeln(`\r\n✔ Proyecto cargado: ${file.name}\r\n`);
+  } catch (err) {
+    _loadLog(`Error cargando archivo: ${err.message}`, true);
+    if (term) term.writeln(`\r\n⚠ Error al abrir: ${err.message}\r\n`);
+  }
 });
 
 async function reloadWorkspace() {
@@ -608,13 +723,35 @@ document.getElementById("btnLoadPy").addEventListener("click", (e) => {
   document.getElementById("loadPy").click();
 });
 
-document.getElementById("loadPy").addEventListener("change", function (event) {
+document.getElementById("loadPy").addEventListener("change", async function (event) {
   const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (e) => editor.setValue(e.target.result);
-  reader.readAsText(file);
   event.target.value = "";
+
+  if (!file) {
+    _loadLog("No se seleccionó archivo Python");
+    return;
+  }
+
+  _loadLog(`Cargando Python: ${file.name} (${file.size} B)`);
+
+  try {
+    const content = await _readFileAsText(file);
+
+    if (!content || !content.trim()) {
+      _loadLog("Archivo Python vacío o ilegible", true);
+      if (term) term.writeln("\r\n⚠ El archivo .py está vacío o no se pudo leer.\r\n");
+      return;
+    }
+
+    editor.setValue(content);
+    requestAnimationFrame(() => editor.refresh());
+    _loadLog(`✅ Editor cargado: ${content.split("\n").length} líneas, ${content.length} chars`);
+
+    if (term) term.writeln(`\r\n✔ ${file.name} cargado en el editor\r\n`);
+  } catch (err) {
+    _loadLog(`Error cargando .py: ${err.message}`, true);
+    if (term) term.writeln(`\r\n⚠ Error al abrir .py: ${err.message}\r\n`);
+  }
 });
 
 // ─────────────────────────────────────────────────────────────
