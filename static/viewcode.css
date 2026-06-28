@@ -262,8 +262,24 @@
 .icon-munitor        { background-position-x: -360px; }
 .icon-conexiones     { background-position-x: -384px; }
 .icon-games          { background-position-x: -408px; }
+.icon-connect-wifi   { background-position-x: -432px; }
 
 #fileList .icon-btn {
   visibility: visible;
   transition: opacity 0.2s;
+}
+
+/* ── Iconos visibles en la barra de código y menú superior ── */
+#codeBar .icon-btn,
+.menu-buttons .icon-btn,
+.dropdown-content .icon-btn,
+#btnTutor .icon-btn,
+#btnRun .icon-btn,
+#btnStop .icon-btn,
+#btnMonitor .icon-btn,
+#btnConexiones .icon-btn,
+#btnGame .icon-btn,
+button > .icon-btn,
+a > .icon-btn {
+  visibility: visible;
 }

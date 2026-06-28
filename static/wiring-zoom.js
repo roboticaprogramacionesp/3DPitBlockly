@@ -83,6 +83,7 @@
   var prevSingle = null;
   var lastPinchDist = null, lastPinchMid = null;
   var rafPending = false;
+  var _pinchEndTime = 0;   // timestamp del último pinch — bloquea doble-tap
 
   /* ── Helpers ───────────────────────────────────────────────── */
 
@@ -286,6 +287,10 @@
       lastPinchDist = null;
       lastPinchMid  = null;
     } else if (e.touches.length === 0) {
+      /* Si veníamos de un pinch (2 dedos), registramos el momento */
+      if (lastPinchDist !== null || e.changedTouches.length === 2) {
+        _pinchEndTime = Date.now();
+      }
       prevSingle    = null;
       lastPinchDist = null;
       lastPinchMid  = null;
@@ -293,10 +298,12 @@
     }
   }, { passive: true });
 
-  /* Doble tap → reset */
+  /* Doble tap → reset (bloqueado 400 ms después de un pinch) */
   var lastTap = 0;
   content.addEventListener('touchend', function (e) {
     if (e.changedTouches.length !== 1) return;
+    /* Si acabamos de hacer pinch, ignorar estos touchend sueltos */
+    if (Date.now() - _pinchEndTime < 400) return;
     var now = Date.now();
     if (now - lastTap < 300) resetView();
     lastTap = now;
@@ -340,12 +347,19 @@
       setTransition(true);
       zoomAt(1 / (1 + BTN_STEP), content.clientWidth / 2, content.clientHeight / 2);
       scheduleApply();
+    },
+    // Desconectar observers al salir de la vista para evitar
+    // callbacks innecesarios mientras wiringContent no es visible.
+    // Se reconectan automáticamente la próxima vez que se cargue una imagen.
+    destroy: function () {
+      if (_srcObserver) { _srcObserver.disconnect(); }
+      if (_roObserver)  { _roObserver.disconnect(); _roObserver = null; }
     }
   };
 
   /* ── Init ─────────────────────────────────────────────────── */
   setTransition(false);
   applyTransform();
-  console.log('[wiring-zoom] OK ✓ v3');
+  //console.log('[wiring-zoom] OK ✓ v3');
 
 })();

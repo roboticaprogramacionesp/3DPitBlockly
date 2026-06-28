@@ -136,6 +136,20 @@ function refreshBlockly() {
 }
 
 function showView(viewId) {
+  // Si hay una subida de código en curso al ESP32, detenerla limpiamente
+  // antes de cambiar de vista para evitar que el pipeline de serial quede
+  // en estado inconsistente (isSendingCode=true sin nadie que lo limpie).
+  if (isSendingCode && typeof stopExecution === "function") {
+    console.warn("[showView] Cambio de vista durante envío — deteniendo ejecución");
+    stopExecution().catch(() => { });
+  }
+
+  // Desconectar observers de wiring-zoom al salir de esa vista
+  const currentView = document.querySelector(".view.active");
+  if (currentView?.id === "viewWiring" && viewId !== "viewWiring") {
+    if (window.wiringZoom?.destroy) window.wiringZoom.destroy();
+  }
+
   Blockly.hideChaff(true);
   isWorkSpace = viewId === "viewBlocks";
 
@@ -185,6 +199,24 @@ document
   });
 
 // ─────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+// MIGRACIÓN: clave anterior "esp32_wifi" guardaba host+contraseña juntos.
+// Separamos host (localStorage) de contraseña (sessionStorage) y borramos
+// el registro viejo para no dejar credenciales en texto plano.
+// ─────────────────────────────────────────────────────────────
+(function _migrateWifiCredentials() {
+  try {
+    const old = localStorage.getItem("esp32_wifi");
+    if (!old) return;
+    const parsed = JSON.parse(old);
+    if (parsed.host) localStorage.setItem("esp32_wifi_host", parsed.host);
+    if (parsed.password) sessionStorage.setItem("esp32_wifi_pw", parsed.password);
+    localStorage.removeItem("esp32_wifi");
+  } catch (_) {
+    localStorage.removeItem("esp32_wifi"); // borramos aunque esté corrupta
+  }
+})();
+
 // AUTOSAVE
 // ─────────────────────────────────────────────────────────────
 const AUTOSAVE_KEY = "blockly_autosave_workspace";
@@ -355,20 +387,22 @@ function _saveLog(msg, isError = false) {
       const color = isError ? "\x1b[31m" : "\x1b[90m";
       term.writeln(`${color}${prefix} ${msg}\x1b[0m`);
     }
-  } catch (_) {}
+  } catch (_) { }
   // También guardar en localStorage para recuperar después
   try {
     const logs = JSON.parse(localStorage.getItem("save_debug") || "[]");
     logs.push({ t: new Date().toISOString(), msg, isError });
     if (logs.length > 50) logs.shift();
     localStorage.setItem("save_debug", JSON.stringify(logs));
-  } catch (_) {}
+  } catch (_) { }
 }
 
 // Exponer función para ver logs desde la consola del navegador:
 // escribe  window.showSaveLogs()  en la consola de DevTools
 window.showSaveLogs = function () {
-  const logs = JSON.parse(localStorage.getItem("save_debug") || "[]");
+  let logs = [];
+  try { logs = JSON.parse(localStorage.getItem("save_debug") || "[]"); }
+  catch (_) { localStorage.removeItem("save_debug"); }
   if (!logs.length) { console.log("Sin logs de guardado aún"); return; }
   logs.forEach((l) => console[l.isError ? "error" : "log"](l.t, l.msg));
 };
@@ -388,7 +422,7 @@ async function saveFileAuto(content, fileName = "") {
   } else {
     const ext = (fileName.split(".").pop() || "").toLowerCase();
     if (ext === "xml") { extension = "xml"; mimeType = "text/xml"; }
-    else if (ext === "py")   { extension = "py";  mimeType = "text/x-python"; }
+    else if (ext === "py") { extension = "py"; mimeType = "text/x-python"; }
     else if (ext === "json") { extension = "json"; mimeType = "application/json"; }
     if (extension === "txt" && typeof content === "string" && content.trim().startsWith("<")) {
       extension = "xml"; mimeType = "text/xml";
@@ -429,9 +463,14 @@ async function saveFileAuto(content, fileName = "") {
   }
 
   // ── Guardar: File System Access API (Chrome desktop) o descarga clásica (móvil/Safari) ──
-  const hasFilePicker = typeof window.showSaveFilePicker === "function";
-  _saveLog(`showSaveFilePicker disponible: ${hasFilePicker}`);
-
+  // Android Chrome tiene showSaveFilePicker pero NO persiste los datos (bug conocido)
+  // Forzar fallback <a download> en Android.
+  const isAndroid = /Android/i.test(navigator.userAgent);
+  const hasFilePicker = typeof window.showSaveFilePicker === "function" && !isAndroid;
+  _saveLog(`showSaveFilePicker disponible: ${typeof window.showSaveFilePicker === "function"}, isAndroid: ${isAndroid}`);
+  if (isAndroid) {
+    _saveLog("Android detectado → saltando File System Access API (bug conocido), usando <a download>");
+  }
   if (hasFilePicker) {
     try {
       _saveLog("Intentando showSaveFilePicker...");
@@ -473,7 +512,7 @@ async function saveFileAuto(content, fileName = "") {
         URL.revokeObjectURL(url);
         document.body.removeChild(a);
         _saveLog("Object URL revocada y elemento limpiado");
-      } catch (_) {}
+      } catch (_) { }
     }, 2000);
   } catch (err) {
     _saveLog(`Error en fallback <a download>: ${err.name}: ${err.message}`, true);
@@ -757,14 +796,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Usar modal propio en lugar de prompt() bloqueante
-    const saved = JSON.parse(localStorage.getItem("esp32_wifi") || "{}");
-    const result = await _showWifiModal(saved.host || "192.168.0.113", saved.password || "blockly1");
+    const savedHost = localStorage.getItem("esp32_wifi_host") || "";
+    const savedPw = sessionStorage.getItem("esp32_wifi_pw") || "";
+    const result = await _showWifiModal(savedHost || "192.168.0.1", savedPw || "");
     if (!result) return;  // usuario canceló
 
     const { host, password } = result;
     if (!host || !host.trim()) return;
 
-    localStorage.setItem("esp32_wifi", JSON.stringify({ host: host.trim(), password }));
+    // Host en localStorage (no es secreto), contraseña solo en sessionStorage
+    // (se borra al cerrar el navegador, no persiste entre sesiones)
+    localStorage.setItem("esp32_wifi_host", host.trim());
+    sessionStorage.setItem("esp32_wifi_pw", password);
     await connectWifiSerial(host.trim(), password);
   });
 });
@@ -775,6 +818,89 @@ document.addEventListener("DOMContentLoaded", () => {
  * sin depender del customModal del proyecto (que tiene fondo azul y título fijo).
  * Retorna { host, password } o null si se cancela.
  */
+/**
+ * Modal de confirmación para sobrescritura de archivos críticos del ESP32.
+ * Retorna Promise<boolean> — true si el usuario confirma, false si cancela.
+ * No usa confirm() bloqueante para no interrumpir el event loop del serial.
+ */
+function _confirmOverwrite(fileName) {
+  return new Promise((resolve) => {
+    const CRITICAL = ["main.py", "boot.py"];
+    if (!CRITICAL.includes(fileName)) { resolve(true); return; }
+
+    if (!document.getElementById("_overwriteModal")) {
+      const style = document.createElement("style");
+      style.textContent = `
+        #_overwriteModal {
+          display:none; position:fixed; inset:0; z-index:99999;
+          background:rgba(0,0,0,0.55);
+          align-items:center; justify-content:center;
+        }
+        #_overwriteModal.open { display:flex; }
+        #_overwriteBox {
+          background:#fff; color:#222; border-radius:12px;
+          padding:24px 28px; width:340px; max-width:92vw;
+          box-shadow:0 8px 32px rgba(0,0,0,0.28);
+          font-family:'Segoe UI',system-ui,sans-serif;
+          display:flex; flex-direction:column; gap:14px;
+        }
+        #_overwriteBox h3 { margin:0; font-size:16px; font-weight:700; color:#b45309; }
+        #_overwriteBox p  { margin:0; font-size:13px; line-height:1.5; color:#444; }
+        #_overwriteBox strong { color:#1a1a2e; }
+        #_overwriteActions { display:flex; justify-content:flex-end; gap:10px; margin-top:4px; }
+        #_btnOverwriteCancel {
+          padding:8px 18px; border:1.5px solid #ccc; border-radius:7px;
+          background:#fff; color:#555; font-size:14px; cursor:pointer; font-weight:600;
+        }
+        #_btnOverwriteCancel:hover { background:#f0f0f0; }
+        #_btnOverwriteOk {
+          padding:8px 20px; border:none; border-radius:7px;
+          background:#d97706; color:#fff; font-size:14px; cursor:pointer; font-weight:700;
+        }
+        #_btnOverwriteOk:hover { background:#b45309; }
+      `;
+      document.head.appendChild(style);
+
+      const modal = document.createElement("div");
+      modal.id = "_overwriteModal";
+      modal.innerHTML = `
+        <div id="_overwriteBox">
+          <h3>⚠ Archivo crítico del ESP32</h3>
+          <p>Estás a punto de sobrescribir <strong id="_overwriteName"></strong>.<br>
+          Este archivo se ejecuta automáticamente al encender la tarjeta.<br>
+          ¿Deseas continuar?</p>
+          <div id="_overwriteActions">
+            <button id="_btnOverwriteCancel">Cancelar</button>
+            <button id="_btnOverwriteOk">Sí, sobrescribir</button>
+          </div>
+        </div>`;
+      document.body.appendChild(modal);
+    }
+
+    const modal = document.getElementById("_overwriteModal");
+    const btnOk = document.getElementById("_btnOverwriteOk");
+    const btnCan = document.getElementById("_btnOverwriteCancel");
+    document.getElementById("_overwriteName").textContent = fileName;
+    modal.classList.add("open");
+
+    const _cleanup = (result) => {
+      modal.classList.remove("open");
+      btnOk.removeEventListener("click", _onOk);
+      btnCan.removeEventListener("click", _onCancel);
+      modal.removeEventListener("click", _onBackdrop);
+      resolve(result);
+    };
+    const _onOk = () => _cleanup(true);
+    const _onCancel = () => _cleanup(false);
+    const _onBackdrop = (e) => { if (e.target === modal) _cleanup(false); };
+
+    btnOk.addEventListener("click", _onOk);
+    btnCan.addEventListener("click", _onCancel);
+    modal.addEventListener("click", _onBackdrop);
+    setTimeout(() => btnCan.focus(), 80);
+  });
+}
+
 function _showWifiModal(defaultHost, defaultPassword) {
   return new Promise((resolve) => {
 
@@ -849,14 +975,14 @@ function _showWifiModal(defaultHost, defaultPassword) {
     }
 
     // ── Rellenar valores y abrir ──
-    const modal   = document.getElementById("wifiModal");
-    const hostIn  = document.getElementById("wifiHostInput");
-    const pwIn    = document.getElementById("wifiPwInput");
-    const btnOK   = document.getElementById("wifiBtnConnect");
+    const modal = document.getElementById("wifiModal");
+    const hostIn = document.getElementById("wifiHostInput");
+    const pwIn = document.getElementById("wifiPwInput");
+    const btnOK = document.getElementById("wifiBtnConnect");
     const btnCancel = document.getElementById("wifiBtnCancel");
 
     hostIn.value = defaultHost || "";
-    pwIn.value   = defaultPassword || "";
+    pwIn.value = defaultPassword || "";
     modal.classList.add("open");
     setTimeout(() => hostIn.focus(), 80);
 
@@ -864,7 +990,7 @@ function _showWifiModal(defaultHost, defaultPassword) {
 
     const _onOK = () => {
       const host = hostIn.value.trim();
-      const pw   = pwIn.value;
+      const pw = pwIn.value;
       _close();
       btnOK.removeEventListener("click", _onOK);
       btnCancel.removeEventListener("click", _onCancel);
@@ -910,15 +1036,46 @@ let wifiSocket = null;
 let _wifiLoginBuffer = "";
 let _wifiLoggedIn = false;
 
+// Valida que el host sea una IPv4 o un hostname local seguro.
+// Previene conexiones a hosts arbitrarios inyectados por entrada maliciosa.
+function _isValidEsp32Host(host) {
+  if (!host || typeof host !== "string") return false;
+  const h = host.trim();
+  if (!h) return false;
+  // IPv4 estricta: exactamente 4 octetos 0-255
+  const ipv4Re = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/;
+  const m = h.match(ipv4Re);
+  if (m) {
+    return m.slice(1).every(n => {
+      const v = parseInt(n, 10);
+      return v >= 0 && v <= 255;
+    });
+  }
+  // Hostname local: debe contener al menos una letra para distinguirlo de IPs incompletas
+  // (ej: "esp32.local" sí, "192.168.0" no)
+  const hostnameRe = /^[a-zA-Z0-9][a-zA-Z0-9\-\.]{0,62}[a-zA-Z0-9]$/;
+  const hasLetter = /[a-zA-Z]/.test(h);
+  return hostnameRe.test(h) && hasLetter;
+}
+
 function connectWifiSerial(host, password) {
   return new Promise((resolve, reject) => {
     try {
+      // ── Validar host antes de abrir el WebSocket ──
+      if (!_isValidEsp32Host(host)) {
+        const msg = `Host no válido: "${host}". Usa una IPv4 (ej: 192.168.0.1) o nombre local (ej: esp32.local).`;
+        if (term) term.writeln(`\r\n⚠ ${msg}\r\n`);
+        reject(new Error(msg));
+        return;
+      }
+
       if (!term) {
         initTerminal();
         enableTerminalInput();
       }
 
       term.writeln(`\r\nConectando a ws://${host}:8266 ...\r\n`);
+      _setConnectingBadge();
 
       const ws = new WebSocket(`ws://${host}:8266`);
       ws.binaryType = "arraybuffer";
@@ -1114,11 +1271,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     if (USE_WIFI_FALLBACK) {
       // En dispositivos sin Web Serial (tablet/móvil), este botón también abre el modal WiFi
-      const saved = JSON.parse(localStorage.getItem("esp32_wifi") || "{}");
-      const result = await _showWifiModal(saved.host || "192.168.1.", saved.password || "blockly123");
+      const savedHost = localStorage.getItem("esp32_wifi_host") || "";
+      const savedPw = sessionStorage.getItem("esp32_wifi_pw") || "";
+      const result = await _showWifiModal(savedHost || "192.168.0.1", savedPw || "");
       if (!result) return;
-      localStorage.setItem("esp32_wifi", JSON.stringify({ host: result.host, password: result.password }));
-      await connectWifiSerial(result.host, result.password);
+      localStorage.setItem("esp32_wifi_host", result.host.trim());
+      sessionStorage.setItem("esp32_wifi_pw", result.password);
+      await connectWifiSerial(result.host.trim(), result.password);
     } else if (HAS_WEB_SERIAL) {
       await connectSerial();
     } else {
@@ -1148,6 +1307,58 @@ function updateConnectionIcon(connected) {
   if (!icon) return;
   icon.classList.remove("icon-connect", "icon-disconnect");
   icon.classList.add(connected ? "icon-connect" : "icon-disconnect");
+
+  /*
+  // ── Badge de estado en el botón ──────────────────────────────
+  // Se inyecta una sola vez; después solo actualizamos texto y color.
+  const btn = document.getElementById("btnConnection");
+  if (!btn) return;
+
+  let badge = document.getElementById("_connBadge");
+  if (!badge) {
+    badge = document.createElement("span");
+    badge.id = "_connBadge";
+    badge.style.cssText = [
+      "display:inline-flex", "align-items:center", "gap:4px",
+      "font-size:11px", "font-weight:600", "padding:2px 7px",
+      "border-radius:10px", "margin-left:5px",
+      "pointer-events:none", "white-space:nowrap",
+      "vertical-align:middle", "transition:background .25s,color .25s",
+    ].join(";");
+    btn.appendChild(badge);
+  }
+
+  if (connected) {
+    badge.style.background = "#d1fae5";  // verde claro
+    badge.style.color      = "#065f46";
+    badge.innerHTML = '<span style="width:7px;height:7px;border-radius:50%;background:#10b981;display:inline-block"></span> Conectado';
+  } else {
+    badge.style.background = "#fee2e2";  // rojo claro
+    badge.style.color      = "#991b1b";
+    badge.innerHTML = '<span style="width:7px;height:7px;border-radius:50%;background:#ef4444;display:inline-block"></span> Desconectado';
+  }*/
+}
+
+/** Estado intermedio "Conectando…" — llamar mientras dura el handshake WiFi */
+function _setConnectingBadge() {
+  const btn = document.getElementById("btnConnection");
+  if (!btn) return;
+  let badge = document.getElementById("_connBadge");
+  if (!badge) {
+    badge = document.createElement("span");
+    badge.id = "_connBadge";
+    badge.style.cssText = [
+      "display:inline-flex", "align-items:center", "gap:4px",
+      "font-size:11px", "font-weight:600", "padding:2px 7px",
+      "border-radius:10px", "margin-left:5px",
+      "pointer-events:none", "white-space:nowrap",
+      "vertical-align:middle", "transition:background .25s,color .25s",
+    ].join(";");
+    btn.appendChild(badge);
+  }
+  badge.style.background = "#fef3c7";  // amarillo claro
+  badge.style.color = "#92400e";
+  badge.innerHTML = '<span style="width:7px;height:7px;border-radius:50%;background:#f59e0b;display:inline-block"></span> Conectando…';
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -1308,7 +1519,7 @@ async function sendCodeToDevice() {
     const bytes = encoder.encode(code);
     const isWifi = serialWriter === wifiSocket;
 
-    console.log("bytes a enviar", bytes.length);
+    //console.log("bytes a enviar", bytes.length);
 
     // En WiFi/WebREPL SIEMPRE usar Paste Mode.
     // En USB usar Paste Mode para códigos pequeños.
@@ -1461,6 +1672,14 @@ document.getElementById("btnUploadCode").addEventListener("click", async () => {
   }
 
   const fileName = rawFileName;
+
+  // Pedir confirmación antes de sobrescribir main.py o boot.py
+  const confirmed = await _confirmOverwrite(fileName);
+  if (!confirmed) {
+    term.writeln(`\r\n✖ Subida cancelada — '${fileName}' no fue modificado.\r\n`);
+    return;
+  }
+
   term.writeln(`\r\nSubiendo '${fileName}' (${codeStr.length} bytes)...\r\n`);
 
   try {
@@ -1911,10 +2130,12 @@ document.getElementById("btnCodeTutor").addEventListener("click", () => {
 // LOGGER
 // ─────────────────────────────────────────────────────────────
 function saveLog(type, message, extra = {}) {
-  const logs = JSON.parse(localStorage.getItem("app_logs") || "[]");
+  let logs = [];
+  try { logs = JSON.parse(localStorage.getItem("app_logs") || "[]"); }
+  catch (_) { localStorage.removeItem("app_logs"); }
   logs.push({ type, message, ...extra, time: new Date().toISOString() });
   if (logs.length > 500) logs.shift();
-  localStorage.setItem("app_logs", JSON.stringify(logs));
+  try { localStorage.setItem("app_logs", JSON.stringify(logs)); } catch (_) { }
 }
 
 window.addEventListener("error", (event) => {

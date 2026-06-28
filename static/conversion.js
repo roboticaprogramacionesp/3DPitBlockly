@@ -6442,6 +6442,157 @@ Blockly.defineBlocksWithJsonArray([
     colour: 260,
   },
   {
+    type: "bt_classic_init",
+    message0: "%1 iniciar Bluetooth",
+    args0: [
+      {
+        type: "field_image",
+        src: "./static/img/bluetooth.png",
+        width: 50,
+        height: 50,
+        alt: "Buetooth Classic",
+      },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 220,
+    tooltip: "Inicia Bluetooth Classic SPP en modo esclavo. Requiere firmware shariltumin.",
+    helpUrl: "https://github.com/shariltumin/esp32-bluetooth-classic-micropython"
+  },
+  {
+    type: "bt_classic_slave",
+    message0: "Bluetooth Esclavo: nombre %1 PIN %2",
+    args0: [
+      { type: "input_value", name: "NAME", check: "String" },
+      { type: "input_value", name: "PIN", check: "String" }
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 220,
+    tooltip: "Inicializa ESP32 como esclavo BT Classic SPP.",
+  },
+  // ── MASTER init ──
+  {
+    type: "bt_classic_master",
+    message0: "Bluetooth Maestro: nombre %1",
+    args0: [
+      { type: "input_value", name: "NAME", check: "String" },
+    ],
+    previousStatement: null, "nextStatement": null,
+    colour: 220,
+    tooltip: "Inicializa ESP32 como maestro BT Classic SPP."
+  },
+  // ── up() ──
+  {
+    type: "bt_classic_up",
+    message0: "¿inicialización exitosa?",
+    output: "Boolean",
+    colour: 220,
+    tooltip: "True si Bluetooth está listo, False si no."
+  },
+  // ── ready() ──
+  {
+    type: "bt_classic_ready",
+    message0: "¿listo para enviar?",
+    output: "Boolean",
+    colour: 220,
+    tooltip: "True si hay conexión activa y puede enviar datos."
+  },
+  // ── open() — solo maestro ──
+  {
+    type: "bt_classic_open",
+    message0: "Conectar a esclavo %1 PIN %2",
+    args0: [
+      { type: "input_value", name: "NAME", check: "String" },
+      { type: "input_value", name: "PIN",  check: "String" }
+    ],
+    previousStatement: null, "nextStatement": null,
+    colour: 220,
+    tooltip: "Maestro: conecta al esclavo por nombre y PIN."
+  },
+  // ── send_str() ──
+  {
+    type: "bt_classic_send_str",
+    message0: "Enviar texto %1",
+    args0: [
+      { type: "input_value", name: "MSG", check: "String" }
+    ],
+    previousStatement: null, "nextStatement": null,
+    colour: 220,
+    tooltip: "Envía un string (máx 990 caracteres)."
+  },
+  // ── send_bin() ──
+  {
+    type: "bt_classic_send_bin",
+    message0: "Enviar bytes %1",
+    args0: [
+      { type: "input_value", name: "DATA", check: "String" }
+    ],
+    previousStatement: null, "nextStatement": null,
+    colour: 220,
+    tooltip: "Envía bytearray (máx 990 bytes)."
+  },
+  // ── data() ──
+  {
+    type: "bt_classic_data",
+    message0: "Bytes en buffer",
+    output: "Number",
+    colour: 220,
+    tooltip: "Retorna cantidad de bytes disponibles en el buffer (0 si vacío, máx 1024)."
+  },
+  // ── get_str() ──
+  {
+    type: "bt_classic_get_str",
+    message0: "Leer texto máx %1 bytes",
+    args0: [
+      { type: "input_value", name: "N", check: "Number" }
+    ],
+    output: "String",
+    colour: 220,
+    tooltip: "Lee hasta N bytes del buffer como string."
+  },
+  // ── get_bin() ──
+  {
+    type: "bt_classic_get_bin",
+    message0: "Leer bytes máx %1",
+    args0: [
+      { type: "input_value", name: "N", check: "Number" }
+    ],
+    output: null,
+    colour: 220,
+    tooltip: "Lee hasta N bytes del buffer como bytes."
+  },
+  // ── close() ──
+  {
+    type: "bt_classic_close",
+    message0: "Cerrar Esclavo",
+    previousStatement: null, "nextStatement": null,
+    colour: 220,
+    tooltip: "Cierra la conexión activa."
+  },
+  // ── deinit() ──
+  {
+    type: "bt_classic_deinit",
+    message0: "Desactiva Esclavo",
+    previousStatement: null, "nextStatement": null,
+    colour: 220,
+    tooltip: "Desactiva completamente el Bluetooth (útil antes de deep-sleep)."
+  },
+  {
+    type: "bt_classic_master_close",
+    message0: "Cierra Maestro",
+    previousStatement: null, "nextStatement": null,
+    colour: 220,
+    tooltip: "Cierra la conexión activa."
+  },
+  {
+    type: "bt_classic_master_deinit",
+    message0: "Desactiva Maestro",
+    previousStatement: null, "nextStatement": null,
+    colour: 220,
+    tooltip: "Desactiva completamente el Bluetooth (útil antes de deep-sleep)."
+  },
+  {
     type: "portal_init",
     message0: "Portal cautivo iniciar",
     previousStatement: null,

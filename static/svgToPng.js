@@ -4,12 +4,6 @@ function addScreenshotButton(workspace) {
 
   // grupo
   const g = document.createElementNS(NS, "g");
-
-  if (!g) {
-    g = document.createElementNS(NS, "g");
-    g.setAttribute("class", "blocklyScreenshotButton");
-    svg.appendChild(g);
-  }
   g.setAttribute("class", "blocklyScreenshotButton");
   g.style.cursor = "pointer";
 
@@ -188,6 +182,13 @@ function svgToPng(svg, callback) {
     URL.revokeObjectURL(url);
   };
 
+  // Si el SVG no puede renderizarse como imagen (ej: SVG malformado),
+  // liberar el blob y notificar en consola sin dejar el callback colgado.
+  img.onerror = () => {
+    console.error("[svgToPng] Error al renderizar el SVG como imagen.");
+    URL.revokeObjectURL(url);
+  };
+
   img.src = url;
 }
 
@@ -233,6 +234,13 @@ function urlToDataUri(url) {
       ctx.drawImage(img, 0, 0);
 
       resolve(canvas.toDataURL("image/png"));
+    };
+
+    // Si la imagen falla (CORS, 404, red lenta) resolvemos con la URL
+    // original para que el screenshot continúe en lugar de quedar colgado.
+    img.onerror = function () {
+      console.warn("[svgToPng] No se pudo cargar imagen, usando URL original:", url);
+      resolve(url);
     };
 
     img.src = url;

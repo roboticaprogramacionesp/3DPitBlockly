@@ -2344,6 +2344,82 @@ Blockly.Python["ble_write"] = function (block) {
   return `uart.write(${value}.encode() if isinstance(${value}, str) else ${value})\n`;
 };
 
+// ── Bluetooth Classic generators (bts = slave, btm = master) ──
+
+Blockly.Python["bt_classic_init"] = function(block) {
+  const name = Blockly.Python.valueToCode(block, 'NAME', Blockly.Python.ORDER_ATOMIC) || "'SLV-1'";
+  const pin  = Blockly.Python.valueToCode(block, 'PIN',  Blockly.Python.ORDER_ATOMIC) || "'1234'";
+  Blockly.Python.definitions_['import_bts'] = 'import bts, btm';
+  return ``;
+};
+
+Blockly.Python["bt_classic_slave"] = function(block) {
+  const name = Blockly.Python.valueToCode(block, 'NAME', Blockly.Python.ORDER_ATOMIC) || "'SLV-1'";
+  const pin  = Blockly.Python.valueToCode(block, 'PIN',  Blockly.Python.ORDER_ATOMIC) || "'1234'";
+  return `bts.init(${name}, ${pin})\n`;
+};
+
+Blockly.Python["bt_classic_master"] = function(block) {
+  const name = Blockly.Python.valueToCode(block, 'NAME', Blockly.Python.ORDER_ATOMIC) || "'MTR-1'";
+  return `btm.init(${name})\n`;
+};
+
+Blockly.Python["bt_classic_up"] = function(block) {
+  // usa bts o btm según lo que el usuario haya inicializado;
+  // como no hay estado global de rol, usamos una variable genérica btx
+  return [`bts.up()`, Blockly.Python.ORDER_FUNCTION_CALL];
+};
+
+Blockly.Python["bt_classic_ready"] = function(block) {
+  return [`bts.ready()`, Blockly.Python.ORDER_FUNCTION_CALL];
+};
+
+Blockly.Python["bt_classic_open"] = function(block) {
+  const name = Blockly.Python.valueToCode(block, 'NAME', Blockly.Python.ORDER_ATOMIC) || "'SLV-1'";
+  const pin  = Blockly.Python.valueToCode(block, 'PIN',  Blockly.Python.ORDER_ATOMIC) || "'1234'";
+  return `btm.open(${name}, ${pin})\n`;
+};
+
+Blockly.Python["bt_classic_send_str"] = function(block) {
+  const msg = Blockly.Python.valueToCode(block, 'MSG', Blockly.Python.ORDER_ATOMIC) || "''";
+  return `bts.send_str(${msg})\n`;
+};
+
+Blockly.Python["bt_classic_send_bin"] = function(block) {
+  const data = Blockly.Python.valueToCode(block, 'DATA', Blockly.Python.ORDER_ATOMIC) || "b''";
+  return `bts.send_bin(${data})\n`;
+};
+
+Blockly.Python["bt_classic_data"] = function(block) {
+  return [`bts.data()`, Blockly.Python.ORDER_FUNCTION_CALL];
+};
+
+Blockly.Python["bt_classic_get_str"] = function(block) {
+  const n = Blockly.Python.valueToCode(block, 'N', Blockly.Python.ORDER_ATOMIC) || '100';
+  return [`bts.get_str(${n})`, Blockly.Python.ORDER_FUNCTION_CALL];
+};
+
+Blockly.Python["bt_classic_get_bin"] = function(block) {
+  const n = Blockly.Python.valueToCode(block, 'N', Blockly.Python.ORDER_ATOMIC) || '100';
+  return [`bts.get_bin(${n})`, Blockly.Python.ORDER_FUNCTION_CALL];
+};
+
+Blockly.Python["bt_classic_close"] = function(block) {
+  return `bts.close()\n`;
+};
+
+Blockly.Python["bt_classic_deinit"] = function(block) {
+  return `bts.deinit()\n`;
+};
+
+Blockly.Python["bt_classic_master_close"] = function(block) {
+  return `btm.close()\n`;
+};
+
+Blockly.Python["bt_classic_master_deinit"] = function(block) {
+  return `btm.deinit()\n`;
+};  
+
 Blockly.Python["portal_init"] = function () {
   Blockly.Python.definitions_["portal_imports"] =
     "import uasyncio as asyncio\n" + "import gc\n" + "import socket";

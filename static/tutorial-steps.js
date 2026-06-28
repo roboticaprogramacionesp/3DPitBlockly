@@ -3065,8 +3065,10 @@ document.addEventListener('DOMContentLoaded', function () {
     '    <p class="ts-label">Tutorial guiado &nbsp;·&nbsp; <span class="ts-drag-hint">✥ arrastrar</span></p>' +
     '    <h2 class="ts-title" id="ts-title">—</h2>' +
     '  </div>' +
+    '  <button class="ts-minimize" id="ts-minimize" title="Minimizar">−</button>' +
     '  <button class="ts-close" id="ts-close" title="Cerrar">✕</button>' +
     '</div>' +
+    '<div class="ts-collapsible" id="ts-collapsible">' +
     '<div class="ts-size-bar">' +
     '  <span class="ts-size-label">🔠</span>' +
     '  <button class="ts-size-btn" id="ts-size-down" title="Reducir texto">−</button>' +
@@ -3081,13 +3083,41 @@ document.addEventListener('DOMContentLoaded', function () {
     '  <button class="ts-btn ts-btn-sec"     id="ts-btn-prev">← Anterior</button>' +
     '  <button class="ts-btn-wiring" id="ts-btn-wiring" title="Ver conexiones eléctricas" style="display:none">🔌</button>' +
     '  <button class="ts-btn ts-btn-primary" id="ts-btn-next">Siguiente →</button>' +
-    '</div>';
+    '</div>' +
+    '</div>'; /* cierra ts-collapsible */
 
   document.body.appendChild(panel);
 
   document.getElementById('ts-close').addEventListener('click', function () { TutorialSteps.cerrar(); });
   document.getElementById('ts-btn-next').addEventListener('click', function () { TutorialSteps.siguiente(); });
   document.getElementById('ts-btn-prev').addEventListener('click', function () { TutorialSteps.anterior(); });
+
+  // ── Minimizar / Maximizar ─────────────────────────────────────
+  var tsMinimized = false;
+  var tsMinBtn = document.getElementById('ts-minimize');
+  var tsCollapsible = document.getElementById('ts-collapsible');
+
+  function tsToggleMinimize() {
+    tsMinimized = !tsMinimized;
+    if (tsMinimized) {
+      tsCollapsible.style.display = 'none';
+      panel.setAttribute('data-minimized', '1');
+      tsMinBtn.textContent = '□';
+      tsMinBtn.title = 'Maximizar';
+    } else {
+      tsCollapsible.style.display = '';
+      panel.removeAttribute('data-minimized');
+      tsMinBtn.textContent = '−';
+      tsMinBtn.title = 'Minimizar';
+    }
+  }
+
+  tsMinBtn.addEventListener('click', tsToggleMinimize);
+  // Doble clic en el header también minimiza/maximiza
+  document.querySelector('#ts-panel .ts-header').addEventListener('dblclick', function (e) {
+    if (e.target.classList.contains('ts-close') || e.target.classList.contains('ts-minimize')) return;
+    tsToggleMinimize();
+  });
 
   // ── Control de tamaño de texto ────────────────────────────────
   var TS_SIZES = ['S', 'M', 'L', 'XL'];

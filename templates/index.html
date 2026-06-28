@@ -5,6 +5,7 @@
   <meta charset="UTF-8" />
   <title>3DPit Blocks</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='viewcode.css') }}" />
   <link rel="icon" href="{{ url_for('static', filename='3DPit.ico') }}" />
   <!-- icons3dpit.svg se carga bajo demanda, sin preload para evitar warning -->
 
@@ -33,7 +34,7 @@
 
   <link rel="stylesheet" href="{{ url_for('static', filename='tutorial-steps.css') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='serial-monitor.css') }}" />
-  <link rel="stylesheet" href="{{ url_for('static', filename='viewcode.css') }}" />
+
 
   <style>
     /* BLOQUE EN EJECUCIÓN */
@@ -620,6 +621,9 @@
       <button id="btnCode">Código</button>
 
       <!--<button id="btnConsole">Terminal</button> -->
+      <button id="btnConnectionWifi" title="Conectar a ESP32 por WiFi (WebREPL)">
+        <span class="icon-btn icon-connect-wifi"></span>
+      </button>
       <button id="btnConnection" title="Conectar a ESP32">
         <span id="iconConnection" class="icon-btn icon-disconect"></span>
       </button>
@@ -738,10 +742,7 @@
       <button id="btnWiring" title="Conexiones eléctricas">
         <span class="icon-btn icon-conexiones"></span>
       </button>
-      <button id="btnGame" title="Vista Juego 🎮"><span class="icon-btn icon-games"></span></button>
-      <button id="btnConnectionWifi" title="Conectar a ESP32 por WiFi (WebREPL)">
-        📶
-      </button>
+      <button id="btnGame" title="Vista Juego"><span class="icon-btn icon-games"></span></button>
     </div>
   </div>
 
@@ -792,6 +793,10 @@
               </button>
               <button id="btnCodeTutor" title="Ayuda / Tutorial">
                 <span class="icon-btn icon-help"></span>
+              </button>
+              <!-- Firmware personalizado desde archivo local -->
+              <button id="btnBurnCustom" title="Grabar firmware personalizado (.bin)">
+                <span class="icon-btn icon-burnfimware"></span>
               </button>
             </div>
 
@@ -927,7 +932,7 @@
         <block type="game_frame"></block>
 
         <sep></sep>
-        <label role="presentation"text="── Ejemplo completo ──"></label>
+        <label role="presentation" text="── Ejemplo completo ──"></label>
         <block type="runstart">
           <next>
             <block type="game_start">
@@ -3448,7 +3453,7 @@
                   <field name="NUM">2</field>
                 </shadow>
               </value>
-            <value name="COLOR">
+              <value name="COLOR">
                 <shadow type="colour_picker">
                   <field name="COLOUR">#ff0000</field>
                 </shadow>
@@ -4138,6 +4143,80 @@
           <block type="ble_write"></block>
         </category>
 
+        <category name="BluetoothClasico">
+          <!-- ─── 🔵 Bluetooth Classic (SPP) ─── -->
+          <label role="presentation" text="─── 🔵 Bluetooth Classic ───"></label>
+          <label text="⚠️ Requiere firmware Bluetooth Classic (Carpeta 3 Fimware)" web-class="warningText"></label>
+
+          <block type="bt_classic_init"></block>
+          <block type="bt_classic_slave">
+            <value name="NAME">
+              <shadow type="text">
+                <field name="TEXT">SLV-1</field>
+              </shadow>
+            </value>
+            <value name="PIN">
+              <shadow type="text">
+                <field name="TEXT">1234</field>
+              </shadow>
+            </value>
+          </block>
+          <block type="bt_classic_master">
+            <value name="NAME">
+              <shadow type="text">
+                <field name="TEXT">MTR-1</field>
+              </shadow>
+            </value>
+          </block>
+          <block type="bt_classic_up"></block>
+          <block type="bt_classic_ready"></block>
+          <block type="bt_classic_open">
+            <value name="NAME">
+              <shadow type="text">
+                <field name="TEXT">SLV-1</field>
+              </shadow>
+            </value>
+            <value name="PIN">
+              <shadow type="text">
+                <field name="TEXT">1234</field>
+              </shadow>
+            </value>
+          </block>
+          <block type="bt_classic_send_str">
+            <value name="MSG">
+              <shadow type="text">
+                <field name="TEXT">hola</field>
+              </shadow>
+            </value>
+          </block>
+          <block type="bt_classic_send_bin">
+            <value name="DATA">
+              <shadow type="text">
+                <field name="TEXT">ok</field>
+              </shadow>
+            </value>
+          </block>
+          <block type="bt_classic_data"></block>
+          <block type="bt_classic_get_str">
+            <value name="N">
+              <shadow type="math_number">
+                <field name="NUM">100</field>
+              </shadow>
+            </value>
+          </block>
+          <block type="bt_classic_get_bin">
+            <value name="N">
+              <shadow type="math_number">
+                <field name="NUM">100</field>
+              </shadow>
+            </value>
+          </block>
+          <block type="bt_classic_close"></block>
+          <block type="bt_classic_deinit"></block>
+          <block type="bt_classic_master_close"></block>
+          <block type="bt_classic_master_deinit"></block>
+        </category>
+
         <category name="Portal Cautivo">
           <block type="portal_init"></block>
           <block type="DNSQuery"></block>
@@ -4186,6 +4265,7 @@
   <script src="{{ url_for('static', filename='game-ui.js') }}"></script>
 
   <script type="module" src="{{ url_for('static', filename='install-button.js') }}"></script>
+  <script src="{{ url_for('static', filename='custom-flash.js') }}"></script>
   <script src="{{ url_for('static', filename='js-tutorial.js') }}"></script>
   <script src="{{ url_for('static', filename='code-tutor.js') }}"></script>
 

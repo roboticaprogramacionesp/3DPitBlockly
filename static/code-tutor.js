@@ -93,36 +93,7 @@ function showTutorialStep2() {
   //el.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
-document.getElementById("tutorialNext").onclick = () => {
-  if (activeTutorial === "blocks") {
-    if (uiStep < uiTutorial.length - 1) {
-      uiStep++;
-      showTutorialStep();
-    } else {
-      closeTutorial();
-    }
-  } else if (activeTutorial === "code") {
-    if (uiStep2 < uiCodeTutorial.length - 1) {
-      uiStep2++;
-      showTutorialStep2();
-    } else {
-      closeTutorial();
-    }
-  }
-};
-document.getElementById("tutorialPrev").onclick = () => {
-  if (activeTutorial === "blocks" && uiStep > 0) {
-    uiStep--;
-    showTutorialStep();
-  } else if (activeTutorial === "code" && uiStep2 > 0) {
-    uiStep2--;
-    showTutorialStep2();
-  }
-};
-document.getElementById("tutorialClose").onclick = closeTutorial;
-
-function closeTutorial() {
-  document.getElementById("tutorialOverlay").classList.add("hidden");
-  document.body.style.overflow = "";
-  activeTutorial = null;
-}
+// Los handlers de tutorialNext / tutorialPrev / tutorialClose y la función
+// closeTutorial() están definidos en js-tutorial.js, que ya maneja ambos
+// modos ("blocks" y "code") mediante la variable activeTutorial.
+// No se duplican aquí para evitar que el segundo .onclick sobreescriba al primero.
