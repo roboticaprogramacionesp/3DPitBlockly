@@ -1485,6 +1485,7 @@ function _setConnectingBadge() {
   const btn = document.getElementById("btnConnection");
   if (!btn) return;
   let badge = document.getElementById("_connBadge");
+  /*
   if (!badge) {
     badge = document.createElement("span");
     badge.id = "_connBadge";
@@ -1500,6 +1501,7 @@ function _setConnectingBadge() {
   badge.style.background = "#fef3c7";  // amarillo claro
   badge.style.color = "#92400e";
   badge.innerHTML = '<span style="width:7px;height:7px;border-radius:50%;background:#f59e0b;display:inline-block"></span> Conectando…';
+*/
 }
 
 // ─────────────────────────────────────────────────────────────

@@ -71,6 +71,13 @@ Blockly.Python["objecto"] = function (block) {
   return [name, Blockly.Python.ORDER_ATOMIC];
 };
 
+Blockly.Python["objecto_attr"] = function (block) {
+  const objectName = block.getFieldValue("OBJECT");
+  const attrName = block.getFieldValue("ATTRIBUTE");
+  console.log(objectName, attrName);
+  return `${objectName}.${attrName}\n`;
+};
+
 Blockly.Python["from"] = function (block) {
   const module = block.getFieldValue("MODULE");
   const name = block.getFieldValue("NAME");

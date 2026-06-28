@@ -65,6 +65,19 @@ Blockly.defineBlocksWithJsonArray([
     helpUrl: "",
   },
   {
+    type: "objecto_attr",
+    message0: "%1.%2",
+    args0: [
+      { type: "field_input", name: "OBJECT", text: "" },
+      { type: "field_input", name: "ATTRIBUTE", text: "" }
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 120,
+    tooltip: "Acceder al atributo de un objeto",
+    helpUrl: "",
+  },
+  {
     type: "from",
     message0: "from %1 import %2",
     args0: [
