@@ -1,18 +1,15 @@
 /**
  * wiring-zoom.js — Zoom & Pan para la vista de Conexiones eléctricas
  * ─────────────────────────────────────────────────────────────────────
- * v3 — Fix crítico:
- *   Todos los eventos de interacción (mouse + touch) se registran en
- *   #wiringContent (el contenedor fijo), NO en #wiringStage (que se
- *   transforma y escala). Así el área de hit-test siempre es el 100%
- *   del contenedor visible, independientemente del zoom o posición.
+ * v4 — Fix bug de reset al soltar pinch:
+ *   Cuando el usuario suelta los 2 dedos al mismo tiempo, el navegador
+ *   dispara dos eventos touchend seguidos (uno por dedo). El detector
+ *   de doble-tap los interpretaba como dos taps rápidos → resetView().
  *
- *   Problema v2:
- *   - Mouse: mitad de la imagen mostraba cursor flecha porque el stage
- *     escalado no cubría toda el área del content → mousedown caía en
- *     content sin listener → no arrastraba.
- *   - Touch: mismo problema. El dedo fuera de la imagen escalada
- *     caía en content → touchstart no se disparaba en stage → sin pan.
+ *   Solución: bandera _wasMultiTouch que se prende en touchstart cuando
+ *   hay 2+ dedos, y se consume en el PRIMER touchend (cuando pasamos
+ *   de 2 dedos → 1 dedo), seteando _pinchEndTime ahí mismo. Así el
+ *   guard de 400 ms bloquea también el segundo touchend de la ráfaga.
  */
 
 (function () {
@@ -42,9 +39,6 @@
     'position:absolute',
     'top:0', 'left:0',
     'transform-origin:0 0',
-    /* El stage NO debe tener width/height 100% porque con scale
-       su área real de hit-test se agranda/reduce y causa el bug.
-       Usamos width/height:0 — solo es un contenedor de transform. */
     'width:0', 'height:0',
     'user-select:none',
     '-webkit-user-select:none'
@@ -53,7 +47,6 @@
   if (img.parentNode === content) content.removeChild(img);
   stage.appendChild(img);
 
-  /* Content: captura todos los eventos, cursor correcto siempre */
   content.style.position       = 'relative';
   content.style.overflow       = 'hidden';
   content.style.alignItems     = 'flex-start';
@@ -65,7 +58,6 @@
   content.style.webkitUserSelect = 'none';
   content.appendChild(stage);
 
-  /* Imagen: sin pointer-events para que no interfiera */
   img.style.cssText = [
     'display:block',
     'max-width:none',
@@ -83,7 +75,8 @@
   var prevSingle = null;
   var lastPinchDist = null, lastPinchMid = null;
   var rafPending = false;
-  var _pinchEndTime = 0;   // timestamp del último pinch — bloquea doble-tap
+  var _pinchEndTime  = 0;   // timestamp del último pinch — bloquea doble-tap
+  var _wasMultiTouch = false; // true entre touchstart multi-dedo y el primer touchend
 
   /* ── Helpers ───────────────────────────────────────────────── */
 
@@ -172,7 +165,6 @@
   img.addEventListener('load', centerImg);
   if (img.complete && img.naturalWidth) centerImg();
 
-  /* Detectar cambio de src */
   var _srcObserver = new MutationObserver(function (mutations) {
     mutations.forEach(function (m) {
       if (m.attributeName === 'src' && img.src) {
@@ -196,7 +188,7 @@
   }, { passive: false });
 
   /* ════════════════════════════════════════════════════════════
-     MOUSE — listeners en content (no en stage)
+     MOUSE — listeners en content
   ════════════════════════════════════════════════════════════ */
 
   content.addEventListener('mousedown', function (e) {
@@ -226,12 +218,15 @@
   content.addEventListener('dblclick', resetView);
 
   /* ════════════════════════════════════════════════════════════
-     TOUCH — listeners en content (no en stage)
+     TOUCH — listeners en content
   ════════════════════════════════════════════════════════════ */
 
   content.addEventListener('touchstart', function (e) {
     e.preventDefault();
     setTransition(false);
+
+    // Marca si empezamos con multi-dedo → bloquea doble-tap al soltar
+    _wasMultiTouch = e.touches.length >= 2;
 
     if (e.touches.length === 1) {
       prevSingle    = relToContent(e.touches[0].clientX, e.touches[0].clientY);
@@ -282,15 +277,20 @@
   }, { passive: false });
 
   content.addEventListener('touchend', function (e) {
+    // FIX v4: si veníamos de multi-touch, bloquea el doble-tap aquí mismo.
+    // Se ejecuta en el PRIMER touchend (cuando pasamos de 2 dedos → 1),
+    // y como este listener corre antes que el de doble-tap (registrado
+    // después), el guard de 400 ms ya está activo para el segundo evento.
+    if (_wasMultiTouch) {
+      _pinchEndTime   = Date.now();
+      _wasMultiTouch  = false;
+    }
+
     if (e.touches.length === 1) {
       prevSingle    = relToContent(e.touches[0].clientX, e.touches[0].clientY);
       lastPinchDist = null;
       lastPinchMid  = null;
     } else if (e.touches.length === 0) {
-      /* Si veníamos de un pinch (2 dedos), registramos el momento */
-      if (lastPinchDist !== null || e.changedTouches.length === 2) {
-        _pinchEndTime = Date.now();
-      }
       prevSingle    = null;
       lastPinchDist = null;
       lastPinchMid  = null;
@@ -298,7 +298,7 @@
     }
   }, { passive: true });
 
-  /* Doble tap → reset (bloqueado 400 ms después de un pinch) */
+  /* Doble tap → reset (bloqueado durante 400 ms tras un pinch) */
   var lastTap = 0;
   content.addEventListener('touchend', function (e) {
     if (e.changedTouches.length !== 1) return;
@@ -348,9 +348,6 @@
       zoomAt(1 / (1 + BTN_STEP), content.clientWidth / 2, content.clientHeight / 2);
       scheduleApply();
     },
-    // Desconectar observers al salir de la vista para evitar
-    // callbacks innecesarios mientras wiringContent no es visible.
-    // Se reconectan automáticamente la próxima vez que se cargue una imagen.
     destroy: function () {
       if (_srcObserver) { _srcObserver.disconnect(); }
       if (_roObserver)  { _roObserver.disconnect(); _roObserver = null; }
@@ -360,6 +357,5 @@
   /* ── Init ─────────────────────────────────────────────────── */
   setTransition(false);
   applyTransform();
-  //console.log('[wiring-zoom] OK ✓ v3');
 
 })();
