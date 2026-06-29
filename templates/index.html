@@ -4692,6 +4692,56 @@
           <block type="async_sleep_ms"></block>
         </category>
       </category>
+      <category name="ESPCam">
+        <label text="📷 ESP32-CAM" role="presentation"></label>
+        <label text="⚠️ Requiere firmware ESP32-CAM (Carpeta 3 Firmware)" web-class="warningText"></label>
+
+        <!-- Bloque completo todo-en-uno -->
+        <block type="espcam_main">
+          <field name="SSID">Robot-Control</field>
+        </block>
+
+        <!-- Inicialización individual -->
+        <block type="espcam_init">
+          <field name="QUALITY">12</field>
+          <field name="FRAMESIZE">FRAMESIZE_VGA</field>
+        </block>
+
+        <!-- Captura -->
+        <block type="espcam_capture"></block>
+
+        <!-- Configuración en caliente -->
+        <block type="espcam_quality">
+          <field name="QUALITY">12</field>
+        </block>
+        <block type="espcam_framesize">
+          <field name="FRAMESIZE">FRAMESIZE_VGA</field>
+        </block>
+
+        <!-- Stream MJPEG -->
+        <block type="espcam_send_mjpeg">
+          <field name="WRITER">writer</field>
+          <field name="INTERVAL">10</field>
+        </block>
+
+        <!-- Ruta /video_feed -->
+        <block type="espcam_video_feed_route">
+          <field name="WRITER">writer</field>
+        </block>
+
+        <!-- Manejador HTTP completo -->
+        <block type="espcam_http_handler"></block>
+
+        <!-- LED Flash -->
+        <block type="espcam_led_flash">
+          <field name="PIN">4</field>
+          <field name="STATE">1</field>
+        </block>
+
+        <!-- Utilidades comunes -->
+        <block type="async_sleep_ms"></block>
+        <block type="gc_collect"></block>
+      </category>
     </xml>
   </div>
 

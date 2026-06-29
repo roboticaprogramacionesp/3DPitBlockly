@@ -98,6 +98,65 @@ function updateCodeFromBlockly() {
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+// ─────────────────────────────────────────────────────────────
+// DETECCIÓN DE VELOCIDAD DEL DISPOSITIVO (ESP32 Wroom vs C3/C6/S2/S3)
+// ─────────────────────────────────────────────────────────────
+// El ESP32-C3 Super Mini tiene buffer UART más pequeño y responde
+// más lento al raw REPL que el ESP32 Wroom clásico.
+// Guardamos el multiplicador de tiempo detectado en esta sesión:
+//   1.0 = dispositivo rápido (Wroom, S3…)
+//   2.0 = dispositivo lento (C3, C6, S2…)
+let _deviceSpeedMul = 1.0;   // se actualiza en _detectDeviceSpeed()
+let _deviceDetected = false;  // evitar re-detección innecesaria
+
+/**
+ * Intenta detectar si el dispositivo conectado es lento (C3/C6/S2)
+ * o rápido (Wroom/S3). Lo hace enviando Ctrl+A y midiendo cuánto
+ * tarda en aparecer el ">" del raw REPL prompt.
+ * Si tarda > 400 ms → dispositivo lento → mul = 2.0
+ * Llama a esta función justo después de conectar (connectSerial).
+ */
+async function _detectDeviceSpeed() {
+  if (_deviceDetected || !serialReader || !serialWriter) return;
+  _deviceDetected = true;
+
+  let _detBuf = "";
+  const _prevHook = window._rawReplHook;
+  window._rawReplHook = (c) => { _detBuf += c; };
+
+  try {
+    await sendSerial("\x03");
+    await sleep(80);
+    await sendSerial("\x03");
+    await sleep(80);
+
+    _detBuf = "";
+    const t0 = Date.now();
+    await sendSerial("\x01");   // entrar en raw REPL
+
+    // Esperar hasta 1200 ms a que aparezca ">"
+    const deadline = Date.now() + 1200;
+    while (Date.now() < deadline) {
+      if (_detBuf.includes(">")) break;
+      await sleep(20);
+    }
+    const elapsed = Date.now() - t0;
+
+    // Salir inmediatamente del raw REPL
+    await sendSerial("\x02");
+    await sleep(100);
+
+    _deviceSpeedMul = elapsed > 400 ? 2.0 : 1.0;
+    const label = _deviceSpeedMul > 1 ? "lento (C3/C6/S2)" : "rápido (Wroom/S3)";
+    console.log(`[DeviceDetect] tiempo raw REPL: ${elapsed} ms → dispositivo ${label} (mul=${_deviceSpeedMul})`);
+    if (term) term.writeln(`\r\n🔍 Dispositivo detectado: ${label}\r\n`);
+  } catch (e) {
+    console.warn("[DeviceDetect] error:", e);
+  } finally {
+    window._rawReplHook = _prevHook ?? null;
+  }
+}
+
 function debounce(fn, wait = 120) {
   let t;
   return (...args) => {
@@ -859,6 +918,8 @@ async function connectSerial() {
     term.writeln("MicroPython Terminal\r\n");
     await sendSerial("\x03");
     readSerialLoop();
+    _deviceDetected = false;  // resetear para nueva conexión
+    sleep(400).then(() => _detectDeviceSpeed());
   } catch (error) {
     if (term) term.writeln("\r\nError conexión: " + error);
     else console.error(error);
@@ -1546,6 +1607,12 @@ function getCode() {
 async function sendViaRawRepl(codeStr, chunkSz = 256) {
   if (!serialReader || !serialWriter) return false;
 
+  // Adaptar chunk y tiempos según velocidad del dispositivo detectada.
+  // _deviceSpeedMul: 1.0 = rápido (Wroom/S3), 2.0 = lento (C3/C6/S2)
+  const _mul = _deviceSpeedMul;
+  const _chunkSz = _mul > 1 ? 128 : chunkSz;  // C3: chunks pequeños
+  const _chunkPause = _mul > 1 ? 20 : 0;      // C3: pausa entre chunks
+
   // Buffer local — no comparte estado con Files ni readResponse
   let _localBuf = "";
   window._rawReplHook = (chunk) => {
@@ -1565,20 +1632,20 @@ async function sendViaRawRepl(codeStr, chunkSz = 256) {
   try {
     // 1. Interrumpir ejecución actual
     await sendSerial("\x03");
-    await sleep(80);
+    await sleep(100 * _mul);
     await sendSerial("\x03");
-    await sleep(80);
+    await sleep(100 * _mul);
 
     // 2. Entrar en raw REPL
     _localBuf = "";
     await sendSerial("\x01");
-    let gotPrompt = await _waitLocal(">", 2000);
+    let gotPrompt = await _waitLocal(">", 2000 * _mul);
     if (!gotPrompt) {
       await sendSerial("\r\n");
-      await sleep(60);
+      await sleep(100 * _mul);
       _localBuf = "";
       await sendSerial("\x01");
-      gotPrompt = await _waitLocal(">", 2000);
+      gotPrompt = await _waitLocal(">", 2500 * _mul);
       if (!gotPrompt) return false;
     }
 
@@ -1587,23 +1654,23 @@ async function sendViaRawRepl(codeStr, chunkSz = 256) {
     const total = bytes.length;
     let sent = 0;
 
-    // Mostrar barra de inicio
     term.write(`\r\n\x1b[36m↑ Enviando ${total} bytes\x1b[0m `);
 
     while (sent < total) {
-      const end = Math.min(sent + chunkSz, total);
+      const end = Math.min(sent + _chunkSz, total);
       const slice = bytes.slice(sent, end);
       await serialWriter.write(slice);
       sent = end;
 
-      // Actualizar barra de progreso en la misma línea
       const pct = Math.round((sent / total) * 100);
-      const bars = Math.round(pct / 5); // 20 bloques máx
+      const bars = Math.round(pct / 5);
       const bar = "█".repeat(bars) + "░".repeat(20 - bars);
       term.write(`\r\x1b[36m↑ [${bar}] ${pct}% (${sent}/${total} B)\x1b[0m `);
 
-      // Pequeña pausa cada 4 KB para no saturar el buffer USB
-      if (sent % (chunkSz * 16) === 0 && sent < total) {
+      // Pausa entre chunks: siempre en C3, cada 4 KB en Wroom
+      if (_chunkPause > 0) {
+        await sleep(_chunkPause);
+      } else if (sent % (_chunkSz * 16) === 0 && sent < total) {
         await sleep(10);
       }
     }
@@ -1618,8 +1685,8 @@ async function sendViaRawRepl(codeStr, chunkSz = 256) {
     // 5. Volver a friendly REPL y esperar el prompt ">>>"
     _localBuf = "";
     await sendSerial("\x02");
-    await _waitLocal(">>>", 3000);
-    await sleep(100);
+    await _waitLocal(">>>", 3000 * _mul);
+    await sleep(100 * _mul);
 
     return true;
   } finally {
@@ -1710,7 +1777,8 @@ async function sendCodeToDevice() {
       }
 
       // 1. Interrumpir ejecución actual (doble Ctrl+C)
-      const d = isWifi ? 2.5 : 1; // WiFi/WebREPL es más lento que USB: damos más margen
+      // d combina: WiFi siempre x2.5, USB usa velocidad detectada (C3=x2, Wroom=x1)
+      const d = isWifi ? 2.5 : _deviceSpeedMul;
 
       await sendSerial("\x03");
       await sleep(100 * d);
@@ -1738,16 +1806,14 @@ async function sendCodeToDevice() {
       // 3. Enviar TODO el código de una sola vez (sin \r\n extra)
       //    El paste mode acepta el bloque completo hasta Ctrl+D
       const normalized = code.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
-      //await sendSerial(normalized);
-      // Enviar en bloques para evitar saturar WebREPL
-      for (let i = 0; i < normalized.length; i += 128) {
-        await sendSerial(normalized.slice(i, i + 128));
-
-        if (isWifi) {
-          await sleep(15);
-        }
+      // Chunk adaptativo: 64 B para WiFi/C3, 128 B para Wroom
+      const _runChunk = (isWifi || _deviceSpeedMul > 1) ? 64 : 128;
+      const _runChunkPause = (isWifi || _deviceSpeedMul > 1) ? 20 : 0;
+      for (let i = 0; i < normalized.length; i += _runChunk) {
+        await sendSerial(normalized.slice(i, i + _runChunk));
+        if (_runChunkPause > 0) await sleep(_runChunkPause);
       }
-      if (isWifi) await sleep(50); // margen para que WebREPL procese el bloque
+      if (isWifi || _deviceSpeedMul > 1) await sleep(80); // margen extra post-envío
 
       // 4. Ctrl+D → ejecutar; a partir de aquí buscamos el ">>>" real
       _pmBuf = "";
@@ -1868,7 +1934,8 @@ document.getElementById("btnUploadCode").addEventListener("click", async () => {
         const tick = () => checkFn() ? res(true) : (Date.now() < end ? setTimeout(tick, 20) : res(false));
         tick();
       });
-      const _upD = _uploadIsWifi ? 2.5 : 1;
+      // _upD combina: WiFi x2.5, USB usa velocidad detectada (C3=x2, Wroom=x1)
+      const _upD = _uploadIsWifi ? 2.5 : _deviceSpeedMul;
 
       await sendSerial("\x03");
       await sleep(100 * _upD);
@@ -1890,11 +1957,14 @@ document.getElementById("btnUploadCode").addEventListener("click", async () => {
         }
       }
       const normScript = writeScript.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
-      for (let i = 0; i < normScript.length; i += 128) {
-        await sendSerial(normScript.slice(i, i + 128));
-        if (_uploadIsWifi) await sleep(15);
+      // Tamaño de chunk adaptativo: 64 B para C3/WiFi, 128 B para Wroom
+      const _upChunk = (_uploadIsWifi || _deviceSpeedMul > 1) ? 64 : 128;
+      const _upChunkPause = (_uploadIsWifi || _deviceSpeedMul > 1) ? 20 : 0;
+      for (let i = 0; i < normScript.length; i += _upChunk) {
+        await sendSerial(normScript.slice(i, i + _upChunk));
+        if (_upChunkPause > 0) await sleep(_upChunkPause);
       }
-      if (_uploadIsWifi) await sleep(50);
+      if (_uploadIsWifi || _deviceSpeedMul > 1) await sleep(80);
       _upBuf = "";
       _upDone = true;
       await sendSerial("\x04");
@@ -1981,6 +2051,9 @@ function resetSerialState() {
   waitingResponse = false;
   isFileOperationBusy = false;
   window._rawReplHook = null;
+  // Resetear detección de velocidad al desconectar
+  _deviceDetected = false;
+  _deviceSpeedMul = 1.0;
 }
 
 function clearExplorer() {

@@ -3453,7 +3453,6 @@ for i,c in enumerate(img):
   return code;
 };
 
-
 Blockly.Python["neopixel_marquee"] = function (block) {
   Blockly.Python.definitions_["neomatrix_import"] = "from np import NeoMatrix";
   Blockly.Python.definitions_["ezFBmarquee_import"] = "from ezFBmarquee import ezFBmarquee";
@@ -5454,4 +5453,319 @@ Blockly.Python["touching_edge_named"] = function (block) {
   const name = Blockly.Python.valueToCode(block, "NAME", Blockly.Python.ORDER_NONE) || "'sprite'";
   // Sin canvas real en MicroPython — retorna False como stub seguro
   return [`False  # [Juego] touching_edge de ${name} solo funciona en el simulador`, Blockly.Python.ORDER_ATOMIC];
+};
+
+// ══════════════════════════════════════════════════════════════
+//  ESP32-CAM  — generadores MicroPython
+//  Requiere firmware Carpeta 3 Firmware ESP32 Cam
+// ══════════════════════════════════════════════════════════════
+
+/* ── espcam_init ─────────────────────────────────────────────
+   Inicializa la cámara con la configuración ai_thinker        */
+Blockly.Python["espcam_init"] = function (block) {
+  const quality   = block.getFieldValue("QUALITY")   || "12";
+  const framesize = block.getFieldValue("FRAMESIZE")  || "FRAMESIZE_VGA";
+
+  Blockly.Python.definitions_["espcam_imports"] =
+    "import camera\n" +
+    "import cam_config as cc\n" +
+    "import gc";
+
+  Blockly.Python.definitions_["espcam_init_fn"] =
+    "# ── Inicializar cámara ESP32-CAM (ai_thinker) ──\n" +
+    "cc.configure(camera, cc.ai_thinker)\n" +
+    "camera.conf(cc.PIXFORMAT, cc.PIXFORMAT_JPEG)\n" +
+    `camera.conf(cc.FRAMESIZE, cc.${framesize})\n` +
+    "camera.init()\n" +
+    `camera.quality(${quality})`;
+
+  return "";
+};
+
+/* ── espcam_capture ──────────────────────────────────────────
+   Captura un frame JPEG                                        */
+Blockly.Python["espcam_capture"] = function (_block) {
+  return ["camera.capture()", Blockly.Python.ORDER_FUNCTION_CALL];
+};
+
+/* ── espcam_quality ──────────────────────────────────────────
+   Ajusta calidad JPEG en tiempo de ejecución                  */
+Blockly.Python["espcam_quality"] = function (block) {
+  const q = block.getFieldValue("QUALITY") || "12";
+  return `camera.quality(${q})\n`;
+};
+
+/* ── espcam_framesize ────────────────────────────────────────
+   Cambia el tamaño de frame en tiempo de ejecución            */
+Blockly.Python["espcam_framesize"] = function (block) {
+  const fs = block.getFieldValue("FRAMESIZE") || "FRAMESIZE_VGA";
+  return `camera.conf(cc.FRAMESIZE, cc.${fs})\n`;
+};
+
+/* ── espcam_send_mjpeg ───────────────────────────────────────
+   Inyecta mjpeg_generator + send_mjpeg y emite el await       */
+Blockly.Python["espcam_send_mjpeg"] = function (block) {
+  const writer   = block.getFieldValue("WRITER")   || "writer";
+  const interval = block.getFieldValue("INTERVAL") || "10";
+
+  Blockly.Python.definitions_["espcam_mjpeg_gen"] =
+`def mjpeg_generator():
+    while True:
+        frame = camera.capture()
+        if frame:
+            yield (
+                b"--frame\\r\\n"
+                b"Content-Type: image/jpeg\\r\\n\\r\\n" +
+                frame + b"\\r\\n"
+            )
+        gc.collect()`;
+
+  Blockly.Python.definitions_["espcam_send_mjpeg_fn"] =
+`async def send_mjpeg(${writer}):
+    await ${writer}.awrite(
+        "HTTP/1.0 200 OK\\r\\n"
+        "Content-Type: multipart/x-mixed-replace; boundary=frame\\r\\n"
+        "Cache-Control: no-cache\\r\\n"
+        "Pragma: no-cache\\r\\n\\r\\n"
+    )
+    try:
+        for f in mjpeg_generator():
+            await ${writer}.awrite(f)
+            await asyncio.sleep_ms(${interval})
+    except:
+        pass`;
+
+  return `await send_mjpeg(${writer})\n`;
+};
+
+/* ── espcam_video_feed_route ─────────────────────────────────
+   Maneja la ruta /video_feed dentro de handle_http            */
+Blockly.Python["espcam_video_feed_route"] = function (block) {
+  const writer = block.getFieldValue("WRITER") || "writer";
+  return (
+    `if path == "/video_feed":\n` +
+    `    await send_mjpeg(${writer})\n` +
+    `    await ${writer}.aclose()\n` +
+    `    return\n`
+  );
+};
+
+/* ── espcam_http_handler ─────────────────────────────────────
+   Manejador HTTP completo: index.html + /video_feed + /cmd    */
+Blockly.Python["espcam_http_handler"] = function (_block) {
+  Blockly.Python.definitions_["espcam_handle_http"] =
+`async def handle_http(reader, writer):
+    gc.collect()
+    line = await reader.readline()
+    if not line:
+        return
+    try:
+        method, path, proto = line.decode().split()
+    except:
+        return
+    while True:
+        hdr = await reader.readline()
+        if hdr == b"\\r\\n":
+            break
+    # ── Video stream ──
+    if path == "/video_feed":
+        await send_mjpeg(writer)
+        await writer.aclose()
+        return
+    # ── Comandos ──
+    if path.startswith("/cmd"):
+        params = path.split("?", 1)[-1]
+        for p in params.split("&"):
+            if "=" in p:
+                k, v = p.split("=")
+                if k == "move":
+                    motor_move(v)
+                if k == "led":
+                    led_pin.value(1 if v == "on" else 0)
+        await writer.awrite("HTTP/1.0 200 OK\\r\\n\\r\\nOK")
+        await writer.aclose()
+        return
+    # ── sprite.png ──
+    if path == "/sprite.png":
+        try:
+            with open("sprite.png", "rb") as f:
+                data = f.read()
+            await writer.awrite("HTTP/1.0 200 OK\\r\\nContent-Type: image/png\\r\\n\\r\\n")
+            await writer.awrite(data)
+        except:
+            await writer.awrite("HTTP/1.0 404 NOT FOUND\\r\\n\\r\\n")
+        await writer.aclose()
+        return
+    # ── index.html ──
+    try:
+        with open("index.html") as f:
+            html = f.read()
+        await writer.awrite("HTTP/1.0 200 OK\\r\\nContent-Type: text/html; charset=utf-8\\r\\n\\r\\n")
+        await writer.awrite(html)
+    except:
+        await writer.awrite("HTTP/1.0 500 ERROR\\r\\n\\r\\nError en HTML")
+    await writer.aclose()`;
+
+  return "";
+};
+
+/* ── espcam_main ─────────────────────────────────────────────
+   Programa completo: AP + DNS + HTTP + cámara                 */
+Blockly.Python["espcam_main"] = function (block) {
+  const ssid = block.getFieldValue("SSID") || "Robot-Control";
+
+  Blockly.Python.definitions_["espcam_imports"] =
+    "import gc\n" +
+    "import network\n" +
+    "import socket\n" +
+    "import uasyncio as asyncio\n" +
+    "from machine import Pin\n" +
+    "import camera\n" +
+    "import cam_config as cc";
+
+  Blockly.Python.definitions_["espcam_constants"] =
+    `SERVER_SSID = '${ssid}'\n` +
+    "SERVER_IP   = '10.0.0.1'\n" +
+    "SERVER_SUBNET = '255.255.255.0'\n" +
+    "led_pin = Pin(4, Pin.OUT)\n" +
+    "led_pin.off()";
+
+  Blockly.Python.definitions_["espcam_wifi_ap"] =
+`def wifi_start_access_point():
+    wifi = network.WLAN(network.AP_IF)
+    wifi.active(True)
+    wifi.ifconfig((SERVER_IP, SERVER_SUBNET, SERVER_IP, SERVER_IP))
+    wifi.config(essid=SERVER_SSID, authmode=network.AUTH_OPEN)
+    print("AP iniciado:", wifi.ifconfig())`;
+
+  Blockly.Python.definitions_["espcam_dns"] =
+`class DNSQuery:
+    def __init__(self, data):
+        self.data = data
+    def response(self, ip):
+        packet = self.data[:2] + b"\\x81\\x80"
+        packet += self.data[4:6] + self.data[4:6]
+        packet += b"\\x00\\x00\\x00\\x00"
+        packet += self.data[12:]
+        packet += b"\\xC0\\x0C"
+        packet += b"\\x00\\x01\\x00\\x01\\x00\\x00\\x00\\x3C\\x00\\x04"
+        packet += bytes(map(int, ip.split(".")))
+        return packet
+
+async def run_dns_server():
+    udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    udp.setblocking(False)
+    udp.bind(("0.0.0.0", 53))
+    while True:
+        try:
+            data, addr = udp.recvfrom(1024)
+            q = DNSQuery(data)
+            udp.sendto(q.response(SERVER_IP), addr)
+        except:
+            await asyncio.sleep_ms(10)`;
+
+  Blockly.Python.definitions_["espcam_mjpeg_gen"] =
+`def mjpeg_generator():
+    while True:
+        frame = camera.capture()
+        if frame:
+            yield (
+                b"--frame\\r\\n"
+                b"Content-Type: image/jpeg\\r\\n\\r\\n" +
+                frame + b"\\r\\n"
+            )
+        gc.collect()
+
+async def send_mjpeg(writer):
+    await writer.awrite(
+        "HTTP/1.0 200 OK\\r\\n"
+        "Content-Type: multipart/x-mixed-replace; boundary=frame\\r\\n"
+        "Cache-Control: no-cache\\r\\n"
+        "Pragma: no-cache\\r\\n\\r\\n"
+    )
+    try:
+        for f in mjpeg_generator():
+            await writer.awrite(f)
+            await asyncio.sleep_ms(10)
+    except:
+        pass`;
+
+  Blockly.Python.definitions_["espcam_motor"] =
+`def motor_move(direction):
+    print("Movimiento:", direction)`;
+
+  Blockly.Python.definitions_["espcam_handle_http"] =
+`async def handle_http(reader, writer):
+    gc.collect()
+    line = await reader.readline()
+    if not line:
+        return
+    try:
+        method, path, proto = line.decode().split()
+    except:
+        return
+    while True:
+        hdr = await reader.readline()
+        if hdr == b"\\r\\n":
+            break
+    if path == "/video_feed":
+        await send_mjpeg(writer)
+        await writer.aclose()
+        return
+    if path.startswith("/cmd"):
+        params = path.split("?", 1)[-1]
+        for p in params.split("&"):
+            if "=" in p:
+                k, v = p.split("=")
+                if k == "move":
+                    motor_move(v)
+                if k == "led":
+                    led_pin.value(1 if v == "on" else 0)
+        await writer.awrite("HTTP/1.0 200 OK\\r\\n\\r\\nOK")
+        await writer.aclose()
+        return
+    if path == "/sprite.png":
+        try:
+            with open("sprite.png", "rb") as f:
+                data = f.read()
+            await writer.awrite("HTTP/1.0 200 OK\\r\\nContent-Type: image/png\\r\\n\\r\\n")
+            await writer.awrite(data)
+        except:
+            await writer.awrite("HTTP/1.0 404 NOT FOUND\\r\\n\\r\\n")
+        await writer.aclose()
+        return
+    try:
+        with open("index.html") as f:
+            html = f.read()
+        await writer.awrite("HTTP/1.0 200 OK\\r\\nContent-Type: text/html; charset=utf-8\\r\\n\\r\\n")
+        await writer.awrite(html)
+    except:
+        await writer.awrite("HTTP/1.0 500 ERROR\\r\\n\\r\\nError en HTML")
+    await writer.aclose()`;
+
+  Blockly.Python.definitions_["espcam_main_fn"] =
+`async def espcam_main():
+    cc.configure(camera, cc.ai_thinker)
+    camera.conf(cc.PIXFORMAT, cc.PIXFORMAT_JPEG)
+    camera.conf(cc.FRAMESIZE, cc.FRAMESIZE_VGA)
+    camera.init()
+    camera.quality(12)
+    wifi_start_access_point()
+    asyncio.create_task(run_dns_server())
+    await asyncio.start_server(handle_http, "0.0.0.0", 80)
+    print("ESP32-CAM en http://10.0.0.1")
+    while True:
+        await asyncio.sleep(1)`;
+
+  return "asyncio.run(espcam_main())\n";
+};
+
+/* ── espcam_led_flash ────────────────────────────────────────
+   Controla el LED flash de la ESP32-CAM                       */
+Blockly.Python["espcam_led_flash"] = function (block) {
+  const pin   = block.getFieldValue("PIN")   || "4";
+  const state = block.getFieldValue("STATE") || "1";
+  Blockly.Python.definitions_["import_machine_Pin"] =
+    "from machine import Pin";
+  return `Pin(${pin}, Pin.OUT).value(${state})\n`;
 };

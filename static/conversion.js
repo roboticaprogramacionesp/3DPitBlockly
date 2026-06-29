@@ -13235,6 +13235,198 @@ Blockly.defineBlocksWithJsonArray([
     colour: "#7F8C8D",
     tooltip: "Fuerza el recolector de basura de MicroPython",
   },
+
+  // ══════════════════════════════════════════════
+  //  ESP32-CAM  (requiere firmware Carpeta 3)
+  // ══════════════════════════════════════════════
+
+  // --- Inicializar cámara (ai_thinker preset) ---
+  {
+    type: "espcam_init",
+    message0: "iniciar cámara calidad %1 tamaño %2",
+    args0: [
+      {
+        type: "field_dropdown",
+        name: "QUALITY",
+        options: [
+          ["Alta  (5)", "5"],
+          ["Buena (10)", "10"],
+          ["Normal (12)", "12"],
+          ["Rápido (15)", "15"],
+          ["Baja  (20)", "20"],
+          ["Mínima (30)", "30"],
+        ],
+      },
+      {
+        type: "field_dropdown",
+        name: "FRAMESIZE",
+        options: [
+          ["QVGA (320×240)", "FRAMESIZE_QVGA"],
+          ["VGA (640×480)", "FRAMESIZE_VGA"],
+          ["SVGA (800×600)", "FRAMESIZE_SVGA"],
+          ["XGA (1024×768)", "FRAMESIZE_XGA"],
+          ["HD (1280×720)", "FRAMESIZE_HD"],
+          ["SXGA (1280×1024)", "FRAMESIZE_SXGA"],
+          ["UXGA (1600×1200)", "FRAMESIZE_UXGA"],
+        ],
+      },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: "#1A6B3C",
+    tooltip: "Inicializa la cámara OV2640 con la configuración ai_thinker. Requiere firmware ESP32-CAM.",
+  },
+  // --- Capturar frame ---
+  {
+    type: "espcam_capture",
+    message0: "capturar frame",
+    output: null,
+    colour: "#1A6B3C",
+    tooltip: "Captura un frame JPEG de la cámara. Retorna bytes o None.",
+  },
+
+  // --- Configurar calidad JPEG ---
+  {
+    type: "espcam_quality",
+    message0: "calidad JPEG %1",
+    args0: [
+      {
+        type: "field_dropdown",
+        name: "QUALITY",
+        options: [
+          ["Alta  (5)", "5"],
+          ["Buena (10)", "10"],
+          ["Normal (12)", "12"],
+          ["Rápido (15)", "15"],
+          ["Baja  (20)", "20"],
+          ["Mínima (30)", "30"],
+        ],
+      },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: "#1A6B3C",
+    tooltip: "Ajusta la calidad JPEG (5=mejor imagen, 63=más rápido).",
+  },
+
+  // --- Configurar tamaño de frame ---
+  {
+    type: "espcam_framesize",
+    message0: "tamaño de frame %1",
+    args0: [
+      {
+        type: "field_dropdown",
+        name: "FRAMESIZE",
+        options: [
+          ["QVGA (320×240)", "FRAMESIZE_QVGA"],
+          ["VGA (640×480)", "FRAMESIZE_VGA"],
+          ["SVGA (800×600)", "FRAMESIZE_SVGA"],
+          ["XGA (1024×768)", "FRAMESIZE_XGA"],
+          ["HD (1280×720)", "FRAMESIZE_HD"],
+          ["SXGA (1280×1024)", "FRAMESIZE_SXGA"],
+          ["UXGA (1600×1200)", "FRAMESIZE_UXGA"],
+        ],
+      },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: "#1A6B3C",
+    tooltip: "Cambia el tamaño de captura de la cámara.",
+  },
+
+  // --- Stream MJPEG completo ---
+  {
+    type: "espcam_send_mjpeg",
+    message0: "enviar stream MJPEG a %1 intervalo %2 ms",
+    args0: [
+      {
+        type: "field_input",
+        name: "WRITER",
+        text: "writer",
+      },
+      {
+        type: "field_number",
+        name: "INTERVAL",
+        value: 10,
+        min: 0,
+      },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: "#1A6B3C",
+    tooltip: "Envía un stream MJPEG continuo al cliente HTTP. Usar dentro de un manejador async.",
+  },
+
+  // --- Ruta /video_feed ---
+  {
+    type: "espcam_video_feed_route",
+    message0: "si ruta es /video_feed → enviar stream a %1",
+    args0: [
+      {
+        type: "field_input",
+        name: "WRITER",
+        text: "writer",
+      },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: "#1A6B3C",
+    tooltip: "Detecta la ruta /video_feed y responde con el stream MJPEG.",
+  },
+
+  // --- Bloque completo: servidor HTTP con cámara ---
+  {
+    type: "espcam_http_handler",
+    message0: "manejador HTTP con cámara",
+    previousStatement: null,
+    nextStatement: null,
+    colour: "#1A6B3C",
+    tooltip: "Genera el manejador HTTP completo para ESP32-CAM: sirve index.html, /video_feed y /cmd.",
+  },
+
+  // --- Bloque principal completo ESPCam ---
+  {
+    type: "espcam_main",
+    message0: "iniciar servidor ESP32-CAM SSID %1",
+    args0: [
+      {
+        type: "field_input",
+        name: "SSID",
+        text: "Robot-Control",
+      },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: "#1A6B3C",
+    tooltip: "Genera el programa completo: AP, DNS, servidor HTTP con stream de cámara.",
+  },
+
+  // --- LED Flash ---
+  {
+    type: "espcam_led_flash",
+    message0: "LED flash pin %1 estado %2",
+    args0: [
+      {
+        type: "field_number",
+        name: "PIN",
+        value: 4,
+        min: 0,
+        max: 39,
+      },
+      {
+        type: "field_dropdown",
+        name: "STATE",
+        options: [
+          ["encendido", "1"],
+          ["apagado", "0"],
+        ],
+      },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: "#1A6B3C",
+    tooltip: "Controla el LED flash de la ESP32-CAM (pin 4 por defecto).",
+  },
 ]);
 
 
