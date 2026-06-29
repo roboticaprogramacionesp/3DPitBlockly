@@ -73,49 +73,22 @@ function initTerminal() {
   if (typeof enableTerminalInput === "function") enableTerminalInput();
 }
 
-/* ── Clic derecho en la terminal principal: copiar selección o todo ── */
+/* ── Clic derecho en la terminal principal: menú contextual ── */
 function _enableTerminalCopy() {
   const wrapper = document.getElementById("terminalWrapper");
   if (!wrapper) return;
 
-  wrapper.addEventListener("contextmenu", async (e) => {
-    e.preventDefault();
-    if (!term) return;
-
-    const selected = term.getSelection();
-    const text     = selected || _getMainTerminalText();
-    if (!text) return;
-
-    let copied = false;
-
-    // 1. Clipboard API estándar
-    if (navigator.clipboard?.writeText) {
-      try { await navigator.clipboard.writeText(text); copied = true; } catch (_) {}
-    }
-
-    // 2. pywebview (desktop)
-    if (!copied && window.pywebview?.api?.set_clipboard) {
-      try {
-        const r = await window.pywebview.api.set_clipboard(text);
-        copied = r?.status === "ok";
-      } catch (_) {}
-    }
-
-    // 3. Fallback textarea
-    if (!copied) {
-      try {
-        const ta = document.createElement("textarea");
-        ta.value = text;
-        ta.style.cssText = "position:fixed;opacity:0;top:0;left:0";
-        document.body.appendChild(ta);
-        ta.select();
-        copied = document.execCommand("copy");
-        document.body.removeChild(ta);
-      } catch (_) {}
-    }
-
-    if (copied) _termToast(selected ? "Selección copiada" : "Todo copiado");
-  });
+  // TerminalMenu.attach (terminal-menu.js) gestiona Cortar / Copiar /
+  // Pegar / Seleccionar todo / Limpiar de forma unificada.
+  if (typeof TerminalMenu !== "undefined") {
+    TerminalMenu.attach({
+      container   : wrapper,
+      getTerm     : () => term,
+      toastAnchor : wrapper,
+      onPaste     : (text) => { if (term) term.paste(text); },
+      onClear     : () => { if (term) term.clear(); },
+    });
+  }
 }
 
 /** Extrae todo el texto visible del buffer de `term` como string plano. */

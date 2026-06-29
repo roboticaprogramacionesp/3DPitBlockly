@@ -90,9 +90,8 @@ Blockly.Python["from"] = function (block) {
 
 Blockly.Python["import"] = function (block) {
   const module = block.getFieldValue("MODULE");
-
-  Blockly.Python.definitions_[`import_${module}`] = `import ${module}`;
-  return "";
+ 
+  return `import ${module}\n`;
 };
 
 Blockly.Python["add"] = function (block) {
@@ -496,6 +495,20 @@ Blockly.Python["class_call"] = function (block) {
 
 Blockly.Python["color_picker"] = function (block) {
   const hex = block.getFieldValue("COLOR") || "#000000";
+
+  const r = parseInt(hex.substr(1, 2), 16);
+  const g = parseInt(hex.substr(3, 2), 16);
+  const b = parseInt(hex.substr(5, 2), 16);
+
+  const code = `(${r},${g},${b})`;
+
+  return [code, Blockly.Python.ORDER_ATOMIC];
+};
+
+// Native Blockly colour_picker — used as shadow blocks in toolbox.
+// Converts hex string at generation time to (r,g,b) so rgb565(*color) works correctly.
+Blockly.Python["colour_picker"] = function (block) {
+  const hex = block.getFieldValue("COLOUR") || "#000000";
 
   const r = parseInt(hex.substr(1, 2), 16);
   const g = parseInt(hex.substr(3, 2), 16);
@@ -3209,7 +3222,7 @@ Blockly.Python["neopixel_show"] = function (block) {
 Blockly.Python["neopixel_clear"] = function (block) {
   const name = block.getFieldValue("NAME");
 
-  return `${name}.fill((0,0,0))\n`;
+  return `${name}.fill(0)\n`;
 };
 
 Blockly.Python["neopixel_pixel"] = function (block) {
@@ -3438,6 +3451,32 @@ for i,c in enumerate(img):
 `;
 
   return code;
+};
+
+
+Blockly.Python["neopixel_marquee"] = function (block) {
+  Blockly.Python.definitions_["neomatrix_import"] = "from np import NeoMatrix";
+  Blockly.Python.definitions_["ezFBmarquee_import"] = "from ezFBmarquee import ezFBmarquee";
+  Blockly.Python.definitions_["ezFBfont_import"] = "import ezFBfont_4x6_latin_06 as font";
+  Blockly.Python.definitions_["time_sleep_import"] = "from time import sleep";
+  Blockly.Python.definitions_["rgb565_fn"] = "def rgb565(r,g,b):\n  return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)\n";
+
+  const name = block.getFieldValue("NAME");
+  const move = block.getFieldValue("MOVE");
+  const brightness = block.getFieldValue("BRIGHTNESS");
+  const text = Blockly.Python.valueToCode(block, "TEXT", Blockly.Python.ORDER_NONE) || "'Hola'";
+  const x = Blockly.Python.valueToCode(block, "X", Blockly.Python.ORDER_NONE) || "1";
+  const y = Blockly.Python.valueToCode(block, "Y", Blockly.Python.ORDER_NONE) || "1";
+  const color = `rgb565(*${Blockly.Python.valueToCode(block, "COLOR", Blockly.Python.ORDER_ATOMIC) || "(255,0,0)"})`;
+  const tiempo = Blockly.Python.valueToCode(block, "NUM", Blockly.Python.ORDER_NONE) || "1";
+  return (
+    `_mq_${name}=ezFBmarquee(display=${name},font=font,x=${x},y=${y},width=${name}.width,fg=${color},bg=0x0000,move='${move}')\n` +
+    `_mq_${name}.start(${text})\n` +
+    `while True:\n` +
+    `  _mq_${name}.step()\n` +
+    `  ${name}.show(brightness=${brightness})\n` +
+    `  sleep(${tiempo})\n`
+  );
 };
 
 Blockly.Python["tft_init"] = function (block) {
@@ -5241,4 +5280,178 @@ Blockly.Python["game_wait"] = function (block) {
 Blockly.Python["game_wait_frames"] = function (block) {
   const frames = Blockly.Python.valueToCode(block, "FRAMES", Blockly.Python.ORDER_NONE) || "30";
   return `# [Juego] esperar ${frames} cuadros\n`;
+};
+
+
+Blockly.Python["print_multi"] = function (block) {
+  const sep  = block.getFieldValue("SEP");   // carácter separador
+  const end  = block.getFieldValue("END");   // carácter al final
+
+  const parts = [];
+  for (let i = 0; i < block.itemCount_; i++) {
+    const val = Blockly.Python.valueToCode(
+      block, "ADD" + i, Blockly.Python.ORDER_NONE
+    ) || "''";
+    parts.push(val);
+  }
+
+  // Solo agregar sep/end si el usuario los cambió del default
+  const extras = [];
+  if (sep !== " ")  extras.push(`sep='${sep}'`);
+  if (end !== "\\n") extras.push(`end='${end}'`);
+
+  const allArgs = [...parts, ...extras].join(", ");
+  return `print(${allArgs})\n`;
+};
+
+// ── BLOQUE 2: repetir texto  ("=" * 60) ───────────────────────────
+Blockly.Python["text_repeat"] = function (block) {
+  const text = Blockly.Python.valueToCode(
+    block, "TEXT", Blockly.Python.ORDER_NONE
+  ) || "''";
+  const times = Blockly.Python.valueToCode(
+    block, "TIMES", Blockly.Python.ORDER_NONE
+  ) || "1";
+  return [`${text} * ${times}`, Blockly.Python.ORDER_MULTIPLICATIVE];
+};
+
+// ── BLOQUE 3: formato de texto con %s ─────────────────────────────
+// Genera: "IP: %s" % valor   o   "(%s:%s)" % (v1, v2)
+Blockly.Python["text_format"] = function (block) {
+  const template = block.getFieldValue("TEMPLATE") || "valor: %s";
+  // Contar marcadores reales en la plantilla
+  const markers = template.match(/%[sdfr]/g) || [];
+  const count = Math.max(markers.length, block.itemCount_ || 0);
+  const parts = [];
+  for (let i = 0; i < count; i++) {
+    const val = Blockly.Python.valueToCode(
+      block, "VAL" + i, Blockly.Python.ORDER_NONE
+    ) || "''";
+    parts.push(val);
+  }
+  // 1 valor → 'tmpl' % val   |   2+ → 'tmpl' % (v1, v2, ...)
+  const args = parts.length === 1 ? parts[0] : `(${parts.join(", ")})`;
+  return [`'${template}' % ${args}`, Blockly.Python.ORDER_NONE];
+};
+
+// ── BLOQUE 4a: guardar ifconfig en variable ────────────────────────
+// Genera: cfg = ap.ifconfig()
+Blockly.Python["wifi_save_ifconfig"] = function (block) {
+  const varName  = block.getFieldValue("VARNAME");   // nombre de variable
+  const iface    = block.getFieldValue("IFACE");     // ap, sta_if, wlan…
+  return `${varName} = ${iface}.ifconfig()\n`;
+};
+
+// ── BLOQUE 4b: leer campo de ifconfig guardado ────────────────────
+// Genera: cfg[0]  (IP), cfg[1] (máscara), cfg[2] (gateway), cfg[3] (DNS)
+Blockly.Python["wifi_read_ifconfig"] = function (block) {
+  const varName = block.getFieldValue("VARNAME");
+  const field   = block.getFieldValue("FIELD");  // "0","1","2","3"
+  return [`${varName}[${field}]`, Blockly.Python.ORDER_MEMBER];
+};
+
+/* ══════════════════════════════════════════════════════════════
+   GENERADORES PYTHON — MULTI-PERSONAJE (bloques _named)
+   En MicroPython estos bloques son stubs: registran la posición
+   en variables globales con prefijo de nombre para que la lógica
+   de colisión y distancia funcione sin el motor JS.
+══════════════════════════════════════════════════════════════ */
+
+/* Helper interno: acceso seguro a variable de sprite con prefijo */
+const _SP = (name) => `_sp_${name.replace(/[^a-zA-Z0-9_]/g, '_')}`;
+
+/* ── sprite_select ──────────────────────────────────────────── */
+Blockly.Python["sprite_select"] = function (block) {
+  const name = Blockly.Python.valueToCode(block, "NAME", Blockly.Python.ORDER_NONE) || "'sprite'";
+  return `# [Juego] seleccionar personaje ${name}\n`;
+};
+
+/* ── sprite_create_named ────────────────────────────────────── */
+Blockly.Python["sprite_create_named"] = function (block) {
+  const name = Blockly.Python.valueToCode(block, "NAME", Blockly.Python.ORDER_NONE) || "'sprite'";
+  const x    = Blockly.Python.valueToCode(block, "X",    Blockly.Python.ORDER_NONE) || "0";
+  const y    = Blockly.Python.valueToCode(block, "Y",    Blockly.Python.ORDER_NONE) || "0";
+  const w    = Blockly.Python.valueToCode(block, "W",    Blockly.Python.ORDER_NONE) || "48";
+  const h    = Blockly.Python.valueToCode(block, "H",    Blockly.Python.ORDER_NONE) || "48";
+  const img  = Blockly.Python.valueToCode(block, "IMG",  Blockly.Python.ORDER_NONE) || "'#00ff88'";
+  // Guarda x, y, w, h en variables globales para que touching/distance funcionen
+  return (
+    `# [Juego] crear personaje ${name}  img=${img}\n` +
+    `_sprites = globals().get('_sprites', {})\n` +
+    `_sprites[${name}] = {'x': ${x}, 'y': ${y}, 'w': ${w}, 'h': ${h}}\n`
+  );
+};
+
+/* ── sprite_draw_named ──────────────────────────────────────── */
+Blockly.Python["sprite_draw_named"] = function (block) {
+  const name = Blockly.Python.valueToCode(block, "NAME", Blockly.Python.ORDER_NONE) || "'sprite'";
+  return `# [Juego] dibujar personaje ${name}\n`;
+};
+
+/* ── sprite_move_named ──────────────────────────────────────── */
+Blockly.Python["sprite_move_named"] = function (block) {
+  const name = Blockly.Python.valueToCode(block, "NAME", Blockly.Python.ORDER_NONE) || "'sprite'";
+  const dx   = Blockly.Python.valueToCode(block, "DX",   Blockly.Python.ORDER_NONE) || "0";
+  const dy   = Blockly.Python.valueToCode(block, "DY",   Blockly.Python.ORDER_NONE) || "0";
+  return (
+    `if ${name} in _sprites:\n` +
+    `    _sprites[${name}]['x'] += ${dx}\n` +
+    `    _sprites[${name}]['y'] += ${dy}\n`
+  );
+};
+
+/* ── sprite_get_x_named ─────────────────────────────────────── */
+Blockly.Python["sprite_get_x_named"] = function (block) {
+  const name = Blockly.Python.valueToCode(block, "NAME", Blockly.Python.ORDER_NONE) || "'sprite'";
+  return [`_sprites.get(${name}, {}).get('x', 0)`, Blockly.Python.ORDER_FUNCTION_CALL];
+};
+
+/* ── sprite_get_y_named ─────────────────────────────────────── */
+Blockly.Python["sprite_get_y_named"] = function (block) {
+  const name = Blockly.Python.valueToCode(block, "NAME", Blockly.Python.ORDER_NONE) || "'sprite'";
+  return [`_sprites.get(${name}, {}).get('y', 0)`, Blockly.Python.ORDER_FUNCTION_CALL];
+};
+
+/* ── sprite_set_scale_named ─────────────────────────────────── */
+Blockly.Python["sprite_set_scale_named"] = function (block) {
+  const name  = Blockly.Python.valueToCode(block, "NAME",  Blockly.Python.ORDER_NONE) || "'sprite'";
+  const scale = Blockly.Python.valueToCode(block, "SCALE", Blockly.Python.ORDER_NONE) || "1";
+  return `# [Juego] escala de ${name} = ${scale}\n`;
+};
+
+/* ── touching_sprite ────────────────────────────────────────── */
+Blockly.Python["touching_sprite"] = function (block) {
+  const a = Blockly.Python.valueToCode(block, "A", Blockly.Python.ORDER_NONE) || "'a'";
+  const b = Blockly.Python.valueToCode(block, "B", Blockly.Python.ORDER_NONE) || "'b'";
+  // Colisión AABB entre dos sprites del diccionario _sprites
+  Blockly.Python.definitions_['_touching_sprite_fn'] =
+`def _touching_sprite(a, b):
+    sa = _sprites.get(a, {}); sb = _sprites.get(b, {})
+    if not sa or not sb: return False
+    ax, ay, aw, ah = sa['x'], sa['y'], sa.get('w',48), sa.get('h',48)
+    bx, by, bw, bh = sb['x'], sb['y'], sb.get('w',48), sb.get('h',48)
+    return ax < bx+bw and ax+aw > bx and ay < by+bh and ay+ah > by`;
+  return [`_touching_sprite(${a}, ${b})`, Blockly.Python.ORDER_FUNCTION_CALL];
+};
+
+/* ── distance_between ───────────────────────────────────────── */
+Blockly.Python["distance_between"] = function (block) {
+  const a = Blockly.Python.valueToCode(block, "A", Blockly.Python.ORDER_NONE) || "'a'";
+  const b = Blockly.Python.valueToCode(block, "B", Blockly.Python.ORDER_NONE) || "'b'";
+  Blockly.Python.definitions_['_distance_between_fn'] =
+`def _distance_between(a, b):
+    import math
+    sa = _sprites.get(a, {}); sb = _sprites.get(b, {})
+    if not sa or not sb: return 0
+    cx_a = sa['x'] + sa.get('w',48)/2; cy_a = sa['y'] + sa.get('h',48)/2
+    cx_b = sb['x'] + sb.get('w',48)/2; cy_b = sb['y'] + sb.get('h',48)/2
+    return math.sqrt((cx_a-cx_b)**2 + (cy_a-cy_b)**2)`;
+  return [`_distance_between(${a}, ${b})`, Blockly.Python.ORDER_FUNCTION_CALL];
+};
+
+/* ── touching_edge_named ────────────────────────────────────── */
+Blockly.Python["touching_edge_named"] = function (block) {
+  const name = Blockly.Python.valueToCode(block, "NAME", Blockly.Python.ORDER_NONE) || "'sprite'";
+  // Sin canvas real en MicroPython — retorna False como stub seguro
+  return [`False  # [Juego] touching_edge de ${name} solo funciona en el simulador`, Blockly.Python.ORDER_ATOMIC];
 };

@@ -82,7 +82,11 @@ function addUndoRedoButtons(workspace) {
   window.addEventListener("resize", position);
 
   // 👇 si Blockly cambia layout
-  workspace.addChangeListener(position);
+  // Solo recalcular posición cuando el viewport cambia (scroll, zoom, resize de Blockly)
+  // — no en cada drag/connect de bloque, que es el comportamiento por defecto de addChangeListener.
+  workspace.addChangeListener((e) => {
+    if (e.type === Blockly.Events.VIEWPORT_CHANGE) position();
+  });
 
   // ================= ESTADO BOTONES
 

@@ -307,7 +307,6 @@ Blockly.defineBlocksWithJsonArray([
     tooltip: "En listar los archivos de la ESP32",
     helpUrl: "",
   },
-
   {
     type: "input_text",
     message0: "%1",
@@ -333,6 +332,68 @@ Blockly.defineBlocksWithJsonArray([
     tooltip: "Bloque para texto simple",
     helpUrl: "",
   },
+  {
+    type: "print_multi_container",
+    message0: "🖨️ print",
+    args0: [],
+    message1: "valores %1",
+    args1: [{ type: "input_statement", name: "STACK" }],
+    colour: 160,
+    tooltip: "Agrega o quita valores al bloque print",
+    enableContextMenu: false,
+  },
+  {
+    type: "print_multi_item",
+    message0: "valor",
+    previousStatement: null,
+    nextStatement: null,
+    colour: 160,
+    tooltip: "Un valor para print()",
+    enableContextMenu: false,
+  },
+  {
+    type: "text_repeat",
+    message0: "texto %1 × %2",
+    args0: [
+      { type: "input_value", name: "TEXT",  check: "String" },
+      { type: "input_value", name: "TIMES", check: "Number" },
+    ],
+    inputsInline: true,
+    output: "String",
+    colour: 160,
+    tooltip: "Repite un texto N veces. Ejemplo: '=' * 60",
+    helpUrl: "",
+  },
+  {
+    type: "text_format",
+    message0: "formato '%1'",
+    args0: [
+      { type: "field_input", name: "TEMPLATE", text: 'PASS = "%s"\\n' },
+    ],
+    inputsInline: true,
+    output: "String",
+    colour: 160,
+    tooltip: "Escribe la plantilla con marcadores:%s=texto  %d=entero  %f=decimal  %r=repr\nEl bloque crea una entrada por marcador automaticamente.",
+    mutator: "text_format_mutator",
+  },
+  {
+    type: "text_format_container",
+    message0: "formato %s",
+    args0: [],
+    message1: "valores %1",
+    args1: [{ type: "input_statement", name: "STACK" }],
+    colour: 160,
+    enableContextMenu: false,
+  },
+  {
+    type: "text_format_item",
+    message0: "%s valor",
+    previousStatement: null,
+    nextStatement: null,
+    colour: 160,
+    enableContextMenu: false,
+  },
+
   {
     type: "json_create",
     message0: "crear JSON vacío",
@@ -6086,6 +6147,50 @@ Blockly.defineBlocksWithJsonArray([
     colour: 210,
     tooltip: "Desconecta del WiFi",
   },
+
+  {
+    type: "wifi_save_ifconfig",
+    message0: "guardar ifconfig de %1 en variable %2",
+    args0: [
+      {
+        type: "field_dropdown",
+        name: "IFACE",
+        options: [
+          ["ap",     "ap"],
+          ["sta_if", "sta_if"],
+          ["wlan",   "wlan"],
+        ],
+      },
+      { type: "field_input", name: "VARNAME", text: "cfg" },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 210,
+    tooltip: "Guarda ap.ifconfig() en una variable para consultarla después.\nEjemplo: cfg = ap.ifconfig()",
+    helpUrl: "",
+  },
+  {
+    type: "wifi_read_ifconfig",
+    message0: "ifconfig %1 campo %2",
+    args0: [
+      { type: "field_input", name: "VARNAME", text: "cfg" },
+      {
+        type: "field_dropdown",
+        name: "FIELD",
+        options: [
+          ["[0] IP",      "0"],
+          ["[1] Máscara", "1"],
+          ["[2] Gateway", "2"],
+          ["[3] DNS",     "3"],
+        ],
+      },
+    ],
+    output: "String",
+    colour: 210,
+    tooltip: "Lee un campo del ifconfig guardado.\ncfg[0]=IP, cfg[1]=Máscara, cfg[2]=Gateway, cfg[3]=DNS",
+    helpUrl: "",
+  },
+
   {
     type: "wifi_define_connect",
     message0: "definir conexión WiFi SSID %1 contraseña %2",
@@ -8442,6 +8547,7 @@ Blockly.defineBlocksWithJsonArray([
         options: [
           ["0", "0"],
           ["2", "2"],
+          ["3", "3"],
           ["4", "4"],
           ["5", "5"],
           ["12", "12"],
@@ -8513,6 +8619,7 @@ Blockly.defineBlocksWithJsonArray([
         options: [
           ["0", "0"],
           ["2", "2"],
+          ["3", "3"],
           ["4", "4"],
           ["5", "5"],
           ["12", "12"],
@@ -8814,7 +8921,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_input",
         name: "NAME",
-        text: "neopixel5x5",
+        text: "neopixel8x8",
       },
     ],
     previousStatement: null,
@@ -8824,6 +8931,44 @@ Blockly.defineBlocksWithJsonArray([
     helpUrl: "",
     extensions: ["matrix_8x8_extension"],
   },
+
+{
+  type: "neopixel_marquee",
+  message0: "%1 scroll texto %2 color %3 x %4 y %5 tiempo %6 dirección %7 brillo %8",
+  args0: [
+    { type: "field_input", name: "NAME", text: "neopixel5x5" },
+    { type: "input_value", name: "TEXT" },
+    { type: "input_value", name: "COLOR", check: "Colour" },
+    {type: "input_value", name: "X"},
+    {type: "input_value", name: "Y"},
+    {type: "input_value", name: "NUM"},
+    {
+      type: "field_dropdown",
+      name: "MOVE",
+      options: [
+        ["← izquierda", "left"],
+        ["→ derecha", "right"],
+        ["↑ arriba", "up"],
+        ["↓ abajo", "down"],
+      ],
+    },
+    {
+      type: "field_dropdown",
+      name: "BRIGHTNESS",
+      options: [
+        ["10%", "0.1"],
+        ["20%", "0.2"],
+        ["30%", "0.3"],
+        ["50%", "0.5"],
+        ["100%", "1.0"],
+      ],
+    },
+  ],
+  previousStatement: null,
+  nextStatement: null,
+  colour: "#26A69A",
+},
+
   {
     type: "points",
     message0: "puntos (x,y) %1",
@@ -12688,7 +12833,7 @@ Blockly.Extensions.register("matrix_5x5_extension", function () {
     const input = this.appendDummyInput();
     for (let col = 0; col < 5; col++) {
       const name = `COLOR_${row}_${col}`;
-      input.appendField(new Blockly.FieldColour("#0c0c0c"), name);
+      input.appendField(new Blockly.FieldColour("#000000"), name);
     }
   }
 });
@@ -13091,3 +13236,214 @@ Blockly.defineBlocksWithJsonArray([
     tooltip: "Fuerza el recolector de basura de MicroPython",
   },
 ]);
+
+
+
+const BLOCK_PRINT_MULTI = {
+  type: "print_multi",
+  message0: "🖨️ print sep %1 end %2",
+  args0: [
+    { type: "field_input", name: "SEP",  text: " "  },
+    { type: "field_input", name: "END",  text: "\\n" },
+  ],
+  message1: "%1",
+  args1: [{ type: "input_statement", name: "DUMMY" }],  // placeholder; el mutador agrega las entradas
+  previousStatement: null,
+  nextStatement: null,
+  colour: 160,
+  tooltip: "print() con múltiples valores. Conecta bloques de texto o variables.",
+  mutator: "print_multi_mutator",   // se define abajo
+};
+
+/*  El mutador reutiliza la lógica de text_join de Blockly.
+    Se registra igual que lo hace Blockly internamente.        */
+
+// Extensión de mutación para print_multi (igual patrón que text_join)
+if (Blockly && Blockly.Extensions) {
+  // Mixin que gestiona itemCount_ y los conectores ADD0..ADDn
+  const PRINT_MULTI_MIXIN = {
+    itemCount_: 2,
+
+    mutationToDom: function () {
+      const container = Blockly.utils.xml.createElement("mutation");
+      container.setAttribute("items", this.itemCount_);
+      return container;
+    },
+
+    domToMutation: function (xmlElement) {
+      this.itemCount_ = parseInt(xmlElement.getAttribute("items"), 10);
+      this.updateShape_();
+    },
+
+    decompose: function (workspace) {
+      const containerBlock = workspace.newBlock("print_multi_container");
+      containerBlock.initSvg();
+      let connection = containerBlock.getInput("STACK").connection;
+      for (let i = 0; i < this.itemCount_; i++) {
+        const itemBlock = workspace.newBlock("print_multi_item");
+        itemBlock.initSvg();
+        connection.connect(itemBlock.previousConnection);
+        connection = itemBlock.nextConnection;
+      }
+      return containerBlock;
+    },
+
+    compose: function (containerBlock) {
+      let itemBlock = containerBlock.getInputTargetBlock("STACK");
+      const connections = [];
+      while (itemBlock && !itemBlock.isInsertionMarker()) {
+        connections.push(itemBlock.valueConnection_);
+        itemBlock = itemBlock.nextConnection &&
+                    itemBlock.nextConnection.targetBlock();
+      }
+      // Desconectar entradas que sobran
+      for (let i = connections.length; i < this.itemCount_; i++) {
+        const input = this.getInput("ADD" + i);
+        if (input) {
+          input.connection.setShadowDom(null);
+          const block2 = input.connection.targetBlock();
+          if (block2) block2.unplug(false);
+        }
+      }
+      this.itemCount_ = connections.length;
+      this.updateShape_();
+      // Restaurar conexiones
+      for (let i = 0; i < this.itemCount_; i++) {
+        if (connections[i]) connections[i].reconnect(this, "ADD" + i);
+      }
+    },
+
+    saveConnections: function (containerBlock) {
+      let itemBlock = containerBlock.getInputTargetBlock("STACK");
+      let i = 0;
+      while (itemBlock) {
+        const input = this.getInput("ADD" + i);
+        itemBlock.valueConnection_ = input && input.connection.targetConnection;
+        i++;
+        itemBlock = itemBlock.nextConnection &&
+                    itemBlock.nextConnection.targetBlock();
+      }
+    },
+
+    updateShape_: function () {
+      // Borrar entradas dinámicas anteriores
+      let i = 0;
+      while (this.getInput("ADD" + i)) {
+        this.removeInput("ADD" + i);
+        i++;
+      }
+      // Crear las nuevas
+      for (let j = 0; j < this.itemCount_; j++) {
+        this.appendValueInput("ADD" + j)
+            .appendField(j === 0 ? "valor" : "");
+      }
+    },
+  };
+
+  // Registrar el mixin como extensión de mutación
+  try {
+    Blockly.Extensions.registerMutator(
+      "print_multi_mutator",
+      PRINT_MULTI_MIXIN,
+      null,
+      ["print_multi_item"]
+    );
+  } catch (e) {
+    // Ya registrado (recarga de página)
+  }
+}
+
+// ── Mutador para text_format (igual patrón que print_multi) ─────────
+if (Blockly && Blockly.Extensions) {
+  const TEXT_FORMAT_MIXIN = {
+    itemCount_: 1,
+
+    mutationToDom: function () {
+      const el = Blockly.utils.xml.createElement("mutation");
+      el.setAttribute("items", this.itemCount_);
+      return el;
+    },
+
+    domToMutation: function (xmlElement) {
+      this.itemCount_ = parseInt(xmlElement.getAttribute("items"), 10);
+      this.updateShape_();
+    },
+
+    decompose: function (workspace) {
+      const containerBlock = workspace.newBlock("text_format_container");
+      containerBlock.initSvg();
+      let connection = containerBlock.getInput("STACK").connection;
+      for (let i = 0; i < this.itemCount_; i++) {
+        const itemBlock = workspace.newBlock("text_format_item");
+        itemBlock.initSvg();
+        connection.connect(itemBlock.previousConnection);
+        connection = itemBlock.nextConnection;
+      }
+      return containerBlock;
+    },
+
+    compose: function (containerBlock) {
+      let itemBlock = containerBlock.getInputTargetBlock("STACK");
+      const connections = [];
+      while (itemBlock && !itemBlock.isInsertionMarker()) {
+        connections.push(itemBlock.valueConnection_);
+        itemBlock = itemBlock.nextConnection &&
+                    itemBlock.nextConnection.targetBlock();
+      }
+      for (let i = connections.length; i < this.itemCount_; i++) {
+        const input = this.getInput("VAL" + i);
+        if (input) {
+          input.connection.setShadowDom(null);
+          const b = input.connection.targetBlock();
+          if (b) b.unplug(false);
+        }
+      }
+      this.itemCount_ = connections.length;
+      this.updateShape_();
+      for (let i = 0; i < this.itemCount_; i++) {
+        if (connections[i]) connections[i].reconnect(this, "VAL" + i);
+      }
+    },
+
+    saveConnections: function (containerBlock) {
+      let itemBlock = containerBlock.getInputTargetBlock("STACK");
+      let i = 0;
+      while (itemBlock) {
+        const input = this.getInput("VAL" + i);
+        itemBlock.valueConnection_ = input && input.connection.targetConnection;
+        i++;
+        itemBlock = itemBlock.nextConnection &&
+                    itemBlock.nextConnection.targetBlock();
+      }
+    },
+
+    updateShape_: function () {
+      let i = 0;
+      while (this.getInput("VAL" + i)) {
+        this.removeInput("VAL" + i);
+        i++;
+      }
+      const tmpl = this.getFieldValue("TEMPLATE") || "";
+      const markers = tmpl.match(/%[sdfr]/g) || [];
+      const count = Math.max(markers.length, this.itemCount_);
+      this.itemCount_ = count;
+      for (let j = 0; j < count; j++) {
+        const lbl = (markers[j] || "%s") + " →";
+        this.appendValueInput("VAL" + j)
+            .appendField(lbl);
+      }
+    },
+  };
+
+  try {
+    Blockly.Extensions.registerMutator(
+      "text_format_mutator",
+      TEXT_FORMAT_MIXIN,
+      null,
+      ["text_format_item"]
+    );
+  } catch (e) { /* ya registrado */ }
+}
+
+// ── Registrar el bloque print_multi con su definición JSON ───────────
+Blockly.defineBlocksWithJsonArray([BLOCK_PRINT_MULTI]);

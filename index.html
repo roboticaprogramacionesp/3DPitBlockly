@@ -83,9 +83,15 @@
       -webkit-user-select: none;
       user-select: none;
     }
-    /* iOS hace zoom automático si el input tiene font-size < 16px */
-    input, textarea, select,
-    .CodeMirror, .cm-editor {
+    /* iOS hace zoom automático si el input tiene font-size < 16px.
+       Se excluye el WidgetDiv de Blockly porque Blockly calcula su
+       font-size dinámicamente según el zoom del workspace — pisarlo
+       con !important hace que el texto se vea mal al hacer scroll-zoom. */
+    input:not(.blocklyHtmlInput),
+    textarea:not(.blocklyHtmlInput),
+    select,
+    .CodeMirror,
+    .cm-editor {
       font-size: 16px !important;
     }
 
@@ -1480,36 +1486,6 @@
           </value>
         </block>
 
-        <sep></sep>
-                <label role="presentation" text="▸ Texto en pantalla"></label>
-        <block type="game_show_text">
-          <value name="TEXT">
-            <shadow type="text">
-              <field name="TEXT">¡Hola!</field>
-            </shadow>
-          </value>
-          <value name="X">
-            <shadow type="math_number">
-              <field name="NUM">10</field>
-            </shadow>
-          </value>
-          <value name="Y">
-            <shadow type="math_number">
-              <field name="NUM">20</field>
-            </shadow>
-          </value>
-          <value name="COLOR">
-            <shadow type="color_picker">
-              <field name="COLOR">#ffffff</field>
-            </shadow>
-          </value>
-          <value name="SIZE">
-            <shadow type="math_number">
-              <field name="NUM">16</field>
-            </shadow>
-          </value>
-        </block>
-
         <label role="presentation" text="▸ Texto en pantalla"></label>
         <block type="game_show_text">
           <value name="TEXT">
@@ -2127,9 +2103,9 @@
       <category name="Textos" colour="160">
         <block type="text_print">
           <value name="TEXT">
-            <block type="text">
+            <shadow type="text">
               <field name="TEXT">3DPit</field>
-            </block>
+            </shadow>
           </value>
         </block>
         <block type="text"></block>
@@ -2143,6 +2119,26 @@
         </block>
 
         <block type="text_join"></block>
+
+        <block type="text_repeat">
+          <value name="TEXT">
+            <block type="text">
+              <field name="TEXT">=</field>
+            </block>
+          </value>
+          <value name="TIMES">
+            <block type="math_number">
+              <field name="NUM">60</field>
+            </block>
+          </value>
+        </block>
+
+        <!-- Texto con variable -->
+        <block type="text_format"></block>
+
+        <!-- print con múltiples valores 
+        <block type="print_multi"></block>-->
+
         <block type="text_append"></block>
         <block type="text_length"></block>
         <block type="text_isEmpty"></block>
@@ -3798,6 +3794,34 @@
                 </shadow>
               </value>
             </block>
+            <block type="neopixel_marquee">
+              <field name="NAME">neopixel5x5</field>
+              <value name="TEXT">
+                <shadow type="text">
+                  <field name="TEXT">Hola!</field>
+                </shadow>
+              </value>
+              <value name="X">
+                <shadow type="math_number">
+                  <field name="NUM">0</field>
+                </shadow>
+              </value>
+              <value name="Y">
+                <shadow type="math_number">
+                  <field name="NUM">0</field>
+                </shadow>
+              </value>
+              <value name="COLOR">
+                <shadow type="colour_picker">
+                  <field name="COLOUR">#ff0000</field>
+                </shadow>
+              </value>
+              <value name="NUM">
+                <shadow type="math_number">
+                  <field name="NUM">1</field>
+                </shadow>
+              </value>
+            </block>
           </category>
 
           <category name="NeoPixel 8x8">
@@ -4025,6 +4049,34 @@
               <value name="COLOR">
                 <shadow type="colour_picker">
                   <field name="COLOUR">#ff0000</field>
+                </shadow>
+              </value>
+            </block>
+            <block type="neopixel_marquee">
+              <field name="NAME">neopixel8x8</field>
+              <value name="TEXT">
+                <shadow type="text">
+                  <field name="TEXT">Hola!</field>
+                </shadow>
+              </value>
+              <value name="X">
+                <shadow type="math_number">
+                  <field name="NUM">0</field>
+                </shadow>
+              </value>
+              <value name="Y">
+                <shadow type="math_number">
+                  <field name="NUM">0</field>
+                </shadow>
+              </value>
+              <value name="COLOR">
+                <shadow type="colour_picker">
+                  <field name="COLOUR">#ff0000</field>
+                </shadow>
+              </value>
+              <value name="NUM">
+                <shadow type="math_number">
+                  <field name="NUM">1</field>
                 </shadow>
               </value>
             </block>
@@ -4415,7 +4467,7 @@
           <block type="hc06_read"></block>
           <block type="hc06_any"></block>
         </category>
-        <category name="WiFi">
+       <category name="WiFi">
           <block type="wifi_init"> </block>
           <block type="wifi_connect"></block>
           <block type="wifi_ap"></block>
@@ -4424,6 +4476,8 @@
           <block type="wifi_isconnected"></block>
           <block type="wifi_current_ip"></block>
           <block type="wifi_disconnect"></block>
+          <block type="wifi_save_ifconfig"></block>
+          <block type="wifi_read_ifconfig"></block>
           <block type="wifi_define_connect"></block>
           <block type="wifi_call_connect"></block>
         </category>
@@ -4597,6 +4651,7 @@
   <script src="static/animation.js"></script>
 
   <script src="static/main.js"></script>
+  <script src="static/terminal-menu.js"></script>
   <script src="static/viewcode.js"></script>
   <!-- <script src="static/files.js"></script> -->
 
@@ -4725,240 +4780,6 @@
 </body>
 
 </html>
-
-<!-- ===============================
-     MENÚ CONTEXTUAL DESKTOP
-     Copy/Paste nativo para pywebview
-================================ -->
-<div id="ctxMenu" style="
-  display:none;
-  position:fixed;
-  z-index:99999;
-  background:#1e1e1e;
-  border:1px solid #3454d1;
-  border-radius:6px;
-  padding:4px 0;
-  min-width:160px;
-  box-shadow:0 4px 20px rgba(0,0,0,0.6);
-  font-family:'Segoe UI',system-ui,sans-serif;
-  font-size:13px;
-">
-  <div class="ctx-item" data-action="cut">✂ Cortar <span class="ctx-shortcut">Ctrl+X</span></div>
-  <div class="ctx-item" data-action="copy">⎘ Copiar <span class="ctx-shortcut">Ctrl+C</span></div>
-  <div class="ctx-item" data-action="paste">📋 Pegar <span class="ctx-shortcut">Ctrl+V</span></div>
-  <div class="ctx-item" data-action="delete">🗑 Eliminar <span class="ctx-shortcut">Del</span></div>
-  <div class="ctx-sep"></div>
-  <div class="ctx-item" data-action="selectall">⬜ Seleccionar todo <span class="ctx-shortcut">Ctrl+A</span></div>
-</div>
-
-<style>
-  .ctx-item {
-    padding: 6px 16px;
-    color: #d4d4d4;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 24px;
-    user-select: none;
-  }
-
-  .ctx-item:hover {
-    background: #3454d1;
-    color: #fff;
-  }
-
-  .ctx-shortcut {
-    color: #666;
-    font-size: 11px;
-  }
-
-  .ctx-item:hover .ctx-shortcut {
-    color: #c8d4ff;
-  }
-
-  .ctx-sep {
-    height: 1px;
-    background: #333;
-    margin: 4px 0;
-  }
-</style>
-
-<script>
-  (function () {
-    const menu = document.getElementById('ctxMenu');
-    let _lastTarget = null;
-    let _lastCmInstance = null;
-    let _menuVisible = false;
-
-    /* ── Clipboard via pywebview.api (Python/tkinter) ── */
-    function pasteFromClipboard(callback) {
-      if (window.pywebview && window.pywebview.api) {
-        window.pywebview.api.get_clipboard()
-          .then(function (text) { callback(text || ''); })
-          .catch(function () { callback(''); });
-      } else {
-        navigator.clipboard.readText().then(callback).catch(function () { callback(''); });
-      }
-    }
-
-    function copyToClipboard(text) {
-      if (window.pywebview && window.pywebview.api) {
-        window.pywebview.api.set_clipboard(text).catch(function () { });
-      } else {
-        const ta = document.createElement('textarea');
-        ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;';
-        ta.value = text;
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand('copy');
-        document.body.removeChild(ta);
-      }
-    }
-
-    function showMenu(x, y) {
-      menu.style.left = Math.min(x, window.innerWidth - 170) + 'px';
-      menu.style.top = Math.min(y, window.innerHeight - 180) + 'px';
-      menu.style.display = 'block';
-      _menuVisible = true;
-    }
-
-    function hideMenu() {
-      menu.style.display = 'none';
-      _menuVisible = false;
-    }
-
-    /* ── Clic derecho: mostrar menú ── */
-    document.addEventListener('contextmenu', function (e) {
-      const tag = e.target.tagName;
-      const cmWrapper = e.target.closest('.CodeMirror');
-      const isEditable = e.target.isContentEditable
-        || tag === 'INPUT'
-        || tag === 'TEXTAREA'
-        || cmWrapper
-        || e.target.closest('#smCommandInput')
-        || e.target.closest('#smTerminal')
-        || e.target.closest('#terminal')
-        || e.target.closest('#smFileNameInput')
-        || e.target.closest('#fileNameInput');
-
-      // Siempre prevenir el menú nativo de CEF
-      e.preventDefault();
-      e.stopPropagation();
-
-      if (!isEditable) { hideMenu(); return; }
-
-      _lastTarget = e.target;
-      _lastCmInstance = cmWrapper ? cmWrapper.CodeMirror : null;
-      showMenu(e.clientX, e.clientY);
-    });
-
-    /* ── Cerrar con mousedown FUERA del menú ──
-       Usamos mousedown pero con flag para no interferir con
-       el mouseup/click que viene después sobre un ítem del menú. */
-    document.addEventListener('mousedown', function (e) {
-      if (_menuVisible && !menu.contains(e.target)) {
-        hideMenu();
-      }
-    });
-
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') hideMenu();
-    });
-
-    /* ── Ejecutar acción — usamos mousedown en el menú para
-       capturar antes de que el foco cambie ── */
-    menu.addEventListener('mousedown', function (e) {
-      // Evitar que el mousedown del documento cierre el menú
-      e.stopPropagation();
-    });
-
-    menu.addEventListener('click', function (e) {
-      const item = e.target.closest('.ctx-item');
-      if (!item) return;
-
-      const action = item.dataset.action;
-      const t = _lastTarget;
-      const cm = _lastCmInstance;
-      hideMenu();
-
-      // ── CodeMirror ──
-      if (cm) {
-        if (action === 'cut') {
-          const sel = cm.getSelection();
-          if (sel) { copyToClipboard(sel); cm.replaceSelection(''); }
-        } else if (action === 'copy') {
-          const sel = cm.getSelection();
-          if (sel) copyToClipboard(sel);
-        } else if (action === 'paste') {
-          pasteFromClipboard(function (text) { if (text) cm.replaceSelection(text); });
-        } else if (action === 'delete') {
-          const sel = cm.getSelection();
-          if (sel) cm.replaceSelection('');
-          else {
-            // borrar carácter a la derecha si no hay selección
-            const cur = cm.getCursor();
-            const line = cm.getLine(cur.line);
-            if (cur.ch < line.length) {
-              cm.replaceRange('', cur, { line: cur.line, ch: cur.ch + 1 });
-            }
-          }
-        } else if (action === 'selectall') {
-          cm.execCommand('selectAll');
-        }
-        return;
-      }
-
-      // ── Inputs / Textareas nativos ──
-      if (action === 'cut') {
-        if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) {
-          const s = t.selectionStart, end = t.selectionEnd;
-          if (s !== end) {
-            copyToClipboard(t.value.slice(s, end));
-            t.value = t.value.slice(0, s) + t.value.slice(end);
-            t.selectionStart = t.selectionEnd = s;
-            t.dispatchEvent(new Event('input', { bubbles: true }));
-          }
-        }
-      } else if (action === 'copy') {
-        if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) {
-          const s = t.selectionStart, end = t.selectionEnd;
-          if (s !== end) copyToClipboard(t.value.slice(s, end));
-        }
-      } else if (action === 'paste') {
-        if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) {
-          pasteFromClipboard(function (text) {
-            if (!text) return;
-            t.focus();
-            const s = t.selectionStart, end = t.selectionEnd;
-            t.value = t.value.slice(0, s) + text + t.value.slice(end);
-            t.selectionStart = t.selectionEnd = s + text.length;
-            t.dispatchEvent(new Event('input', { bubbles: true }));
-          });
-        }
-      } else if (action === 'delete') {
-        if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) {
-          const s = t.selectionStart, end = t.selectionEnd;
-          if (s !== end) {
-            t.value = t.value.slice(0, s) + t.value.slice(end);
-            t.selectionStart = t.selectionEnd = s;
-          } else {
-            t.value = t.value.slice(0, s) + t.value.slice(s + 1);
-            t.selectionStart = t.selectionEnd = s;
-          }
-          t.dispatchEvent(new Event('input', { bubbles: true }));
-        }
-      } else if (action === 'selectall') {
-        if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) {
-          t.focus();
-          t.select();
-        } else {
-          document.execCommand('selectAll');
-        }
-      }
-    });
-  })();
-</script>
 
 <!-- ── Zoom & Pan en Vista Conexiones ── -->
 <script src="static/wiring-zoom.js"></script>

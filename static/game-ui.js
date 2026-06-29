@@ -118,13 +118,14 @@
     }
 
     /* ══════════════════════════════════════
-       Interceptar showView para pausar loop
+       Pausar loop al cambiar de vista.
+       Escucha el CustomEvent "viewchange" que main.js despacha
+       al final de showView() — sin monkeypatch.
     ══════════════════════════════════════ */
-    var _origShowView = showView;
-    window.showView = function (viewId) {
+    window.addEventListener('viewchange', function (e) {
+      var viewId = e.detail && e.detail.viewId;
       var wasInGame = _inGameView();
       if (wasInGame && viewId !== 'viewGame') {
-        // Verificar con typeof para no lanzar ReferenceError si las vars no existen
         if (typeof runner !== 'undefined' && runner) { clearTimeout(runner); runner = null; }
         if (typeof _rafId !== 'undefined' && _rafId) { cancelAnimationFrame(_rafId); _rafId = null; }
         if (typeof interpreter !== 'undefined' && interpreter) _gamePaused = true;
@@ -132,8 +133,7 @@
       if (viewId !== 'viewGame') {
         window.gameMode = false;
       }
-      _origShowView(viewId);
-    };
+    });
 
     /* Detener juego al cambiar de vista */
     ['btnBlocks', 'btnCode', 'btnWiring'].forEach(function (id) {

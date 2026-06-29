@@ -5,13 +5,18 @@
   <meta charset="UTF-8" />
   <title>3DPit Blocks</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <link rel="stylesheet" href="{{ url_for('static', filename='viewcode.css') }}" />
-  <link rel="icon" href="{{ url_for('static', filename='3DPit.ico') }}" />
-  <link rel="apple-touch-icon" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
+  <link rel="stylesheet" href="static/viewcode.css" />
+  <link rel="icon" href="static/3DPit.ico" />
+  <link rel="apple-touch-icon" href="static/apple-touch-icon.png">
   <!-- icons3dpit.svg se carga bajo demanda, sin preload para evitar warning -->
 
+  <!-- ══════════════════════════════════════════════
+     AGREGAR ESTO EN EL <head> DE TU index.html
+     (reemplaza o complementa el <link rel="icon"> existente)
+     ══════════════════════════════════════════════ -->
+
   <!-- PWA Manifest -->
-  <link rel="manifest" href="{{ url_for('static', filename='pwa-manifest.json') }}">
+  <link rel="manifest" href="./static/pwa-manifest.json">
 
   <!-- Color de barra en Android -->
   <meta name="theme-color" content="#3454d1" />
@@ -23,19 +28,18 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="3DPit Blocks">
 
-  <link rel="stylesheet" href="{{ url_for('static', filename='css-tutorial.css') }}" />
-  <link rel="stylesheet" href="{{ url_for('static', filename='code-tutor.css') }}" />
-  <link rel="stylesheet" href="{{ url_for('static', filename='codeMirror/codemirror.css') }}" />
-  <link rel="stylesheet" href="{{ url_for('static', filename='codeMirror/dracula.css') }}" />
-  <link rel="stylesheet" href="{{ url_for('static', filename='nuevo.css') }}" />
+  <link rel="stylesheet" href="static/css-tutorial.css" />
+  <link rel="stylesheet" href="static/code-tutor.css" />
+  <link rel="stylesheet" href="static/codeMirror/codemirror.css" />
+  <link rel="stylesheet" href="static/codeMirror/dracula.css" />
+  <link rel="stylesheet" href="static/nuevo.css" />
 
-  <link rel="stylesheet" href="{{ url_for('static', filename='xterm.css') }}" />
-  <script src="{{ url_for('static', filename='xterm.js') }}"></script>
-  <script src="{{ url_for('static', filename='xterm-addon-fit.js') }}"></script>
+  <link rel="stylesheet" href="static/xterm.css" />
+  <script src="static/xterm.js"></script>
+  <script src="static/xterm-addon-fit.js"></script>
 
-  <link rel="stylesheet" href="{{ url_for('static', filename='tutorial-steps.css') }}" />
-  <link rel="stylesheet" href="{{ url_for('static', filename='serial-monitor.css') }}" />
-
+  <link rel="stylesheet" href="static/tutorial-steps.css" />
+  <link rel="stylesheet" href="static/serial-monitor.css" />
 
   <style>
     /* BLOQUE EN EJECUCIÓN */
@@ -74,14 +78,23 @@
     * {
       -webkit-tap-highlight-color: transparent;
     }
-    button, a {
+
+    button,
+    a {
       -webkit-touch-callout: none;
       -webkit-user-select: none;
       user-select: none;
     }
-    /* iOS hace zoom automático si el input tiene font-size < 16px */
-    input, textarea, select,
-    .CodeMirror, .cm-editor {
+
+    /* iOS hace zoom automático si el input tiene font-size < 16px.
+       Se excluye el WidgetDiv de Blockly porque Blockly calcula su
+       font-size dinámicamente según el zoom del workspace — pisarlo
+       con !important hace que el texto se vea mal al hacer scroll-zoom. */
+    input:not(.blocklyHtmlInput),
+    textarea:not(.blocklyHtmlInput),
+    select,
+    .CodeMirror,
+    .cm-editor {
       font-size: 16px !important;
     }
 
@@ -92,6 +105,7 @@
       padding-right: max(15px, env(safe-area-inset-right));
       height: calc(48px + env(safe-area-inset-top));
     }
+
     .view {
       height: calc(100vh - 48px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
     }
@@ -232,6 +246,7 @@
         gap: 6px;
         padding-bottom: 4px;
       }
+
       .menu-buttons::-webkit-scrollbar {
         display: none;
       }
@@ -298,7 +313,8 @@
       top: calc(100% + 6px);
       right: 0;
       width: 270px;
-      max-width: calc(100vw - 16px); /* FIX MÓVIL: no desbordar pantalla */
+      max-width: calc(100vw - 16px);
+      /* FIX MÓVIL: no desbordar pantalla */
       max-height: 70vh;
       overflow-y: auto;
       overflow-x: hidden;
@@ -497,6 +513,7 @@
       #codeLayout {
         flex-direction: column !important;
       }
+
       #espExplorer {
         width: 100% !important;
         max-height: 140px;
@@ -504,12 +521,15 @@
         border-bottom: 1px solid #333;
         flex-shrink: 0;
       }
+
       #codeSplitContainer {
         width: 100% !important;
         flex: 1;
       }
+
       #splitter {
-        display: none !important; /* el splitter es muy difícil de arrastrar en touch */
+        display: none !important;
+        /* el splitter es muy difícil de arrastrar en touch */
       }
     }
 
@@ -520,6 +540,7 @@
         height: auto;
         aspect-ratio: 4 / 3;
       }
+
       #gameContent {
         padding: 8px;
       }
@@ -530,13 +551,15 @@
       #wiringContent {
         padding: 8px !important;
       }
+
       #wiringHeader {
         flex-wrap: wrap;
         height: auto !important;
         min-height: 40px;
         padding: 4px 8px !important;
       }
-      #wiringHeader > div {
+
+      #wiringHeader>div {
         margin-left: 0 !important;
         margin-top: 4px;
       }
@@ -899,6 +922,7 @@
         <span class="icon-btn icon-conexiones"></span>
       </button>
       <button id="btnGame" title="Vista Juego"><span class="icon-btn icon-games"></span></button>
+
     </div>
   </div>
 
@@ -950,7 +974,6 @@
               <button id="btnCodeTutor" title="Ayuda / Tutorial">
                 <span class="icon-btn icon-help"></span>
               </button>
-              <!-- Firmware personalizado desde archivo local -->
               <button id="btnBurnCustom" title="Grabar firmware personalizado (.bin)">
                 <span class="icon-btn icon-burnfimware"></span>
               </button>
@@ -1339,169 +1362,195 @@
         <!-- seleccionar personaje activo -->
         <block type="sprite_select">
           <value name="NAME">
-            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+            <shadow type="text">
+              <field name="TEXT">jugador</field>
+            </shadow>
           </value>
         </block>
 
         <!-- crear personaje con nombre -->
         <block type="sprite_create_named">
           <value name="NAME">
-            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+            <shadow type="text">
+              <field name="TEXT">jugador</field>
+            </shadow>
           </value>
           <value name="X">
-            <shadow type="math_number"><field name="NUM">100</field></shadow>
+            <shadow type="math_number">
+              <field name="NUM">100</field>
+            </shadow>
           </value>
           <value name="Y">
-            <shadow type="math_number"><field name="NUM">180</field></shadow>
+            <shadow type="math_number">
+              <field name="NUM">180</field>
+            </shadow>
           </value>
           <value name="W">
-            <shadow type="math_number"><field name="NUM">48</field></shadow>
+            <shadow type="math_number">
+              <field name="NUM">48</field>
+            </shadow>
           </value>
           <value name="H">
-            <shadow type="math_number"><field name="NUM">48</field></shadow>
+            <shadow type="math_number">
+              <field name="NUM">48</field>
+            </shadow>
           </value>
           <value name="IMG">
-            <shadow type="text"><field name="TEXT">car.png</field></shadow>
+            <shadow type="text">
+              <field name="TEXT">car.png</field>
+            </shadow>
           </value>
         </block>
 
         <!-- dibujar personaje con nombre -->
         <block type="sprite_draw_named">
           <value name="NAME">
-            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+            <shadow type="text">
+              <field name="TEXT">jugador</field>
+            </shadow>
           </value>
         </block>
 
         <!-- mover personaje con nombre -->
         <block type="sprite_move_named">
           <value name="NAME">
-            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+            <shadow type="text">
+              <field name="TEXT">jugador</field>
+            </shadow>
           </value>
           <value name="DX">
-            <shadow type="math_number"><field name="NUM">0</field></shadow>
+            <shadow type="math_number">
+              <field name="NUM">0</field>
+            </shadow>
           </value>
           <value name="DY">
-            <shadow type="math_number"><field name="NUM">0</field></shadow>
+            <shadow type="math_number">
+              <field name="NUM">0</field>
+            </shadow>
           </value>
         </block>
 
         <!-- poner posición -->
         <block type="sprite_set_pos_named">
           <value name="NAME">
-            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+            <shadow type="text">
+              <field name="TEXT">jugador</field>
+            </shadow>
           </value>
           <value name="X">
-            <shadow type="math_number"><field name="NUM">100</field></shadow>
+            <shadow type="math_number">
+              <field name="NUM">100</field>
+            </shadow>
           </value>
           <value name="Y">
-            <shadow type="math_number"><field name="NUM">180</field></shadow>
+            <shadow type="math_number">
+              <field name="NUM">180</field>
+            </shadow>
           </value>
         </block>
 
         <!-- leer posición X -->
         <block type="sprite_get_x_named">
           <value name="NAME">
-            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+            <shadow type="text">
+              <field name="TEXT">jugador</field>
+            </shadow>
           </value>
         </block>
 
         <!-- leer posición Y -->
         <block type="sprite_get_y_named">
           <value name="NAME">
-            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+            <shadow type="text">
+              <field name="TEXT">jugador</field>
+            </shadow>
           </value>
         </block>
 
         <!-- mover pasos -->
         <block type="sprite_move_steps_named">
           <value name="NAME">
-            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+            <shadow type="text">
+              <field name="TEXT">jugador</field>
+            </shadow>
           </value>
           <value name="STEPS">
-            <shadow type="math_number"><field name="NUM">10</field></shadow>
+            <shadow type="math_number">
+              <field name="NUM">10</field>
+            </shadow>
           </value>
         </block>
 
         <!-- poner ángulo -->
         <block type="sprite_set_angle_named">
           <value name="NAME">
-            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+            <shadow type="text">
+              <field name="TEXT">jugador</field>
+            </shadow>
           </value>
           <value name="DEG">
-            <shadow type="math_number"><field name="NUM">0</field></shadow>
+            <shadow type="math_number">
+              <field name="NUM">0</field>
+            </shadow>
           </value>
         </block>
 
         <!-- leer ángulo -->
         <block type="sprite_get_angle_named">
           <value name="NAME">
-            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+            <shadow type="text">
+              <field name="TEXT">jugador</field>
+            </shadow>
           </value>
         </block>
 
         <!-- escala -->
         <block type="sprite_set_scale_named">
           <value name="NAME">
-            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+            <shadow type="text">
+              <field name="TEXT">jugador</field>
+            </shadow>
           </value>
           <value name="SCALE">
-            <shadow type="math_number"><field name="NUM">1</field></shadow>
+            <shadow type="math_number">
+              <field name="NUM">1</field>
+            </shadow>
           </value>
         </block>
 
         <!-- colisión entre sprites -->
         <block type="touching_sprite">
           <value name="A">
-            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+            <shadow type="text">
+              <field name="TEXT">jugador</field>
+            </shadow>
           </value>
           <value name="B">
-            <shadow type="text"><field name="TEXT">enemigo</field></shadow>
+            <shadow type="text">
+              <field name="TEXT">enemigo</field>
+            </shadow>
           </value>
         </block>
 
         <!-- distancia entre sprites -->
         <block type="distance_between">
           <value name="A">
-            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+            <shadow type="text">
+              <field name="TEXT">jugador</field>
+            </shadow>
           </value>
           <value name="B">
-            <shadow type="text"><field name="TEXT">enemigo</field></shadow>
+            <shadow type="text">
+              <field name="TEXT">enemigo</field>
+            </shadow>
           </value>
         </block>
 
         <!-- borde para sprite nombrado -->
         <block type="touching_edge_named">
           <value name="NAME">
-            <shadow type="text"><field name="TEXT">jugador</field></shadow>
-          </value>
-        </block>
-
-        <sep></sep>
-                <label role="presentation" text="▸ Texto en pantalla"></label>
-        <block type="game_show_text">
-          <value name="TEXT">
             <shadow type="text">
-              <field name="TEXT">¡Hola!</field>
-            </shadow>
-          </value>
-          <value name="X">
-            <shadow type="math_number">
-              <field name="NUM">10</field>
-            </shadow>
-          </value>
-          <value name="Y">
-            <shadow type="math_number">
-              <field name="NUM">20</field>
-            </shadow>
-          </value>
-          <value name="COLOR">
-            <shadow type="color_picker">
-              <field name="COLOR">#ffffff</field>
-            </shadow>
-          </value>
-          <value name="SIZE">
-            <shadow type="math_number">
-              <field name="NUM">16</field>
+              <field name="TEXT">jugador</field>
             </shadow>
           </value>
         </block>
@@ -2123,9 +2172,9 @@
       <category name="Textos" colour="160">
         <block type="text_print">
           <value name="TEXT">
-            <block type="text">
+            <shadow type="text">
               <field name="TEXT">3DPit</field>
-            </block>
+            </shadow>
           </value>
         </block>
         <block type="text"></block>
@@ -2139,6 +2188,26 @@
         </block>
 
         <block type="text_join"></block>
+
+        <block type="text_repeat">
+          <value name="TEXT">
+            <block type="text">
+              <field name="TEXT">=</field>
+            </block>
+          </value>
+          <value name="TIMES">
+            <block type="math_number">
+              <field name="NUM">60</field>
+            </block>
+          </value>
+        </block>
+
+        <!-- Texto con variable -->
+        <block type="text_format"></block>
+
+        <!-- print con múltiples valores 
+        <block type="print_multi"></block>-->
+
         <block type="text_append"></block>
         <block type="text_length"></block>
         <block type="text_isEmpty"></block>
@@ -3713,7 +3782,7 @@
               </value>
               <value name="COLOR_BG">
                 <shadow type="colour_picker">
-                  <field name="COLOUR">#000000</field>
+                  <field name="COLOUR">#ff0000</field>
                 </shadow>
               </value>
             </block>
@@ -3791,6 +3860,35 @@
               <value name="COLOR">
                 <shadow type="colour_picker">
                   <field name="COLOUR">#ff0000</field>
+                </shadow>
+              </value>
+            </block>
+
+            <block type="neopixel_marquee">
+              <field name="NAME">neopixel5x5</field>
+              <value name="TEXT">
+                <shadow type="text">
+                  <field name="TEXT">Hola!</field>
+                </shadow>
+              </value>
+              <value name="X">
+                <shadow type="math_number">
+                  <field name="NUM">1</field>
+                </shadow>
+              </value>
+              <value name="Y">
+                <shadow type="math_number">
+                  <field name="NUM">1</field>
+                </shadow>
+              </value>
+              <value name="COLOR">
+                <shadow type="colour_picker">
+                  <field name="COLOUR">#ff0000</field>
+                </shadow>
+              </value>
+              <value name="NUM">
+                <shadow type="math_number">
+                  <field name="NUM">1</field>
                 </shadow>
               </value>
             </block>
@@ -4024,6 +4122,36 @@
                 </shadow>
               </value>
             </block>
+
+            <block type="neopixel_marquee">
+              <field name="NAME">neopixel8x8</field>
+              <value name="TEXT">
+                <shadow type="text">
+                  <field name="TEXT">Hola!</field>
+                </shadow>
+              </value>
+              <value name="X">
+                <shadow type="math_number">
+                  <field name="NUM">0</field>
+                </shadow>
+              </value>
+              <value name="Y">
+                <shadow type="math_number">
+                  <field name="NUM">0</field>
+                </shadow>
+              </value>
+              <value name="COLOR">
+                <shadow type="colour_picker">
+                  <field name="COLOUR">#ff0000</field>
+                </shadow>
+              </value>
+              <value name="NUM">
+                <shadow type="math_number">
+                  <field name="NUM">1</field>
+                </shadow>
+              </value>
+            </block>
+
           </category>
         </category>
 
@@ -4420,6 +4548,8 @@
           <block type="wifi_isconnected"></block>
           <block type="wifi_current_ip"></block>
           <block type="wifi_disconnect"></block>
+          <block type="wifi_save_ifconfig"></block>
+          <block type="wifi_read_ifconfig"></block>
           <block type="wifi_define_connect"></block>
           <block type="wifi_call_connect"></block>
         </category>
@@ -4565,50 +4695,52 @@
     </xml>
   </div>
 
-  <script src="{{ url_for('static', filename='blockly/blockly_compressed.js') }}"></script>
-  <script src="{{ url_for('static', filename='blockly/blocks_compressed.js') }}"></script>
-  <script src="{{ url_for('static', filename='blockly/python_compressed.js') }}"></script>
+  <script src="static/blockly/blockly_compressed.js"></script>
+  <script src="static/blockly/blocks_compressed.js"></script>
+  <script src="static/blockly/python_compressed.js"></script>
 
-  <script src="{{ url_for('static', filename='blockly/msg/es.js') }}"></script>
+  <script src="static/blockly/msg/es.js"></script>
 
-  <script src="{{ url_for('static', filename='codeMirror/codemirror.js') }}"></script>
-  <script src="{{ url_for('static', filename='codeMirror/lang-python.js') }}"></script>
+  <script src="static/codeMirror/codemirror.js"></script>
+  <script src="static/codeMirror/lang-python.js"></script>
 
-  <script src="{{ url_for('static', filename='conversion.js') }}"></script>
-  <script src="{{ url_for('static', filename='micropython.js') }}"></script>
-  <script src="{{ url_for('static', filename='svgToPng.js') }}"></script>
-  <script src="{{ url_for('static', filename='undoRedo.js') }}"></script>
+  <script src="static/conversion.js"></script>
+  <script src="static/micropython.js"></script>
+  <script src="static/svgToPng.js"></script>
+  <script src="static/undoRedo.js"></script>
 
-  <script src="{{ url_for('static', filename='blockly/javascript_compressed.js') }}"></script>
-  <script src="{{ url_for('static', filename='blockly/acorn_interpreter.js') }}"></script>
+  <script src="static/blockly/javascript_compressed.js"></script>
+  <script src="static/blockly/acorn_interpreter.js"></script>
 
-  <!-- <script src="{{ url_for('static', filename='lz-string.js') }}"></script> -->
+  <script src="static/lz-string.js"></script>
 
   <!-- ── Motor de juego (canvas, sprites, teclado, ratón) ── -->
-  <script src="{{ url_for('static', filename='game-engine.js') }}"></script>
+  <script src="static/game-engine.js"></script>
 
   <!-- ── Bloques y generadores de juego ── -->
-  <script src="{{ url_for('static', filename='game_blocks.js') }}"></script>
+  <script src="static/game_blocks.js"></script>
 
-  <script src="{{ url_for('static', filename='animation.js') }}"></script>
+  <script src="static/animation.js"></script>
 
-  <script src="{{ url_for('static', filename='main.js') }}"></script>
-  <script src="{{ url_for('static', filename='viewcode.js') }}"></script>
-  <!-- <script src="{{ url_for('static', filename='files.js') }}"></script> -->
+  <script src="static/main.js"></script>
+  <script src="static/terminal-menu.js"></script>
+  <script src="static/viewcode.js"></script>
+  <!-- <script src="static/files.js"></script> -->
 
   <!-- ── UI del juego: btnGame, btnRun en modo juego, pausa/detención ── -->
-  <script src="{{ url_for('static', filename='game-ui.js') }}"></script>
+  <script src="static/game-ui.js"></script>
 
-  <script type="module" src="{{ url_for('static', filename='install-button.js') }}"></script>
-  <script src="{{ url_for('static', filename='custom-flash.js') }}"></script>
-  <script src="{{ url_for('static', filename='js-tutorial.js') }}"></script>
-  <script src="{{ url_for('static', filename='code-tutor.js') }}"></script>
+  <script type="module" src="static/install-button.js"></script>
+  <script type="module" src="static/custom-flash.js"></script>
+  <script src="static/js-tutorial.js"></script>
+  <script src="static/code-tutor.js"></script>
 
 
-  <script>var TS_STATIC_URL = "{{ url_for('static', filename='') }}";</script>
-  <script src="{{ url_for('static', filename='tutorial-steps.js') }}"></script>
+  <script>var TS_STATIC_URL = "static/";</script>
+  <script src="static/tutorial-steps.js"></script>
 
-  <script src="{{ url_for('static', filename='serial-monitor.js') }}"></script>
+  <script src="static/serial-monitor.js"></script>
+
 
   <!-- ── Custom Tutorial Dropdown logic ── -->
   <script>
@@ -4700,7 +4832,7 @@
   <div id="shareModal" class="modal">
     <div class="modal-content">
       <h3>Compartir proyecto</h3>
-      <input id="shareInput" readonly />
+      <input id="shareInput" name="shareInput" readonly autocomplete="off" />
       <div class="modal-buttons">
         <button id="copyBtn">Copiar</button>
         <button id="closeModal">Cerrar</button>
@@ -4956,7 +5088,7 @@
 </script>
 
 <!-- ── Zoom & Pan en Vista Conexiones ── -->
-<script src="{{ url_for('static', filename='wiring-zoom.js') }}"></script>
+<script src="static/wiring-zoom.js"></script>
 <script>
   /* ── Parche: diferir restoreWorkspaceFromLocal para evitar setTimeout lento ── */
   /* No se puede redefinir si main.js ya la declaró — se omite el override */

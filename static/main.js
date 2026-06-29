@@ -139,13 +139,13 @@ function refreshBlockly() {
   Blockly.svgResize(Code.workspace);
 }
 
-function showView(viewId) {
+async function showView(viewId) {
   // Si hay una subida de código en curso al ESP32, detenerla limpiamente
   // antes de cambiar de vista para evitar que el pipeline de serial quede
   // en estado inconsistente (isSendingCode=true sin nadie que lo limpie).
   if (isSendingCode && typeof stopExecution === "function") {
     console.warn("[showView] Cambio de vista durante envío — deteniendo ejecución");
-    stopExecution().catch(() => { });
+    try { await stopExecution(); } catch (_) { }
   }
 
   // Desconectar observers de wiring-zoom al salir de esa vista
@@ -178,6 +178,9 @@ function showView(viewId) {
     toggleFloating(true);
     requestAnimationFrame(() => requestAnimationFrame(() => refreshBlockly()));
   }
+
+  // Notificar a otros módulos (game-ui, etc.) sin necesidad de monkeypatch
+  window.dispatchEvent(new CustomEvent("viewchange", { detail: { viewId } }));
 }
 
 document.getElementById("btnCode").addEventListener("click", function () {
@@ -389,7 +392,7 @@ function _saveLog(msg, isError = false) {
   try {
     if (typeof term !== "undefined" && term) {
       const color = isError ? "\x1b[31m" : "\x1b[90m";
-      term.writeln(`${color}${prefix} ${msg}\x1b[0m`);
+      //term.writeln(`${color}${prefix} ${msg}\x1b[0m`);
     }
   } catch (_) { }
   // También guardar en localStorage para recuperar después
@@ -805,7 +808,8 @@ function showMessageModal(message) {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-  startTutorial();
+  // Orden de init: 1) Tutorial UI
+  try { startTutorial(); } catch (e) { console.error("[init] startTutorial:", e); }
 });
 
 // ─────────────────────────────────────────────────────────────
@@ -927,29 +931,32 @@ async function disconnectSerial() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  // Orden de init: 2) Botón WiFi
   const btnWifi = document.getElementById("btnConnectionWifi");
   if (!btnWifi) return;
 
   btnWifi.addEventListener("click", async () => {
-    if (serialConnected) {
-      await disconnectSerial();
-      return;
-    }
+    try {
+      if (serialConnected) {
+        await disconnectSerial();
+        return;
+      }
 
-    // Usar modal propio en lugar de prompt() bloqueante
-    const savedHost = localStorage.getItem("esp32_wifi_host") || "";
-    const savedPw = sessionStorage.getItem("esp32_wifi_pw") || "";
-    const result = await _showWifiModal(savedHost || "192.168.0.1", savedPw || "");
-    if (!result) return;  // usuario canceló
+      // Usar modal propio en lugar de prompt() bloqueante
+      const savedHost = localStorage.getItem("esp32_wifi_host") || "";
+      const savedPw = sessionStorage.getItem("esp32_wifi_pw") || "";
+      const result = await _showWifiModal(savedHost || "192.168.0.1", savedPw || "");
+      if (!result) return;  // usuario canceló
 
-    const { host, password } = result;
-    if (!host || !host.trim()) return;
+      const { host, password } = result;
+      if (!host || !host.trim()) return;
 
-    // Host en localStorage (no es secreto), contraseña solo en sessionStorage
-    // (se borra al cerrar el navegador, no persiste entre sesiones)
-    localStorage.setItem("esp32_wifi_host", host.trim());
-    sessionStorage.setItem("esp32_wifi_pw", password);
-    await connectWifiSerial(host.trim(), password);
+      // Host en localStorage (no es secreto), contraseña solo en sessionStorage
+      // (se borra al cerrar el navegador, no persiste entre sesiones)
+      localStorage.setItem("esp32_wifi_host", host.trim());
+      sessionStorage.setItem("esp32_wifi_pw", password);
+      await connectWifiSerial(host.trim(), password);
+    } catch (e) { console.error("[WiFi] Error en conexión:", e); }
   });
 });
 
@@ -1402,28 +1409,31 @@ function enableTerminalInput() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  // Orden de init: 3) Botón conexión serial/WiFi
   const btnConnection = document.getElementById("btnConnection");
   if (!btnConnection) return;
   updateConnectionIcon(false);
   btnConnection.addEventListener("click", async () => {
-    if (serialConnected) {
-      await disconnectSerial();
-      return;
-    }
-    if (USE_WIFI_FALLBACK) {
-      // En dispositivos sin Web Serial (tablet/móvil), este botón también abre el modal WiFi
-      const savedHost = localStorage.getItem("esp32_wifi_host") || "";
-      const savedPw = sessionStorage.getItem("esp32_wifi_pw") || "";
-      const result = await _showWifiModal(savedHost || "192.168.0.1", savedPw || "");
-      if (!result) return;
-      localStorage.setItem("esp32_wifi_host", result.host.trim());
-      sessionStorage.setItem("esp32_wifi_pw", result.password);
-      await connectWifiSerial(result.host.trim(), result.password);
-    } else if (HAS_WEB_SERIAL) {
-      await connectSerial();
-    } else {
-      if (term) term.writeln("\r\n⚠ Web Serial no disponible en este navegador.\r\nUsa Chrome/Edge, o conecta por WiFi con el botón 📶\r\n");
-    }
+    try {
+      if (serialConnected) {
+        await disconnectSerial();
+        return;
+      }
+      if (USE_WIFI_FALLBACK) {
+        // En dispositivos sin Web Serial (tablet/móvil), este botón también abre el modal WiFi
+        const savedHost = localStorage.getItem("esp32_wifi_host") || "";
+        const savedPw = sessionStorage.getItem("esp32_wifi_pw") || "";
+        const result = await _showWifiModal(savedHost || "192.168.0.1", savedPw || "");
+        if (!result) return;
+        localStorage.setItem("esp32_wifi_host", result.host.trim());
+        sessionStorage.setItem("esp32_wifi_pw", result.password);
+        await connectWifiSerial(result.host.trim(), result.password);
+      } else if (HAS_WEB_SERIAL) {
+        await connectSerial();
+      } else {
+        if (term) term.writeln("\r\n⚠ Web Serial no disponible en este navegador.\r\nUsa Chrome/Edge, o conecta por WiFi con el botón 📶\r\n");
+      }
+    } catch (e) { console.error("[Connection] Error:", e); }
   });
 });
 
@@ -1485,7 +1495,6 @@ function _setConnectingBadge() {
   const btn = document.getElementById("btnConnection");
   if (!btn) return;
   let badge = document.getElementById("_connBadge");
-  /*
   if (!badge) {
     badge = document.createElement("span");
     badge.id = "_connBadge";
@@ -1501,7 +1510,6 @@ function _setConnectingBadge() {
   badge.style.background = "#fef3c7";  // amarillo claro
   badge.style.color = "#92400e";
   badge.innerHTML = '<span style="width:7px;height:7px;border-radius:50%;background:#f59e0b;display:inline-block"></span> Conectando…';
-*/
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -1644,7 +1652,8 @@ async function sendCodeToDevice() {
 
   try {
     isSendingCode = true;
-    // Mostrar las líneas del código en la terminal (igual que BIPES)
+    // Mostrar las líneas del código en la terminal
+    /*
     term.writeln(
       "\r\n\x1b[36m─────────────── Enviando código ───────────────\x1b[0m",
     );
@@ -1657,6 +1666,7 @@ async function sendCodeToDevice() {
     term.writeln(
       "\x1b[36m───────────────────────────────────────────────\x1b[0m\r\n",
     );
+    */
     if (typeof SerialMonitor !== "undefined") SerialMonitor.notifySending(code);
 
     const bytes = encoder.encode(code);
@@ -2312,21 +2322,24 @@ function compartir() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("btnShare")?.addEventListener("click", compartir);
-  document.getElementById("copyBtn")?.addEventListener("click", () => {
-    const input = document.getElementById("shareInput");
-    input.select();
-    navigator.clipboard.writeText(input.value);
-  });
-  document.getElementById("closeModal")?.addEventListener("click", () => {
-    document.getElementById("shareModal").style.display = "none";
-  });
+  // Orden de init: 4) Botones Share, Copy, modal y lista de archivos
+  try {
+    document.getElementById("btnShare")?.addEventListener("click", compartir);
+    document.getElementById("copyBtn")?.addEventListener("click", () => {
+      const input = document.getElementById("shareInput");
+      input.select();
+      navigator.clipboard.writeText(input.value);
+    });
+    document.getElementById("closeModal")?.addEventListener("click", () => {
+      document.getElementById("shareModal").style.display = "none";
+    });
 
-  const refreshBtn =
-    document.getElementById("btnRefreshFiles") ||
-    document.getElementById("refreshFilesList") ||
-    document.getElementById("btnListFiles");
-  refreshBtn?.addEventListener("click", () => Files.listFiles());
+    const refreshBtn =
+      document.getElementById("btnRefreshFiles") ||
+      document.getElementById("refreshFilesList") ||
+      document.getElementById("btnListFiles");
+    refreshBtn?.addEventListener("click", () => Files.listFiles());
+  } catch (e) { console.error("[init] Share/Files setup:", e); }
 });
 
 function cargarDesdeURL() {

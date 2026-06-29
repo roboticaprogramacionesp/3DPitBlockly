@@ -151,33 +151,16 @@ var SerialMonitor = (() => {
     smTerm.open(document.getElementById("smTerminal"));
     requestAnimationFrame(() => smFit.fit());
 
-    // Clic derecho → copiar selección o todo
-    document.getElementById("smTerminal").addEventListener("contextmenu", async (e) => {
-      e.preventDefault();
-      const selected = smTerm.getSelection();
-      const text = selected || _getFullTerminalText();
-      if (!text) return;
-
-      let copied = false;
-      if (navigator.clipboard?.writeText) {
-        try { await navigator.clipboard.writeText(text); copied = true; } catch (_) { }
-      }
-      if (!copied && window.pywebview?.api?.set_clipboard) {
-        try { const r = await window.pywebview.api.set_clipboard(text); copied = r?.status === "ok"; } catch (_) { }
-      }
-      if (!copied) {
-        try {
-          const ta = document.createElement("textarea");
-          ta.value = text;
-          ta.style.cssText = "position:fixed;opacity:0;top:0;left:0";
-          document.body.appendChild(ta);
-          ta.select();
-          copied = document.execCommand("copy");
-          document.body.removeChild(ta);
-        } catch (_) { }
-      }
-      if (copied) { blinkDot(); _smToast(selected ? "Selección copiada" : "Todo copiado"); }
-    });
+    // Clic derecho → menú contextual (terminal-menu.js)
+    if (typeof TerminalMenu !== "undefined") {
+      TerminalMenu.attach({
+        container: document.getElementById("smTerminal"),
+        getTerm: () => smTerm,
+        toastAnchor: document.getElementById("smTerminal"),
+        onPaste: (text) => { if (smTerm) smTerm.paste(text); },
+        onClear: () => { if (smTerm) { smTerm.clear(); blinkDot(); } },
+      });
+    }
 
     // ResizeObserver
     const wrapper = document.getElementById("smTerminalWrapper");
@@ -358,6 +341,9 @@ var SerialMonitor = (() => {
       await fn("\x03");
       await new Promise(r => setTimeout(r, 80));
       await fn(cmd + ending);
+      // ── Mostrar >>> cuando MicroPython esté listo ──
+      await new Promise(r => setTimeout(r, 300));  // esperar respuesta
+      smTerm?.writeln("\x1b[33m>>>\x1b[0m");
     }
     catch (e) { smTerm?.writeln(`\x1b[31mError al enviar: ${e.message}\x1b[0m`); }
   }
@@ -485,6 +471,28 @@ var SerialMonitor = (() => {
         await fn("\r\n");
         await fn("\x04");
         await _sleep(300);
+        /*
+        if (wifiMode || scriptLen < 256) {
+  // Interrumpir ejecución actual
+  await fn("\\x03"); await _sleep(150);
+  await fn("\\x03"); await _sleep(150);
+
+  // Esperar prompt limpio antes de entrar en paste mode
+  await fn("\\r\\n"); await _sleep(100);
+
+  // Entrar en paste mode y esperar confirmación ===
+  await fn("\\x05"); await _sleep(400);  // más tiempo para C3 Super Mini
+
+  // Enviar código en bloques pequeños
+  const norm = writeScript.replace(/\\r\\n/g, "\\n").replace(/\\r/g, "\\n");
+  for (let i = 0; i < norm.length; i += 64) {
+    await fn(norm.slice(i, i + 64));
+    await _sleep(20);
+  }
+  await _sleep(100);
+  await fn("\\x04");  // ejecutar
+  await _sleep(500);
+}*/
       } else {
         // USB + script grande (≥ 256 B): raw REPL con barra de progreso (delegamos a main.js)
         if (typeof sendViaRawRepl === "function") {
@@ -500,8 +508,10 @@ var SerialMonitor = (() => {
           for (let i = 0; i < bytes.length; i += CHUNK) {
             await serialWriter.write(bytes.slice(i, i + CHUNK));
           }
-          await fn("\x04"); await _sleep(500);
-          await fn("\x02"); await _sleep(100);
+          await fn("\x04");
+          await _sleep(500);
+          await fn("\x02");
+          await _sleep(100);
         }
       }
 
@@ -626,9 +636,14 @@ var SerialMonitor = (() => {
         continue;
       }
 
-      // Suprimir prompt vacío y eco del REPL
-      if (/^>>>\s*$/.test(line)) continue;
+      // Suprimir eco del REPL (>>> cmd) — ya lo muestra sendCommand()
       if (/^>>>\s+/.test(line)) continue;
+
+      // Prompt vacío ">>>" → mostrarlo como señal de ready
+      if (/^>>>\s*$/.test(line)) {
+        smTerm.writeln("\x1b[90m>>>\x1b[0m");  // gris tenue
+        continue;
+      }
 
       // Línea vacía
       if (!trimmed) continue;
@@ -636,6 +651,7 @@ var SerialMonitor = (() => {
       const colored = colorizeErrors(line);
       const output = now ? `\x1b[2m[${now}]\x1b[0m ${colored}` : colored;
       smTerm.writeln(output);
+
     }
 
     if (autoScroll) smTerm.scrollToBottom();
@@ -646,7 +662,8 @@ var SerialMonitor = (() => {
     lineBuffer = "";
     suppressingPaste = false;
 
-    // Mostrar las líneas del código en el monitor (igual que BIPES)
+    // Mostrar las líneas del código en el monitor 
+    /*
     if (!smTerm || !code) return;
     smTerm.writeln("\x1b[36m─────────────── Enviando código ───────────────\x1b[0m");
     const lines = code.replace(/\r/g, "").split("\n");
@@ -655,6 +672,7 @@ var SerialMonitor = (() => {
       smTerm.writeln("\x1b[96m  " + line + "\x1b[0m");
     }
     smTerm.writeln("\x1b[36m───────────────────────────────────────────────\x1b[0m");
+    */
     if (autoScroll) smTerm.scrollToBottom();
   }
 
@@ -705,6 +723,8 @@ var SerialMonitor = (() => {
       const saved = parseInt(localStorage.getItem("sm-font-size"), 10);
       if (!isNaN(saved) && saved >= 0 && saved < SM_SIZES.length) smSizeIdx = saved;
     } catch (_) { }
+
+    smApplySize();  // ← agrega esta línea
 
     document.getElementById("smSizeUp")?.addEventListener("click", () => {
       if (smSizeIdx < SM_SIZES.length - 1) { smSizeIdx++; smApplySize(); }

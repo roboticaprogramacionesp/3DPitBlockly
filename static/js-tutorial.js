@@ -1,3 +1,6 @@
+// Índice del paso activo del tutorial de bloques (declarado aquí para evitar variable global implícita)
+let uiStep = 0;
+
 const uiTutorial = [
   /*{
     el: ".top-menu",
