@@ -4598,6 +4598,13 @@
             </value>
           </block>
           <block type="espnow_recv"></block>
+
+          <block type="espnow_irq_callback">
+            <field name="CALLBACK">on_recv</field>
+          </block>
+          <block type="espnow_irq">
+            <field name="CALLBACK">on_recv</field>
+          </block>
         </category>
 
         <category name="BluetoothBLE">
@@ -4692,7 +4699,7 @@
           <block type="async_sleep_ms"></block>
         </category>
       </category>
-      <category name="ESPCam">
+      <category name="ESPCam" colour="#1A6B3C">
         <label text="📷 ESP32-CAM" role="presentation"></label>
         <label text="⚠️ Requiere firmware ESP32-CAM (Carpeta 3 Firmware)" web-class="warningText"></label>
 

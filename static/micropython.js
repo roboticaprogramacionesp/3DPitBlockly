@@ -2326,6 +2326,26 @@ Blockly.Python["espnow_recv"] = function (block) {
   return `${hostVar}, ${msgVar} = e.recv()\n`;
 };
 
+Blockly.Python["espnow_irq"] = function (block) {
+  const cb = block.getFieldValue("CALLBACK") || "on_recv";
+  return `e.irq(${cb})\n`;
+};
+
+Blockly.Python["espnow_irq_callback"] = function (block) {
+  const cb   = block.getFieldValue("CALLBACK") || "on_recv";
+  const body = Blockly.Python.statementToCode(block, "DO") || "    pass\n";
+  Blockly.Python.definitions_["ircev"] = `def ${cb}(e):\n${body}`
+  return "";
+};
+
+/*
+Blockly.Python["espnow_recv_now"] = function (block) {
+  const hostVar = Blockly.Python.nameDB_.getName(block.getFieldValue("HOST"), "VARIABLE");
+  const msgVar  = Blockly.Python.nameDB_.getName(block.getFieldValue("MSG"),  "VARIABLE");
+  return `${hostVar}, ${msgVar} = e.irecv(0)\n`;
+};
+*/
+
 Blockly.Python["ble_init_uart"] = function (block) {
   Blockly.Python.definitions_["ble_imports"] =
     "from BLE import BLEUART\nimport bluetooth";

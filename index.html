@@ -78,11 +78,14 @@
     * {
       -webkit-tap-highlight-color: transparent;
     }
-    button, a {
+
+    button,
+    a {
       -webkit-touch-callout: none;
       -webkit-user-select: none;
       user-select: none;
     }
+
     /* iOS hace zoom automático si el input tiene font-size < 16px.
        Se excluye el WidgetDiv de Blockly porque Blockly calcula su
        font-size dinámicamente según el zoom del workspace — pisarlo
@@ -102,6 +105,7 @@
       padding-right: max(15px, env(safe-area-inset-right));
       height: calc(48px + env(safe-area-inset-top));
     }
+
     .view {
       height: calc(100vh - 48px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
     }
@@ -242,6 +246,7 @@
         gap: 6px;
         padding-bottom: 4px;
       }
+
       .menu-buttons::-webkit-scrollbar {
         display: none;
       }
@@ -308,7 +313,8 @@
       top: calc(100% + 6px);
       right: 0;
       width: 270px;
-      max-width: calc(100vw - 16px); /* FIX MÓVIL: no desbordar pantalla */
+      max-width: calc(100vw - 16px);
+      /* FIX MÓVIL: no desbordar pantalla */
       max-height: 70vh;
       overflow-y: auto;
       overflow-x: hidden;
@@ -507,6 +513,7 @@
       #codeLayout {
         flex-direction: column !important;
       }
+
       #espExplorer {
         width: 100% !important;
         max-height: 140px;
@@ -514,12 +521,15 @@
         border-bottom: 1px solid #333;
         flex-shrink: 0;
       }
+
       #codeSplitContainer {
         width: 100% !important;
         flex: 1;
       }
+
       #splitter {
-        display: none !important; /* el splitter es muy difícil de arrastrar en touch */
+        display: none !important;
+        /* el splitter es muy difícil de arrastrar en touch */
       }
     }
 
@@ -530,6 +540,7 @@
         height: auto;
         aspect-ratio: 4 / 3;
       }
+
       #gameContent {
         padding: 8px;
       }
@@ -540,13 +551,15 @@
       #wiringContent {
         padding: 8px !important;
       }
+
       #wiringHeader {
         flex-wrap: wrap;
         height: auto !important;
         min-height: 40px;
         padding: 4px 8px !important;
       }
-      #wiringHeader > div {
+
+      #wiringHeader>div {
         margin-left: 0 !important;
         margin-top: 4px;
       }
@@ -1349,140 +1362,196 @@
         <!-- seleccionar personaje activo -->
         <block type="sprite_select">
           <value name="NAME">
-            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+            <shadow type="text">
+              <field name="TEXT">jugador</field>
+            </shadow>
           </value>
         </block>
 
         <!-- crear personaje con nombre -->
         <block type="sprite_create_named">
           <value name="NAME">
-            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+            <shadow type="text">
+              <field name="TEXT">jugador</field>
+            </shadow>
           </value>
           <value name="X">
-            <shadow type="math_number"><field name="NUM">100</field></shadow>
+            <shadow type="math_number">
+              <field name="NUM">100</field>
+            </shadow>
           </value>
           <value name="Y">
-            <shadow type="math_number"><field name="NUM">180</field></shadow>
+            <shadow type="math_number">
+              <field name="NUM">180</field>
+            </shadow>
           </value>
           <value name="W">
-            <shadow type="math_number"><field name="NUM">48</field></shadow>
+            <shadow type="math_number">
+              <field name="NUM">48</field>
+            </shadow>
           </value>
           <value name="H">
-            <shadow type="math_number"><field name="NUM">48</field></shadow>
+            <shadow type="math_number">
+              <field name="NUM">48</field>
+            </shadow>
           </value>
           <value name="IMG">
-            <shadow type="text"><field name="TEXT">car.png</field></shadow>
+            <shadow type="text">
+              <field name="TEXT">car.png</field>
+            </shadow>
           </value>
         </block>
 
         <!-- dibujar personaje con nombre -->
         <block type="sprite_draw_named">
           <value name="NAME">
-            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+            <shadow type="text">
+              <field name="TEXT">jugador</field>
+            </shadow>
           </value>
         </block>
 
         <!-- mover personaje con nombre -->
         <block type="sprite_move_named">
           <value name="NAME">
-            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+            <shadow type="text">
+              <field name="TEXT">jugador</field>
+            </shadow>
           </value>
           <value name="DX">
-            <shadow type="math_number"><field name="NUM">0</field></shadow>
+            <shadow type="math_number">
+              <field name="NUM">0</field>
+            </shadow>
           </value>
           <value name="DY">
-            <shadow type="math_number"><field name="NUM">0</field></shadow>
+            <shadow type="math_number">
+              <field name="NUM">0</field>
+            </shadow>
           </value>
         </block>
 
         <!-- poner posición -->
         <block type="sprite_set_pos_named">
           <value name="NAME">
-            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+            <shadow type="text">
+              <field name="TEXT">jugador</field>
+            </shadow>
           </value>
           <value name="X">
-            <shadow type="math_number"><field name="NUM">100</field></shadow>
+            <shadow type="math_number">
+              <field name="NUM">100</field>
+            </shadow>
           </value>
           <value name="Y">
-            <shadow type="math_number"><field name="NUM">180</field></shadow>
+            <shadow type="math_number">
+              <field name="NUM">180</field>
+            </shadow>
           </value>
         </block>
 
         <!-- leer posición X -->
         <block type="sprite_get_x_named">
           <value name="NAME">
-            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+            <shadow type="text">
+              <field name="TEXT">jugador</field>
+            </shadow>
           </value>
         </block>
 
         <!-- leer posición Y -->
         <block type="sprite_get_y_named">
           <value name="NAME">
-            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+            <shadow type="text">
+              <field name="TEXT">jugador</field>
+            </shadow>
           </value>
         </block>
 
         <!-- mover pasos -->
         <block type="sprite_move_steps_named">
           <value name="NAME">
-            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+            <shadow type="text">
+              <field name="TEXT">jugador</field>
+            </shadow>
           </value>
           <value name="STEPS">
-            <shadow type="math_number"><field name="NUM">10</field></shadow>
+            <shadow type="math_number">
+              <field name="NUM">10</field>
+            </shadow>
           </value>
         </block>
 
         <!-- poner ángulo -->
         <block type="sprite_set_angle_named">
           <value name="NAME">
-            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+            <shadow type="text">
+              <field name="TEXT">jugador</field>
+            </shadow>
           </value>
           <value name="DEG">
-            <shadow type="math_number"><field name="NUM">0</field></shadow>
+            <shadow type="math_number">
+              <field name="NUM">0</field>
+            </shadow>
           </value>
         </block>
 
         <!-- leer ángulo -->
         <block type="sprite_get_angle_named">
           <value name="NAME">
-            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+            <shadow type="text">
+              <field name="TEXT">jugador</field>
+            </shadow>
           </value>
         </block>
 
         <!-- escala -->
         <block type="sprite_set_scale_named">
           <value name="NAME">
-            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+            <shadow type="text">
+              <field name="TEXT">jugador</field>
+            </shadow>
           </value>
           <value name="SCALE">
-            <shadow type="math_number"><field name="NUM">1</field></shadow>
+            <shadow type="math_number">
+              <field name="NUM">1</field>
+            </shadow>
           </value>
         </block>
 
         <!-- colisión entre sprites -->
         <block type="touching_sprite">
           <value name="A">
-            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+            <shadow type="text">
+              <field name="TEXT">jugador</field>
+            </shadow>
           </value>
           <value name="B">
-            <shadow type="text"><field name="TEXT">enemigo</field></shadow>
+            <shadow type="text">
+              <field name="TEXT">enemigo</field>
+            </shadow>
           </value>
         </block>
 
         <!-- distancia entre sprites -->
         <block type="distance_between">
           <value name="A">
-            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+            <shadow type="text">
+              <field name="TEXT">jugador</field>
+            </shadow>
           </value>
           <value name="B">
-            <shadow type="text"><field name="TEXT">enemigo</field></shadow>
+            <shadow type="text">
+              <field name="TEXT">enemigo</field>
+            </shadow>
           </value>
         </block>
 
         <!-- borde para sprite nombrado -->
         <block type="touching_edge_named">
           <value name="NAME">
-            <shadow type="text"><field name="TEXT">jugador</field></shadow>
+            <shadow type="text">
+              <field name="TEXT">jugador</field>
+            </shadow>
           </value>
         </block>
 
@@ -4467,7 +4536,7 @@
           <block type="hc06_read"></block>
           <block type="hc06_any"></block>
         </category>
-       <category name="WiFi">
+        <category name="WiFi">
           <block type="wifi_init"> </block>
           <block type="wifi_connect"></block>
           <block type="wifi_ap"></block>
@@ -4526,6 +4595,13 @@
             </value>
           </block>
           <block type="espnow_recv"></block>
+
+          <block type="espnow_irq_callback">
+            <field name="CALLBACK">on_recv</field>
+          </block>
+          <block type="espnow_irq">
+            <field name="CALLBACK">on_recv</field>
+          </block>
         </category>
 
         <category name="BluetoothBLE">
@@ -4619,6 +4695,56 @@
           <block type="portal_comandos"></block>
           <block type="async_sleep_ms"></block>
         </category>
+      </category>
+      <category name="ESPCam" colour="#1A6B3C">
+        <label text="📷 ESP32-CAM" role="presentation"></label>
+        <label text="⚠️ Requiere firmware ESP32-CAM (Carpeta 3 Firmware)" web-class="warningText"></label>
+
+        <!-- Bloque completo todo-en-uno -->
+        <block type="espcam_main">
+          <field name="SSID">Robot-Control</field>
+        </block>
+
+        <!-- Inicialización individual -->
+        <block type="espcam_init">
+          <field name="QUALITY">12</field>
+          <field name="FRAMESIZE">FRAMESIZE_VGA</field>
+        </block>
+
+        <!-- Captura -->
+        <block type="espcam_capture"></block>
+
+        <!-- Configuración en caliente -->
+        <block type="espcam_quality">
+          <field name="QUALITY">12</field>
+        </block>
+        <block type="espcam_framesize">
+          <field name="FRAMESIZE">FRAMESIZE_VGA</field>
+        </block>
+
+        <!-- Stream MJPEG -->
+        <block type="espcam_send_mjpeg">
+          <field name="WRITER">writer</field>
+          <field name="INTERVAL">10</field>
+        </block>
+
+        <!-- Ruta /video_feed -->
+        <block type="espcam_video_feed_route">
+          <field name="WRITER">writer</field>
+        </block>
+
+        <!-- Manejador HTTP completo -->
+        <block type="espcam_http_handler"></block>
+
+        <!-- LED Flash -->
+        <block type="espcam_led_flash">
+          <field name="PIN">4</field>
+          <field name="STATE">1</field>
+        </block>
+
+        <!-- Utilidades comunes -->
+        <block type="async_sleep_ms"></block>
+        <block type="gc_collect"></block>
       </category>
     </xml>
   </div>

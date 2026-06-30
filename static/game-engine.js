@@ -921,6 +921,11 @@ window.GameEngine = (function () {
       _activeOscillators.length = 0;
     },
 
+    /* ── LED simple (simulado — solo consola) ── */
+    setLed: function(name, on) {
+      console.log('[GameEngine] LED "' + name + '" => ' + (on ? 'ON' : 'OFF'));
+    },
+
     /* ── Lápiz ── */
     penDown:  function(x, y) {
       if (x !== undefined && x !== null && x !== '' &&

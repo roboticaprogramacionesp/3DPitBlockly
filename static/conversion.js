@@ -3645,6 +3645,7 @@ Blockly.defineBlocksWithJsonArray([
         type: "field_dropdown",
         name: "PIN",
         options: [
+          ["0","0"],
           ["2", "2"],
           ["4", "4"],
           ["12", "12"],
@@ -6491,6 +6492,39 @@ Blockly.defineBlocksWithJsonArray([
     nextStatement: null,
     colour: 270,
   },
+  {
+    type: "espnow_irq",
+    message0: "ESP-NOW al recibir llamar %1",
+    args0: [
+      {
+        type: "field_input",
+        name: "CALLBACK",
+        text: "on_recv",
+      },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 270,
+    tooltip: "e.irq(callback) — llama a la función cuando llega un mensaje, sin bloquear el while.",
+  },
+  {
+    type: "espnow_irq_callback",
+    message0: "def %1 al recibir hacer",
+    args0: [
+      {
+        type: "field_input",
+        name: "CALLBACK",
+        text: "on_recv",
+      },
+    ],
+    message1: "%1",
+    args1: [{ type: "input_statement", name: "DO" }],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 270,
+    tooltip: "Define la función callback que e.irq() llamará al recibir. Usa 'leer mensaje ESP-NOW' dentro.",
+  },
+  
   {
     type: "ble_init_uart",
     message0: "%1 iniciar UART",

@@ -2469,6 +2469,15 @@ function initInterpreter(code) {
       }),
     );
 
+    /* ── LED simple (simulado) ── */
+    interpreter.setProperty(
+      geObj,
+      "setLed",
+      interpreter.createNativeFunction(function (name, on) {
+        GE.setLed(_s(name), !!on);
+      }),
+    );
+
     /* Stop */
     interpreter.setProperty(
       geObj,
