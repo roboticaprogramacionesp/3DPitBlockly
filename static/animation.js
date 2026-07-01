@@ -1,142 +1,142 @@
 Blockly.JavaScript["game_draw_rect"] = function (block) {
-  const x = Blockly.JavaScript.valueToCode(block,"X",Blockly.JavaScript.ORDER_NONE)||"0";
-  const y = Blockly.JavaScript.valueToCode(block,"Y",Blockly.JavaScript.ORDER_NONE)||"0";
-  const w = Blockly.JavaScript.valueToCode(block,"W",Blockly.JavaScript.ORDER_NONE)||"10";
-  const h = Blockly.JavaScript.valueToCode(block,"H",Blockly.JavaScript.ORDER_NONE)||"10";
-  const c = Blockly.JavaScript.valueToCode(block,"COLOR",Blockly.JavaScript.ORDER_NONE)||"'#ffffff'";
-  return "GameEngine.drawRect("+x+","+y+","+w+","+h+","+c+");\n";
+  const x = Blockly.JavaScript.valueToCode(block, "X", Blockly.JavaScript.ORDER_NONE) || "0";
+  const y = Blockly.JavaScript.valueToCode(block, "Y", Blockly.JavaScript.ORDER_NONE) || "0";
+  const w = Blockly.JavaScript.valueToCode(block, "W", Blockly.JavaScript.ORDER_NONE) || "10";
+  const h = Blockly.JavaScript.valueToCode(block, "H", Blockly.JavaScript.ORDER_NONE) || "10";
+  const c = Blockly.JavaScript.valueToCode(block, "COLOR", Blockly.JavaScript.ORDER_NONE) || "'#ffffff'";
+  return "GameEngine.drawRect(" + x + "," + y + "," + w + "," + h + "," + c + ");\n";
 };
 Blockly.JavaScript["game_draw_rect_outline"] = function (block) {
-  const x  = Blockly.JavaScript.valueToCode(block,"X",Blockly.JavaScript.ORDER_NONE)||"0";
-  const y  = Blockly.JavaScript.valueToCode(block,"Y",Blockly.JavaScript.ORDER_NONE)||"0";
-  const w  = Blockly.JavaScript.valueToCode(block,"W",Blockly.JavaScript.ORDER_NONE)||"10";
-  const h  = Blockly.JavaScript.valueToCode(block,"H",Blockly.JavaScript.ORDER_NONE)||"10";
-  const c  = Blockly.JavaScript.valueToCode(block,"COLOR",Blockly.JavaScript.ORDER_NONE)||"'#ffffff'";
-  const lw = Blockly.JavaScript.valueToCode(block,"LW",Blockly.JavaScript.ORDER_NONE)||"2";
-  return "GameEngine.drawRectOutline("+x+","+y+","+w+","+h+","+c+","+lw+");\n";
+  const x = Blockly.JavaScript.valueToCode(block, "X", Blockly.JavaScript.ORDER_NONE) || "0";
+  const y = Blockly.JavaScript.valueToCode(block, "Y", Blockly.JavaScript.ORDER_NONE) || "0";
+  const w = Blockly.JavaScript.valueToCode(block, "W", Blockly.JavaScript.ORDER_NONE) || "10";
+  const h = Blockly.JavaScript.valueToCode(block, "H", Blockly.JavaScript.ORDER_NONE) || "10";
+  const c = Blockly.JavaScript.valueToCode(block, "COLOR", Blockly.JavaScript.ORDER_NONE) || "'#ffffff'";
+  const lw = Blockly.JavaScript.valueToCode(block, "LW", Blockly.JavaScript.ORDER_NONE) || "2";
+  return "GameEngine.drawRectOutline(" + x + "," + y + "," + w + "," + h + "," + c + "," + lw + ");\n";
 };
 Blockly.JavaScript["game_draw_circle"] = function (block) {
-  const x = Blockly.JavaScript.valueToCode(block,"X",Blockly.JavaScript.ORDER_NONE)||"0";
-  const y = Blockly.JavaScript.valueToCode(block,"Y",Blockly.JavaScript.ORDER_NONE)||"0";
-  const r = Blockly.JavaScript.valueToCode(block,"R",Blockly.JavaScript.ORDER_NONE)||"10";
-  const c = Blockly.JavaScript.valueToCode(block,"COLOR",Blockly.JavaScript.ORDER_NONE)||"'#ffffff'";
-  return "GameEngine.drawCircle("+x+","+y+","+r+","+c+");\n";
+  const x = Blockly.JavaScript.valueToCode(block, "X", Blockly.JavaScript.ORDER_NONE) || "0";
+  const y = Blockly.JavaScript.valueToCode(block, "Y", Blockly.JavaScript.ORDER_NONE) || "0";
+  const r = Blockly.JavaScript.valueToCode(block, "R", Blockly.JavaScript.ORDER_NONE) || "10";
+  const c = Blockly.JavaScript.valueToCode(block, "COLOR", Blockly.JavaScript.ORDER_NONE) || "'#ffffff'";
+  return "GameEngine.drawCircle(" + x + "," + y + "," + r + "," + c + ");\n";
 };
 Blockly.JavaScript["game_draw_circle_outline"] = function (block) {
-  const x  = Blockly.JavaScript.valueToCode(block,"X",Blockly.JavaScript.ORDER_NONE)||"0";
-  const y  = Blockly.JavaScript.valueToCode(block,"Y",Blockly.JavaScript.ORDER_NONE)||"0";
-  const r  = Blockly.JavaScript.valueToCode(block,"R",Blockly.JavaScript.ORDER_NONE)||"10";
-  const c  = Blockly.JavaScript.valueToCode(block,"COLOR",Blockly.JavaScript.ORDER_NONE)||"'#ffffff'";
-  const lw = Blockly.JavaScript.valueToCode(block,"LW",Blockly.JavaScript.ORDER_NONE)||"2";
-  return "GameEngine.drawCircleOutline("+x+","+y+","+r+","+c+","+lw+");\n";
+  const x = Blockly.JavaScript.valueToCode(block, "X", Blockly.JavaScript.ORDER_NONE) || "0";
+  const y = Blockly.JavaScript.valueToCode(block, "Y", Blockly.JavaScript.ORDER_NONE) || "0";
+  const r = Blockly.JavaScript.valueToCode(block, "R", Blockly.JavaScript.ORDER_NONE) || "10";
+  const c = Blockly.JavaScript.valueToCode(block, "COLOR", Blockly.JavaScript.ORDER_NONE) || "'#ffffff'";
+  const lw = Blockly.JavaScript.valueToCode(block, "LW", Blockly.JavaScript.ORDER_NONE) || "2";
+  return "GameEngine.drawCircleOutline(" + x + "," + y + "," + r + "," + c + "," + lw + ");\n";
 };
 Blockly.JavaScript["game_draw_triangle"] = function (block) {
-  const x1 = Blockly.JavaScript.valueToCode(block,"X1",Blockly.JavaScript.ORDER_NONE)||"0";
-  const y1 = Blockly.JavaScript.valueToCode(block,"Y1",Blockly.JavaScript.ORDER_NONE)||"0";
-  const x2 = Blockly.JavaScript.valueToCode(block,"X2",Blockly.JavaScript.ORDER_NONE)||"0";
-  const y2 = Blockly.JavaScript.valueToCode(block,"Y2",Blockly.JavaScript.ORDER_NONE)||"0";
-  const x3 = Blockly.JavaScript.valueToCode(block,"X3",Blockly.JavaScript.ORDER_NONE)||"0";
-  const y3 = Blockly.JavaScript.valueToCode(block,"Y3",Blockly.JavaScript.ORDER_NONE)||"0";
-  const c  = Blockly.JavaScript.valueToCode(block,"COLOR",Blockly.JavaScript.ORDER_NONE)||"'#ffffff'";
-  return "GameEngine.drawTriangle("+x1+","+y1+","+x2+","+y2+","+x3+","+y3+","+c+");\n";
+  const x1 = Blockly.JavaScript.valueToCode(block, "X1", Blockly.JavaScript.ORDER_NONE) || "0";
+  const y1 = Blockly.JavaScript.valueToCode(block, "Y1", Blockly.JavaScript.ORDER_NONE) || "0";
+  const x2 = Blockly.JavaScript.valueToCode(block, "X2", Blockly.JavaScript.ORDER_NONE) || "0";
+  const y2 = Blockly.JavaScript.valueToCode(block, "Y2", Blockly.JavaScript.ORDER_NONE) || "0";
+  const x3 = Blockly.JavaScript.valueToCode(block, "X3", Blockly.JavaScript.ORDER_NONE) || "0";
+  const y3 = Blockly.JavaScript.valueToCode(block, "Y3", Blockly.JavaScript.ORDER_NONE) || "0";
+  const c = Blockly.JavaScript.valueToCode(block, "COLOR", Blockly.JavaScript.ORDER_NONE) || "'#ffffff'";
+  return "GameEngine.drawTriangle(" + x1 + "," + y1 + "," + x2 + "," + y2 + "," + x3 + "," + y3 + "," + c + ");\n";
 };
 Blockly.JavaScript["game_draw_triangle_outline"] = function (block) {
-  const x1 = Blockly.JavaScript.valueToCode(block,"X1",Blockly.JavaScript.ORDER_NONE)||"0";
-  const y1 = Blockly.JavaScript.valueToCode(block,"Y1",Blockly.JavaScript.ORDER_NONE)||"0";
-  const x2 = Blockly.JavaScript.valueToCode(block,"X2",Blockly.JavaScript.ORDER_NONE)||"0";
-  const y2 = Blockly.JavaScript.valueToCode(block,"Y2",Blockly.JavaScript.ORDER_NONE)||"0";
-  const x3 = Blockly.JavaScript.valueToCode(block,"X3",Blockly.JavaScript.ORDER_NONE)||"0";
-  const y3 = Blockly.JavaScript.valueToCode(block,"Y3",Blockly.JavaScript.ORDER_NONE)||"0";
-  const c  = Blockly.JavaScript.valueToCode(block,"COLOR",Blockly.JavaScript.ORDER_NONE)||"'#ffffff'";
-  const lw = Blockly.JavaScript.valueToCode(block,"LW",Blockly.JavaScript.ORDER_NONE)||"2";
-  return "GameEngine.drawTriangleOutline("+x1+","+y1+","+x2+","+y2+","+x3+","+y3+","+c+","+lw+");\n";
+  const x1 = Blockly.JavaScript.valueToCode(block, "X1", Blockly.JavaScript.ORDER_NONE) || "0";
+  const y1 = Blockly.JavaScript.valueToCode(block, "Y1", Blockly.JavaScript.ORDER_NONE) || "0";
+  const x2 = Blockly.JavaScript.valueToCode(block, "X2", Blockly.JavaScript.ORDER_NONE) || "0";
+  const y2 = Blockly.JavaScript.valueToCode(block, "Y2", Blockly.JavaScript.ORDER_NONE) || "0";
+  const x3 = Blockly.JavaScript.valueToCode(block, "X3", Blockly.JavaScript.ORDER_NONE) || "0";
+  const y3 = Blockly.JavaScript.valueToCode(block, "Y3", Blockly.JavaScript.ORDER_NONE) || "0";
+  const c = Blockly.JavaScript.valueToCode(block, "COLOR", Blockly.JavaScript.ORDER_NONE) || "'#ffffff'";
+  const lw = Blockly.JavaScript.valueToCode(block, "LW", Blockly.JavaScript.ORDER_NONE) || "2";
+  return "GameEngine.drawTriangleOutline(" + x1 + "," + y1 + "," + x2 + "," + y2 + "," + x3 + "," + y3 + "," + c + "," + lw + ");\n";
 };
 Blockly.JavaScript["game_draw_line"] = function (block) {
-  const x1 = Blockly.JavaScript.valueToCode(block,"X1",Blockly.JavaScript.ORDER_NONE)||"0";
-  const y1 = Blockly.JavaScript.valueToCode(block,"Y1",Blockly.JavaScript.ORDER_NONE)||"0";
-  const x2 = Blockly.JavaScript.valueToCode(block,"X2",Blockly.JavaScript.ORDER_NONE)||"0";
-  const y2 = Blockly.JavaScript.valueToCode(block,"Y2",Blockly.JavaScript.ORDER_NONE)||"0";
-  const c  = Blockly.JavaScript.valueToCode(block,"COLOR",Blockly.JavaScript.ORDER_NONE)||"'#ffffff'";
-  const lw = Blockly.JavaScript.valueToCode(block,"LW",Blockly.JavaScript.ORDER_NONE)||"2";
-  return "GameEngine.drawLine("+x1+","+y1+","+x2+","+y2+","+c+","+lw+");\n";
+  const x1 = Blockly.JavaScript.valueToCode(block, "X1", Blockly.JavaScript.ORDER_NONE) || "0";
+  const y1 = Blockly.JavaScript.valueToCode(block, "Y1", Blockly.JavaScript.ORDER_NONE) || "0";
+  const x2 = Blockly.JavaScript.valueToCode(block, "X2", Blockly.JavaScript.ORDER_NONE) || "0";
+  const y2 = Blockly.JavaScript.valueToCode(block, "Y2", Blockly.JavaScript.ORDER_NONE) || "0";
+  const c = Blockly.JavaScript.valueToCode(block, "COLOR", Blockly.JavaScript.ORDER_NONE) || "'#ffffff'";
+  const lw = Blockly.JavaScript.valueToCode(block, "LW", Blockly.JavaScript.ORDER_NONE) || "2";
+  return "GameEngine.drawLine(" + x1 + "," + y1 + "," + x2 + "," + y2 + "," + c + "," + lw + ");\n";
 };
 Blockly.JavaScript["game_draw_star"] = function (block) {
-  const x = Blockly.JavaScript.valueToCode(block,"X",Blockly.JavaScript.ORDER_NONE)||"0";
-  const y = Blockly.JavaScript.valueToCode(block,"Y",Blockly.JavaScript.ORDER_NONE)||"0";
-  const len = Blockly.JavaScript.valueToCode(block,"LENGTH",Blockly.JavaScript.ORDER_NONE)||"10";
-  const ang = Blockly.JavaScript.valueToCode(block,"ANGLE",Blockly.JavaScript.ORDER_NONE)||"0";
-  const c  = Blockly.JavaScript.valueToCode(block,"COLOR",Blockly.JavaScript.ORDER_NONE)||"'#ffffff'";
-  return "GameEngine.drawStar("+x+","+y+","+len+","+ang+","+c+");\n";
+  const x = Blockly.JavaScript.valueToCode(block, "X", Blockly.JavaScript.ORDER_NONE) || "0";
+  const y = Blockly.JavaScript.valueToCode(block, "Y", Blockly.JavaScript.ORDER_NONE) || "0";
+  const len = Blockly.JavaScript.valueToCode(block, "LENGTH", Blockly.JavaScript.ORDER_NONE) || "10";
+  const ang = Blockly.JavaScript.valueToCode(block, "ANGLE", Blockly.JavaScript.ORDER_NONE) || "0";
+  const c = Blockly.JavaScript.valueToCode(block, "COLOR", Blockly.JavaScript.ORDER_NONE) || "'#ffffff'";
+  return "GameEngine.drawStar(" + x + "," + y + "," + len + "," + ang + "," + c + ");\n";
 };
 Blockly.JavaScript["game_draw_ellipse"] = function (block) {
-  const x = Blockly.JavaScript.valueToCode(block,"X",Blockly.JavaScript.ORDER_NONE)||"0";
-  const y = Blockly.JavaScript.valueToCode(block,"Y",Blockly.JavaScript.ORDER_NONE)||"0";
-  const w = Blockly.JavaScript.valueToCode(block,"WIDTH",Blockly.JavaScript.ORDER_NONE)||"20";
-  const h = Blockly.JavaScript.valueToCode(block,"HEIGHT",Blockly.JavaScript.ORDER_NONE)||"12";
-  const ang = Blockly.JavaScript.valueToCode(block,"ANGLE",Blockly.JavaScript.ORDER_NONE)||"0";
-  const c  = Blockly.JavaScript.valueToCode(block,"COLOR",Blockly.JavaScript.ORDER_NONE)||"'#ffffff'";
-  return "GameEngine.drawEllipse("+x+","+y+","+w+","+h+","+ang+","+c+");\n";
+  const x = Blockly.JavaScript.valueToCode(block, "X", Blockly.JavaScript.ORDER_NONE) || "0";
+  const y = Blockly.JavaScript.valueToCode(block, "Y", Blockly.JavaScript.ORDER_NONE) || "0";
+  const w = Blockly.JavaScript.valueToCode(block, "WIDTH", Blockly.JavaScript.ORDER_NONE) || "20";
+  const h = Blockly.JavaScript.valueToCode(block, "HEIGHT", Blockly.JavaScript.ORDER_NONE) || "12";
+  const ang = Blockly.JavaScript.valueToCode(block, "ANGLE", Blockly.JavaScript.ORDER_NONE) || "0";
+  const c = Blockly.JavaScript.valueToCode(block, "COLOR", Blockly.JavaScript.ORDER_NONE) || "'#ffffff'";
+  return "GameEngine.drawEllipse(" + x + "," + y + "," + w + "," + h + "," + ang + "," + c + ");\n";
 };
 Blockly.JavaScript["game_draw_quad"] = function (block) {
-  const x1 = Blockly.JavaScript.valueToCode(block,"X1",Blockly.JavaScript.ORDER_NONE)||"0";
-  const y1 = Blockly.JavaScript.valueToCode(block,"Y1",Blockly.JavaScript.ORDER_NONE)||"0";
-  const x2 = Blockly.JavaScript.valueToCode(block,"X2",Blockly.JavaScript.ORDER_NONE)||"0";
-  const y2 = Blockly.JavaScript.valueToCode(block,"Y2",Blockly.JavaScript.ORDER_NONE)||"0";
-  const x3 = Blockly.JavaScript.valueToCode(block,"X3",Blockly.JavaScript.ORDER_NONE)||"0";
-  const y3 = Blockly.JavaScript.valueToCode(block,"Y3",Blockly.JavaScript.ORDER_NONE)||"0";
-  const x4 = Blockly.JavaScript.valueToCode(block,"X4",Blockly.JavaScript.ORDER_NONE)||"0";
-  const y4 = Blockly.JavaScript.valueToCode(block,"Y4",Blockly.JavaScript.ORDER_NONE)||"0";
-  const c  = Blockly.JavaScript.valueToCode(block,"COLOR",Blockly.JavaScript.ORDER_NONE)||"'#ffffff'";
-  return "GameEngine.drawQuad("+x1+","+y1+","+x2+","+y2+","+x3+","+y3+","+x4+","+y4+","+c+");\n";
+  const x1 = Blockly.JavaScript.valueToCode(block, "X1", Blockly.JavaScript.ORDER_NONE) || "0";
+  const y1 = Blockly.JavaScript.valueToCode(block, "Y1", Blockly.JavaScript.ORDER_NONE) || "0";
+  const x2 = Blockly.JavaScript.valueToCode(block, "X2", Blockly.JavaScript.ORDER_NONE) || "0";
+  const y2 = Blockly.JavaScript.valueToCode(block, "Y2", Blockly.JavaScript.ORDER_NONE) || "0";
+  const x3 = Blockly.JavaScript.valueToCode(block, "X3", Blockly.JavaScript.ORDER_NONE) || "0";
+  const y3 = Blockly.JavaScript.valueToCode(block, "Y3", Blockly.JavaScript.ORDER_NONE) || "0";
+  const x4 = Blockly.JavaScript.valueToCode(block, "X4", Blockly.JavaScript.ORDER_NONE) || "0";
+  const y4 = Blockly.JavaScript.valueToCode(block, "Y4", Blockly.JavaScript.ORDER_NONE) || "0";
+  const c = Blockly.JavaScript.valueToCode(block, "COLOR", Blockly.JavaScript.ORDER_NONE) || "'#ffffff'";
+  return "GameEngine.drawQuad(" + x1 + "," + y1 + "," + x2 + "," + y2 + "," + x3 + "," + y3 + "," + x4 + "," + y4 + "," + c + ");\n";
 };
 Blockly.JavaScript["game_draw_regular_polygon"] = function (block) {
-  const x = Blockly.JavaScript.valueToCode(block,"X",Blockly.JavaScript.ORDER_NONE)||"0";
-  const y = Blockly.JavaScript.valueToCode(block,"Y",Blockly.JavaScript.ORDER_NONE)||"0";
-  const n = Blockly.JavaScript.valueToCode(block,"N",Blockly.JavaScript.ORDER_NONE)||"6";
-  const len = Blockly.JavaScript.valueToCode(block,"LENGTH",Blockly.JavaScript.ORDER_NONE)||"10";
-  const ang = Blockly.JavaScript.valueToCode(block,"ANGLE",Blockly.JavaScript.ORDER_NONE)||"0";
-  const c  = Blockly.JavaScript.valueToCode(block,"COLOR",Blockly.JavaScript.ORDER_NONE)||"'#ffffff'";
-  return "GameEngine.drawRegularPolygon("+x+","+y+","+n+","+len+","+ang+","+c+");\n";
+  const x = Blockly.JavaScript.valueToCode(block, "X", Blockly.JavaScript.ORDER_NONE) || "0";
+  const y = Blockly.JavaScript.valueToCode(block, "Y", Blockly.JavaScript.ORDER_NONE) || "0";
+  const n = Blockly.JavaScript.valueToCode(block, "N", Blockly.JavaScript.ORDER_NONE) || "6";
+  const len = Blockly.JavaScript.valueToCode(block, "LENGTH", Blockly.JavaScript.ORDER_NONE) || "10";
+  const ang = Blockly.JavaScript.valueToCode(block, "ANGLE", Blockly.JavaScript.ORDER_NONE) || "0";
+  const c = Blockly.JavaScript.valueToCode(block, "COLOR", Blockly.JavaScript.ORDER_NONE) || "'#ffffff'";
+  return "GameEngine.drawRegularPolygon(" + x + "," + y + "," + n + "," + len + "," + ang + "," + c + ");\n";
 };
 Blockly.JavaScript["game_draw_table"] = function (block) {
-  const x = Blockly.JavaScript.valueToCode(block,"X",Blockly.JavaScript.ORDER_NONE)||"0";
-  const y = Blockly.JavaScript.valueToCode(block,"Y",Blockly.JavaScript.ORDER_NONE)||"0";
-  const w = Blockly.JavaScript.valueToCode(block,"WIDTH",Blockly.JavaScript.ORDER_NONE)||"40";
-  const h = Blockly.JavaScript.valueToCode(block,"HEIGHT",Blockly.JavaScript.ORDER_NONE)||"40";
-  const row = Blockly.JavaScript.valueToCode(block,"ROW",Blockly.JavaScript.ORDER_NONE)||"1";
-  const col = Blockly.JavaScript.valueToCode(block,"COLUMN",Blockly.JavaScript.ORDER_NONE)||"1";
-  const c  = Blockly.JavaScript.valueToCode(block,"COLOR",Blockly.JavaScript.ORDER_NONE)||"'#ffffff'";
-  return "GameEngine.drawTable("+x+","+y+","+w+","+h+","+row+","+col+","+c+");\n";
+  const x = Blockly.JavaScript.valueToCode(block, "X", Blockly.JavaScript.ORDER_NONE) || "0";
+  const y = Blockly.JavaScript.valueToCode(block, "Y", Blockly.JavaScript.ORDER_NONE) || "0";
+  const w = Blockly.JavaScript.valueToCode(block, "WIDTH", Blockly.JavaScript.ORDER_NONE) || "40";
+  const h = Blockly.JavaScript.valueToCode(block, "HEIGHT", Blockly.JavaScript.ORDER_NONE) || "40";
+  const row = Blockly.JavaScript.valueToCode(block, "ROW", Blockly.JavaScript.ORDER_NONE) || "1";
+  const col = Blockly.JavaScript.valueToCode(block, "COLUMN", Blockly.JavaScript.ORDER_NONE) || "1";
+  const c = Blockly.JavaScript.valueToCode(block, "COLOR", Blockly.JavaScript.ORDER_NONE) || "'#ffffff'";
+  return "GameEngine.drawTable(" + x + "," + y + "," + w + "," + h + "," + row + "," + col + "," + c + ");\n";
 };
 Blockly.JavaScript["game_show_text"] = function (block) {
-  const text  = Blockly.JavaScript.valueToCode(block,"TEXT",Blockly.JavaScript.ORDER_NONE)||"''";
-  const x     = Blockly.JavaScript.valueToCode(block,"X",Blockly.JavaScript.ORDER_NONE)||"0";
-  const y     = Blockly.JavaScript.valueToCode(block,"Y",Blockly.JavaScript.ORDER_NONE)||"20";
-  const color = Blockly.JavaScript.valueToCode(block,"COLOR",Blockly.JavaScript.ORDER_NONE)||"'#ffffff'";
-  const size  = Blockly.JavaScript.valueToCode(block,"SIZE",Blockly.JavaScript.ORDER_NONE)||"16";
-  return "GameEngine.showText("+text+","+x+","+y+","+color+","+size+");\n";
+  const text = Blockly.JavaScript.valueToCode(block, "TEXT", Blockly.JavaScript.ORDER_NONE) || "''";
+  const x = Blockly.JavaScript.valueToCode(block, "X", Blockly.JavaScript.ORDER_NONE) || "0";
+  const y = Blockly.JavaScript.valueToCode(block, "Y", Blockly.JavaScript.ORDER_NONE) || "20";
+  const color = Blockly.JavaScript.valueToCode(block, "COLOR", Blockly.JavaScript.ORDER_NONE) || "'#ffffff'";
+  const size = Blockly.JavaScript.valueToCode(block, "SIZE", Blockly.JavaScript.ORDER_NONE) || "16";
+  return "GameEngine.showText(" + text + "," + x + "," + y + "," + color + "," + size + ");\n";
 };
 Blockly.JavaScript["game_random_int"] = function (block) {
-  const min = Blockly.JavaScript.valueToCode(block,"MIN",Blockly.JavaScript.ORDER_NONE)||"0";
-  const max = Blockly.JavaScript.valueToCode(block,"MAX",Blockly.JavaScript.ORDER_NONE)||"100";
-  return ["GameEngine.randomInt("+min+","+max+")", Blockly.JavaScript.ORDER_FUNCTION_CALL];
+  const min = Blockly.JavaScript.valueToCode(block, "MIN", Blockly.JavaScript.ORDER_NONE) || "0";
+  const max = Blockly.JavaScript.valueToCode(block, "MAX", Blockly.JavaScript.ORDER_NONE) || "100";
+  return ["GameEngine.randomInt(" + min + "," + max + ")", Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 Blockly.JavaScript["game_random_float"] = function (block) {
-  const min = Blockly.JavaScript.valueToCode(block,"MIN",Blockly.JavaScript.ORDER_NONE)||"0";
-  const max = Blockly.JavaScript.valueToCode(block,"MAX",Blockly.JavaScript.ORDER_NONE)||"1";
-  return ["GameEngine.randomFloat("+min+","+max+")", Blockly.JavaScript.ORDER_FUNCTION_CALL];
+  const min = Blockly.JavaScript.valueToCode(block, "MIN", Blockly.JavaScript.ORDER_NONE) || "0";
+  const max = Blockly.JavaScript.valueToCode(block, "MAX", Blockly.JavaScript.ORDER_NONE) || "1";
+  return ["GameEngine.randomFloat(" + min + "," + max + ")", Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 Blockly.JavaScript["game_distance"] = function (block) {
-  const x1 = Blockly.JavaScript.valueToCode(block,"X1",Blockly.JavaScript.ORDER_NONE)||"0";
-  const y1 = Blockly.JavaScript.valueToCode(block,"Y1",Blockly.JavaScript.ORDER_NONE)||"0";
-  const x2 = Blockly.JavaScript.valueToCode(block,"X2",Blockly.JavaScript.ORDER_NONE)||"0";
-  const y2 = Blockly.JavaScript.valueToCode(block,"Y2",Blockly.JavaScript.ORDER_NONE)||"0";
-  return ["GameEngine.distance("+x1+","+y1+","+x2+","+y2+")", Blockly.JavaScript.ORDER_FUNCTION_CALL];
+  const x1 = Blockly.JavaScript.valueToCode(block, "X1", Blockly.JavaScript.ORDER_NONE) || "0";
+  const y1 = Blockly.JavaScript.valueToCode(block, "Y1", Blockly.JavaScript.ORDER_NONE) || "0";
+  const x2 = Blockly.JavaScript.valueToCode(block, "X2", Blockly.JavaScript.ORDER_NONE) || "0";
+  const y2 = Blockly.JavaScript.valueToCode(block, "Y2", Blockly.JavaScript.ORDER_NONE) || "0";
+  return ["GameEngine.distance(" + x1 + "," + y1 + "," + x2 + "," + y2 + ")", Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 Blockly.JavaScript["game_play_tone"] = function (block) {
-  const freq = Blockly.JavaScript.valueToCode(block,"FREQ",Blockly.JavaScript.ORDER_NONE)||"440";
-  const dur  = Blockly.JavaScript.valueToCode(block,"DUR",Blockly.JavaScript.ORDER_NONE)||"0.3";
-  return "GameEngine.playTone("+freq+","+dur+");\n";
+  const freq = Blockly.JavaScript.valueToCode(block, "FREQ", Blockly.JavaScript.ORDER_NONE) || "440";
+  const dur = Blockly.JavaScript.valueToCode(block, "DUR", Blockly.JavaScript.ORDER_NONE) || "0.3";
+  return "GameEngine.playTone(" + freq + "," + dur + ");\n";
 };
 
 Blockly.JavaScript["time_sleep"] = function (block) {
@@ -499,9 +499,9 @@ Blockly.JavaScript["lists_append"] = function (block) {
   const id = block.id;
   const list = Blockly.JavaScript.nameDB_
     ? Blockly.JavaScript.nameDB_.getName(
-        block.getFieldValue("LIST"),
-        Blockly.VARIABLE_CATEGORY_NAME,
-      )
+      block.getFieldValue("LIST"),
+      Blockly.VARIABLE_CATEGORY_NAME,
+    )
     : block.getFieldValue("LIST");
   const item =
     Blockly.JavaScript.valueToCode(
@@ -647,12 +647,12 @@ Blockly.JavaScript["dict_is_dictionary"] = function (block) {
     ) || "{}";
   return [
     "(typeof (" +
-      d +
-      ") === 'object' && !Array.isArray(" +
-      d +
-      ") && (" +
-      d +
-      ") !== null)",
+    d +
+    ") === 'object' && !Array.isArray(" +
+    d +
+    ") && (" +
+    d +
+    ") !== null)",
     Blockly.JavaScript.ORDER_LOGICAL,
   ];
 };
@@ -768,21 +768,19 @@ Blockly.JavaScript["time_every"] = function (block) {
 /* ── Excepciones ── */
 Blockly.JavaScript["controls_try_except_var"] = function (block) {
   const id = block.id;
-  const varName = block.getFieldValue("VAR") || "e";
   const tryCode = Blockly.JavaScript.statementToCode(block, "TRY");
   const exceptCode = Blockly.JavaScript.statementToCode(block, "EXCEPT");
+
   return (
-    "highlightBlock('" +
-    id +
-    "');\ntry {\n" +
-    tryCode +
-    "} catch (" +
-    varName +
-    ") {\n" +
-    exceptCode +
+    "highlightBlock('" + id + "');\n" +
+    "try {\n" +
+      tryCode +
+    "} catch (e) {\n" +
+      exceptCode +
     "}\n"
   );
 };
+
 Blockly.JavaScript["controls_try_except_finally"] = function (block) {
   const id = block.id;
   const tryCode = Blockly.JavaScript.statementToCode(block, "TRY");
@@ -995,12 +993,12 @@ Blockly.JavaScript["color_rgb"] = function (block) {
   /* Construye hex string en runtime */
   return [
     "(function(r,g,b){return'#'+[r,g,b].map(function(v){return('0'+Math.max(0,Math.min(255,v|0)).toString(16)).slice(-2);}).join('');}(" +
-      r +
-      "," +
-      g +
-      "," +
-      b +
-      "))",
+    r +
+    "," +
+    g +
+    "," +
+    b +
+    "))",
     Blockly.JavaScript.ORDER_FUNCTION_CALL,
   ];
 };
@@ -1048,7 +1046,7 @@ Blockly.JavaScript["game_start"] = function (block) {
   return "GameEngine.start(" + w + ", " + h + ");\n";
 };
 
-Blockly.JavaScript["select_imgs"] = function(block) {
+Blockly.JavaScript["select_imgs"] = function (block) {
   const img = block.getFieldValue("IMG") || "laberinto.png";
 
   return [
@@ -1070,12 +1068,12 @@ Blockly.JavaScript["game_set_bg"] = function (block) {
 
 Blockly.JavaScript["game_set_bg_image"] = function (block) {
   const file =
-    Blockly.JavaScript.valueToCode(
-      block,
-      "FILE",
-      Blockly.JavaScript.ORDER_ATOMIC,
-    ) || "'road.png'";
-  return "GameEngine.setBgImage(" + file + ");\n";
+    Blockly.JavaScript.valueToCode(block, "FILE", Blockly.JavaScript.ORDER_ATOMIC) || "'road.png'";
+  return (
+    "if (!GameEngine.setBgImage(" + file + ")) {\n" +
+    "  throw new Error('No se pudo cargar la imagen: ' + " + file + ");\n" +
+    "}\n"
+  );
 };
 
 Blockly.JavaScript["game_get_bg_image_name"] = function (block) {
@@ -1144,7 +1142,11 @@ Blockly.JavaScript["sprite_load_image"] = function (block) {
       "FILE",
       Blockly.JavaScript.ORDER_ATOMIC,
     ) || "'sprite.png'";
-  return "GameEngine.loadImage(" + file + ");\n";
+  return (
+    "if (!GameEngine.loadImage(" + file + ")) {\n" +
+    "  throw new Error('No se pudo cargar la imagen: ' + " + file + ");\n" +
+    "}\n"
+  );
 };
 
 Blockly.JavaScript["sprite_set_flip"] = function (block) {
@@ -1447,8 +1449,15 @@ let runner = null;
 
 /* ===== RESALTAR BLOQUE ===== */
 
+/* Id del último bloque resaltado. Cambia cada vez que el programa entra
+   a una nueva instrucción (Blockly.JavaScript.STATEMENT_PREFIX llama
+   highlightBlock(id) antes de cada statement) — esto es lo que usa
+   stepBlockly() para detectar "ya terminé este bloque, empieza el siguiente". */
+var _lastBlockId = null;
+
 function highlightBlock(id) {
   id = String(id).replace(/'/g, "");
+  _lastBlockId = id;
   Code.workspace.highlightBlock(id);
   const block = Code.workspace.getBlockById(id);
   if (!block) return;
@@ -1491,14 +1500,14 @@ Blockly.JavaScript["pin_value"] = function (b) {
   return [`getSensorValue("pins", ${pin})`, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 Blockly.JavaScript["interruptor_init"] = function (b) { return ""; };
-Blockly.JavaScript["interruptor_irq"]  = function (b) { return ""; };
+Blockly.JavaScript["interruptor_irq"] = function (b) { return ""; };
 Blockly.JavaScript["interruptor_read"] = function (b) {
   const pin = b.getFieldValue("PIN");
   return [`getSensorValue("pins", ${pin})`, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
 /* ── ADC (además de analog_sensor_read ya existente) ── */
-Blockly.JavaScript["adc_pin"]   = function (b) { return ""; };
+Blockly.JavaScript["adc_pin"] = function (b) { return ""; };
 Blockly.JavaScript["adc_width"] = function (b) { return ""; };
 Blockly.JavaScript["adc_atten"] = function (b) { return ""; };
 Blockly.JavaScript["adc_read"] = function (b) {
@@ -1506,10 +1515,10 @@ Blockly.JavaScript["adc_read"] = function (b) {
   return [`getSensorValue("adc", ${pin})`, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 Blockly.JavaScript["adc_read_u16"] = Blockly.JavaScript["adc_read"];
-Blockly.JavaScript["adc_read_uv"]  = Blockly.JavaScript["adc_read"];
+Blockly.JavaScript["adc_read_uv"] = Blockly.JavaScript["adc_read"];
 
 /* ── DHT ── */
-Blockly.JavaScript["dht_init"]    = function (b) { return ""; };
+Blockly.JavaScript["dht_init"] = function (b) { return ""; };
 Blockly.JavaScript["dht_measure"] = function (b) { return ""; };
 Blockly.JavaScript["dht_temperature"] = function (b) {
   const pin = b.getFieldValue("PIN");
@@ -1521,7 +1530,7 @@ Blockly.JavaScript["dht_humidity"] = function (b) {
 };
 
 /* ── Touch ── */
-Blockly.JavaScript["touch_init"]   = function (b) { return ""; };
+Blockly.JavaScript["touch_init"] = function (b) { return ""; };
 Blockly.JavaScript["touch_config"] = function (b) { return ""; };
 Blockly.JavaScript["touch_read"] = function (b) {
   const pin = b.getFieldValue("PIN");
@@ -1536,7 +1545,7 @@ Blockly.JavaScript["read_ultrasonic_hcsr04"] = function (b) {
 };
 
 /* ── Encoder rotario ── */
-Blockly.JavaScript["encoder_rotary_init"]  = function (b) { return ""; };
+Blockly.JavaScript["encoder_rotary_init"] = function (b) { return ""; };
 Blockly.JavaScript["encoder_rotary_reset"] = function (b) { return ""; };
 Blockly.JavaScript["encoder_rotary_value"] = function (b) {
   const name = b.getFieldValue("NAME");
@@ -1544,9 +1553,9 @@ Blockly.JavaScript["encoder_rotary_value"] = function (b) {
 };
 
 /* ── MPU6050 ── */
-Blockly.JavaScript["mpu6050_init"]            = function (b) { return ""; };
+Blockly.JavaScript["mpu6050_init"] = function (b) { return ""; };
 Blockly.JavaScript["mpu6050_set_accel_range"] = function (b) { return ""; };
-Blockly.JavaScript["mpu6050_set_gyro_range"]  = function (b) { return ""; };
+Blockly.JavaScript["mpu6050_set_gyro_range"] = function (b) { return ""; };
 Blockly.JavaScript["mpu6050_accel_x"] = function (b) {
   return [`getSensorValue("mpu", "AX")`, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
@@ -1570,7 +1579,7 @@ Blockly.JavaScript["mpu6050_temperature"] = function (b) {
 };
 
 /* ── KY-023 Joystick ── */
-Blockly.JavaScript["ky023_analog"]   = function (b) { return ""; };
+Blockly.JavaScript["ky023_analog"] = function (b) { return ""; };
 Blockly.JavaScript["ky023_read_x"] = function (b) {
   const name = b.getFieldValue("NAME");
   return [`getSensorValue("ky023", "${name}_X")`, Blockly.JavaScript.ORDER_FUNCTION_CALL];
@@ -1585,7 +1594,7 @@ Blockly.JavaScript["ky023_read_sw"] = function (b) {
 };
 
 /* ── Pot / Slider ── */
-Blockly.JavaScript["pot_slider_init"]   = function (b) { return ""; };
+Blockly.JavaScript["pot_slider_init"] = function (b) { return ""; };
 Blockly.JavaScript["pot_slider_read_x"] = function (b) {
   const name = b.getFieldValue("NAME");
   return [`getSensorValue("ky023", "${name}_X")`, Blockly.JavaScript.ORDER_FUNCTION_CALL];
@@ -1596,8 +1605,8 @@ Blockly.JavaScript["pot_slider_read_y"] = function (b) {
 };
 
 /* ── Sensor híbrido ── */
-Blockly.JavaScript["hybrid_sensor_init"]         = function (b) { return ""; };
-Blockly.JavaScript["hybrid_sensor_read_analog"]  = function (b) {
+Blockly.JavaScript["hybrid_sensor_init"] = function (b) { return ""; };
+Blockly.JavaScript["hybrid_sensor_read_analog"] = function (b) {
   const name = b.getFieldValue("NAME");
   return [`getSensorValue("adc", "${name}")`, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
@@ -1607,222 +1616,222 @@ Blockly.JavaScript["hybrid_sensor_read_digital"] = function (b) {
 };
 
 /* ── I2C / SPI ── */
-Blockly.JavaScript["i2c_init"]  = function (b) { return ""; };
+Blockly.JavaScript["i2c_init"] = function (b) { return ""; };
 Blockly.JavaScript["i2c_write"] = function (b) { return ""; };
-Blockly.JavaScript["i2c_scan"]  = function (b) { return [`getSensorValue("i2c","scan")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
-Blockly.JavaScript["i2c_read"]  = function (b) { return [`getSensorValue("i2c","read")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
-Blockly.JavaScript["spi_init"]  = function (b) { return ""; };
+Blockly.JavaScript["i2c_scan"] = function (b) { return [`getSensorValue("i2c","scan")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
+Blockly.JavaScript["i2c_read"] = function (b) { return [`getSensorValue("i2c","read")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
+Blockly.JavaScript["spi_init"] = function (b) { return ""; };
 Blockly.JavaScript["spi_write"] = function (b) { return ""; };
-Blockly.JavaScript["spi_read"]  = function (b) { return [`getSensorValue("spi","read")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
+Blockly.JavaScript["spi_read"] = function (b) { return [`getSensorValue("spi","read")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
 
 /* ── UART / HC-06 ── */
-Blockly.JavaScript["uart_init"]    = function (b) { return ""; };
-Blockly.JavaScript["uart_write"]   = function (b) { return ""; };
-Blockly.JavaScript["uart_read"]    = function (b) { return [`getSensorValue("uart","read")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
-Blockly.JavaScript["init_hc06"]    = function (b) { return ""; };
-Blockly.JavaScript["hc06_send"]    = function (b) { return ""; };
-Blockly.JavaScript["hc06_read"]    = function (b) { return [`getSensorValue("uart","read")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
-Blockly.JavaScript["hc06_any"]     = function (b) { return [`getSensorValue("uart","any")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
-Blockly.JavaScript["cp2102_init"]  = function (b) { return ""; };
+Blockly.JavaScript["uart_init"] = function (b) { return ""; };
+Blockly.JavaScript["uart_write"] = function (b) { return ""; };
+Blockly.JavaScript["uart_read"] = function (b) { return [`getSensorValue("uart","read")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
+Blockly.JavaScript["init_hc06"] = function (b) { return ""; };
+Blockly.JavaScript["hc06_send"] = function (b) { return ""; };
+Blockly.JavaScript["hc06_read"] = function (b) { return [`getSensorValue("uart","read")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
+Blockly.JavaScript["hc06_any"] = function (b) { return [`getSensorValue("uart","any")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
+Blockly.JavaScript["cp2102_init"] = function (b) { return ""; };
 Blockly.JavaScript["cp2102_write"] = function (b) { return ""; };
-Blockly.JavaScript["cp2102_read"]  = function (b) { return [`getSensorValue("uart","read")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
+Blockly.JavaScript["cp2102_read"] = function (b) { return [`getSensorValue("uart","read")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
 Blockly.JavaScript["cp2102_available"] = function (b) { return [`getSensorValue("uart","any")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
 
 /* ── DHT/BMP/BH1750/TCS/QMC/RTC (I2C sensors) ── */
-Blockly.JavaScript["bmp_sensor_init"]   = function (b) { return ""; };
-Blockly.JavaScript["bmp_read_temp"]     = function (b) { return [`getSensorValue("bmp","temp")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
+Blockly.JavaScript["bmp_sensor_init"] = function (b) { return ""; };
+Blockly.JavaScript["bmp_read_temp"] = function (b) { return [`getSensorValue("bmp","temp")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
 Blockly.JavaScript["bmp_read_pressure"] = function (b) { return [`getSensorValue("bmp","pres")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
 Blockly.JavaScript["bmp_read_altitude"] = function (b) { return [`getSensorValue("bmp","alt")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
-Blockly.JavaScript["bh1750_init"]       = function (b) { return ""; };
-Blockly.JavaScript["bh1750_power_on"]   = function (b) { return ""; };
-Blockly.JavaScript["bh1750_power_off"]  = function (b) { return ""; };
-Blockly.JavaScript["bh1750_read_lux"]   = function (b) { return [`getSensorValue("bh1750","lux")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
-Blockly.JavaScript["tcs34725_init"]        = function (b) { return ""; };
+Blockly.JavaScript["bh1750_init"] = function (b) { return ""; };
+Blockly.JavaScript["bh1750_power_on"] = function (b) { return ""; };
+Blockly.JavaScript["bh1750_power_off"] = function (b) { return ""; };
+Blockly.JavaScript["bh1750_read_lux"] = function (b) { return [`getSensorValue("bh1750","lux")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
+Blockly.JavaScript["tcs34725_init"] = function (b) { return ""; };
 Blockly.JavaScript["tcs34725_integration"] = function (b) { return [`getSensorValue("tcs","int")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
-Blockly.JavaScript["tcs34725_gain"]        = function (b) { return [`getSensorValue("tcs","gain")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
-Blockly.JavaScript["tcs34725_red"]         = function (b) { return [`getSensorValue("tcs","r")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
-Blockly.JavaScript["tcs34725_green"]       = function (b) { return [`getSensorValue("tcs","g")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
-Blockly.JavaScript["tcs34725_blue"]        = function (b) { return [`getSensorValue("tcs","b")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
-Blockly.JavaScript["tcs34725_clear"]       = function (b) { return [`getSensorValue("tcs","c")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
-Blockly.JavaScript["tcs34725_rgb"]         = function (b) { return [`getSensorValue("tcs","rgb")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
-Blockly.JavaScript["qmc5883l_init"]  = function (b) { return ""; };
-Blockly.JavaScript["qmc5883l_read_x"]   = function (b) { return [`getSensorValue("qmc","x")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
-Blockly.JavaScript["qmc5883l_read_y"]   = function (b) { return [`getSensorValue("qmc","y")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
-Blockly.JavaScript["qmc5883l_read_z"]   = function (b) { return [`getSensorValue("qmc","z")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
+Blockly.JavaScript["tcs34725_gain"] = function (b) { return [`getSensorValue("tcs","gain")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
+Blockly.JavaScript["tcs34725_red"] = function (b) { return [`getSensorValue("tcs","r")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
+Blockly.JavaScript["tcs34725_green"] = function (b) { return [`getSensorValue("tcs","g")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
+Blockly.JavaScript["tcs34725_blue"] = function (b) { return [`getSensorValue("tcs","b")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
+Blockly.JavaScript["tcs34725_clear"] = function (b) { return [`getSensorValue("tcs","c")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
+Blockly.JavaScript["tcs34725_rgb"] = function (b) { return [`getSensorValue("tcs","rgb")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
+Blockly.JavaScript["qmc5883l_init"] = function (b) { return ""; };
+Blockly.JavaScript["qmc5883l_read_x"] = function (b) { return [`getSensorValue("qmc","x")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
+Blockly.JavaScript["qmc5883l_read_y"] = function (b) { return [`getSensorValue("qmc","y")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
+Blockly.JavaScript["qmc5883l_read_z"] = function (b) { return [`getSensorValue("qmc","z")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
 Blockly.JavaScript["qmc5883l_read_xyz"] = function (b) { return [`getSensorValue("qmc","xyz")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
-Blockly.JavaScript["rtc_init"]          = function (b) { return ""; };
-Blockly.JavaScript["rtc_set_datetime"]  = function (b) { return ""; };
-Blockly.JavaScript["rtc_get_datetime"]  = function (b) { return [`getSensorValue("rtc","dt")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
-Blockly.JavaScript["rtc_ds3231_init"]     = function (b) { return ""; };
+Blockly.JavaScript["rtc_init"] = function (b) { return ""; };
+Blockly.JavaScript["rtc_set_datetime"] = function (b) { return ""; };
+Blockly.JavaScript["rtc_get_datetime"] = function (b) { return [`getSensorValue("rtc","dt")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
+Blockly.JavaScript["rtc_ds3231_init"] = function (b) { return ""; };
 Blockly.JavaScript["rtc_ds3231_set_time"] = function (b) { return ""; };
 Blockly.JavaScript["rtc_ds3231_get_time"] = function (b) { return [`getSensorValue("rtc","time")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
-Blockly.JavaScript["rtc_ds3231_get_hour"]   = function (b) { return [`getSensorValue("rtc","h")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
+Blockly.JavaScript["rtc_ds3231_get_hour"] = function (b) { return [`getSensorValue("rtc","h")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
 Blockly.JavaScript["rtc_ds3231_get_minute"] = function (b) { return [`getSensorValue("rtc","m")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
 Blockly.JavaScript["rtc_ds3231_get_second"] = function (b) { return [`getSensorValue("rtc","s")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
-Blockly.JavaScript["onewire_init"]       = function (b) { return ""; };
-Blockly.JavaScript["onewire_reset"]      = function (b) { return ""; };
-Blockly.JavaScript["onewire_write"]      = function (b) { return ""; };
-Blockly.JavaScript["onewire_writebyte"]  = function (b) { return ""; };
-Blockly.JavaScript["onewire_readbyte"]   = function (b) { return [`getSensorValue("ow","byte")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
-Blockly.JavaScript["onewire_scan"]       = function (b) { return [`getSensorValue("ow","scan")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
+Blockly.JavaScript["onewire_init"] = function (b) { return ""; };
+Blockly.JavaScript["onewire_reset"] = function (b) { return ""; };
+Blockly.JavaScript["onewire_write"] = function (b) { return ""; };
+Blockly.JavaScript["onewire_writebyte"] = function (b) { return ""; };
+Blockly.JavaScript["onewire_readbyte"] = function (b) { return [`getSensorValue("ow","byte")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
+Blockly.JavaScript["onewire_scan"] = function (b) { return [`getSensorValue("ow","scan")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
 Blockly.JavaScript["onewire_select_rom"] = function (b) { return ""; };
 
 /* ── Servo / Motores ── */
-Blockly.JavaScript["init_servo"]          = function (b) { return ""; };
-Blockly.JavaScript["move_servo"]          = function (b) { return ""; };
-Blockly.JavaScript["init_dc_motor"]       = function (b) { return ""; };
-Blockly.JavaScript["init2_dc_motor_pwm"]  = function (b) { return ""; };
-Blockly.JavaScript["init3_dc_motor_pwm"]  = function (b) { return ""; };
-Blockly.JavaScript["move_dc_motor1"]         = function (b) { return ""; };
-Blockly.JavaScript["move_dc_motor2"]         = function (b) { return ""; };
-Blockly.JavaScript["move_dc_motor1_on_off"]  = function (b) { return ""; };
-Blockly.JavaScript["move_dc_motor2_on_off"]  = function (b) { return ""; };
-Blockly.JavaScript["move_dc_motor1_pwm"]     = function (b) { return ""; };
-Blockly.JavaScript["move_dc_motor2_pwm"]     = function (b) { return ""; };
-Blockly.JavaScript["move_dc_motor_pwm1"]     = function (b) { return ""; };
-Blockly.JavaScript["move_dc_motor_pwm2"]     = function (b) { return ""; };
-Blockly.JavaScript["set_speed_motorA"]       = function (b) { return ""; };
-Blockly.JavaScript["set_speed_motorB"]       = function (b) { return ""; };
-Blockly.JavaScript["shield_set_motor"]       = function (b) { return ""; };
-Blockly.JavaScript["stepper_init"]   = function (b) { return ""; };
-Blockly.JavaScript["stepper_step"]   = function (b) { return ""; };
-Blockly.JavaScript["stepper_angle"]  = function (b) { return ""; };
-Blockly.JavaScript["stepper_degrees"]= function (b) { return ""; };
-Blockly.JavaScript["pwm_init"]       = function (b) { return ""; };
-Blockly.JavaScript["pwm_freq"]       = function (b) { return ""; };
-Blockly.JavaScript["pwm_duty"]       = function (b) { return ""; };
-Blockly.JavaScript["read_pwm_freq"]  = function (b) { return [`0`, Blockly.JavaScript.ORDER_ATOMIC]; };
-Blockly.JavaScript["read_pwm_duty"]  = function (b) { return [`0`, Blockly.JavaScript.ORDER_ATOMIC]; };
-Blockly.JavaScript["dac_init"]  = function (b) { return ""; };
+Blockly.JavaScript["init_servo"] = function (b) { return ""; };
+Blockly.JavaScript["move_servo"] = function (b) { return ""; };
+Blockly.JavaScript["init_dc_motor"] = function (b) { return ""; };
+Blockly.JavaScript["init2_dc_motor_pwm"] = function (b) { return ""; };
+Blockly.JavaScript["init3_dc_motor_pwm"] = function (b) { return ""; };
+Blockly.JavaScript["move_dc_motor1"] = function (b) { return ""; };
+Blockly.JavaScript["move_dc_motor2"] = function (b) { return ""; };
+Blockly.JavaScript["move_dc_motor1_on_off"] = function (b) { return ""; };
+Blockly.JavaScript["move_dc_motor2_on_off"] = function (b) { return ""; };
+Blockly.JavaScript["move_dc_motor1_pwm"] = function (b) { return ""; };
+Blockly.JavaScript["move_dc_motor2_pwm"] = function (b) { return ""; };
+Blockly.JavaScript["move_dc_motor_pwm1"] = function (b) { return ""; };
+Blockly.JavaScript["move_dc_motor_pwm2"] = function (b) { return ""; };
+Blockly.JavaScript["set_speed_motorA"] = function (b) { return ""; };
+Blockly.JavaScript["set_speed_motorB"] = function (b) { return ""; };
+Blockly.JavaScript["shield_set_motor"] = function (b) { return ""; };
+Blockly.JavaScript["stepper_init"] = function (b) { return ""; };
+Blockly.JavaScript["stepper_step"] = function (b) { return ""; };
+Blockly.JavaScript["stepper_angle"] = function (b) { return ""; };
+Blockly.JavaScript["stepper_degrees"] = function (b) { return ""; };
+Blockly.JavaScript["pwm_init"] = function (b) { return ""; };
+Blockly.JavaScript["pwm_freq"] = function (b) { return ""; };
+Blockly.JavaScript["pwm_duty"] = function (b) { return ""; };
+Blockly.JavaScript["read_pwm_freq"] = function (b) { return [`0`, Blockly.JavaScript.ORDER_ATOMIC]; };
+Blockly.JavaScript["read_pwm_duty"] = function (b) { return [`0`, Blockly.JavaScript.ORDER_ATOMIC]; };
+Blockly.JavaScript["dac_init"] = function (b) { return ""; };
 Blockly.JavaScript["dac_write"] = function (b) { return ""; };
 Blockly.JavaScript["init_semaforo"] = function (b) { return ""; };
-Blockly.JavaScript["set_semaforo"]  = function (b) { return ""; };
-Blockly.JavaScript["rg_init"]       = function (b) { return ""; };
-Blockly.JavaScript["rgb_init"]      = function (b) { return ""; };
-Blockly.JavaScript["set_led_rg"]    = function (b) { return ""; };
-Blockly.JavaScript["set_led_rgb"]   = function (b) { return ""; };
-Blockly.JavaScript["actuador_init"]   = function (b) { return ""; };
+Blockly.JavaScript["set_semaforo"] = function (b) { return ""; };
+Blockly.JavaScript["rg_init"] = function (b) { return ""; };
+Blockly.JavaScript["rgb_init"] = function (b) { return ""; };
+Blockly.JavaScript["set_led_rg"] = function (b) { return ""; };
+Blockly.JavaScript["set_led_rgb"] = function (b) { return ""; };
+Blockly.JavaScript["actuador_init"] = function (b) { return ""; };
 Blockly.JavaScript["actuador_on_off"] = function (b) { return ""; };
 
 /* ── Buzzer / Audio ── */
 Blockly.JavaScript["buzzer_tone"] = function (b) {
   const freq = Blockly.JavaScript.valueToCode(b, "FREQ", Blockly.JavaScript.ORDER_ATOMIC) || "440";
-  const dur  = Blockly.JavaScript.valueToCode(b, "DURATION", Blockly.JavaScript.ORDER_ATOMIC) || "200";
+  const dur = Blockly.JavaScript.valueToCode(b, "DURATION", Blockly.JavaScript.ORDER_ATOMIC) || "200";
   return `simBuzzer(${freq}, ${dur});\n`;
 };
 Blockly.JavaScript["buzzer_stop"] = function (b) { return `simBuzzer(0, 0);\n`; };
 Blockly.JavaScript["buzzer_song"] = function (b) { return ""; };
-Blockly.JavaScript["i2s_init"]   = function (b) { return ""; };
-Blockly.JavaScript["i2s_write"]  = function (b) { return ""; };
-Blockly.JavaScript["inmp441_init"]   = function (b) { return ""; };
-Blockly.JavaScript["inmp441_read"]   = function (b) { return [`0`, Blockly.JavaScript.ORDER_ATOMIC]; };
+Blockly.JavaScript["i2s_init"] = function (b) { return ""; };
+Blockly.JavaScript["i2s_write"] = function (b) { return ""; };
+Blockly.JavaScript["inmp441_init"] = function (b) { return ""; };
+Blockly.JavaScript["inmp441_read"] = function (b) { return [`0`, Blockly.JavaScript.ORDER_ATOMIC]; };
 Blockly.JavaScript["inmp441_volume"] = function (b) { return [`0`, Blockly.JavaScript.ORDER_ATOMIC]; };
-Blockly.JavaScript["dfplayer_init"]     = function (b) { return ""; };
-Blockly.JavaScript["dfplayer_play"]     = function (b) { return ""; };
-Blockly.JavaScript["dfplayer_pause"]    = function (b) { return ""; };
-Blockly.JavaScript["dfplayer_stop"]     = function (b) { return ""; };
-Blockly.JavaScript["dfplayer_next"]     = function (b) { return ""; };
+Blockly.JavaScript["dfplayer_init"] = function (b) { return ""; };
+Blockly.JavaScript["dfplayer_play"] = function (b) { return ""; };
+Blockly.JavaScript["dfplayer_pause"] = function (b) { return ""; };
+Blockly.JavaScript["dfplayer_stop"] = function (b) { return ""; };
+Blockly.JavaScript["dfplayer_next"] = function (b) { return ""; };
 Blockly.JavaScript["dfplayer_previous"] = function (b) { return ""; };
-Blockly.JavaScript["dfplayer_volume"]   = function (b) { return ""; };
+Blockly.JavaScript["dfplayer_volume"] = function (b) { return ""; };
 
 /* ── NeoPixel — stub (sin simulación visual por ahora) ── */
-["neopixel_init","neopixel_init_5x5","neopixel_init_8x8","neopixel_show",
- "neopixel_clear","neopixel_fill","neopixel_pixel","neopixel_pixel_x",
- "neopixel_write","neopixel_blit","neopixel_scroll",
- "neopixel_line","neopixel_rect","neopixel_fill_rect",
- "neopixel_ellipse","neopixel_poly","neopixel_text",
- "neopixel_8x8","neopixel_5x5"].forEach(function(n) {
-  if (!Blockly.JavaScript[n]) Blockly.JavaScript[n] = function() { return ""; };
-});
+["neopixel_init", "neopixel_init_5x5", "neopixel_init_8x8", "neopixel_show",
+  "neopixel_clear", "neopixel_fill", "neopixel_pixel", "neopixel_pixel_x",
+  "neopixel_write", "neopixel_blit", "neopixel_scroll",
+  "neopixel_line", "neopixel_rect", "neopixel_fill_rect",
+  "neopixel_ellipse", "neopixel_poly", "neopixel_text",
+  "neopixel_8x8", "neopixel_5x5"].forEach(function (n) {
+    if (!Blockly.JavaScript[n]) Blockly.JavaScript[n] = function () { return ""; };
+  });
 
 /* ── OLED — stub ── */
-["oled_init","oled_clear","oled_text","oled_text20","oled_pixel","oled_line",
- "oled_rect","oled_fill_rect","oled_circle","oled_poly","oled_contrast",
- "oled_scroll","oled_icon"].forEach(function(n) {
-  if (!Blockly.JavaScript[n]) Blockly.JavaScript[n] = function() { return ""; };
-});
+["oled_init", "oled_clear", "oled_text", "oled_text20", "oled_pixel", "oled_line",
+  "oled_rect", "oled_fill_rect", "oled_circle", "oled_poly", "oled_contrast",
+  "oled_scroll", "oled_icon"].forEach(function (n) {
+    if (!Blockly.JavaScript[n]) Blockly.JavaScript[n] = function () { return ""; };
+  });
 Blockly.JavaScript["oled_icon_value"] = function (b) { return [`0`, Blockly.JavaScript.ORDER_ATOMIC]; };
 
 /* ── TFT — stub ── */
-["tft_init","tft_fill","tft_pixel","tft_line","tft_hline","tft_vline",
- "tft_rect","tft_fill_rect","tft_circle","tft_fill_circle","tft_text",
- "tft_bitmap","tft_icon","tft_rotation","tft_polygon","tft_fill_polygon"].forEach(function(n) {
-  if (!Blockly.JavaScript[n]) Blockly.JavaScript[n] = function() { return ""; };
-});
+["tft_init", "tft_fill", "tft_pixel", "tft_line", "tft_hline", "tft_vline",
+  "tft_rect", "tft_fill_rect", "tft_circle", "tft_fill_circle", "tft_text",
+  "tft_bitmap", "tft_icon", "tft_rotation", "tft_polygon", "tft_fill_polygon"].forEach(function (n) {
+    if (!Blockly.JavaScript[n]) Blockly.JavaScript[n] = function () { return ""; };
+  });
 Blockly.JavaScript["tft_polygon_center"] = function (b) { return [`0`, Blockly.JavaScript.ORDER_ATOMIC]; };
 
 /* ── LCD — stub ── */
-["lcd_init","lcd_i2c_init","lcd_clear","lcd_i2c_clear","lcd_home",
- "lcd_cursor","lcd_i2c_cursor","lcd_i2c_cursor_show","lcd_print",
- "lcd_i2c_print","lcd_print_align","lcd_enable","lcd_i2c_display",
- "lcd_blink","lcd_i2c_blink","lcd_underline","lcd_move_left","lcd_move_right"].forEach(function(n) {
-  if (!Blockly.JavaScript[n]) Blockly.JavaScript[n] = function() { return ""; };
-});
+["lcd_init", "lcd_i2c_init", "lcd_clear", "lcd_i2c_clear", "lcd_home",
+  "lcd_cursor", "lcd_i2c_cursor", "lcd_i2c_cursor_show", "lcd_print",
+  "lcd_i2c_print", "lcd_print_align", "lcd_enable", "lcd_i2c_display",
+  "lcd_blink", "lcd_i2c_blink", "lcd_underline", "lcd_move_left", "lcd_move_right"].forEach(function (n) {
+    if (!Blockly.JavaScript[n]) Blockly.JavaScript[n] = function () { return ""; };
+  });
 
 /* ── Keypad ── */
-Blockly.JavaScript["init_keypad_3x4"]   = function (b) { return ""; };
-Blockly.JavaScript["init_keypad_4x4"]   = function (b) { return ""; };
-Blockly.JavaScript["init_keypad4x4_i2c"]= function (b) { return ""; };
+Blockly.JavaScript["init_keypad_3x4"] = function (b) { return ""; };
+Blockly.JavaScript["init_keypad_4x4"] = function (b) { return ""; };
+Blockly.JavaScript["init_keypad4x4_i2c"] = function (b) { return ""; };
 Blockly.JavaScript["keypad_get_key"] = function (b) {
   return [`getSensorValue("keypad","key")`, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 Blockly.JavaScript["keypad_get_key_i2c"] = Blockly.JavaScript["keypad_get_key"];
 
 /* ── Seg7 / Matrix / TM1637 — stub ── */
-["seg7_init","seg7_clear","seg7_number",
- "matrix8_init","matrix8_clear","matrix8_pixel","matrix8_rect","matrix8_line",
- "matrix8_text","matrix8_scroll_text","matrix8_brightness",
- "tm1637_init","tm1637_clear","tm1637_show","tm1637_number","tm1637_numbers",
- "tm1637_scroll","tm1637_brightness","tm1637_temperature",
- "max_icon"].forEach(function(n) {
-  if (!Blockly.JavaScript[n]) Blockly.JavaScript[n] = function() { return ""; };
-});
+["seg7_init", "seg7_clear", "seg7_number",
+  "matrix8_init", "matrix8_clear", "matrix8_pixel", "matrix8_rect", "matrix8_line",
+  "matrix8_text", "matrix8_scroll_text", "matrix8_brightness",
+  "tm1637_init", "tm1637_clear", "tm1637_show", "tm1637_number", "tm1637_numbers",
+  "tm1637_scroll", "tm1637_brightness", "tm1637_temperature",
+  "max_icon"].forEach(function (n) {
+    if (!Blockly.JavaScript[n]) Blockly.JavaScript[n] = function () { return ""; };
+  });
 
 /* ── Bluetooth / ESPNow ── */
-["ble_init_uart","ble_set_name","ble_on_receive","ble_write",
- "init_espnow_simple","espnow_add_peer","espnow_send_peer"].forEach(function(n) {
-  if (!Blockly.JavaScript[n]) Blockly.JavaScript[n] = function() { return ""; };
-});
-Blockly.JavaScript["ble_read"]    = function (b) { return [`getSensorValue("uart","read")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
+["ble_init_uart", "ble_set_name", "ble_on_receive", "ble_write",
+  "init_espnow_simple", "espnow_add_peer", "espnow_send_peer"].forEach(function (n) {
+    if (!Blockly.JavaScript[n]) Blockly.JavaScript[n] = function () { return ""; };
+  });
+Blockly.JavaScript["ble_read"] = function (b) { return [`getSensorValue("uart","read")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
 Blockly.JavaScript["espnow_recv"] = function (b) { return [`getSensorValue("uart","read")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
-Blockly.JavaScript["ky001_init"]      = function (b) { return ""; };
-Blockly.JavaScript["ky001_convert"]   = function (b) { return ""; };
-Blockly.JavaScript["ky001_scan"]      = function (b) { return [`getSensorValue("ble","scan")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
-Blockly.JavaScript["ky001_read_index"]= function (b) { return [`getSensorValue("ble","rssi")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
+Blockly.JavaScript["ky001_init"] = function (b) { return ""; };
+Blockly.JavaScript["ky001_convert"] = function (b) { return ""; };
+Blockly.JavaScript["ky001_scan"] = function (b) { return [`getSensorValue("ble","scan")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
+Blockly.JavaScript["ky001_read_index"] = function (b) { return [`getSensorValue("ble","rssi")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
 
 /* ── WiFi / Sockets / Portal — stubs ── */
-["wifi_init","wifi_connect","wifi_ap","wifi_ap_config","wifi_disconnect",
- "wifi_define_connect","wifi_call_connect","wifi_start_ap",
- "socket_create","socket_connect","socket_bind","socket_listen",
- "socket_accept","socket_send","socket_sendall","socket_close",
- "portal_init","portal_run","portal_main","portal_http_server",
- "portal_dns_server","portal_set_page","portal_comandos",
- "DNSQuery"].forEach(function(n) {
-  if (!Blockly.JavaScript[n]) Blockly.JavaScript[n] = function() { return ""; };
-});
+["wifi_init", "wifi_connect", "wifi_ap", "wifi_ap_config", "wifi_disconnect",
+  "wifi_define_connect", "wifi_call_connect", "wifi_start_ap",
+  "socket_create", "socket_connect", "socket_bind", "socket_listen",
+  "socket_accept", "socket_send", "socket_sendall", "socket_close",
+  "portal_init", "portal_run", "portal_main", "portal_http_server",
+  "portal_dns_server", "portal_set_page", "portal_comandos",
+  "DNSQuery"].forEach(function (n) {
+    if (!Blockly.JavaScript[n]) Blockly.JavaScript[n] = function () { return ""; };
+  });
 Blockly.JavaScript["wifi_isconnected"] = function (b) { return [`false`, Blockly.JavaScript.ORDER_ATOMIC]; };
-Blockly.JavaScript["wifi_current_ip"]  = function (b) { return [`"0.0.0.0"`, Blockly.JavaScript.ORDER_ATOMIC]; };
-Blockly.JavaScript["wifi_scan"]        = function (b) { return [`[]`, Blockly.JavaScript.ORDER_ATOMIC]; };
-Blockly.JavaScript["socket_receive"]   = function (b) { return [`""`, Blockly.JavaScript.ORDER_ATOMIC]; };
-Blockly.JavaScript["portal_si_tipo"]   = function (b) { return [`false`, Blockly.JavaScript.ORDER_ATOMIC]; };
-Blockly.JavaScript["portal_si_valor"]  = function (b) { return [`false`, Blockly.JavaScript.ORDER_ATOMIC]; };
-Blockly.JavaScript["portal_get_tipo"]  = function (b) { return [`""`, Blockly.JavaScript.ORDER_ATOMIC]; };
+Blockly.JavaScript["wifi_current_ip"] = function (b) { return [`"0.0.0.0"`, Blockly.JavaScript.ORDER_ATOMIC]; };
+Blockly.JavaScript["wifi_scan"] = function (b) { return [`[]`, Blockly.JavaScript.ORDER_ATOMIC]; };
+Blockly.JavaScript["socket_receive"] = function (b) { return [`""`, Blockly.JavaScript.ORDER_ATOMIC]; };
+Blockly.JavaScript["portal_si_tipo"] = function (b) { return [`false`, Blockly.JavaScript.ORDER_ATOMIC]; };
+Blockly.JavaScript["portal_si_valor"] = function (b) { return [`false`, Blockly.JavaScript.ORDER_ATOMIC]; };
+Blockly.JavaScript["portal_get_tipo"] = function (b) { return [`""`, Blockly.JavaScript.ORDER_ATOMIC]; };
 Blockly.JavaScript["portal_get_valor"] = function (b) { return [`""`, Blockly.JavaScript.ORDER_ATOMIC]; };
-Blockly.JavaScript["peer"]   = function (b) { return [`""`, Blockly.JavaScript.ORDER_ATOMIC]; };
+Blockly.JavaScript["peer"] = function (b) { return [`""`, Blockly.JavaScript.ORDER_ATOMIC]; };
 Blockly.JavaScript["points"] = function (b) { return [`""`, Blockly.JavaScript.ORDER_ATOMIC]; };
 
 /* ── Infrarrojo ── */
-Blockly.JavaScript["init_infrarrojo"]  = function (b) { return ""; };
-Blockly.JavaScript["init_ir_ky022"]    = function (b) { return ""; };
+Blockly.JavaScript["init_infrarrojo"] = function (b) { return ""; };
+Blockly.JavaScript["init_ir_ky022"] = function (b) { return ""; };
 Blockly.JavaScript["ir_ky022_callback_code"] = function (b) { return ""; };
-Blockly.JavaScript["ky005_init"]       = function (b) { return ""; };
-Blockly.JavaScript["ky005_send_nec"]   = function (b) { return ""; };
-Blockly.JavaScript["read_infrarrojo"]  = function (b) { return [`getSensorValue("ir","code")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
+Blockly.JavaScript["ky005_init"] = function (b) { return ""; };
+Blockly.JavaScript["ky005_send_nec"] = function (b) { return ""; };
+Blockly.JavaScript["read_infrarrojo"] = function (b) { return [`getSensorValue("ir","code")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
 
 /* ── Sensores de flujo (YF-201) ── */
-Blockly.JavaScript["yf201_init"]         = function (b) { return ""; };
-Blockly.JavaScript["yf201_reset"]        = function (b) { return ""; };
-Blockly.JavaScript["yf201_flow_rate"]    = function (b) { return [`getSensorValue("flow","rate")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
+Blockly.JavaScript["yf201_init"] = function (b) { return ""; };
+Blockly.JavaScript["yf201_reset"] = function (b) { return ""; };
+Blockly.JavaScript["yf201_flow_rate"] = function (b) { return [`getSensorValue("flow","rate")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
 Blockly.JavaScript["yf201_total_liters"] = function (b) { return [`getSensorValue("flow","total")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
 
 /* ── CAN Bus ── */
@@ -1830,66 +1839,82 @@ Blockly.JavaScript["can_init"] = function (b) { return ""; };
 Blockly.JavaScript["can_send"] = function (b) { return ""; };
 
 /* ── GPS ── */
-Blockly.JavaScript["gps_init"]      = function (b) { return ""; };
-Blockly.JavaScript["gps_read"]      = function (b) { return ""; };
-Blockly.JavaScript["gps_update"]    = function (b) { return ""; };
-Blockly.JavaScript["gps_any"]       = function (b) { return [`false`, Blockly.JavaScript.ORDER_ATOMIC]; };
-Blockly.JavaScript["gps_latitude"]  = function (b) { return [`getSensorValue("gps","lat")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
+Blockly.JavaScript["gps_init"] = function (b) { return ""; };
+Blockly.JavaScript["gps_read"] = function (b) { return ""; };
+Blockly.JavaScript["gps_update"] = function (b) { return ""; };
+Blockly.JavaScript["gps_any"] = function (b) { return [`false`, Blockly.JavaScript.ORDER_ATOMIC]; };
+Blockly.JavaScript["gps_latitude"] = function (b) { return [`getSensorValue("gps","lat")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
 Blockly.JavaScript["gps_longitude"] = function (b) { return [`getSensorValue("gps","lng")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
-Blockly.JavaScript["gps_time"]      = function (b) { return [`getSensorValue("gps","time")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
+Blockly.JavaScript["gps_time"] = function (b) { return [`getSensorValue("gps","time")`, Blockly.JavaScript.ORDER_FUNCTION_CALL]; };
 
 /* ── RFID / FPM (fingerprint) ── */
-["rfid_mfrc522_init","rfid_mfrc522_stop_crypto","rfid_mfrc522_auth",
- "rfid_mfrc522_write_block","rfid_mfrc522_read_block_vars",
- "fpm_init","fpm_enroll","fpm_delete","fpm_clear","fpm_led",
- "fpm_verify","fpm_search"].forEach(function(n) {
-  if (!Blockly.JavaScript[n]) Blockly.JavaScript[n] = function() { return ""; };
-});
+["rfid_mfrc522_init", "rfid_mfrc522_stop_crypto", "rfid_mfrc522_auth",
+  "rfid_mfrc522_write_block", "rfid_mfrc522_read_block_vars",
+  "fpm_init", "fpm_enroll", "fpm_delete", "fpm_clear", "fpm_led",
+  "fpm_verify", "fpm_search"].forEach(function (n) {
+    if (!Blockly.JavaScript[n]) Blockly.JavaScript[n] = function () { return ""; };
+  });
 Blockly.JavaScript["rfid_mfrc522_detect"] = function (b) { return [`false`, Blockly.JavaScript.ORDER_ATOMIC]; };
-Blockly.JavaScript["rfid_mfrc522_ok"]     = function (b) { return [`false`, Blockly.JavaScript.ORDER_ATOMIC]; };
-Blockly.JavaScript["rfid_mfrc522_uid"]    = function (b) { return [`""`, Blockly.JavaScript.ORDER_ATOMIC]; };
-Blockly.JavaScript["rfid_data_to_text"]   = function (b) { return [`""`, Blockly.JavaScript.ORDER_ATOMIC]; };
-Blockly.JavaScript["rfid_key"]            = function (b) { return [`""`, Blockly.JavaScript.ORDER_ATOMIC]; };
-Blockly.JavaScript["fpm_count"]           = function (b) { return [`0`, Blockly.JavaScript.ORDER_ATOMIC]; };
-Blockly.JavaScript["fpm_wait_finger"]     = function (b) { return [`false`, Blockly.JavaScript.ORDER_ATOMIC]; };
-Blockly.JavaScript["fpm_status"]          = function (b) { return [`0`, Blockly.JavaScript.ORDER_ATOMIC]; };
-Blockly.JavaScript["fpm_img2tz"]          = function (b) { return [`0`, Blockly.JavaScript.ORDER_ATOMIC]; };
+Blockly.JavaScript["rfid_mfrc522_ok"] = function (b) { return [`false`, Blockly.JavaScript.ORDER_ATOMIC]; };
+Blockly.JavaScript["rfid_mfrc522_uid"] = function (b) { return [`""`, Blockly.JavaScript.ORDER_ATOMIC]; };
+Blockly.JavaScript["rfid_data_to_text"] = function (b) { return [`""`, Blockly.JavaScript.ORDER_ATOMIC]; };
+Blockly.JavaScript["rfid_key"] = function (b) { return [`""`, Blockly.JavaScript.ORDER_ATOMIC]; };
+Blockly.JavaScript["fpm_count"] = function (b) { return [`0`, Blockly.JavaScript.ORDER_ATOMIC]; };
+Blockly.JavaScript["fpm_wait_finger"] = function (b) { return [`false`, Blockly.JavaScript.ORDER_ATOMIC]; };
+Blockly.JavaScript["fpm_status"] = function (b) { return [`0`, Blockly.JavaScript.ORDER_ATOMIC]; };
+Blockly.JavaScript["fpm_img2tz"] = function (b) { return [`0`, Blockly.JavaScript.ORDER_ATOMIC]; };
 
 /* ── SD Card / Archivos ── */
-["sdcard_init","sdcard_write","create_folder","delete_file",
- "file_write","file_close"].forEach(function(n) {
-  if (!Blockly.JavaScript[n]) Blockly.JavaScript[n] = function() { return ""; };
-});
-Blockly.JavaScript["file_open"]   = function (b) { return [`null`, Blockly.JavaScript.ORDER_ATOMIC]; };
-Blockly.JavaScript["file_read"]   = function (b) { return [`""`, Blockly.JavaScript.ORDER_ATOMIC]; };
+["sdcard_init", "sdcard_write", "create_folder", "delete_file",
+  "file_write", "file_close"].forEach(function (n) {
+    if (!Blockly.JavaScript[n]) Blockly.JavaScript[n] = function () { return ""; };
+  });
+Blockly.JavaScript["file_open"] = function (b) { return [`null`, Blockly.JavaScript.ORDER_ATOMIC]; };
+Blockly.JavaScript["file_read"] = function (b) { return [`""`, Blockly.JavaScript.ORDER_ATOMIC]; };
 Blockly.JavaScript["sdcard_read"] = function (b) { return [`""`, Blockly.JavaScript.ORDER_ATOMIC]; };
 Blockly.JavaScript["sdcard_list"] = function (b) { return [`[]`, Blockly.JavaScript.ORDER_ATOMIC]; };
-Blockly.JavaScript["listdir"]     = function (b) { return ""; };
+Blockly.JavaScript["listdir"] = function (b) { return ""; };
 
 /* ── Machine / Sistema ── */
-Blockly.JavaScript["machine_reset"]       = function (b) { return ""; };
-Blockly.JavaScript["machine_freq"]        = function (b) { return ""; };
-Blockly.JavaScript["machine_deepsleep"]   = function (b) { return `sleep(999999999);\n`; };
+Blockly.JavaScript["machine_reset"] = function (b) { return ""; };
+Blockly.JavaScript["machine_freq"] = function (b) { return ""; };
+Blockly.JavaScript["machine_deepsleep"] = function (b) { return `sleep(999999999);\n`; };
 Blockly.JavaScript["machine_reset_cause"] = function (b) { return [`0`, Blockly.JavaScript.ORDER_ATOMIC]; };
-Blockly.JavaScript["machine_unique_id"]   = function (b) { return [`"SIM-0000"`, Blockly.JavaScript.ORDER_ATOMIC]; };
-Blockly.JavaScript["async_sleep_ms"]      = function (b) {
+Blockly.JavaScript["machine_unique_id"] = function (b) { return [`"SIM-0000"`, Blockly.JavaScript.ORDER_ATOMIC]; };
+Blockly.JavaScript["async_sleep_ms"] = function (b) {
   const t = Blockly.JavaScript.valueToCode(b, "TIME", Blockly.JavaScript.ORDER_ATOMIC) || "0";
   return `sleep(${t});\n`;
 };
-Blockly.JavaScript["async_sleep_s"]       = function (b) {
+Blockly.JavaScript["async_sleep_s"] = function (b) {
   const t = Blockly.JavaScript.valueToCode(b, "TIME", Blockly.JavaScript.ORDER_ATOMIC) || "0";
   return `sleep((${t})*1000);\n`;
 };
 Blockly.JavaScript["gc_collect"] = function (b) { return ""; };
-Blockly.JavaScript["wdt_init"]   = function (b) { return ""; };
-Blockly.JavaScript["wdt_feed"]   = function (b) { return ""; };
+Blockly.JavaScript["wdt_init"] = function (b) { return ""; };
+Blockly.JavaScript["wdt_feed"] = function (b) { return ""; };
 
 /* ── import / from / pass (ya existían, por si acaso) ── */
-if (!Blockly.JavaScript["from"])   Blockly.JavaScript["from"]   = function() { return ""; };
-if (!Blockly.JavaScript["import"]) Blockly.JavaScript["import"] = function() { return ""; };
-if (!Blockly.JavaScript["pass"])   Blockly.JavaScript["pass"]   = function() { return ""; };
+if (!Blockly.JavaScript["from"]) Blockly.JavaScript["from"] = function () { return ""; };
+if (!Blockly.JavaScript["import"]) Blockly.JavaScript["import"] = function () { return ""; };
+if (!Blockly.JavaScript["pass"]) Blockly.JavaScript["pass"] = function () { return ""; };
 
 function initInterpreter(code) {
+  console.log(code.split("\n").map((l, i) => `${i + 1}: ${l}`).join("\n"));
+
+  try {
+    interpreter = new Interpreter(code, function (interpreter, globalObject) {
+
+      // TODO tu código...
+
+    });
+  } catch (e) {
+    console.error("Error al analizar el código:");
+    console.error(e);
+    console.log("Código completo:");
+    console.log(code);
+    throw e;
+  }
+
   interpreter = new Interpreter(code, function (interpreter, globalObject) {
     /* ── highlightBlock ── */
     interpreter.setProperty(
@@ -1955,15 +1980,15 @@ function initInterpreter(code) {
         try {
           var ctx = window._simAudioCtx;
           if (!ctx) ctx = window._simAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
-          if (window._simOsc) { try { window._simOsc.stop(); } catch(e) {} }
+          if (window._simOsc) { try { window._simOsc.stop(); } catch (e) { } }
           if (!freq || freq <= 0) return;
           var osc = ctx.createOscillator();
           osc.frequency.value = Number(freq) || 440;
           osc.connect(ctx.destination);
           osc.start();
           window._simOsc = osc;
-          if (dur > 0) setTimeout(function() { try { osc.stop(); } catch(e) {} }, Number(dur));
-        } catch(e) {}
+          if (dur > 0) setTimeout(function () { try { osc.stop(); } catch (e) { } }, Number(dur));
+        } catch (e) { }
       }),
     );
 
@@ -2037,10 +2062,8 @@ function initInterpreter(code) {
       geObj,
       "setBgImage",
       interpreter.createAsyncFunction(function (file, callback) {
-        /* Espera el onload real — el callback solo se llama cuando
-           la imagen ya está dibujada en el canvas y getImageData funciona */
-        GE.setBgImage(_s(file), function () {
-          callback();
+        GE.setBgImage(_s(file), function (ok) {
+          callback(!!ok);   // antes: callback()  ← ignoraba el resultado
         });
       }),
     );
@@ -2177,8 +2200,8 @@ function initInterpreter(code) {
       geObj,
       "loadImage",
       interpreter.createAsyncFunction(function (filename, callback) {
-        GE.loadImage(_s(filename), function () {
-          callback();
+        GE.loadImage(_s(filename), function (ok) {
+          callback(!!ok);
         });
       }),
     );
@@ -2594,13 +2617,17 @@ function runStep() {
       runner = setTimeout(runStep, 80);
     } else {
       interpreter = null;
+      window._simFinished = true;
       Code.workspace.highlightBlock(null);
       Blockly.selected && Blockly.selected.unselect();
+      _notifySimState();
     }
   } catch (e) {
     console.error(e);
     interpreter = null;
+    window._simFinished = true;
     Code.workspace.highlightBlock(null);
+    _notifySimState();
   }
 }
 
@@ -2630,8 +2657,10 @@ function _gameLoop() {
     if (!alive) {
       /* Programa terminó */
       interpreter = null;
+      window._simFinished = true;
       _rafId = null;
       console.log("[Game] programa terminado");
+      _notifySimState();
       return;
     }
     /* Pedir siguiente frame */
@@ -2639,7 +2668,9 @@ function _gameLoop() {
   } catch (e) {
     console.error("[Game] error:", e);
     interpreter = null;
+    window._simFinished = true;
     _rafId = null;
+    _notifySimState();
   }
 }
 
@@ -2677,6 +2708,10 @@ function runBlocklyAnimation() {
     }
 
     initInterpreter(code);
+    _lastBlockId = null;
+    window._simStarted = true;
+    window._simFinished = false;
+    _notifySimState();
 
     if (gameMode) {
       setTimeout(function () {
@@ -2688,87 +2723,276 @@ function runBlocklyAnimation() {
   }, 0);
 }
 
-Blockly.JavaScript['sprite_select'] = function(block) {
+/* ══════════════════════════════════════════════════════════════
+   STEP / CONTINUE — control manual del SIMULADOR (no del ESP32)
+   ─────────────────────────────────────────────────────────────
+   btnRun/btnStop (existentes) siguen controlando ESP32 + simulador
+   en modo automático, sin tocar nada de eso.
+
+   stepBlockly()     → avanza UN bloque de Blockly completo (no una
+                        instrucción suelta del intérprete): corre hasta
+                        que el highlight pasa al siguiente bloque, o
+                        hasta que el programa termina. Funciona igual
+                        para programas secuenciales (resolver un
+                        laberinto) y para loops de juego con
+                        gameFrameEnd().
+   continueBlockly() → reanuda la ejecución automática desde donde
+                        quedó el intérprete (o arranca uno nuevo si
+                        no hay ninguno corriendo)
+══════════════════════════════════════════════════════════════ */
+var _simPaused = false; /* true tras un Step manual: nadie avanza solo */
+
+function _ensureInterpreterReady() {
+  if (interpreter) return true;
+  if (!Code || !Code.workspace) return false;
+
+  Blockly.JavaScript.init(Code.workspace);
+  var code = Blockly.JavaScript.workspaceToCode(Code.workspace);
+  if (!code || !code.trim()) return false;
+
+  gameMode = _detectGameMode();
+  if (gameMode && typeof showView === "function") {
+    showView("viewGame");
+    if (typeof GameEngine !== "undefined" && GameEngine.drawBg) {
+      GameEngine.drawBg();
+    }
+  }
+  _lastBlockId = null;
+  initInterpreter(code);
+  window._simStarted = true;
+  window._simFinished = false;
+
+  /* "Priming": avanzar hasta el primer highlightBlock() sin contar eso
+     como un paso del usuario. Así el primer click de "Siguiente paso"
+     ya ejecuta el primer bloque real (en vez de solo resaltarlo). */
+  if (interpreter) {
+    var primed = 0;
+    try {
+      while (interpreter && _lastBlockId === null && primed < 5000) {
+        if (!interpreter.step()) { interpreter = null; window._simFinished = true; break; }
+        primed++;
+      }
+    } catch (e) {
+      console.error("[Game] error preparando intérprete:", e);
+      interpreter = null;
+      window._simFinished = true;
+    }
+  }
+
+  return !!interpreter;
+}
+
+/* Tope absoluto de seguridad: si un solo bloque tarda demasiado en
+   terminar (p.ej. un bucle interno muy largo), esto evita que el
+   navegador se quede trabado para siempre. */
+var _STEP_HARD_CAP = 300000;
+
+function stepBlockly() {
+  /* Cortar cualquier loop automático en curso — Step toma el control manual */
+  if (runner) { clearTimeout(runner); runner = null; }
+  if (_rafId) { cancelAnimationFrame(_rafId); _rafId = null; }
+  _simPaused = true;
+
+  if (!_ensureInterpreterReady()) return;
+
+  /* "Un paso" = UN bloque completo de Blockly (highlight a highlight),
+     sin importar si el programa es secuencial (laberinto) o un loop
+     de juego con gameFrameEnd(). Corremos en slices (igual que
+     _gameLoop) para que un bloque "pesado" nunca bloquee el hilo. */
+  var startBlockId = _lastBlockId;
+  var totalSteps = 0;
+
+  function _stepSlice() {
+    if (!interpreter) return;
+    var alive = true, steps = 0;
+    var t0 = performance.now();
+    try {
+      while (
+        alive &&
+        _lastBlockId === startBlockId &&
+        steps < _STEPS_PER_SLICE &&
+        performance.now() - t0 < _SLICE_MS
+      ) {
+        alive = interpreter.step();
+        steps++;
+        totalSteps++;
+      }
+    } catch (e) {
+      console.error("[Game] error en stepBlockly:", e);
+      interpreter = null;
+      window._simFinished = true;
+      Code.workspace.highlightBlock(null);
+      _notifySimState();
+      return;
+    }
+    if (!alive) {
+      /* Programa terminado: era el último bloque */
+      interpreter = null;
+      window._simFinished = true;
+      console.log("[Game] programa terminado (step)");
+      Code.workspace.highlightBlock(null);
+      Blockly.selected && Blockly.selected.unselect();
+      _notifySimState();
+      return;
+    }
+    if (_lastBlockId !== startBlockId) {
+      _notifySimState();
+      return; /* listo: avanzamos un bloque completo y ya resaltamos el siguiente */
+    }
+    if (totalSteps >= _STEP_HARD_CAP) {
+      console.warn("[Game] stepBlockly: se alcanzó el límite de pasos en un solo bloque (¿bucle muy largo dentro del bloque?)");
+      _notifySimState();
+      return;
+    }
+    /* El bloque actual aún no termina: seguir en el próximo tick sin bloquear */
+    setTimeout(_stepSlice, 0);
+  }
+  _stepSlice();
+  _notifySimState();
+}
+
+function continueBlockly() {
+  _simPaused = false;
+
+  if (!interpreter) {
+    /* No hay nada corriendo: arrancar desde el inicio */
+    runBlocklyAnimation();
+    return;
+  }
+  /* Reanudar desde el estado actual del intérprete */
+  if (gameMode) {
+    if (_rafId) cancelAnimationFrame(_rafId);
+    _rafId = requestAnimationFrame(_gameLoop);
+  } else {
+    if (runner) clearTimeout(runner);
+    runStep();
+  }
+  _notifySimState();
+}
+
+/* ══════════════════════════════════════════════════════════════
+   RESET — vuelve el simulador a "sin iniciar", limpia el canvas
+   y quita cualquier highlight. No toca el ESP32 para nada.
+══════════════════════════════════════════════════════════════ */
+function resetSimulator() {
+  if (runner) { clearTimeout(runner); runner = null; }
+  if (_rafId) { cancelAnimationFrame(_rafId); _rafId = null; }
+  interpreter = null;
+  _lastBlockId = null;
+  _simPaused = false;
+  window._simStarted = false;
+  window._simFinished = false;
+
+  if (Code && Code.workspace) {
+    Code.workspace.highlightBlock(null);
+    Blockly.selected && Blockly.selected.unselect();
+  }
+  if (typeof stopGame === "function") stopGame();
+  if (typeof GameEngine !== "undefined" && GameEngine.drawBg) {
+    GameEngine.drawBg();
+  }
+  _notifySimState();
+}
+
+/* Notifica a game-ui.js (u otros listeners) que el estado del
+   simulador cambió, para que pueda actualizar los botones
+   (deshabilitar Siguiente paso al terminar, habilitar Continuar
+   tras el primer paso, cambiar Ejecutar↔Reiniciar, etc). */
+function _notifySimState() {
+  window.dispatchEvent(new CustomEvent("simstatechange", {
+    detail: {
+      started: !!window._simStarted,
+      finished: !!window._simFinished,
+      running: !!interpreter
+    }
+  }));
+}
+
+window.stepBlockly = stepBlockly;
+window.continueBlockly = continueBlockly;
+window.resetSimulator = resetSimulator;
+
+Blockly.JavaScript['sprite_select'] = function (block) {
   var name = Blockly.JavaScript.valueToCode(block, 'NAME',
-               Blockly.JavaScript.ORDER_ATOMIC) || "''";
+    Blockly.JavaScript.ORDER_ATOMIC) || "''";
   return 'GameEngine.selectSprite(' + name + ');';
 };
 
-Blockly.JavaScript['sprite_create_named'] = function(block) {
-  var name  = Blockly.JavaScript.valueToCode(block, 'NAME',  Blockly.JavaScript.ORDER_ATOMIC) || "''";
-  var x     = Blockly.JavaScript.valueToCode(block, 'X',     Blockly.JavaScript.ORDER_ATOMIC) || '0';
-  var y     = Blockly.JavaScript.valueToCode(block, 'Y',     Blockly.JavaScript.ORDER_ATOMIC) || '0';
-  var w     = Blockly.JavaScript.valueToCode(block, 'W',     Blockly.JavaScript.ORDER_ATOMIC) || '48';
-  var h     = Blockly.JavaScript.valueToCode(block, 'H',     Blockly.JavaScript.ORDER_ATOMIC) || '48';
-  var img   = Blockly.JavaScript.valueToCode(block, 'IMG',   Blockly.JavaScript.ORDER_ATOMIC) || "'#00ff88'";
+Blockly.JavaScript['sprite_create_named'] = function (block) {
+  var name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC) || "''";
+  var x = Blockly.JavaScript.valueToCode(block, 'X', Blockly.JavaScript.ORDER_ATOMIC) || '0';
+  var y = Blockly.JavaScript.valueToCode(block, 'Y', Blockly.JavaScript.ORDER_ATOMIC) || '0';
+  var w = Blockly.JavaScript.valueToCode(block, 'W', Blockly.JavaScript.ORDER_ATOMIC) || '48';
+  var h = Blockly.JavaScript.valueToCode(block, 'H', Blockly.JavaScript.ORDER_ATOMIC) || '48';
+  var img = Blockly.JavaScript.valueToCode(block, 'IMG', Blockly.JavaScript.ORDER_ATOMIC) || "'#00ff88'";
   return 'GameEngine.createSprite(' + x + ',' + y + ',' + w + ',' + h + ',' + img + ',' + name + ');';
 };
 
-Blockly.JavaScript['sprite_draw_named'] = function(block) {
+Blockly.JavaScript['sprite_draw_named'] = function (block) {
   var name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC) || "''";
   return 'GameEngine.drawSprite(' + name + ');';
 };
 
-Blockly.JavaScript['sprite_move_named'] = function(block) {
+Blockly.JavaScript['sprite_move_named'] = function (block) {
   var name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC) || "''";
-  var dx   = Blockly.JavaScript.valueToCode(block, 'DX',   Blockly.JavaScript.ORDER_ATOMIC) || '0';
-  var dy   = Blockly.JavaScript.valueToCode(block, 'DY',   Blockly.JavaScript.ORDER_ATOMIC) || '0';
+  var dx = Blockly.JavaScript.valueToCode(block, 'DX', Blockly.JavaScript.ORDER_ATOMIC) || '0';
+  var dy = Blockly.JavaScript.valueToCode(block, 'DY', Blockly.JavaScript.ORDER_ATOMIC) || '0';
   return 'GameEngine.moveSprite(' + dx + ',' + dy + ',' + name + ');';
 };
 
-Blockly.JavaScript['sprite_set_pos_named'] = function(block) {
+Blockly.JavaScript['sprite_set_pos_named'] = function (block) {
   var name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC) || "''";
-  var x    = Blockly.JavaScript.valueToCode(block, 'X',    Blockly.JavaScript.ORDER_ATOMIC) || '0';
-  var y    = Blockly.JavaScript.valueToCode(block, 'Y',    Blockly.JavaScript.ORDER_ATOMIC) || '0';
+  var x = Blockly.JavaScript.valueToCode(block, 'X', Blockly.JavaScript.ORDER_ATOMIC) || '0';
+  var y = Blockly.JavaScript.valueToCode(block, 'Y', Blockly.JavaScript.ORDER_ATOMIC) || '0';
   return 'GameEngine.setPos(' + x + ',' + y + ',' + name + ');';
 };
 
-Blockly.JavaScript['sprite_get_x_named'] = function(block) {
+Blockly.JavaScript['sprite_get_x_named'] = function (block) {
   var name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC) || "''";
   return ['GameEngine.getX(' + name + ')', Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-Blockly.JavaScript['sprite_get_y_named'] = function(block) {
+Blockly.JavaScript['sprite_get_y_named'] = function (block) {
   var name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC) || "''";
   return ['GameEngine.getY(' + name + ')', Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-Blockly.JavaScript['sprite_move_steps_named'] = function(block) {
-  var name  = Blockly.JavaScript.valueToCode(block, 'NAME',  Blockly.JavaScript.ORDER_ATOMIC) || "''";
+Blockly.JavaScript['sprite_move_steps_named'] = function (block) {
+  var name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC) || "''";
   var steps = Blockly.JavaScript.valueToCode(block, 'STEPS', Blockly.JavaScript.ORDER_ATOMIC) || '0';
   return 'GameEngine.moveSteps(' + steps + ',' + name + ');';
 };
 
-Blockly.JavaScript['sprite_set_angle_named'] = function(block) {
+Blockly.JavaScript['sprite_set_angle_named'] = function (block) {
   var name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC) || "''";
-  var deg  = Blockly.JavaScript.valueToCode(block, 'DEG',  Blockly.JavaScript.ORDER_ATOMIC) || '0';
+  var deg = Blockly.JavaScript.valueToCode(block, 'DEG', Blockly.JavaScript.ORDER_ATOMIC) || '0';
   return 'GameEngine.setAngle(' + deg + ',' + name + ');';
 };
 
-Blockly.JavaScript['sprite_get_angle_named'] = function(block) {
+Blockly.JavaScript['sprite_get_angle_named'] = function (block) {
   var name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC) || "''";
   return ['GameEngine.getAngle(' + name + ')', Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-Blockly.JavaScript['sprite_set_scale_named'] = function(block) {
-  var name  = Blockly.JavaScript.valueToCode(block, 'NAME',  Blockly.JavaScript.ORDER_ATOMIC) || "''";
+Blockly.JavaScript['sprite_set_scale_named'] = function (block) {
+  var name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC) || "''";
   var scale = Blockly.JavaScript.valueToCode(block, 'SCALE', Blockly.JavaScript.ORDER_ATOMIC) || '1';
   return 'GameEngine.setScale(' + scale + ',' + name + ');';
 };
 
-Blockly.JavaScript['touching_sprite'] = function(block) {
+Blockly.JavaScript['touching_sprite'] = function (block) {
   var a = Blockly.JavaScript.valueToCode(block, 'A', Blockly.JavaScript.ORDER_ATOMIC) || "''";
   var b = Blockly.JavaScript.valueToCode(block, 'B', Blockly.JavaScript.ORDER_ATOMIC) || "''";
   return ['GameEngine.touchingSprite(' + a + ',' + b + ')', Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-Blockly.JavaScript['distance_between'] = function(block) {
+Blockly.JavaScript['distance_between'] = function (block) {
   var a = Blockly.JavaScript.valueToCode(block, 'A', Blockly.JavaScript.ORDER_ATOMIC) || "''";
   var b = Blockly.JavaScript.valueToCode(block, 'B', Blockly.JavaScript.ORDER_ATOMIC) || "''";
   return ['GameEngine.distanceBetween(' + a + ',' + b + ')', Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-Blockly.JavaScript['touching_edge_named'] = function(block) {
+Blockly.JavaScript['touching_edge_named'] = function (block) {
   var name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC) || "''";
   return ['GameEngine.touchingEdge(' + name + ')', Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };

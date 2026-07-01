@@ -206,7 +206,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_input",
         name: "FILENAME",
-        text: "main.py",
+        text: "test.py",
       },
     ],
     previousStatement: null,
