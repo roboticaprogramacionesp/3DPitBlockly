@@ -93,10 +93,38 @@ function blurBlockly() {
 
 function updateCodeFromBlockly() {
   const code = Blockly.Python.workspaceToCode(Code.workspace);
-  editor.setValue(code);
+  // [TABS] Refrescar SOLO la pestaña Bloques. Si la activa es editable,
+  // el editor conserva su contenido.
+  if (typeof Tabs !== "undefined" && Tabs.refreshBlocksTab) {
+    Tabs.refreshBlocksTab(code);
+  } else {
+    editor.setValue(code);
+  }
 }
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// ─────────────────────────────────────────────────────────────
+// SerialMonitor: invocación segura.
+// Un error interno de SerialMonitor (ej. un elemento del DOM que
+// aún no existe → "Cannot read properties of null") NO debe
+// romper el flujo principal. Esto es especialmente crítico en
+// readSerialLoop(): si SerialMonitor.feed() lanza una excepción,
+// el catch de readSerialLoop lo interpreta como "Conexión perdida"
+// y desconecta el dispositivo aunque el puerto siga funcionando bien.
+// _smCall() aísla cualquier error de SerialMonitor para que nunca
+// se propague hacia sendCodeToDevice, btnUploadCode o readSerialLoop.
+// ─────────────────────────────────────────────────────────────
+function _smCall(method, ...args) {
+  if (typeof SerialMonitor === "undefined") return;
+  const fn = SerialMonitor[method];
+  if (typeof fn !== "function") return;
+  try {
+    fn.apply(SerialMonitor, args);
+  } catch (err) {
+    console.warn(`[SerialMonitor] Error en "${method}()":`, err);
+  }
+}
 
 // ─────────────────────────────────────────────────────────────
 // DETECCIÓN DE VELOCIDAD DEL DISPOSITIVO (ESP32 Wroom vs C3/C6/S2/S3)
@@ -424,8 +452,12 @@ document.getElementById("btnNew").addEventListener("click", async function () {
   Blockly.Events.disable();
   try {
     Code.workspace?.clear();
-    if (typeof editor !== "undefined") editor.setValue("");
-    else {
+    // [TABS] Limpiar todas las pestañas (dejar Bloques + main.py vacío)
+    if (typeof Tabs !== "undefined" && Tabs.resetAll) {
+      Tabs.resetAll();
+    } else if (typeof editor !== "undefined") {
+      editor.setValue("");
+    } else {
       const a = document.getElementById("codeArea");
       if (a) a.value = "";
     }
@@ -773,7 +805,10 @@ document.getElementById("btnSavePy").addEventListener("click", async (e) => {
   e.preventDefault();
   const fileName =
     document.getElementById("fileNameInput").value.trim() || "test.py";
-  const code = editor.getValue();
+  // [TABS] Usar código de la pestaña activa (puede ser Bloques o editable)
+  const code = (typeof Tabs !== "undefined" && Tabs.getActiveCode)
+    ? Tabs.getActiveCode()
+    : editor.getValue();
   _saveLog(`btnSavePy: fileName="${fileName}" code.length=${code.length}`);
   if (window.pywebview?.api?.save_py) {
     const result = await window.pywebview.api.save_py(code, fileName);
@@ -809,7 +844,20 @@ document.getElementById("loadPy").addEventListener("change", async function (eve
       return;
     }
 
-    editor.setValue(content);
+    // [TABS] Si la pestaña activa es Bloques, crear nueva con el nombre del archivo
+    if (typeof Tabs !== "undefined" && Tabs.getActiveTab) {
+      const t = Tabs.getActiveTab();
+      if (t && t.kind === "blocks") {
+        Tabs.addTab(file.name); // crea pestaña y la activa
+      }
+      const cur = Tabs.getActiveTab();
+      if (cur && cur.kind === "editable") {
+        editor.setValue(content);
+        Tabs.persist && Tabs.persist();
+      }
+    } else {
+      editor.setValue(content);
+    }
     requestAnimationFrame(() => editor.refresh());
     _loadLog(`✅ Editor cargado: ${content.split("\n").length} líneas, ${content.length} chars`);
 
@@ -1373,7 +1421,7 @@ function connectWifiSerial(host, password) {
         // ── Pipeline normal (igual que readSerialLoop por USB) ──
         if (window._wifiDebug) console.log("📥 WIFI RX:", JSON.stringify(chunk));
         term.write(chunk);
-        if (typeof SerialMonitor !== "undefined") SerialMonitor.feed(chunk);
+        _smCall("feed", chunk);
         if (typeof window._rawReplHook === "function") window._rawReplHook(chunk);
         if (waitingResponse) serialBuffer += chunk;
       };
@@ -1426,7 +1474,7 @@ async function readSerialLoop() {
         term.write(chunk);
 
         // Alimentar monitor serial
-        if (typeof SerialMonitor !== "undefined") SerialMonitor.feed(chunk);
+        _smCall("feed", chunk);
 
         // Hook para raw REPL (buffer local aislado)
         if (typeof window._rawReplHook === "function")
@@ -1577,12 +1625,37 @@ function _setConnectingBadge() {
 // GET CODE (Blockly → Python, o editor)
 // ─────────────────────────────────────────────────────────────
 function getCode() {
-  if (typeof Blockly !== "undefined" && Code?.workspace) {
+  // [TABS] Detectar vista activa para decidir qué código devolver.
+  const _cv = (typeof document !== "undefined")
+    ? document.querySelector(".view.active")?.id : null;
+
+  // En vista Bloques → siempre Blockly (comportamiento original intacto)
+  if (_cv === "viewBlocks") {
+    if (typeof Blockly !== "undefined" && Code?.workspace)
+      return Blockly.Python.workspaceToCode(Code.workspace);
+    if (typeof editor !== "undefined" && editor.getValue)
+      return editor.getValue();
+    return "";
+  }
+
+  // En vista Código → delegar al sistema de pestañas
+  if (_cv === "viewCode" && typeof Tabs !== "undefined" && Tabs.getActiveTab) {
+    const t = Tabs.getActiveTab();
+    if (t) {
+      // Pestaña Bloques: usar SIEMPRE Blockly (ignora ediciones del editor)
+      if (t.kind === "blocks")
+        return Blockly.Python.workspaceToCode(Code.workspace);
+      // Pestaña editable: contenido del editor
+      if (typeof editor !== "undefined" && editor.getValue)
+        return editor.getValue();
+    }
+  }
+
+  // Fallback: comportamiento original (Blockly primero, luego editor)
+  if (typeof Blockly !== "undefined" && Code?.workspace)
     return Blockly.Python.workspaceToCode(Code.workspace);
-  }
-  if (typeof editor !== "undefined" && editor.getValue) {
+  if (typeof editor !== "undefined" && editor.getValue)
     return editor.getValue();
-  }
   return "";
 }
 
@@ -1706,8 +1779,7 @@ async function sendViaRawRepl(codeStr, chunkSz = 256) {
 async function sendCodeToDevice() {
   _stopRequested = false;  // reset abort flag
   if (!isConnected || !serialWriter) {
-    if (typeof SerialMonitor !== "undefined")
-      SerialMonitor.warn("Sin conexión — conecta el dispositivo primero");
+    _smCall("warn", "Sin conexión — conecta el dispositivo primero");
     return false;
   }
 
@@ -1734,7 +1806,7 @@ async function sendCodeToDevice() {
       "\x1b[36m───────────────────────────────────────────────\x1b[0m\r\n",
     );
     */
-    if (typeof SerialMonitor !== "undefined") SerialMonitor.notifySending(code);
+    _smCall("notifySending", code);
 
     const bytes = encoder.encode(code);
     const isWifi = serialWriter === wifiSocket;
@@ -1842,7 +1914,7 @@ async function sendCodeToDevice() {
   } finally {
     window._rawReplHook = null;
     isSendingCode = false;
-    if (typeof SerialMonitor !== "undefined") SerialMonitor.notifyDone();
+    _smCall("notifyDone");
     term.focus();
   }
 }
@@ -1866,18 +1938,37 @@ if (_btnRun) {
 // ─────────────────────────────────────────────────────────────
 // BOTÓN: SUBIR ARCHIVO
 // ─────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+// [TABS] Sincronizar fileNameInput con el nombre de la pestaña activa
+// ─────────────────────────────────────────────────────────────
+// Si la pestaña activa es editable, su nombre YA es el nombre de
+// archivo válido (se valida al crearla/renombrarla), así que lo
+// reflejamos en fileNameInput automáticamente y evitamos que el
+// usuario tenga que escribirlo dos veces.
+// Si la pestaña activa es "Bloques" (no tiene nombre de archivo
+// propio), dejamos el valor actual de fileNameInput intacto para
+// que el usuario elija con qué nombre guardar/subir ese código.
+window.addEventListener("codeTabsChanged", (e) => {
+  const tab = e.detail && e.detail.tab;
+  const fileNameInput = document.getElementById("fileNameInput");
+  if (!fileNameInput || !tab) return;
+  if (tab.kind === "editable" && fileNameInput.value !== tab.name) {
+    fileNameInput.value = tab.name;
+  }
+});
+
 document.getElementById("btnUploadCode").addEventListener("click", async () => {
   if (!isConnected || !serialWriter) {
-    if (typeof SerialMonitor !== "undefined")
-      SerialMonitor.warn("Sin conexión — conecta el dispositivo primero");
+    _smCall("warn", "Sin conexión — conecta el dispositivo primero");
     return;
   }
 
-  // Obtener código del editor
-  const codeStr =
-    typeof editor !== "undefined" && editor.getDoc
-      ? editor.getDoc().getValue()
-      : document.getElementById("codeEditor").value;
+  // [TABS] Obtener código de la pestaña activa (puede ser Bloques o editable)
+  const codeStr = (typeof Tabs !== "undefined" && Tabs.getActiveCode)
+    ? Tabs.getActiveCode()
+    : (typeof editor !== "undefined" && editor.getDoc
+        ? editor.getDoc().getValue()
+        : document.getElementById("codeEditor").value);
 
   // Nombre del archivo
   const fileNameInput = document.getElementById("fileNameInput");
@@ -1903,8 +1994,7 @@ document.getElementById("btnUploadCode").addEventListener("click", async () => {
 
   try {
     isSendingCode = true;
-    if (typeof SerialMonitor !== "undefined")
-      SerialMonitor.notifySending(codeStr);
+    _smCall("notifySending", codeStr);
 
     // Script que escribe el archivo en MicroPython
     const writeScript = [
@@ -1986,7 +2076,7 @@ document.getElementById("btnUploadCode").addEventListener("click", async () => {
     console.error(err);
   } finally {
     isSendingCode = false;
-    if (typeof SerialMonitor !== "undefined") SerialMonitor.notifyDone();
+    _smCall("notifyDone");
   }
 });
 
@@ -2003,7 +2093,7 @@ async function stopExecution() {
     _stopRequested = true;
     window._rawReplHook = null;
     isSendingCode = false;
-    if (typeof SerialMonitor !== "undefined") SerialMonitor.notifyDone();
+    _smCall("notifyDone");
 
     // Ctrl+C doble sin esperas largas para respuesta inmediata
     await sendSerial("\x03");
@@ -2225,7 +2315,20 @@ const Files = {
         .replace(/>>>/g, "")
         .trim();
 
-      editor.setValue(content);
+      // [TABS] Si la pestaña activa es Bloques, crear nueva con el nombre
+      if (typeof Tabs !== "undefined" && Tabs.getActiveTab) {
+        const t = Tabs.getActiveTab();
+        if (t && t.kind === "blocks") {
+          Tabs.addTab(fileName);
+        }
+        const cur = Tabs.getActiveTab();
+        if (cur && cur.kind === "editable") {
+          editor.setValue(content);
+          Tabs.persist && Tabs.persist();
+        }
+      } else {
+        editor.setValue(content);
+      }
       Files.currentFile = fileName;
       const input = document.getElementById("fileNameInput");
       if (input) input.value = fileName;

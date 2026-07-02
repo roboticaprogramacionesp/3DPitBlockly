@@ -199,7 +199,7 @@ Blockly.JavaScript["math_arithmetic"] = function (block) {
     const code =
       "((" +
       B +
-      ")==0 ? (function(){ throw new Error('division by zero'); })() : (" +
+      ")==0 ? (function(){ throw new Error('ERROR_DIVISION: división por cero'); })() : (" +
       A +
       "/" +
       B +
@@ -284,6 +284,35 @@ Blockly.JavaScript["controls_try_except"] = function (block) {
 
 Blockly.JavaScript["exceptions_continue"] = function (block) {
   const id = block.id;
+
+  /* "continue;" fuera de un for/while/repeat es un SyntaxError en JS.
+     Si eso pasa, el intérprete no puede compilar NADA del programa
+     (no solo este bloque), así que hay que verificar que exista un
+     bucle contenedor antes de emitirlo. */
+  const LOOP_TYPES = [
+    "controls_repeat_ext",
+    "controls_repeat",
+    "controls_whileUntil",
+    "controls_for",
+    "controls_forEach",
+  ];
+
+  let ancestor = block.getSurroundParent();
+  let insideLoop = false;
+  while (ancestor) {
+    if (LOOP_TYPES.indexOf(ancestor.type) !== -1) {
+      insideLoop = true;
+      break;
+    }
+    ancestor = ancestor.getSurroundParent();
+  }
+
+  if (!insideLoop) {
+    console.warn(
+      '[Blockly] El bloque "continuar" (id ' + id + ') está fuera de un bucle; se ignora para no romper la compilación.',
+    );
+    return "highlightBlock('" + id + "');\n";
+  }
 
   const code = "highlightBlock('" + id + "');\n" + "continue;\n";
 
@@ -1071,7 +1100,7 @@ Blockly.JavaScript["game_set_bg_image"] = function (block) {
     Blockly.JavaScript.valueToCode(block, "FILE", Blockly.JavaScript.ORDER_ATOMIC) || "'road.png'";
   return (
     "if (!GameEngine.setBgImage(" + file + ")) {\n" +
-    "  throw new Error('No se pudo cargar la imagen: ' + " + file + ");\n" +
+    "  throw new Error('ERROR_IMAGEN: no se pudo cargar la imagen: ' + " + file + ");\n" +
     "}\n"
   );
 };
@@ -1144,7 +1173,7 @@ Blockly.JavaScript["sprite_load_image"] = function (block) {
     ) || "'sprite.png'";
   return (
     "if (!GameEngine.loadImage(" + file + ")) {\n" +
-    "  throw new Error('No se pudo cargar la imagen: ' + " + file + ");\n" +
+    "  throw new Error('ERROR_IMAGEN: no se pudo cargar la imagen: ' + " + file + ");\n" +
     "}\n"
   );
 };
@@ -1899,22 +1928,6 @@ if (!Blockly.JavaScript["import"]) Blockly.JavaScript["import"] = function () { 
 if (!Blockly.JavaScript["pass"]) Blockly.JavaScript["pass"] = function () { return ""; };
 
 function initInterpreter(code) {
-  console.log(code.split("\n").map((l, i) => `${i + 1}: ${l}`).join("\n"));
-
-  try {
-    interpreter = new Interpreter(code, function (interpreter, globalObject) {
-
-      // TODO tu código...
-
-    });
-  } catch (e) {
-    console.error("Error al analizar el código:");
-    console.error(e);
-    console.log("Código completo:");
-    console.log(code);
-    throw e;
-  }
-
   interpreter = new Interpreter(code, function (interpreter, globalObject) {
     /* ── highlightBlock ── */
     interpreter.setProperty(

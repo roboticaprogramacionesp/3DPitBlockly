@@ -61,15 +61,52 @@ window.GameEngine = (function () {
   /* ── Caché de imágenes: { 'car.png': Image } ── */
   var _imageCache = {};
 
-  /* ── Carga una imagen y llama callback cuando esté lista ── */
+  /* ── Caché de fallos: evita volver a golpear al servidor con la
+       misma imagen rota en cada frame/iteración de un loop ── */
+  var _failedImages = {};
+
+  /* ── Tiempo máximo de espera por una imagen (ms). Si la red se
+       cuelga y nunca llega onload/onerror, esto evita que el
+       intérprete quede esperando para siempre (programa "trabado"). ── */
+  var _IMAGE_LOAD_TIMEOUT = 8000;
+
+  /* ── Carga una imagen y llama callback cuando esté lista.
+       callback(img)  → éxito
+       callback(null) → fallo (404, red caída, o timeout) ── */
   function _loadImage(filename, callback) {
     if (_imageCache[filename]) {
       callback(_imageCache[filename]);
       return;
     }
+    if (_failedImages[filename]) {
+      /* Ya sabemos que esta imagen no carga: no reintentar */
+      callback(null);
+      return;
+    }
+
     var img = new Image();
-    img.onload  = function () { _imageCache[filename] = img; callback(img); };
+    var done = false;
+
+    var timer = setTimeout(function () {
+      if (done) return;
+      done = true;
+      _failedImages[filename] = true;
+      console.warn('[GameEngine] Timeout cargando:', filename);
+      callback(null);
+    }, _IMAGE_LOAD_TIMEOUT);
+
+    img.onload = function () {
+      if (done) return;
+      done = true;
+      clearTimeout(timer);
+      _imageCache[filename] = img;
+      callback(img);
+    };
     img.onerror = function () {
+      if (done) return;
+      done = true;
+      clearTimeout(timer);
+      _failedImages[filename] = true;
       console.warn('[GameEngine] No se pudo cargar:', filename);
       callback(null);
     };
