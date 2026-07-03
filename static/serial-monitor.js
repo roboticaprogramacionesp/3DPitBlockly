@@ -673,7 +673,7 @@ var SerialMonitor = (() => {
     }
     smTerm.writeln("\x1b[36m───────────────────────────────────────────────\x1b[0m");
     */
-    if (autoScroll) smTerm.scrollToBottom();
+    if (smTerm && autoScroll) smTerm.scrollToBottom();
   }
 
   function notifyDone() {
@@ -785,6 +785,7 @@ var SerialMonitor = (() => {
         _loadedFileContent = ev.target.result;
         _loadedFileName = file.name;
         if (!smTerm) initSmTerminal();
+        if (!smTerm) return;
         const lines = _loadedFileContent.split("\n");
         const preview = lines.slice(0, 6).map((l) => "  " + l).join("\r\n");
         smTerm.writeln(`\x1b[36m📂 Archivo cargado: ${file.name} (${lines.length} líneas)\x1b[0m`);

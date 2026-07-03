@@ -2315,10 +2315,20 @@ const Files = {
         .replace(/>>>/g, "")
         .trim();
 
-      // [TABS] Si la pestaña activa es Bloques, crear nueva con el nombre
+      // [TABS] Abrir el archivo siempre en SU propia pestaña:
+      // - Si ya existe una pestaña editable con ese nombre, cambiar a ella.
+      // - Si no existe (venías de Bloques o de otro archivo), crearla.
+      // Antes esto solo funcionaba si la pestaña activa era "Bloques";
+      // si ya estabas en un archivo editable (ej. test.py) y abrías otro
+      // (ej. led.py), el contenido se pisaba sobre la pestaña activa en
+      // vez de crear/abrir la pestaña de led.py.
       if (typeof Tabs !== "undefined" && Tabs.getActiveTab) {
-        const t = Tabs.getActiveTab();
-        if (t && t.kind === "blocks") {
+        const existing = Tabs.getTabs().find(
+          (t) => t.kind === "editable" && t.name === fileName,
+        );
+        if (existing) {
+          Tabs.switchTab(existing.id);
+        } else {
           Tabs.addTab(fileName);
         }
         const cur = Tabs.getActiveTab();
