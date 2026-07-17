@@ -355,7 +355,7 @@ Blockly.defineBlocksWithJsonArray([
     type: "text_repeat",
     message0: "texto %1 × %2",
     args0: [
-      { type: "input_value", name: "TEXT",  check: "String" },
+      { type: "input_value", name: "TEXT", check: "String" },
       { type: "input_value", name: "TIMES", check: "Number" },
     ],
     inputsInline: true,
@@ -2196,7 +2196,7 @@ Blockly.defineBlocksWithJsonArray([
           ["8", "8"],
           ["9", "9"],
           ["10", "10"],
-          ["11", "11"], 
+          ["11", "11"],
           ["12", "12"],
           ["13", "13"],
           ["14", "14"],
@@ -2256,10 +2256,10 @@ Blockly.defineBlocksWithJsonArray([
   },
   {
     type: "toggle_led",
-    message0: "%1 alternar",  
+    message0: "%1 alternar",
     args0: [
       { type: "field_input", name: "NAME", text: "led" },
-    ],  
+    ],
     previousStatement: null,
     nextStatement: null,
     colour: "#2ECC71",
@@ -3112,7 +3112,7 @@ Blockly.defineBlocksWithJsonArray([
   },
   {
     type: "ky001_read_index",
-    message0: "leer %1 temperatura sensor #%2",
+    message0: "leer %1 temperatura sensor #%2 de %3",
     args0: [
       {
         type: "field_dropdown",
@@ -3148,6 +3148,11 @@ Blockly.defineBlocksWithJsonArray([
         type: "input_value",
         name: "INDEX",
         check: "Number",
+      },
+      {
+        type: "input_value",
+        name: "ROMS",
+        check: "Array",
       },
     ],
     output: "Number",
@@ -3645,7 +3650,7 @@ Blockly.defineBlocksWithJsonArray([
         type: "field_dropdown",
         name: "PIN",
         options: [
-          ["0","0"],
+          ["0", "0"],
           ["2", "2"],
           ["4", "4"],
           ["12", "12"],
@@ -6157,9 +6162,9 @@ Blockly.defineBlocksWithJsonArray([
         type: "field_dropdown",
         name: "IFACE",
         options: [
-          ["ap",     "ap"],
+          ["ap", "ap"],
           ["sta_if", "sta_if"],
-          ["wlan",   "wlan"],
+          ["wlan", "wlan"],
         ],
       },
       { type: "field_input", name: "VARNAME", text: "cfg" },
@@ -6179,10 +6184,10 @@ Blockly.defineBlocksWithJsonArray([
         type: "field_dropdown",
         name: "FIELD",
         options: [
-          ["[0] IP",      "0"],
+          ["[0] IP", "0"],
           ["[1] Máscara", "1"],
           ["[2] Gateway", "2"],
-          ["[3] DNS",     "3"],
+          ["[3] DNS", "3"],
         ],
       },
     ],
@@ -6524,7 +6529,7 @@ Blockly.defineBlocksWithJsonArray([
     colour: 270,
     tooltip: "Define la función callback que e.irq() llamará al recibir. Usa 'leer mensaje ESP-NOW' dentro.",
   },
-  
+
   {
     type: "ble_init_uart",
     message0: "%1 iniciar UART",
@@ -6656,7 +6661,7 @@ Blockly.defineBlocksWithJsonArray([
     message0: "Conectar a esclavo %1 PIN %2",
     args0: [
       { type: "input_value", name: "NAME", check: "String" },
-      { type: "input_value", name: "PIN",  check: "String" }
+      { type: "input_value", name: "PIN", check: "String" }
     ],
     previousStatement: null, "nextStatement": null,
     colour: 220,
@@ -7428,7 +7433,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_input",
         name: "NAME",
-        text: "display",
+        text: "lcd",
       },
       {
         type: "field_dropdown",
@@ -7451,7 +7456,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_input",
         name: "NAME",
-        text: "display",
+        text: "lcd",
       },
       {
         type: "field_dropdown",
@@ -8487,7 +8492,7 @@ Blockly.defineBlocksWithJsonArray([
           ["8", "8"],
           ["9", "9"],
           ["10", "10"],
-          ["11", "11"], 
+          ["11", "11"],
           ["12", "12"],
           ["13", "13"],
           ["14", "14"],
@@ -8706,13 +8711,18 @@ Blockly.defineBlocksWithJsonArray([
 
   {
     type: "neopixel_show",
-    message0: "%1 mostrar",
+    message0: "%1 mostrar %2",
     args0: [
       {
         type: "field_input",
         name: "NAME",
         text: "neopixel5x5",
       },
+      {
+        type: "field_number",
+        name: "N",
+        value: 0.5,
+      }
     ],
     previousStatement: null,
     nextStatement: null,
@@ -8966,42 +8976,42 @@ Blockly.defineBlocksWithJsonArray([
     extensions: ["matrix_8x8_extension"],
   },
 
-{
-  type: "neopixel_marquee",
-  message0: "%1 scroll texto %2 color %3 x %4 y %5 tiempo %6 dirección %7 brillo %8",
-  args0: [
-    { type: "field_input", name: "NAME", text: "neopixel5x5" },
-    { type: "input_value", name: "TEXT" },
-    { type: "input_value", name: "COLOR", check: "Colour" },
-    {type: "input_value", name: "X"},
-    {type: "input_value", name: "Y"},
-    {type: "input_value", name: "NUM"},
-    {
-      type: "field_dropdown",
-      name: "MOVE",
-      options: [
-        ["← izquierda", "left"],
-        ["→ derecha", "right"],
-        ["↑ arriba", "up"],
-        ["↓ abajo", "down"],
-      ],
-    },
-    {
-      type: "field_dropdown",
-      name: "BRIGHTNESS",
-      options: [
-        ["10%", "0.1"],
-        ["20%", "0.2"],
-        ["30%", "0.3"],
-        ["50%", "0.5"],
-        ["100%", "1.0"],
-      ],
-    },
-  ],
-  previousStatement: null,
-  nextStatement: null,
-  colour: "#26A69A",
-},
+  {
+    type: "neopixel_marquee",
+    message0: "%1 scroll texto %2 color %3 x %4 y %5 tiempo %6 dirección %7 brillo %8",
+    args0: [
+      { type: "field_input", name: "NAME", text: "neopixel5x5" },
+      { type: "input_value", name: "TEXT" },
+      { type: "input_value", name: "COLOR", check: "Colour" },
+      { type: "input_value", name: "X" },
+      { type: "input_value", name: "Y" },
+      { type: "input_value", name: "NUM" },
+      {
+        type: "field_dropdown",
+        name: "MOVE",
+        options: [
+          ["← izquierda", "left"],
+          ["→ derecha", "right"],
+          ["↑ arriba", "up"],
+          ["↓ abajo", "down"],
+        ],
+      },
+      {
+        type: "field_dropdown",
+        name: "BRIGHTNESS",
+        options: [
+          ["10%", "0.1"],
+          ["20%", "0.2"],
+          ["30%", "0.3"],
+          ["50%", "0.5"],
+          ["100%", "1.0"],
+        ],
+      },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: "#26A69A",
+  },
 
   {
     type: "points",
@@ -13469,8 +13479,8 @@ const BLOCK_PRINT_MULTI = {
   type: "print_multi",
   message0: "🖨️ print sep %1 end %2",
   args0: [
-    { type: "field_input", name: "SEP",  text: " "  },
-    { type: "field_input", name: "END",  text: "\\n" },
+    { type: "field_input", name: "SEP", text: " " },
+    { type: "field_input", name: "END", text: "\\n" },
   ],
   message1: "%1",
   args1: [{ type: "input_statement", name: "DUMMY" }],  // placeholder; el mutador agrega las entradas
@@ -13520,7 +13530,7 @@ if (Blockly && Blockly.Extensions) {
       while (itemBlock && !itemBlock.isInsertionMarker()) {
         connections.push(itemBlock.valueConnection_);
         itemBlock = itemBlock.nextConnection &&
-                    itemBlock.nextConnection.targetBlock();
+          itemBlock.nextConnection.targetBlock();
       }
       // Desconectar entradas que sobran
       for (let i = connections.length; i < this.itemCount_; i++) {
@@ -13547,7 +13557,7 @@ if (Blockly && Blockly.Extensions) {
         itemBlock.valueConnection_ = input && input.connection.targetConnection;
         i++;
         itemBlock = itemBlock.nextConnection &&
-                    itemBlock.nextConnection.targetBlock();
+          itemBlock.nextConnection.targetBlock();
       }
     },
 
@@ -13561,7 +13571,7 @@ if (Blockly && Blockly.Extensions) {
       // Crear las nuevas
       for (let j = 0; j < this.itemCount_; j++) {
         this.appendValueInput("ADD" + j)
-            .appendField(j === 0 ? "valor" : "");
+          .appendField(j === 0 ? "valor" : "");
       }
     },
   };
@@ -13614,7 +13624,7 @@ if (Blockly && Blockly.Extensions) {
       while (itemBlock && !itemBlock.isInsertionMarker()) {
         connections.push(itemBlock.valueConnection_);
         itemBlock = itemBlock.nextConnection &&
-                    itemBlock.nextConnection.targetBlock();
+          itemBlock.nextConnection.targetBlock();
       }
       for (let i = connections.length; i < this.itemCount_; i++) {
         const input = this.getInput("VAL" + i);
@@ -13639,7 +13649,7 @@ if (Blockly && Blockly.Extensions) {
         itemBlock.valueConnection_ = input && input.connection.targetConnection;
         i++;
         itemBlock = itemBlock.nextConnection &&
-                    itemBlock.nextConnection.targetBlock();
+          itemBlock.nextConnection.targetBlock();
       }
     },
 
@@ -13656,7 +13666,7 @@ if (Blockly && Blockly.Extensions) {
       for (let j = 0; j < count; j++) {
         const lbl = (markers[j] || "%s") + " →";
         this.appendValueInput("VAL" + j)
-            .appendField(lbl);
+          .appendField(lbl);
       }
     },
   };

@@ -601,6 +601,30 @@
       letter-spacing: 0.05em;
     }
 
+    /* ── Controles Ejecutar / Siguiente paso / Continuar ──
+       Reutilizan exactamente el estilo de .gameImgBtn (mismo look que
+       "Fondo"/"Personaje"): caja con borde, fondo oscuro, hover claro.
+       Solo se agrega el indicador de "pausado" para Siguiente paso. */
+    #btnStepContinue {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Los 3 botones reusan .gameImgBtn pero NO deben heredar el
+       margin-left:auto que empuja a Fondo/Personaje hacia la derecha */
+    #btnStepContinue .gameImgBtn:first-of-type {
+      margin-left: 0;
+    }
+
+    /* Estado activo: cuando el simulador está pausado tras un Step manual,
+       game-ui.js agrega/quita esta clase en #btnStepContinue */
+    #btnStepContinue.is-paused #btnStep {
+      border-color: #ffb454;
+      color: #ffd9a0;
+      box-shadow: 0 0 8px rgba(255, 180, 84, 0.35);
+    }
+
     .gameImgBtn {
       margin-left: auto;
       display: flex;
@@ -628,6 +652,20 @@
     .gameImgBtn:hover {
       background: #2a2a52;
       border-color: #5470ff;
+    }
+
+    /* Botón deshabilitado (Siguiente paso al terminar, Continuar antes
+       del primer Step): visualmente apagado y sin puntero de "click" */
+    .gameImgBtn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      background: #1e1e38;
+      border-color: #2a2a52;
+    }
+
+    .gameImgBtn:disabled:hover {
+      background: #1e1e38;
+      border-color: #2a2a52;
     }
 
     .gameImgBtn:active {
@@ -1022,6 +1060,13 @@
       <div id="gameContainer">
         <div id="gameHeader">
           <span id="gameTitle">🎮 Juego</span>
+          <!-- Run / Step / Continue: SOLO controlan el simulador JS + (Run) el ESP32.
+               btnGame ya NO ejecuta nada automático: el usuario decide. -->
+          <div id="btnStepContinue">
+            <button type="button" id="btnGameRun" class="gameImgBtn" title="Ejecutar programa completo (ESP32 + simulador)">▶ Ejecutar</button>
+            <button type="button" id="btnStep" class="gameImgBtn" title="Avanzar un bloque">⏭ Siguiente paso</button>
+            <button type="button" id="btnContinue" class="gameImgBtn" title="Reanudar ejecución automática">⏯ Continuar</button>
+          </div>
           <button type="button" class="gameImgBtn" onclick="document.getElementById('gameBgFileInput').click()"
             title="Cargar imagen de tu computadora como fondo">
             🖼️ Fondo
@@ -1088,7 +1133,7 @@
         </block>
 
         <block type="select_imgs">
-          <field name="IMG">laberinto.png</field>
+          <field name="IMG">laberinto2.png</field>
         </block>
 
         <block type="game_set_bg">
@@ -2464,14 +2509,6 @@
           </value>
         </block>
 
-        <block type="with">
-          <value name="CTX">
-            <block type="objecto"></block>
-          </value>
-          <field name="VAR">f</field>
-          <statement name="DO"></statement>
-        </block>
-
         <block type="yield">
           <value name="VAL">
             <block type="objecto"></block>
@@ -2491,6 +2528,13 @@
         </block>
         <block type="file_read"></block>
         <block type="file_close"></block>
+        <block type="with">
+          <value name="CTX">
+            <block type="objecto"></block>
+          </value>
+          <field name="VAR">f</field>
+          <statement name="DO"></statement>
+        </block>
         <label role="presentation" text="(Craer / Eliminar) (Archivos/Folder)"></label>
         <block type="create_folder"></block>
         <block type="delete_file"></block>
@@ -4791,13 +4835,12 @@
   <script type="module" src="static/custom-flash.js"></script>
   <script src="static/js-tutorial.js"></script>
   <script src="static/code-tutor.js"></script>
-
+  <script src="static/code-tabs.js"></script>
 
   <script>var TS_STATIC_URL = "static/";</script>
   <script src="static/tutorial-steps.js"></script>
 
   <script src="static/serial-monitor.js"></script>
-
 
   <!-- ── Custom Tutorial Dropdown logic ── -->
   <script>

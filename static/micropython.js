@@ -715,10 +715,16 @@ Blockly.Python["ky001_read_index"] = function (block) {
 
   const index =
     Blockly.Python.valueToCode(block, "INDEX", Blockly.Python.ORDER_ATOMIC) ||
-    0;
+    "0";
+
+  // en vez de asumir "ds${pin}_roms", tomamos la variable/roms que el usuario
+  // conecte al bloque (por ejemplo la variable donde guardó ds5.scan())
+  const roms =
+    Blockly.Python.valueToCode(block, "ROMS", Blockly.Python.ORDER_ATOMIC) ||
+    "roms";
 
   return [
-    `ds${pin}.read_temp(ds${pin}_roms[${index}])`,
+    `ds${pin}.read_temp(${roms}[${index}])`,
     Blockly.Python.ORDER_FUNCTION_CALL,
   ];
 };
@@ -2709,6 +2715,13 @@ Blockly.Python["lcd_cursor"] = function (block) {
   return `${name}.set_cursor(${col},${row})\n`;
 };
 
+Blockly.Python["lcd_line"] = function (block) {
+  const name = block.getFieldValue("NAME");
+  const line = block.getFieldValue("LINE");
+
+  return `${name}.set_cursor(0, ${line})\n`;
+};
+
 Blockly.Python["lcd_home"] = function (block) {
   const name = block.getFieldValue("NAME");
 
@@ -2810,9 +2823,9 @@ Blockly.Python["lcd_i2c_cursor_show"] = function (block) {
   const name = block.getFieldValue("NAME");
   const state = block.getFieldValue("STATE");
   if (state == "show") {
-    return `lcd${name}.show_cursor()\n`;
+    return `${name}.show_cursor()\n`;
   } else {
-    return `lcd${name}.hide_cursor()\n`;
+    return `${name}.hide_cursor()\n`;
   }
 };
 
@@ -3235,8 +3248,9 @@ Blockly.Python["neopixel_init_8x8"] = function (block) {
 
 Blockly.Python["neopixel_show"] = function (block) {
   const name = block.getFieldValue("NAME");
+  const bright = block.getFieldValue("N") || "0.5";
 
-  return `${name}.show()\n`;
+  return `${name}.show(brightness=${bright})\n`;
 };
 
 Blockly.Python["neopixel_clear"] = function (block) {
