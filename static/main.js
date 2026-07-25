@@ -15,6 +15,114 @@ window.addEventListener("pywebviewready", () => {
 const DEBUG = false;
 
 // ─────────────────────────────────────────────────────────────
+// TOAST (notificación flotante compartida)
+// Usado por serial-monitor.js, terminal-menu.js y viewcode.js —
+// antes cada uno tenía su propia copia casi idéntica de esto.
+// ─────────────────────────────────────────────────────────────
+function showToast(msg, opts = {}) {
+  const {
+    id = "_toast",
+    anchor = null,
+    background = "#2472c8",
+    color = "#fff",
+    zIndex = 9999,
+    fallbackBottom = "60px",
+    fallbackRight = "20px",
+    fadeDelay = 1400,
+    removeDelay = 1900,
+    anchorPosition = "bottom", // "bottom" (borde inferior del ancla) | "above" (encima del ancla)
+  } = opts;
+
+  document.getElementById(id)?.remove();
+  const toast = document.createElement("div");
+  toast.id = id;
+  toast.textContent = msg;
+  toast.style.cssText = [
+    "position:fixed",
+    `z-index:${zIndex}`,
+    `background:${background}`,
+    `color:${color}`,
+    "font-family:Consolas,monospace",
+    "font-size:11px",
+    "padding:4px 12px",
+    "border-radius:4px",
+    "box-shadow:0 2px 8px rgba(0,0,0,.5)",
+    "pointer-events:none",
+    "opacity:1",
+    "transition:opacity .4s ease",
+  ].join(";");
+
+  if (anchor) {
+    const r = anchor.getBoundingClientRect();
+    toast.style.left = r.left + 10 + "px";
+    if (anchorPosition === "above") {
+      toast.style.top = r.top - 28 + "px";
+    } else {
+      toast.style.bottom = window.innerHeight - r.bottom + 8 + "px";
+    }
+  } else {
+    toast.style.bottom = fallbackBottom;
+    toast.style.right = fallbackRight;
+  }
+
+  document.body.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = "0";
+  }, fadeDelay);
+  setTimeout(() => toast.remove(), removeDelay);
+}
+
+// ─────────────────────────────────────────────────────────────
+// PORTAPAPELES (compartido)
+// navigator.clipboard casi siempre falla dentro del webview nativo de
+// pywebview — por eso app.py expone get_clipboard/set_clipboard vía
+// PowerShell. Se intenta primero la API del navegador (funciona en
+// GitHub Pages / navegador normal) y se cae al puente de pywebview
+// (funciona en la app de escritorio), con execCommand como último
+// respaldo.
+// ─────────────────────────────────────────────────────────────
+async function writeClipboard(text) {
+  if (!text) return false;
+  if (navigator.clipboard?.writeText) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch (_) {}
+  }
+  if (window.pywebview?.api?.set_clipboard) {
+    try {
+      const r = await window.pywebview.api.set_clipboard(text);
+      if (r?.status === "ok") return true;
+    } catch (_) {}
+  }
+  try {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.cssText = "position:fixed;opacity:0;top:0;left:0";
+    document.body.appendChild(ta);
+    ta.select();
+    const ok = document.execCommand("copy");
+    document.body.removeChild(ta);
+    return ok;
+  } catch (_) {}
+  return false;
+}
+
+async function readClipboard() {
+  if (navigator.clipboard?.readText) {
+    try {
+      return await navigator.clipboard.readText();
+    } catch (_) {}
+  }
+  if (window.pywebview?.api?.get_clipboard) {
+    try {
+      return (await window.pywebview.api.get_clipboard()) || "";
+    } catch (_) {}
+  }
+  return "";
+}
+
+// ─────────────────────────────────────────────────────────────
 // BLOCKLY
 // ─────────────────────────────────────────────────────────────
 Code.workspace = Blockly.inject("blocklyDiv", {
@@ -327,7 +435,7 @@ function autoSaveWorkspacePython() {
   const xmlDom = Blockly.Xml.workspaceToDom(Blockly.getMainWorkspace());
   const xmlText = Blockly.Xml.domToText(xmlDom);
   if (window.pywebview?.api?.autosave_xml) {
-    window.pywebview.api.autosave_xml(xmlText);
+    return window.pywebview.api.autosave_xml(xmlText);
   }
 }
 
@@ -462,6 +570,7 @@ document.getElementById("btnNew").addEventListener("click", async function () {
       if (a) a.value = "";
     }
     localStorage.removeItem(AUTOSAVE_KEY);
+    localStorage.removeItem(LAST_SAVED_PATH_KEY);
     if (window.pywebview?.api?.clear_autosave)
       await window.pywebview.api.clear_autosave();
   } catch (error) {
@@ -698,28 +807,139 @@ async function saveFileAuto(content, fileName = "") {
   }
 }
 
-document.getElementById("btnSave").addEventListener("click", async (e) => {
-  e.preventDefault();
+/* Guardar tipo Word/Excel: la primera vez pide dónde (Guardar como),
+   las siguientes veces (botón o Ctrl+S) sobrescribe ese mismo archivo
+   directo, sin volver a preguntar. La ruta se recuerda en localStorage
+   para que sobreviva a un F5/recarga. */
+const LAST_SAVED_PATH_KEY = "3dpit_last_saved_path";
+
+async function saveProject() {
   let xmlText = "";
   try {
     const dom = Blockly.Xml.workspaceToDom(Blockly.getMainWorkspace());
     xmlText = Blockly.Xml.domToPrettyText(dom);
-    _saveLog(`btnSave: xmlText generado, ${xmlText.length} chars, workspace blocks: ${Blockly.getMainWorkspace().getAllBlocks(false).length}`);
+    _saveLog(`saveProject: xmlText generado, ${xmlText.length} chars, workspace blocks: ${Blockly.getMainWorkspace().getAllBlocks(false).length}`);
   } catch (err) {
-    _saveLog(`btnSave: error generando XML — ${err.message}`, true);
+    _saveLog(`saveProject: error generando XML — ${err.message}`, true);
+    return;
   }
-  if (window.pywebview?.api?.save_xml) {
-    const result = await window.pywebview.api.save_xml(xmlText);
-    if (result?.status === "ok" && DEBUG)
-      console.log("Guardado en:", result.path);
-  } else {
+
+  if (!window.pywebview?.api?.save_xml) {
+    // Navegador / GitHub Pages: no hay ruta real de archivo, siempre descarga uno nuevo.
     await saveFileAuto(xmlText, "proyecto.xml");
+    return;
   }
+
+  const lastPath = localStorage.getItem(LAST_SAVED_PATH_KEY);
+  if (lastPath && window.pywebview.api.save_xml_to_path) {
+    const result = await window.pywebview.api.save_xml_to_path(lastPath, xmlText);
+    if (result?.status === "ok") {
+      if (DEBUG) console.log("Guardado (sobrescrito) en:", lastPath);
+      return;
+    }
+    // La ruta ya no es válida (se movió/borró el archivo) → cae a "Guardar como" abajo.
+  }
+
+  const result = await window.pywebview.api.save_xml(xmlText);
+  if (result?.status === "ok") {
+    localStorage.setItem(LAST_SAVED_PATH_KEY, result.path);
+    if (DEBUG) console.log("Guardado en:", result.path);
+  }
+}
+
+document.getElementById("btnSave").addEventListener("click", async (e) => {
+  e.preventDefault();
+  await saveProject();
 });
 
-document
-  .getElementById("btnLoad")
-  .addEventListener("click", () => document.getElementById("loadXML").click());
+// Ctrl+S / Cmd+S — en fase de captura para que funcione sin importar
+// dónde esté el foco (editor de código, terminal, etc.).
+document.addEventListener(
+  "keydown",
+  (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key?.toLowerCase() === "s") {
+      e.preventDefault();
+      saveProject();
+    }
+  },
+  true,
+);
+
+/* Parsea xmlText y lo carga en el workspace. Devuelve true/false según
+   el resultado; ya deja su propio rastro en los logs y en la terminal,
+   así que el llamador solo necesita decidir qué hacer con LAST_SAVED_PATH_KEY. */
+async function _loadXmlTextIntoWorkspace(xmlText, displayName) {
+  if (!xmlText || !xmlText.trim()) {
+    _loadLog("Contenido vacío tras lectura — archivo ilegible", true);
+    if (term) term.writeln("\r\n⚠ El archivo está vacío o no se pudo leer.\r\n");
+    return false;
+  }
+
+  // Parsear el XML
+  let dom;
+  try {
+    dom = Blockly.Xml.textToDom(xmlText);
+  } catch (parseErr) {
+    _loadLog(`Error parseando XML: ${parseErr.message}`, true);
+    _loadLog(`Primeros 200 chars del contenido: ${JSON.stringify(xmlText.substring(0, 200))}`, true);
+    if (term) term.writeln(`\r\n⚠ XML inválido: ${parseErr.message}\r\n`);
+    return false;
+  }
+
+  const blockNodes = Array.from(dom.children || []).filter(
+    (n) => n.tagName === "block" || n.tagName === "shadow"
+  );
+  _loadLog(`XML parseado: ${blockNodes.length} bloques detectados`);
+
+  if (blockNodes.length === 0) {
+    _loadLog("XML válido pero sin bloques — workspace quedará vacío", true);
+    if (term) term.writeln("\r\n⚠ El archivo no contiene bloques de Blockly.\r\n");
+  }
+
+  // Limpiar workspace e insertar bloques
+  Code.workspace.clear();
+  Blockly.Xml.domToWorkspace(dom, Code.workspace);
+  _loadLog(`✅ Workspace cargado: ${Blockly.getMainWorkspace().getAllBlocks(false).length} bloques`);
+
+  updateCodeFromBlockly();
+  requestAnimationFrame(() => editor.refresh());
+  showView("viewBlocks");
+
+  if (term) term.writeln(`\r\n✔ Proyecto cargado: ${displayName}\r\n`);
+  return true;
+}
+
+document.getElementById("btnLoad").addEventListener("click", async () => {
+  // App de escritorio (pywebview): usar el diálogo nativo, que sí entrega
+  // la ruta real del archivo — así Ctrl+S puede sobrescribirlo directo
+  // después, igual que "Guardar" ya hace tras un "Guardar como".
+  if (window.pywebview?.api?.open_xml) {
+    try {
+      const result = await window.pywebview.api.open_xml();
+      if (result?.status === "cancel") return;
+      if (result?.status !== "ok") {
+        _loadLog(`Error al abrir vía diálogo nativo: ${result?.message}`, true);
+        if (term) term.writeln(`\r\n⚠ Error al abrir: ${result?.message}\r\n`);
+        return;
+      }
+      const fileName = result.path.split(/[\\/]/).pop();
+      _loadLog(`Abriendo vía diálogo nativo: ${result.path}`);
+      const ok = await _loadXmlTextIntoWorkspace(result.content, fileName);
+      if (ok) {
+        // Ahora sí conocemos la ruta real: se recuerda para que Ctrl+S
+        // sobrescriba este mismo archivo sin volver a preguntar.
+        localStorage.setItem(LAST_SAVED_PATH_KEY, result.path);
+      }
+    } catch (err) {
+      _loadLog(`Error IPC al abrir: ${err.message}`, true);
+      if (term) term.writeln(`\r\n⚠ Error al abrir: ${err.message}\r\n`);
+    }
+    return;
+  }
+
+  // Navegador / GitHub Pages / PWA: no hay API nativa, usar el <input type="file">.
+  document.getElementById("loadXML").click();
+});
 
 document.getElementById("loadXML").addEventListener("change", async function (event) {
   const file = event.target.files[0];
@@ -736,44 +956,14 @@ document.getElementById("loadXML").addEventListener("change", async function (ev
 
   try {
     const xmlText = await _readFileAsText(file);
+    await _loadXmlTextIntoWorkspace(xmlText, file.name);
 
-    if (!xmlText || !xmlText.trim()) {
-      _loadLog("Contenido vacío tras lectura — archivo ilegible", true);
-      if (term) term.writeln("\r\n⚠ El archivo está vacío o no se pudo leer.\r\n");
-      return;
-    }
-
-    // Parsear el XML
-    let dom;
-    try {
-      dom = Blockly.Xml.textToDom(xmlText);
-    } catch (parseErr) {
-      _loadLog(`Error parseando XML: ${parseErr.message}`, true);
-      _loadLog(`Primeros 200 chars del contenido: ${JSON.stringify(xmlText.substring(0, 200))}`, true);
-      if (term) term.writeln(`\r\n⚠ XML inválido: ${parseErr.message}\r\n`);
-      return;
-    }
-
-    const blockNodes = Array.from(dom.children || []).filter(
-      (n) => n.tagName === "block" || n.tagName === "shadow"
-    );
-    _loadLog(`XML parseado: ${blockNodes.length} bloques detectados`);
-
-    if (blockNodes.length === 0) {
-      _loadLog("XML válido pero sin bloques — workspace quedará vacío", true);
-      if (term) term.writeln("\r\n⚠ El archivo no contiene bloques de Blockly.\r\n");
-    }
-
-    // Limpiar workspace e insertar bloques
-    Code.workspace.clear();
-    Blockly.Xml.domToWorkspace(dom, Code.workspace);
-    _loadLog(`✅ Workspace cargado: ${Blockly.getMainWorkspace().getAllBlocks(false).length} bloques`);
-
-    updateCodeFromBlockly();
-    requestAnimationFrame(() => editor.refresh());
-    showView("viewBlocks");
-
-    if (term) term.writeln(`\r\n✔ Proyecto cargado: ${file.name}\r\n`);
+    // El input <input type="file"> no da la ruta real del archivo, así
+    // que no sabemos dónde sobrescribir con Ctrl+S — se olvida la ruta
+    // guardada anteriormente para no arriesgarse a pisar un archivo
+    // distinto al que se acaba de abrir. El próximo Ctrl+S/Guardar
+    // volverá a preguntar dónde guardar, una sola vez.
+    localStorage.removeItem(LAST_SAVED_PATH_KEY);
   } catch (err) {
     _loadLog(`Error cargando archivo: ${err.message}`, true);
     if (term) term.writeln(`\r\n⚠ Error al abrir: ${err.message}\r\n`);
@@ -799,7 +989,53 @@ async function reloadWorkspace() {
 
 document
   .getElementById("btnReload")
-  .addEventListener("click", () => location.reload());
+  .addEventListener("click", async () => {
+    /* Mismo motivo que el botón de idioma: forzar el guardado antes de
+       recargar, para no perder cambios muy recientes que el autoguardado
+       debounced (800ms) todavía no había alcanzado a escribir. */
+    clearTimeout(autosaveTimer);
+    try {
+      if (window.pywebview?.api?.autosave_xml) {
+        await autoSaveWorkspacePython();
+      } else {
+        autoSaveWorkspace();
+      }
+    } catch (e) {}
+    location.reload();
+  });
+
+/* Idioma de Blockly (menús y bloques nativos: matemáticas, lógica,
+   texto, listas, ciclos). Los ~500 bloques de sensores/actuadores
+   propios siguen en español — no usan el sistema de mensajes de
+   Blockly, es un cambio mucho más grande aparte.
+   La preferencia se guarda en la URL (?lang=en), no en localStorage:
+   en el backend WinForms/Chromium de pywebview localStorage no
+   persistía entre recargas. */
+(function () {
+  var btn = document.getElementById("btnLang");
+  if (!btn) return;
+
+  var current = new URLSearchParams(location.search).get("lang") === "en" ? "en" : "es";
+  btn.textContent = current === "en" ? "🌐 EN" : "🌐 ES";
+
+  btn.addEventListener("click", async () => {
+    var next = current === "en" ? "es" : "en";
+    /* El autoguardado en escritorio está debounced 800ms — si se
+       recargaba antes de que ese timer disparara, el último cambio
+       en el workspace se perdía. Se fuerza el guardado ya mismo. */
+    clearTimeout(autosaveTimer);
+    try {
+      if (window.pywebview?.api?.autosave_xml) {
+        await autoSaveWorkspacePython();
+      } else {
+        autoSaveWorkspace();
+      }
+    } catch (e) {}
+    var url = new URL(location.href);
+    url.searchParams.set("lang", next);
+    location.href = url.toString();
+  });
+})();
 
 document.getElementById("btnSavePy").addEventListener("click", async (e) => {
   e.preventDefault();
@@ -1730,6 +1966,7 @@ async function sendViaRawRepl(codeStr, chunkSz = 256) {
     term.write(`\r\n\x1b[36m↑ Enviando ${total} bytes\x1b[0m `);
 
     while (sent < total) {
+      if (_stopRequested) return false;
       const end = Math.min(sent + _chunkSz, total);
       const slice = bytes.slice(sent, end);
       await serialWriter.write(slice);
@@ -1767,6 +2004,80 @@ async function sendViaRawRepl(codeStr, chunkSz = 256) {
   }
 }
 
+/**
+ * Envía código al ESP32 usando paste mode (Ctrl+E), como alternativa a
+ * sendViaRawRepl() cuando el dispositivo no responde a Ctrl+A. Es el mismo
+ * protocolo que ya usan sendCodeToDevice()/btnUploadCode para códigos
+ * pequeños, extraído aquí para poder reutilizarlo como fallback.
+ * @param {string} codeStr
+ * @returns {Promise<boolean>} false si no logró entrar en paste mode.
+ */
+async function sendViaPasteMode(codeStr) {
+  if (!serialWriter) return false;
+
+  const d = _deviceSpeedMul;
+  let _pmBuf = "";
+  let _pmDone = false;
+  let _pmFoundPrompt = false;
+
+  window._rawReplHook = (chunk) => {
+    _pmBuf += chunk;
+    if (_pmDone && _pmBuf.includes(">>>")) _pmFoundPrompt = true;
+  };
+
+  async function _waitPm(checkFn, ms) {
+    const end = Date.now() + ms;
+    while (Date.now() < end) {
+      if (_stopRequested) return false;
+      if (checkFn()) return true;
+      await sleep(20);
+    }
+    return false;
+  }
+
+  try {
+    await sendSerial("\x03");
+    await sleep(100 * d);
+    await sendSerial("\x03");
+    await sleep(100 * d);
+
+    _pmBuf = "";
+    await sendSerial("\x05");
+    const gotPaste = await _waitPm(() => _pmBuf.includes("==="), 2000 * d);
+    if (!gotPaste) {
+      await sendSerial("\r\n");
+      await sleep(80 * d);
+      _pmBuf = "";
+      await sendSerial("\x05");
+      const retry = await _waitPm(() => _pmBuf.includes("==="), 2000 * d);
+      if (!retry) {
+        term.writeln("\r\n⚠ No se pudo entrar en paste mode. Reintenta.\r\n");
+        return false;
+      }
+    }
+
+    const normalized = codeStr.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+    const _runChunk = d > 1 ? 64 : 128;
+    const _runChunkPause = d > 1 ? 20 : 0;
+    for (let i = 0; i < normalized.length; i += _runChunk) {
+      if (_stopRequested) return false;
+      await sendSerial(normalized.slice(i, i + _runChunk));
+      if (_runChunkPause > 0) await sleep(_runChunkPause);
+    }
+    if (d > 1) await sleep(80);
+
+    _pmBuf = "";
+    _pmDone = true;
+    await sendSerial("\x04");
+    await _waitPm(() => _pmFoundPrompt, 10000);
+
+    await sleep(150 * d);
+    return true;
+  } finally {
+    window._rawReplHook = null;
+  }
+}
+
 // ─────────────────────────────────────────────────────────────
 // BOTÓN: EJECUTAR
 // ─────────────────────────────────────────────────────────────
@@ -1777,11 +2088,17 @@ async function sendViaRawRepl(codeStr, chunkSz = 256) {
  * módulos (ej. game-ui.js) puedan llamarlo directamente.
  */
 async function sendCodeToDevice() {
-  _stopRequested = false;  // reset abort flag
   if (!isConnected || !serialWriter) {
     _smCall("warn", "Sin conexión — conecta el dispositivo primero");
     return false;
   }
+  // Evita que dos envíos corran a la vez (doble clic, o Ejecutar+Subir casi
+  // simultáneos): ambos escriben sobre el mismo puerto y se corromperían.
+  if (isSendingCode) {
+    term.writeln("\r\n⚠ Ya se está enviando código, espera a que termine.\r\n");
+    return false;
+  }
+  _stopRequested = false;  // reset abort flag
 
   const code = getCode();
   if (!code?.trim()) {
@@ -1882,6 +2199,7 @@ async function sendCodeToDevice() {
       const _runChunk = (isWifi || _deviceSpeedMul > 1) ? 64 : 128;
       const _runChunkPause = (isWifi || _deviceSpeedMul > 1) ? 20 : 0;
       for (let i = 0; i < normalized.length; i += _runChunk) {
+        if (_stopRequested) return true;
         await sendSerial(normalized.slice(i, i + _runChunk));
         if (_runChunkPause > 0) await sleep(_runChunkPause);
       }
@@ -1962,6 +2280,13 @@ document.getElementById("btnUploadCode").addEventListener("click", async () => {
     _smCall("warn", "Sin conexión — conecta el dispositivo primero");
     return;
   }
+  // Evita que dos envíos corran a la vez (doble clic, o Subir+Ejecutar casi
+  // simultáneos): ambos escriben sobre el mismo puerto y se corromperían.
+  if (isSendingCode) {
+    term.writeln("\r\n⚠ Ya se está enviando código, espera a que termine.\r\n");
+    return;
+  }
+  _stopRequested = false;  // por si quedó en true de un "Detener" previo
 
   // [TABS] Obtener código de la pestaña activa (puede ser Bloques o editable)
   const codeStr = (typeof Tabs !== "undefined" && Tabs.getActiveCode)
@@ -2051,6 +2376,7 @@ document.getElementById("btnUploadCode").addEventListener("click", async () => {
       const _upChunk = (_uploadIsWifi || _deviceSpeedMul > 1) ? 64 : 128;
       const _upChunkPause = (_uploadIsWifi || _deviceSpeedMul > 1) ? 20 : 0;
       for (let i = 0; i < normScript.length; i += _upChunk) {
+        if (_stopRequested) return;
         await sendSerial(normScript.slice(i, i + _upChunk));
         if (_upChunkPause > 0) await sleep(_upChunkPause);
       }
@@ -2065,8 +2391,11 @@ document.getElementById("btnUploadCode").addEventListener("click", async () => {
       // Raw REPL con progreso
       const ok = await sendViaRawRepl(writeScript);
       if (!ok) {
-        term.writeln("\r\n⚠ No se pudo entrar en raw REPL. Reintenta.\r\n");
-        return;
+        term.writeln(
+          "\r\n⚠ No se pudo entrar en raw REPL. Intentando Paste Mode...\r\n",
+        );
+        const okPaste = await sendViaPasteMode(writeScript);
+        if (!okPaste) return;
       }
     }
 
@@ -2511,10 +2840,14 @@ document.addEventListener("DOMContentLoaded", () => {
   // Orden de init: 4) Botones Share, Copy, modal y lista de archivos
   try {
     document.getElementById("btnShare")?.addEventListener("click", compartir);
-    document.getElementById("copyBtn")?.addEventListener("click", () => {
+    document.getElementById("copyBtn")?.addEventListener("click", async () => {
       const input = document.getElementById("shareInput");
       input.select();
-      navigator.clipboard.writeText(input.value);
+      const ok = await writeClipboard(input.value);
+      showToast(ok ? "Link copiado" : "No se pudo copiar", {
+        id: "shareToast",
+        background: "#3454d1",
+      });
     });
     document.getElementById("closeModal")?.addEventListener("click", () => {
       document.getElementById("shareModal").style.display = "none";

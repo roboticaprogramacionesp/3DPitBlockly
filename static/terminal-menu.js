@@ -114,67 +114,14 @@ const TerminalMenu = (() => {
     return el;
   }
 
-  /* ── Clipboard helpers (misma lógica que viewcode.js) ── */
+  /* ── Clipboard helpers — delegan al helper compartido de main.js ── */
 
-  async function _writeClipboard(text) {
-    if (!text) return false;
-    if (navigator.clipboard?.writeText) {
-      try { await navigator.clipboard.writeText(text); return true; } catch (_) {}
-    }
-    if (window.pywebview?.api?.set_clipboard) {
-      try {
-        const r = await window.pywebview.api.set_clipboard(text);
-        if (r?.status === 'ok') return true;
-      } catch (_) {}
-    }
-    try {
-      const ta = document.createElement('textarea');
-      ta.value = text;
-      ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
-      document.body.appendChild(ta);
-      ta.select();
-      const ok = document.execCommand('copy');
-      document.body.removeChild(ta);
-      return ok;
-    } catch (_) {}
-    return false;
-  }
-
-  async function _readClipboard() {
-    if (navigator.clipboard?.readText) {
-      try { return await navigator.clipboard.readText(); } catch (_) {}
-    }
-    if (window.pywebview?.api?.get_clipboard) {
-      try { return await window.pywebview.api.get_clipboard() || ''; } catch (_) {}
-    }
-    return '';
-  }
+  const _writeClipboard = writeClipboard;
+  const _readClipboard = readClipboard;
 
   /* ── Toast ligero ── */
   function _toast(msg, anchorEl) {
-    document.getElementById('_tmToast')?.remove();
-    const t = document.createElement('div');
-    t.id = '_tmToast';
-    t.textContent = msg;
-    t.style.cssText = [
-      'position:fixed', 'z-index:100000',
-      'background:#2472c8', 'color:#fff',
-      'font-family:Consolas,monospace', 'font-size:11px',
-      'padding:4px 12px', 'border-radius:4px',
-      'box-shadow:0 2px 8px rgba(0,0,0,.5)',
-      'pointer-events:none', 'opacity:1',
-      'transition:opacity .4s ease',
-    ].join(';');
-    if (anchorEl) {
-      const r = anchorEl.getBoundingClientRect();
-      t.style.left   = (r.left + 10) + 'px';
-      t.style.bottom = (window.innerHeight - r.bottom + 8) + 'px';
-    } else {
-      t.style.bottom = '60px'; t.style.right = '20px';
-    }
-    document.body.appendChild(t);
-    setTimeout(() => { t.style.opacity = '0'; }, 1400);
-    setTimeout(() => t.remove(), 1900);
+    showToast(msg, { id: '_tmToast', anchor: anchorEl, zIndex: 100000 });
   }
 
   /* ── Extraer texto completo del buffer xterm ── */
@@ -297,38 +244,10 @@ const TerminalMenu = (() => {
 (function () {
   'use strict';
 
-  /* ── Helpers de clipboard (misma lógica que el módulo superior) ── */
+  /* ── Helpers de clipboard — delegan al helper compartido de main.js ── */
 
-  async function _write(text) {
-    if (!text) return false;
-    if (navigator.clipboard?.writeText) {
-      try { await navigator.clipboard.writeText(text); return true; } catch (_) {}
-    }
-    if (window.pywebview?.api?.set_clipboard) {
-      try {
-        const r = await window.pywebview.api.set_clipboard(text);
-        if (r?.status === 'ok') return true;
-      } catch (_) {}
-    }
-    try {
-      const ta = document.createElement('textarea');
-      ta.value = text; ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
-      document.body.appendChild(ta); ta.select();
-      const ok = document.execCommand('copy');
-      document.body.removeChild(ta); return ok;
-    } catch (_) {}
-    return false;
-  }
-
-  async function _read() {
-    if (navigator.clipboard?.readText) {
-      try { return await navigator.clipboard.readText(); } catch (_) {}
-    }
-    if (window.pywebview?.api?.get_clipboard) {
-      try { return await window.pywebview.api.get_clipboard() || ''; } catch (_) {}
-    }
-    return '';
-  }
+  const _write = writeClipboard;
+  const _read = readClipboard;
 
   /* ── Singleton del menú (reutiliza el de TerminalMenu si ya existe) ── */
 

@@ -229,6 +229,13 @@ window.GameEngine = (function () {
     }
   }, { passive: true });
 
+  /* Si la ventana pierde el foco (alt-tab, clic fuera) el navegador no
+     siempre dispara keyup — sin esto una tecla mantenida podía quedar
+     "trabada" en true para siempre y el sprite seguía moviéndose solo. */
+  window.addEventListener('blur', function() {
+    _keys = {};
+  });
+
   /* ── Ratón ──
      _mouse.clicked / leftClicked / rightClicked son "consumibles":
      se ponen en true en el evento y la función pública correspondiente
@@ -245,8 +252,14 @@ window.GameEngine = (function () {
     wheelUp: false, wheelDown: false
   };
 
+  /* Reusa el canvas ya cacheado por _getCtx() en vez de volver a
+     buscarlo en el DOM en cada evento de mouse. */
+  function _getCanvasEl() {
+    return _canvas || document.getElementById('gameCanvas');
+  }
+
   function _updateMousePos(e) {
-    var canvas = document.getElementById('gameCanvas');
+    var canvas = _getCanvasEl();
     if (!canvas) return;
     var rect = canvas.getBoundingClientRect();
     _mouse.x = e.clientX - rect.left;
@@ -283,7 +296,7 @@ window.GameEngine = (function () {
   /* Click derecho: evitar que el navegador abra su menú contextual
      mientras se juega, igual que el resto de controles del juego. */
   document.addEventListener('contextmenu', function(e) {
-    var canvas = document.getElementById('gameCanvas');
+    var canvas = _getCanvasEl();
     if (canvas && (e.target === canvas || canvas.contains(e.target))) {
       e.preventDefault();
     }
@@ -293,7 +306,7 @@ window.GameEngine = (function () {
      arriba/adelante (estándar en navegadores). Se evita el scroll de
      la página solo cuando la rueda ocurre sobre el canvas del juego. */
   document.addEventListener('wheel', function(e) {
-    var canvas = document.getElementById('gameCanvas');
+    var canvas = _getCanvasEl();
     if (canvas && (e.target === canvas || canvas.contains(e.target))) {
       e.preventDefault();
       if (e.deltaY < 0)      _mouse.wheelUp   = true;
@@ -355,6 +368,10 @@ window.GameEngine = (function () {
       _mouse.rightClicked = false;
       _mouse.wheelUp      = false;
       _mouse.wheelDown    = false;
+
+      /* Reiniciar teclado: una tecla mantenida presionada al reiniciar
+         no debe "heredarse" a la nueva ejecución. */
+      _keys = {};
 
       if (keepBg && _bgImage) {
         ctx.drawImage(_bgImage, 0, 0, _canvas.width, _canvas.height);
@@ -956,6 +973,17 @@ window.GameEngine = (function () {
         try { osc.stop(); } catch (e) {}
       });
       _activeOscillators.length = 0;
+      /* simBuzzer (animation.js) vive fuera del closure de este motor y
+         usa window._simOsc / window._simBuzzerTimer — se detiene aquí
+         también para que Stop no deje un tono sonando de fondo. */
+      if (window._simOsc) {
+        try { window._simOsc.stop(); } catch (e) {}
+        window._simOsc = null;
+      }
+      if (window._simBuzzerTimer) {
+        clearTimeout(window._simBuzzerTimer);
+        window._simBuzzerTimer = null;
+      }
     },
 
     /* ── LED simple (simulado — solo consola) ── */

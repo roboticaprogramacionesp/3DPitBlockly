@@ -254,6 +254,12 @@
         if (typeof runner !== 'undefined' && runner) { clearTimeout(runner); runner = null; }
         if (typeof _rafId !== 'undefined' && _rafId) { cancelAnimationFrame(_rafId); _rafId = null; }
         if (typeof interpreter !== 'undefined' && interpreter) _gamePaused = true;
+        /* Sin esto, un sonido/melodía en curso seguía sonando de fondo
+           al salir de la vista Juego por cualquier camino que no fuera
+           los 3 botones de abajo. */
+        if (window.GameEngine && typeof GameEngine.stopSound === 'function') {
+          GameEngine.stopSound();
+        }
       }
       if (viewId !== 'viewGame') {
         window.gameMode = false;

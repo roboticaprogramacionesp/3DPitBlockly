@@ -946,7 +946,7 @@ Blockly.JavaScript["class_method"] = function () {
   return "";
 };
 Blockly.JavaScript["class_instance"] = function (block) {
-  const cls = block.getFieldValue("CLASS") || "Object";
+  const cls = block.getFieldValue("CLASSNAME") || "Object";
   return ["new " + cls + "()", Blockly.JavaScript.ORDER_NEW];
 };
 Blockly.JavaScript["class_call"] = function (block) {
@@ -1380,6 +1380,108 @@ Blockly.JavaScript["touching_edge"] = function (block) {
   return ["GameEngine.touchingEdge()", Blockly.JavaScript.ORDER_ATOMIC];
 };
 
+/* ══════════════════════════════════════════════════════════════
+   GENERADORES JS — MULTI-PERSONAJE (personajes con nombre)
+   game_blocks.js define estos bloques pero nunca tuvo sus
+   generadores (quedó solo el comentario "se agregan aquí"). Cada
+   método de GameEngine ya acepta un "name" opcional al final, así
+   que solo hace falta pasarlo. Sin name conectado, cae en '' →
+   GameEngine usa el personaje activo (mismo comportamiento que las
+   versiones sin nombre de arriba).
+   ══════════════════════════════════════════════════════════════ */
+function _namedArg(block, inputName, fallback) {
+  return (
+    Blockly.JavaScript.valueToCode(block, inputName, Blockly.JavaScript.ORDER_ATOMIC) ||
+    fallback
+  );
+}
+
+Blockly.JavaScript["sprite_select"] = function (block) {
+  const name = _namedArg(block, "NAME", "''");
+  return "GameEngine.selectSprite(" + name + ");\n";
+};
+
+Blockly.JavaScript["sprite_create_named"] = function (block) {
+  const name = _namedArg(block, "NAME", "''");
+  const x = _namedArg(block, "X", "240");
+  const y = _namedArg(block, "Y", "180");
+  const w = _namedArg(block, "W", "48");
+  const h = _namedArg(block, "H", "48");
+  const img = _namedArg(block, "IMG", "'#00ff88'");
+  return (
+    "GameEngine.createSprite(" + x + ", " + y + ", " + w + ", " + h + ", " + img + ", " + name + ");\n"
+  );
+};
+
+Blockly.JavaScript["sprite_draw_named"] = function (block) {
+  const name = _namedArg(block, "NAME", "''");
+  return "GameEngine.drawSprite(" + name + ");\n";
+};
+
+Blockly.JavaScript["sprite_move_named"] = function (block) {
+  const name = _namedArg(block, "NAME", "''");
+  const dx = _namedArg(block, "DX", "0");
+  const dy = _namedArg(block, "DY", "0");
+  return "GameEngine.moveSprite(" + dx + ", " + dy + ", " + name + ");\n";
+};
+
+Blockly.JavaScript["sprite_set_pos_named"] = function (block) {
+  const name = _namedArg(block, "NAME", "''");
+  const x = _namedArg(block, "X", "0");
+  const y = _namedArg(block, "Y", "0");
+  return "GameEngine.setPos(" + x + ", " + y + ", " + name + ");\n";
+};
+
+Blockly.JavaScript["sprite_get_x_named"] = function (block) {
+  const name = _namedArg(block, "NAME", "''");
+  return ["GameEngine.getX(" + name + ")", Blockly.JavaScript.ORDER_ATOMIC];
+};
+
+Blockly.JavaScript["sprite_get_y_named"] = function (block) {
+  const name = _namedArg(block, "NAME", "''");
+  return ["GameEngine.getY(" + name + ")", Blockly.JavaScript.ORDER_ATOMIC];
+};
+
+Blockly.JavaScript["sprite_move_steps_named"] = function (block) {
+  const name = _namedArg(block, "NAME", "''");
+  const steps = _namedArg(block, "STEPS", "0");
+  return "GameEngine.moveSteps(" + steps + ", " + name + ");\n";
+};
+
+Blockly.JavaScript["sprite_set_angle_named"] = function (block) {
+  const name = _namedArg(block, "NAME", "''");
+  const deg = _namedArg(block, "DEG", "0");
+  return "GameEngine.setAngle(" + deg + ", " + name + ");\n";
+};
+
+Blockly.JavaScript["sprite_get_angle_named"] = function (block) {
+  const name = _namedArg(block, "NAME", "''");
+  return ["GameEngine.getAngle(" + name + ")", Blockly.JavaScript.ORDER_ATOMIC];
+};
+
+Blockly.JavaScript["sprite_set_scale_named"] = function (block) {
+  const name = _namedArg(block, "NAME", "''");
+  const scale = _namedArg(block, "SCALE", "1");
+  return "GameEngine.setScale(" + scale + ", " + name + ");\n";
+};
+
+Blockly.JavaScript["touching_sprite"] = function (block) {
+  const a = _namedArg(block, "A", "''");
+  const b = _namedArg(block, "B", "''");
+  return ["GameEngine.touchingSprite(" + a + ", " + b + ")", Blockly.JavaScript.ORDER_ATOMIC];
+};
+
+Blockly.JavaScript["distance_between"] = function (block) {
+  const a = _namedArg(block, "A", "''");
+  const b = _namedArg(block, "B", "''");
+  return ["GameEngine.distanceBetween(" + a + ", " + b + ")", Blockly.JavaScript.ORDER_ATOMIC];
+};
+
+Blockly.JavaScript["touching_edge_named"] = function (block) {
+  const name = _namedArg(block, "NAME", "''");
+  return ["GameEngine.touchingEdge(" + name + ")", Blockly.JavaScript.ORDER_ATOMIC];
+};
+
 Blockly.JavaScript["color_at_pos"] = function (block) {
   const x =
     Blockly.JavaScript.valueToCode(
@@ -1636,12 +1738,12 @@ Blockly.JavaScript["pot_slider_read_y"] = function (b) {
 /* ── Sensor híbrido ── */
 Blockly.JavaScript["hybrid_sensor_init"] = function (b) { return ""; };
 Blockly.JavaScript["hybrid_sensor_read_analog"] = function (b) {
-  const name = b.getFieldValue("NAME");
-  return [`getSensorValue("adc", "${name}")`, Blockly.JavaScript.ORDER_FUNCTION_CALL];
+  const pin = b.getFieldValue("APIN");
+  return [`getSensorValue("adc", "${pin}")`, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 Blockly.JavaScript["hybrid_sensor_read_digital"] = function (b) {
-  const name = b.getFieldValue("NAME");
-  return [`getSensorValue("pins", "${name}")`, Blockly.JavaScript.ORDER_FUNCTION_CALL];
+  const pin = b.getFieldValue("DPIN");
+  return [`getSensorValue("pins", "${pin}")`, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
 /* ── I2C / SPI ── */
@@ -1744,9 +1846,11 @@ Blockly.JavaScript["actuador_on_off"] = function (b) { return ""; };
 
 /* ── Buzzer / Audio ── */
 Blockly.JavaScript["buzzer_tone"] = function (b) {
-  const freq = Blockly.JavaScript.valueToCode(b, "FREQ", Blockly.JavaScript.ORDER_ATOMIC) || "440";
-  const dur = Blockly.JavaScript.valueToCode(b, "DURATION", Blockly.JavaScript.ORDER_ATOMIC) || "200";
-  return `simBuzzer(${freq}, ${dur});\n`;
+  // NOTE es un field_dropdown (frecuencia en Hz), TIME es un input_value en
+  // segundos — simBuzzer espera ms, por eso se multiplica x1000.
+  const freq = b.getFieldValue("NOTE") || "440";
+  const timeSec = Blockly.JavaScript.valueToCode(b, "TIME", Blockly.JavaScript.ORDER_ATOMIC) || "1";
+  return `simBuzzer(${freq}, (${timeSec}) * 1000);\n`;
 };
 Blockly.JavaScript["buzzer_stop"] = function (b) { return `simBuzzer(0, 0);\n`; };
 Blockly.JavaScript["buzzer_song"] = function (b) { return ""; };
@@ -1911,11 +2015,11 @@ Blockly.JavaScript["machine_deepsleep"] = function (b) { return `sleep(999999999
 Blockly.JavaScript["machine_reset_cause"] = function (b) { return [`0`, Blockly.JavaScript.ORDER_ATOMIC]; };
 Blockly.JavaScript["machine_unique_id"] = function (b) { return [`"SIM-0000"`, Blockly.JavaScript.ORDER_ATOMIC]; };
 Blockly.JavaScript["async_sleep_ms"] = function (b) {
-  const t = Blockly.JavaScript.valueToCode(b, "TIME", Blockly.JavaScript.ORDER_ATOMIC) || "0";
+  const t = b.getFieldValue("MS") || "0";
   return `sleep(${t});\n`;
 };
 Blockly.JavaScript["async_sleep_s"] = function (b) {
-  const t = Blockly.JavaScript.valueToCode(b, "TIME", Blockly.JavaScript.ORDER_ATOMIC) || "0";
+  const t = b.getFieldValue("S") || "0";
   return `sleep((${t})*1000);\n`;
 };
 Blockly.JavaScript["gc_collect"] = function (b) { return ""; };
@@ -1994,13 +2098,14 @@ function initInterpreter(code) {
           var ctx = window._simAudioCtx;
           if (!ctx) ctx = window._simAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
           if (window._simOsc) { try { window._simOsc.stop(); } catch (e) { } }
+          if (window._simBuzzerTimer) { clearTimeout(window._simBuzzerTimer); window._simBuzzerTimer = null; }
           if (!freq || freq <= 0) return;
           var osc = ctx.createOscillator();
           osc.frequency.value = Number(freq) || 440;
           osc.connect(ctx.destination);
           osc.start();
           window._simOsc = osc;
-          if (dur > 0) setTimeout(function () { try { osc.stop(); } catch (e) { } }, Number(dur));
+          if (dur > 0) window._simBuzzerTimer = setTimeout(function () { try { osc.stop(); } catch (e) { } }, Number(dur));
         } catch (e) { }
       }),
     );

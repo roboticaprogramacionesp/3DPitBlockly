@@ -2,7 +2,7 @@
    Service Worker — 3DPit Blocks PWA
    ============================================================ */
 
-const CACHE_NAME = '3dpit-blocks-v2';
+const CACHE_NAME = '3dpit-blocks-v33';
 
 /* ── INSTALL ── */
 self.addEventListener('install', event => {
@@ -12,19 +12,16 @@ self.addEventListener('install', event => {
       .then(dynamicFiles => {
         const allFiles = [
           './',
-          './index.html',
           './static/pwa-manifest.json',
           './static/manifest.json',
           './static/3DPit.ico',
           /* CSS */
           './static/css-tutorial.css',
-          './static/code-tutor.css',
           './static/nuevo.css',
           './static/xterm.css',
           './static/tutorial-steps.css',
           './static/serial-monitor.css',
           './static/viewcode.css',
-          './static/codeTerminal.css',
           /* JS principal */
           './static/xterm.js',
           './static/xterm-addon-fit.js',
@@ -43,6 +40,7 @@ self.addEventListener('install', event => {
           './static/code-tutor.js',
           './static/js-tutorial.js',
           './static/micropython.js',
+          './static/field_slider.js',
           './static/install-button.js',
           './static/lz-string.js',
           /* JS ESP32 */
@@ -121,7 +119,7 @@ self.addEventListener('fetch', event => {
         })
         .catch(() => {
           if (event.request.destination === 'document') {
-            return caches.match('./index.html');
+            return caches.match('./');
           }
         });
     })

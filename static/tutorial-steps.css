@@ -8,6 +8,7 @@
   bottom: 20px;
   right: 20px;
   width: 400px;
+  max-width: calc(100vw - 40px);
   max-height: 88vh;
   overflow-y: auto;
   display: flex;

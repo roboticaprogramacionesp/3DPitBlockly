@@ -21,9 +21,4 @@ venv/
 Thumbs.db
 Desktop.ini
 
-# Archivos
-app.py
-*.spec
-run.py
-
 static/Crear files-list.txt

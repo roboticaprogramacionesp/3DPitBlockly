@@ -33,6 +33,7 @@
   border-radius: 12px;
   box-shadow: 0 8px 40px rgba(0, 0, 0, .75), 0 0 0 1px rgba(124, 106, 247, .3);
   width: 480px;
+  max-width: calc(100vw - 32px);
   overflow: hidden;
   z-index: 10001;
   transition: all 0.25s ease;

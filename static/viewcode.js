@@ -91,47 +91,6 @@ function _enableTerminalCopy() {
   }
 }
 
-/** Extrae todo el texto visible del buffer de `term` como string plano. */
-function _getMainTerminalText() {
-  if (!term) return "";
-  const buffer = term.buffer.active;
-  const lines  = [];
-  for (let i = 0; i < buffer.length; i++) {
-    const line = buffer.getLine(i);
-    if (line) lines.push(line.translateToString(true));
-  }
-  while (lines.length && !lines[lines.length - 1].trim()) lines.pop();
-  return lines.join("\n");
-}
-
-/** Toast minimalista sobre la terminal principal. */
-function _termToast(msg) {
-  document.getElementById("_termToast")?.remove();
-  const toast = document.createElement("div");
-  toast.id = "_termToast";
-  toast.textContent = msg;
-  toast.style.cssText = [
-    "position:fixed", "z-index:9999",
-    "background:#2472c8", "color:#fff",
-    "font-family:Consolas,monospace", "font-size:11px",
-    "padding:4px 12px", "border-radius:4px",
-    "box-shadow:0 2px 8px rgba(0,0,0,.5)",
-    "pointer-events:none", "opacity:1",
-    "transition:opacity .4s ease",
-  ].join(";");
-  const wrapper = document.getElementById("terminalWrapper");
-  if (wrapper) {
-    const r = wrapper.getBoundingClientRect();
-    toast.style.left   = (r.left + 10) + "px";
-    toast.style.bottom = (window.innerHeight - r.bottom + 8) + "px";
-  } else {
-    toast.style.bottom = "60px"; toast.style.right = "20px";
-  }
-  document.body.appendChild(toast);
-  setTimeout(() => { toast.style.opacity = "0"; }, 1400);
-  setTimeout(() => toast.remove(), 1900);
-}
-
 /**
  * Fit de la terminal con delay para que el DOM haya repintado.
  * También refresca CodeMirror si está visible.

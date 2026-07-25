@@ -663,11 +663,10 @@ Blockly.Python["math_map"] = function (block) {
   const out_max = Blockly.Python.valueToCode(block, "OUT_MAX", Blockly.Python.ORDER_NONE) || 100;
 
   // Definir la función una sola vez
-  Blockly.Python.definitions_["map_function"] =
-    `def map(x, in_min=0, in_max=180, out_min=21, out_max=132):
+  Blockly.Python.definitions_["map_servo_function"] =   // ← antes "map_function"
+    `def map_servo(x, in_min=0, in_max=180, out_min=21, out_max=132):
     return int((x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min)`;
-
-  const code = `map(${x}, ${in_min}, ${in_max}, ${out_min}, ${out_max})`;
+  let code = `map_servo(${x}, ${in_min}, ${in_max}, ${out_min}, ${out_max})`;
   return [code, Blockly.Python.ORDER_ATOMIC];
 };
 
@@ -713,18 +712,14 @@ Blockly.Python["ky001_convert"] = function (block) {
 Blockly.Python["ky001_read_index"] = function (block) {
   const pin = block.getFieldValue("PIN");
 
-  const index =
-    Blockly.Python.valueToCode(block, "INDEX", Blockly.Python.ORDER_ATOMIC) ||
-    "0";
-
-  // en vez de asumir "ds${pin}_roms", tomamos la variable/roms que el usuario
-  // conecte al bloque (por ejemplo la variable donde guardó ds5.scan())
-  const roms =
-    Blockly.Python.valueToCode(block, "ROMS", Blockly.Python.ORDER_ATOMIC) ||
-    "roms";
+  const rom =
+    Blockly.Python.valueToCode(block, "ROM", Blockly.Python.ORDER_NONE) ||
+    "rom";
+  
+  const index = Blockly.Python.valueToCode(block, "INDEX", Blockly.Python.ORDER_NONE) || 0;
 
   return [
-    `ds${pin}.read_temp(${roms}[${index}])`,
+    `ds${pin}.read_temp(${rom}[${index}])`,
     Blockly.Python.ORDER_FUNCTION_CALL,
   ];
 };
@@ -896,21 +891,16 @@ Blockly.Python["touch_read"] = function (block) {
 };
 
 
-Blockly.Python["time_sleep"] = function (block) {
-  const value = block.getFieldValue("VALUE");
-  const unit = block.getFieldValue("UNIT");
-
+Blockly.Python.timeSleepCode_ = function (value, unit) {
   let code = "";
   let imports = [];
 
   if (unit === "S") {
     imports.push("sleep");
     code = `sleep(${value})\n`;
-
   } else if (unit === "MS") {
     imports.push("sleep_ms");
     code = `sleep_ms(${value})\n`;
-
   } else if (unit === "US") {
     imports.push("sleep_us");
     code = `sleep_us(${value})\n`;
@@ -934,6 +924,14 @@ Blockly.Python["time_sleep"] = function (block) {
   return code;
 };
 
+Blockly.Python["time_sleep"] = function (block) {
+  const value =
+    Blockly.Python.valueToCode(block, "VALUE", Blockly.Python.ORDER_NONE) ||
+    "1";
+  const unit = block.getFieldValue("UNIT");
+  return Blockly.Python.timeSleepCode_(value, unit);
+};
+
 
 Blockly.Python["time_ticks_ms"] = function (block) {
   Blockly.Python.definitions_["import_time"] = "from time import ticks_ms";
@@ -952,15 +950,10 @@ Blockly.Python["time_ticks_diff"] = function (block) {
   return [`ticks_diff(${tNew}, ${tOld})`, Blockly.Python.ORDER_ATOMIC];
 };
 
-Blockly.Python["time_every"] = function (block) {
-  const interval =
-    Blockly.Python.valueToCode(block, "INTERVAL", Blockly.Python.ORDER_NONE) ||
-    "1000";
-
-  const timer = Blockly.Python.nameDB_.getName(
-    block.getFieldValue("TIMER"),
-    Blockly.VARIABLE_CATEGORY_NAME,
-  );
+Blockly.Python.timeEveryCode_ = function (block, interval) {
+  // Sin campo "TIMER" en el bloque: se genera un nombre único por bloque
+  // (antes intentaba leer un campo que no existe y rompía la generación).
+  const timer = "_timer_" + block.id.replace(/[^a-zA-Z0-9_]/g, "_");
 
   const statements = Blockly.Python.statementToCode(block, "DO") || "  pass\n";
 
@@ -969,12 +962,21 @@ Blockly.Python["time_every"] = function (block) {
 
   Blockly.Python.definitions_["timer_init_" + timer] = `${timer} = ticks_ms()`;
 
-  const code =
+  return (
     `if ticks_diff(ticks_ms(), ${timer}) >= ${interval}:\n` +
     `  ${timer} = ticks_ms()\n` +
-    statements;
+    statements
+  );
+};
 
-  return code;
+Blockly.Python["time_every"] = function (block) {
+  const interval =
+    Blockly.Python.valueToCode(
+      block,
+      "INTERVAL",
+      Blockly.Python.ORDER_NONE,
+    ) || "1000";
+  return Blockly.Python.timeEveryCode_(block, interval);
 };
 
 Blockly.Python["rtc_init"] = function (block) {
@@ -1035,12 +1037,13 @@ ${statements_do}`;
   return code;
 };
 Blockly.Python["machine_deepsleep"] = function (block) {
-  const time = block.getFieldValue("TIME");
+  const time =
+    Blockly.Python.valueToCode(block, "TIME", Blockly.Python.ORDER_NONE) ||
+    "10000";
 
   Blockly.Python.definitions_["import_machine"] = "import machine";
 
-  const code = `machine.deepsleep(${time})\n`;
-  return code;
+  return `machine.deepsleep(${time})\n`;
 };
 
 Blockly.Python["timer_init"] = function (block) {
@@ -1348,6 +1351,13 @@ Blockly.Python["dht_humidity"] = function (block) {
   return [`dht${pin}.humidity()`, Blockly.Python.ORDER_FUNCTION_CALL];
 };
 
+Blockly.Python["dht_select"] = function (block) {
+  const pin = block.getFieldValue("PIN");
+  const type = block.getFieldValue("TYPE");
+
+  return [`dht${pin}.${type}()`, Blockly.Python.ORDER_FUNCTION_CALL];
+};
+
 Blockly.Python["analog_sensor_init"] = function (block) {
   const name = block.getFieldValue("NAME");
   const pin = block.getFieldValue("PIN");
@@ -1413,6 +1423,20 @@ Blockly.Python["ky023_read_sw"] = function (block) {
   return [`${name}_sw.value()`, Blockly.Python.ORDER_ATOMIC];
 };
 
+Blockly.Python["ky023_select"] = function (block) {
+  const name = block.getFieldValue("NAME");
+  const axis = block.getFieldValue("AXIS");
+
+  const code =
+    axis === "X"
+      ? `${name}_x.read()`
+      : axis === "Y"
+        ? `${name}_y.read()`
+        : `${name}_sw.value()`;
+
+  return [code, Blockly.Python.ORDER_ATOMIC];
+};
+
 Blockly.Python["pot_slider_init"] = function (block) {
   const name = block.getFieldValue("NAME");
   const pinA = block.getFieldValue("PIN_A");
@@ -1443,6 +1467,15 @@ Blockly.Python["pot_slider_read_y"] = function (block) {
   const name = block.getFieldValue("NAME");
 
   const code = `${name}B.read()`;
+
+  return [code, Blockly.Python.ORDER_ATOMIC];
+};
+
+Blockly.Python["pot_slider_select"] = function (block) {
+  const name = block.getFieldValue("NAME");
+  const axis = block.getFieldValue("AXIS");
+
+  const code = `${name}${axis}.read()`;
 
   return [code, Blockly.Python.ORDER_ATOMIC];
 };
@@ -1492,6 +1525,15 @@ ${name}_in4 = Pin(${in4}, Pin.OUT)
 `;
 };
 
+// Traduce Adelante/Atrás/Detener a los dos pines IN de un motor DC —
+// usado por los generadores move_dc_motor1/2(_pwm), que antes repetían
+// este mismo if/else en cada uno.
+Blockly.Python.dcMotorDirCode_ = function (pinA, pinB, mover) {
+  if (mover === "Adelante") return `${pinA}.on()\n${pinB}.off()\n`;
+  if (mover === "Atrás") return `${pinA}.off()\n${pinB}.on()\n`;
+  return `${pinA}.off()\n${pinB}.off()\n`;
+};
+
 Blockly.Python["move_dc_motor1_on_off"] = function (block) {
   const name = block.getFieldValue("NAME");
   const motor = block.getFieldValue("motor");
@@ -1529,15 +1571,7 @@ Blockly.Python["move_dc_motor1"] = function (block) {
     b = `${name}_in4`;
   }
 
-  if (mover == "Adelante") {
-    return `${a}.on()\n${b}.off()\n`;
-  }
-
-  if (mover == "Atrás") {
-    return `${a}.off()\n${b}.on()\n`;
-  }
-
-  return `${a}.off()\n${b}.off()\n`;
+  return Blockly.Python.dcMotorDirCode_(a, b, mover);
 };
 
 Blockly.Python["move_dc_motor2_on_off"] = function (block) {
@@ -1560,15 +1594,9 @@ Blockly.Python["move_dc_motor2"] = function (block) {
   const v1 = block.getFieldValue("motorA");
   const v2 = block.getFieldValue("motorB");
 
-  let code = "";
-
-  if (v1 == "Adelante") code += `${name}_in1.on()\n${name}_in2.off()\n`;
-  if (v1 == "Atrás") code += `${name}_in1.off()\n${name}_in2.on()\n`;
-  if (v1 == "Detener") code += `${name}_in1.off()\n${name}_in2.off()\n`;
-
-  if (v2 == "Adelante") code += `${name}_in3.on()\n${name}_in4.off()\n`;
-  if (v2 == "Atrás") code += `${name}_in3.off()\n${name}_in4.on()\n`;
-  if (v2 == "Detener") code += `${name}_in3.off()\n${name}_in4.off()\n`;
+  const code =
+    Blockly.Python.dcMotorDirCode_(`${name}_in1`, `${name}_in2`, v1) +
+    Blockly.Python.dcMotorDirCode_(`${name}_in3`, `${name}_in4`, v2);
 
   return code;
 };
@@ -1666,67 +1694,89 @@ ${name}_in4 = Pin(${in4},Pin.OUT)
 
 Blockly.Python["move_dc_motor1_pwm"] = function (block) {
   const name = block.getFieldValue("NAME");
-
   const motor = block.getFieldValue("motor");
-  const speed =
-    Blockly.Python.valueToCode(block, "VALUE", Blockly.Python.ORDER_ATOMIC) ||
-    0;
-
+  const speed = block.getFieldValue("VELOCIDAD") || "0";
   const mover = block.getFieldValue("mover");
 
-  let a, b, pwm;
-
-  if (motor == "A") {
-    a = `${name}_in1`;
-    b = `${name}_in2`;
-    pwm = `${name}_pwmA`;
-  } else {
-    a = `${name}_in3`;
-    b = `${name}_in4`;
-    pwm = `${name}_pwmB`;
-  }
-
-  let dir = "";
-
-  if (mover == "Adelante") dir = `${a}.on()\n${b}.off()`;
-  if (mover == "Atrás") dir = `${a}.off()\n${b}.on()`;
-  if (mover == "Detener") dir = `${a}.off()\n${b}.off()`;
-
-  return `
-${pwm}.duty(${speed})
-${dir}
+  Blockly.Python.definitions_["map_function"] =
+    `def map(x, in_min=0, in_max=100, out_min=0, out_max=1023):
+    return int((x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min)
 `;
+
+  let a, b, pwm;
+  if (motor == "A") { a = `${name}_in1`; b = `${name}_in2`; pwm = `${name}_pwmA`; }
+  else              { a = `${name}_in3`; b = `${name}_in4`; pwm = `${name}_pwmB`; }
+
+  const dir = Blockly.Python.dcMotorDirCode_(a, b, mover);
+
+  return `${pwm}.duty(map(${speed}, 0, 100, 0, 1023))\n${dir}`;
+};
+
+Blockly.Python["move_dc_motor1_pwm_var"] = function (block) {
+  const name = block.getFieldValue("NAME");
+  const motor = block.getFieldValue("motor");
+  const speed =
+    Blockly.Python.valueToCode(
+      block,
+      "VELOCIDAD",
+      Blockly.Python.ORDER_NONE,
+    ) || "0";
+  const mover = block.getFieldValue("mover");
+
+  Blockly.Python.definitions_["map_function"] =
+    `def map(x, in_min=0, in_max=100, out_min=0, out_max=1023):
+    return int((x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min)
+`;
+
+  let a, b, pwm;
+  if (motor == "A") { a = `${name}_in1`; b = `${name}_in2`; pwm = `${name}_pwmA`; }
+  else              { a = `${name}_in3`; b = `${name}_in4`; pwm = `${name}_pwmB`; }
+
+  const dir = Blockly.Python.dcMotorDirCode_(a, b, mover);
+
+  return `${pwm}.duty(map(${speed}, 0, 100, 0, 1023))\n${dir}`;
 };
 
 Blockly.Python["move_dc_motor2_pwm"] = function (block) {
   const name = block.getFieldValue("NAME");
+  const motor = block.getFieldValue("motor");
+  const speed = block.getFieldValue("SPEED") || "0";
+  const mover = block.getFieldValue("mover");
 
-  const speedA =
-    Blockly.Python.valueToCode(block, "VALUEA", Blockly.Python.ORDER_ATOMIC) ||
-    0;
-
-  const speedB =
-    Blockly.Python.valueToCode(block, "VALUEB", Blockly.Python.ORDER_ATOMIC) ||
-    0;
-
-  const v1 = block.getFieldValue("motorA");
-  const v2 = block.getFieldValue("motorB");
-
-  let code = "";
-
-  if (v1 == "Adelante") code += `${name}_in1.on()\n${name}_in2.off()\n`;
-  if (v1 == "Atrás") code += `${name}_in1.off()\n${name}_in2.on()\n`;
-  if (v1 == "Detener") code += `${name}_in1.off()\n${name}_in2.off()\n`;
-
-  if (v2 == "Adelante") code += `${name}_in3.on()\n${name}_in4.off()\n`;
-  if (v2 == "Atrás") code += `${name}_in3.off()\n${name}_in4.on()\n`;
-  if (v2 == "Detener") code += `${name}_in3.off()\n${name}_in4.off()\n`;
-
-  return `
-${name}_pwmA.duty(${speedA})
-${name}_pwmB.duty(${speedB})
-${code}
+  Blockly.Python.definitions_["map_function"] =
+    `def map(x, in_min=0, in_max=100, out_min=0, out_max=1023):
+    return int((x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min)
 `;
+
+  let a, b, pwm;
+  if (motor == "A") { a = `${name}_in1`; b = `${name}_in2`; pwm = `${name}_pwmA`; }
+  else              { a = `${name}_in3`; b = `${name}_in4`; pwm = `${name}_pwmB`; }
+
+  const dir = Blockly.Python.dcMotorDirCode_(a, b, mover);
+
+  return `${pwm}.duty(map(${speed}, 0, 100, 0, 1023))\n${dir}`;
+};
+
+Blockly.Python["move_dc_motor2_pwm_var"] = function (block) {
+  const name = block.getFieldValue("NAME");
+  const motor = block.getFieldValue("motor");
+  const speed =
+    Blockly.Python.valueToCode(block, "SPEED", Blockly.Python.ORDER_NONE) ||
+    "0";
+  const mover = block.getFieldValue("mover");
+
+  Blockly.Python.definitions_["map_function"] =
+    `def map(x, in_min=0, in_max=100, out_min=0, out_max=1023):
+    return int((x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min)
+`;
+
+  let a, b, pwm;
+  if (motor == "A") { a = `${name}_in1`; b = `${name}_in2`; pwm = `${name}_pwmA`; }
+  else              { a = `${name}_in3`; b = `${name}_in4`; pwm = `${name}_pwmB`; }
+
+  const dir = Blockly.Python.dcMotorDirCode_(a, b, mover);
+
+  return `${pwm}.duty(map(${speed}, 0, 100, 0, 1023))\n${dir}`;
 };
 
 Blockly.Python["init_servo"] = function (block) {
@@ -1736,7 +1786,7 @@ Blockly.Python["init_servo"] = function (block) {
     "from machine import Pin, PWM";
 
   Blockly.Python.definitions_["servo_map_func"] =
-    `def map(x, in_min=0, in_max=180, out_min=21, out_max=132):
+    `def map_servo(x, in_min=0, in_max=180, out_min=21, out_max=132):
     return int((x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min)
 `;
 
@@ -1746,7 +1796,15 @@ Blockly.Python["init_servo"] = function (block) {
 Blockly.Python["move_servo"] = function (block) {
   const pin = block.getFieldValue("PIN");
   const angle = block.getFieldValue("ANGLE");
-  return `servo_${pin}.duty(map(${angle}))\n`;
+  return `servo_${pin}.duty(map_servo(${angle}))\n`;
+};
+
+Blockly.Python["move_servo_var"] = function (block) {
+  const pin = block.getFieldValue("PIN");
+  const angle =
+    Blockly.Python.valueToCode(block, "ANGLE", Blockly.Python.ORDER_NONE) ||
+    "90";
+  return `servo_${pin}.duty(map_servo(${angle}))\n`;
 };
 
 Blockly.Python["stepper_init"] = function (block) {
@@ -1792,6 +1850,22 @@ Blockly.Python["stepper_angle"] = function (block) {
   const code = `${name}.step_until_angle(${angle})\n`;
 
   return code;
+};
+
+Blockly.Python["stepper_degrees_var"] = function (block) {
+  const name = block.getFieldValue("NAME");
+  const deg =
+    Blockly.Python.valueToCode(block, "ANGLE", Blockly.Python.ORDER_NONE) ||
+    "90";
+  return `${name}.step_degrees(${deg})\n`;
+};
+
+Blockly.Python["stepper_angle_var"] = function (block) {
+  const name = block.getFieldValue("NAME");
+  const angle =
+    Blockly.Python.valueToCode(block, "ANGLE", Blockly.Python.ORDER_NONE) ||
+    "90";
+  return `${name}.step_until_angle(${angle})\n`;
 };
 
 Blockly.Python["init_infrarrojo"] = function (block) {
@@ -2080,6 +2154,16 @@ Blockly.Python["can_send"] = function (block) {
   return `can.send(${data}, ${id})\n`;
 };
 
+// Escapa backslashes y comillas de texto escrito por el usuario (SSID,
+// password, etc.) antes de insertarlo en un literal de string Python —
+// evita que un " o ' en el campo rompa el .py generado.
+Blockly.Python.pyEscape_ = function (value) {
+  return String(value)
+    .replace(/\\/g, "\\\\")
+    .replace(/"/g, '\\"')
+    .replace(/'/g, "\\'");
+};
+
 Blockly.Python["wifi_init"] = function (block) {
   const variable = block.getFieldValue("VAR");
   const mode = block.getFieldValue("MODE");
@@ -2103,8 +2187,8 @@ Blockly.Python["wifi_init"] = function (block) {
 //     Se agrega un timeout de 10 segundos (20 intentos × 0.5s) con mensaje claro.
 Blockly.Python["wifi_connect"] = function (block) {
   const variable = block.getFieldValue("VAR");
-  const ssid = block.getFieldValue("SSID");
-  const pass = block.getFieldValue("PASS");
+  const ssid = Blockly.Python.pyEscape_(block.getFieldValue("SSID"));
+  const pass = Blockly.Python.pyEscape_(block.getFieldValue("PASS"));
 
   Blockly.Python.definitions_["wifi_imports"] =
     "import network\n" + "import time";
@@ -2122,8 +2206,10 @@ Blockly.Python["wifi_connect"] = function (block) {
 };
 
 Blockly.Python["wifi_ap"] = function (block) {
-  const ssid = block.getFieldValue("AP_SSID");
-  const pass = block.getFieldValue("AP_PASS");
+  const rawSsid = block.getFieldValue("AP_SSID");
+  const rawPass = block.getFieldValue("AP_PASS");
+  const ssid = Blockly.Python.pyEscape_(rawSsid);
+  const pass = Blockly.Python.pyEscape_(rawPass);
   const ip = block.getFieldValue("AP_IP");
   const subnet = block.getFieldValue("AP_SUBNET");
 
@@ -2131,7 +2217,7 @@ Blockly.Python["wifi_ap"] = function (block) {
 
   let authConfig = "";
 
-  if (pass && pass.length >= 8) {
+  if (rawPass && rawPass.length >= 8) {
     authConfig =
       "  ap.config(essid=SERVER_SSID, password=PASSWORD, authmode=network.AUTH_WPA2_PSK)\n";
   } else {
@@ -2177,8 +2263,8 @@ Blockly.Python["wifi_disconnect"] = function (block) {
 };
 
 Blockly.Python["wifi_define_connect"] = function (block) {
-  const ssid = block.getFieldValue("SSID");
-  const pass = block.getFieldValue("PASS");
+  const ssid = Blockly.Python.pyEscape_(block.getFieldValue("SSID"));
+  const pass = Blockly.Python.pyEscape_(block.getFieldValue("PASS"));
 
   Blockly.Python.definitions_["wifi_imports"] =
     "import network\nimport time";
@@ -2954,6 +3040,11 @@ Blockly.Python["oled_scroll"] = function (block) {
   return `${name}.scroll(${dx}, ${dy})\n`;
 };
 
+Blockly.Python["points_xy"] = function (block) {
+  const points = block.getFieldValue("POINTS") || "[]";
+  return [points, Blockly.Python.ORDER_ATOMIC];
+};
+
 Blockly.Python["oled_contrast"] = function (block) {
   const name = block.getFieldValue("NAME");
 
@@ -3087,8 +3178,16 @@ Blockly.Python["matrix8_rect"] = function (block) {
 
 Blockly.Python["matrix8_brightness"] = function (block) {
   const name = block.getFieldValue("NAME");
-  var v =
-    Blockly.Python.valueToCode(block, "VALUE", Blockly.Python.ORDER_NONE) || 5;
+  const v = block.getFieldValue("VALUE") || 5;
+
+  return `${name}.brightness(${v})\n`;
+};
+
+Blockly.Python["matrix8_brightness_var"] = function (block) {
+  const name = block.getFieldValue("NAME");
+  const v =
+    Blockly.Python.valueToCode(block, "VALUE", Blockly.Python.ORDER_NONE) ||
+    "5";
 
   return `${name}.brightness(${v})\n`;
 };
@@ -3128,9 +3227,15 @@ Blockly.Python["tm1637_init"] = function (block) {
 
 Blockly.Python["tm1637_brightness"] = function (block) {
   const name = block.getFieldValue("NAME");
+  const bright = block.getFieldValue("BRIGHT") || 7;
+  return `${name}.brightness(${bright})\n`;
+};
+
+Blockly.Python["tm1637_brightness_var"] = function (block) {
+  const name = block.getFieldValue("NAME");
   const bright =
-    Blockly.Python.valueToCode(block, "BRIGHT", Blockly.Python.ORDER_ATOMIC) ||
-    7;
+    Blockly.Python.valueToCode(block, "BRIGHT", Blockly.Python.ORDER_NONE) ||
+    "7";
   return `${name}.brightness(${bright})\n`;
 };
 
@@ -3248,9 +3353,16 @@ Blockly.Python["neopixel_init_8x8"] = function (block) {
 
 Blockly.Python["neopixel_show"] = function (block) {
   const name = block.getFieldValue("NAME");
-  const bright = block.getFieldValue("N") || "0.5";
-
-  return `${name}.show(brightness=${bright})\n`;
+  const bright = block.getFieldValue("BRIGHT") || "50";
+  // Nombre propio (map_neopixel_brightness, no "map") para no chocar con
+  // el "map_function"/"map" genérico que usan los bloques de motor PWM
+  // (misma clave, fórmula distinta 0–1023 en vez de 0–1 — si un proyecto
+  // usaba NeoPixel y motores PWM juntos, uno de los dos quedaba mal).
+  Blockly.Python.definitions_["map_neopixel_brightness_function"] =
+    `def map_neopixel_brightness(x, in_min=0, in_max=100, out_min=0, out_max=1):
+    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
+`;
+  return `${name}.show(brightness=map_neopixel_brightness(${bright}, 0, 100, 0, 1))\n`;
 };
 
 Blockly.Python["neopixel_clear"] = function (block) {
@@ -3493,10 +3605,17 @@ Blockly.Python["neopixel_marquee"] = function (block) {
   Blockly.Python.definitions_["ezFBfont_import"] = "import ezFBfont_4x6_latin_06 as font";
   Blockly.Python.definitions_["time_sleep_import"] = "from time import sleep";
   Blockly.Python.definitions_["rgb565_fn"] = "def rgb565(r,g,b):\n  return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)\n";
+  // Misma función que usa neopixel_show — comparten la clave para no
+  // duplicar la definición si se usan los dos bloques juntos.
+  Blockly.Python.definitions_["map_neopixel_brightness_function"] =
+    `def map_neopixel_brightness(x, in_min=0, in_max=100, out_min=0, out_max=1):
+    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
+`;
 
   const name = block.getFieldValue("NAME");
   const move = block.getFieldValue("MOVE");
-  const brightness = block.getFieldValue("BRIGHTNESS");
+  const brightnessPct = block.getFieldValue("BRIGHTNESS") || "20";
+  const brightness = `map_neopixel_brightness(${brightnessPct}, 0, 100, 0, 1)`;
   const text = Blockly.Python.valueToCode(block, "TEXT", Blockly.Python.ORDER_NONE) || "'Hola'";
   const x = Blockly.Python.valueToCode(block, "X", Blockly.Python.ORDER_NONE) || "1";
   const y = Blockly.Python.valueToCode(block, "Y", Blockly.Python.ORDER_NONE) || "1";
@@ -3817,9 +3936,33 @@ motorA_pwm.duty(${speed})
 `;
 };
 
+Blockly.Python["set_speed_motorA_var"] = function (block) {
+  const dir = block.getFieldValue("DIR");
+  const speed =
+    Blockly.Python.valueToCode(block, "SPEED", Blockly.Python.ORDER_NONE) ||
+    "0";
+
+  return `
+motorA_dir.value(${dir})
+motorA_pwm.duty(${speed})
+`;
+};
+
 Blockly.Python["set_speed_motorB"] = function (block) {
   const dir = block.getFieldValue("DIR");
   const speed = block.getFieldValue("SPEED");
+
+  return `
+motorB_dir.value(${dir})
+motorB_pwm.duty(${speed})
+`;
+};
+
+Blockly.Python["set_speed_motorB_var"] = function (block) {
+  const dir = block.getFieldValue("DIR");
+  const speed =
+    Blockly.Python.valueToCode(block, "SPEED", Blockly.Python.ORDER_NONE) ||
+    "0";
 
   return `
 motorB_dir.value(${dir})
@@ -3969,6 +4112,14 @@ Blockly.Python["rtc_ds3231_get_minute"] = function (block) {
 Blockly.Python["rtc_ds3231_get_second"] = function (block) {
   const name = block.getFieldValue("NAME");
   const code = `${name}.datetime()[6]`;
+  return [code, Blockly.Python.ORDER_ATOMIC];
+};
+
+Blockly.Python["rtc_ds3231_select"] = function (block) {
+  const name = block.getFieldValue("NAME");
+  const unit = block.getFieldValue("UNIT");
+  const index = { HOUR: 4, MINUTE: 5, SECOND: 6 }[unit];
+  const code = `${name}.datetime()[${index}]`;
   return [code, Blockly.Python.ORDER_ATOMIC];
 };
 
@@ -4183,9 +4334,18 @@ Blockly.Python["tcs34725_clear"] = function (block) {
   return [code, Blockly.Python.ORDER_ATOMIC];
 };
 
+Blockly.Python["tcs34725_select"] = function (block) {
+  const name = block.getFieldValue("NAME");
+  const channel = block.getFieldValue("CHANNEL");
+
+  const code = `${name}.read(True)[${channel}]`;
+
+  return [code, Blockly.Python.ORDER_ATOMIC];
+};
+
 Blockly.Python["tcs34725_integration"] = function (block) {
   const name = block.getFieldValue("NAME");
-  const value = block.getFieldValue("VALUE");
+  const value = block.getFieldValue("INTEGRATION_TIME");
 
   const code = `${name}.integration_time(${value})`;
 
@@ -4194,7 +4354,7 @@ Blockly.Python["tcs34725_integration"] = function (block) {
 
 Blockly.Python["tcs34725_gain"] = function (block) {
   const name = block.getFieldValue("NAME");
-  const value = block.getFieldValue("VALUE");
+  const value = block.getFieldValue("GAIN");
 
   const code = `${name}.gain(${value})`;
 
@@ -4219,13 +4379,8 @@ ${name} = MP3PLAYER(uart_${id})\n`;
 
 Blockly.Python["dfplayer_play"] = function (block) {
   const name = block.getFieldValue("NAME");
-  const track =
-    Blockly.Python.valueToCode(block, "TRACK", Blockly.Python.ORDER_ATOMIC) ||
-    "1";
 
-  const code = `${name}.play()\n`;
-
-  return code;
+  return `${name}.play()\n`;
 };
 
 Blockly.Python["dfplayer_pause"] = function (block) {
@@ -4242,8 +4397,15 @@ Blockly.Python["dfplayer_stop"] = function (block) {
 
 Blockly.Python["dfplayer_volume"] = function (block) {
   const name = block.getFieldValue("NAME");
+  const volume = block.getFieldValue("VOLUME") || "20";
+
+  return `${name}.setVolume(${volume})\n`;
+};
+
+Blockly.Python["dfplayer_volume_var"] = function (block) {
+  const name = block.getFieldValue("NAME");
   const volume =
-    Blockly.Python.valueToCode(block, "VOLUME", Blockly.Python.ORDER_ATOMIC) ||
+    Blockly.Python.valueToCode(block, "VOLUME", Blockly.Python.ORDER_NONE) ||
     "20";
 
   return `${name}.setVolume(${volume})\n`;
@@ -4439,6 +4601,21 @@ Blockly.Python["mpu6050_temperature"] = function (block) {
   return [`${name}.read_temperature()`, Blockly.Python.ORDER_ATOMIC];
 };
 
+Blockly.Python["mpu6050_select_accel"] = function (block) {
+  const name = block.getFieldValue("NAME");
+  const axis = block.getFieldValue("AXIS");
+  return [
+    `${name}.read_accel_data()['${axis}']`,
+    Blockly.Python.ORDER_ATOMIC,
+  ];
+};
+
+Blockly.Python["mpu6050_select_gyro"] = function (block) {
+  const name = block.getFieldValue("NAME");
+  const axis = block.getFieldValue("AXIS");
+  return [`${name}.read_gyro_data()['${axis}']`, Blockly.Python.ORDER_ATOMIC];
+};
+
 Blockly.Python["sdcard_init"] = function (block) {
   const name = block.getFieldValue("NAME");
   const sck = block.getFieldValue("SCK");
@@ -4587,6 +4764,29 @@ def bmp_calcular_altitud(presion, base=81000):
   return [code, Blockly.Python.ORDER_ATOMIC];
 };
 
+Blockly.Python["bmp_select"] = function (block) {
+  const name = block.getFieldValue("NAME");
+  const type = block.getFieldValue("TYPE");
+
+  if (type === "ALTITUDE") {
+    Blockly.Python.definitions_["bmp_altitude_func"] = `import math
+
+def bmp_calcular_altitud(presion, base=81000):
+    try:
+        return 44330 * (1.0 - (presion / base) ** 0.1903)
+    except:
+        return 0`;
+
+    return [
+      `bmp_calcular_altitud(${name}.pressure)`,
+      Blockly.Python.ORDER_ATOMIC,
+    ];
+  }
+
+  const prop = type === "TEMP" ? "temperature" : "pressure";
+  return [`${name}.${prop}`, Blockly.Python.ORDER_ATOMIC];
+};
+
 Blockly.Python["bh1750_init"] = function (block) {
   const name = block.getFieldValue("NAME");
   const id = block.getFieldValue("ID");
@@ -4651,6 +4851,12 @@ Blockly.Python["qmc5883l_read_y"] = function (block) {
 Blockly.Python["qmc5883l_read_z"] = function (block) {
   const name = block.getFieldValue("NAME");
   return [`${name}_data[2]`, Blockly.Python.ORDER_ATOMIC];
+};
+
+Blockly.Python["qmc5883l_select"] = function (block) {
+  const name = block.getFieldValue("NAME");
+  const axis = block.getFieldValue("AXIS");
+  return [`${name}_data[${axis}]`, Blockly.Python.ORDER_ATOMIC];
 };
 
 Blockly.Python["cp2102_init"] = function (block) {
@@ -4745,6 +4951,12 @@ Blockly.Python["gps_time"] = function (block) {
   return [code, Blockly.Python.ORDER_ATOMIC];
 };
 
+Blockly.Python["gps_select"] = function (block) {
+  const name = block.getFieldValue("NAME");
+  const type = block.getFieldValue("TYPE");
+  return [`${name}.${type}`, Blockly.Python.ORDER_ATOMIC];
+};
+
 Blockly.Python["yf201_init"] = function (block) {
   const name = block.getFieldValue("NAME");
   const pin = block.getFieldValue("PIN");
@@ -4792,8 +5004,12 @@ Blockly.Python["yf201_reset"] = function (block) {
 
 // Configuración del AP (genera las constantes globales)
 Blockly.Python["wifi_ap_config"] = function (block) {
-  const ssid = block.getFieldValue("SSID") || "ESP32_AP";
-  const password = block.getFieldValue("PASSWORD") || "12345678";
+  const ssid = Blockly.Python.pyEscape_(
+    block.getFieldValue("SSID") || "ESP32_AP",
+  );
+  const password = Blockly.Python.pyEscape_(
+    block.getFieldValue("PASSWORD") || "12345678",
+  );
   const ip = block.getFieldValue("IP") || "192.168.0.1";
   const subnet = block.getFieldValue("SUBNET") || "255.255.255.0";
 
@@ -4946,14 +5162,17 @@ Blockly.Python["portal_get_valor"] = function (_block) {
 
 // await asyncio.sleep_ms
 Blockly.Python["async_sleep_ms"] = function (block) {
-  const ms = block.getFieldValue("MS") || 100;
+  const ms =
+    Blockly.Python.valueToCode(block, "MS", Blockly.Python.ORDER_NONE) ||
+    "100";
   Blockly.Python.definitions_["import_asyncio"] = "import uasyncio as asyncio";
   return `await asyncio.sleep_ms(${ms})\n`;
 };
 
 // await asyncio.sleep (segundos)
 Blockly.Python["async_sleep_s"] = function (block) {
-  const s = block.getFieldValue("S") || 1;
+  const s =
+    Blockly.Python.valueToCode(block, "S", Blockly.Python.ORDER_NONE) || "1";
   Blockly.Python.definitions_["import_asyncio"] = "import uasyncio as asyncio";
   return `await asyncio.sleep(${s})\n`;
 };
@@ -5646,7 +5865,9 @@ Blockly.Python["espcam_http_handler"] = function (_block) {
 /* ── espcam_main ─────────────────────────────────────────────
    Programa completo: AP + DNS + HTTP + cámara                 */
 Blockly.Python["espcam_main"] = function (block) {
-  const ssid = block.getFieldValue("SSID") || "Robot-Control";
+  const ssid = Blockly.Python.pyEscape_(
+    block.getFieldValue("SSID") || "Robot-Control",
+  );
 
   Blockly.Python.definitions_["espcam_imports"] =
     "import gc\n" +

@@ -402,14 +402,14 @@ var TUTORIALS = {
         highlightCat: null, bloque: null
       },
       {
-        titulo: "Abre Actuadores › Sounds (Buzzer)",
-        desc: "Expande <b>Actuadores</b> y selecciona <b>Sounds (Buzzer)</b>.",
-        highlightCat: "Sounds (Buzzer)", expandCat: "Actuadores", bloque: null
+        titulo: "Abre Sensores › Buzzer (KY-006)",
+        desc: "Expande <b>Sensores</b> y selecciona <b>Buzzer (KY-006)</b>.",
+        highlightCat: "Buzzer (KY-006)", expandCat: "Sensores", bloque: null
       },
       {
         titulo: "Arrastra: Tono Buzzer",
         desc: "Arrastra el bloque <em>Reproducir tono (buzzer)</em>. Establece el Pin en <b>12</b> y elige una nota, por ejemplo <b>B2</b>.",
-        highlightCat: "Sounds (Buzzer)", expandCat: "Actuadores", bloque: "buzzer_tone", bloqueLabel: "Reproducir tono (buzzer)"
+        highlightCat: "Buzzer (KY-006)", expandCat: "Sensores", bloque: "buzzer_tone", bloqueLabel: "Reproducir tono (buzzer)"
       },
       {
         titulo: "Establecer 1 segundo",
@@ -423,14 +423,14 @@ var TUTORIALS = {
         highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
       },
       {
-        titulo: "Abre la categoría Actuadores",
-        desc: "Haz clic en <b>Actuadores</b> en el panel de bloques para desplegarlo.",
-        highlightCat: "Actuadores", expandCat: null, bloque: null
+        titulo: "Abre la categoría Sensores",
+        desc: "Haz clic en <b>Sensores</b> en el panel de bloques para desplegarlo.",
+        highlightCat: "Sensores", expandCat: null, bloque: null
       },
       {
         titulo: "Detener el buzzer",
         desc: "Arrastra el bloque <em>Detener buzzer</em>. Establece el Pin en <b>12</b>. Esto corta el sonido.",
-        highlightCat: "Sounds (Buzzer)", expandCat: "Actuadores", bloque: "buzzer_stop", bloqueLabel: "Detener buzzer"
+        highlightCat: "Buzzer (KY-006)", expandCat: "Sensores", bloque: "buzzer_stop", bloqueLabel: "Detener buzzer"
       },
       {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
@@ -2113,14 +2113,14 @@ var TUTORIALS = {
         highlightCat: null, bloque: null
       },
       {
-        titulo: "Selecciona la subcategoría DHT",
-        desc: "Dentro de <b>Sensores → Sensores Digitales</b>, haz clic en <b>DHT</b> para ver los bloques del sensor de temperatura y humedad.",
-        highlightCat: "DHT", expandCat: "Sensores", bloque: null
+        titulo: "Selecciona la subcategoría DHT11 / DHT22",
+        desc: "Dentro de <b>Sensores → Sensores Digitales</b>, haz clic en <b>DHT11 / DHT22</b> para ver los bloques del sensor de temperatura y humedad.",
+        highlightCat: "DHT11 / DHT22", expandCat: "Sensores", bloque: null
       },
       {
         titulo: "Arrastra: Inicializar DHT",
         desc: "Arrastra el bloque <em>Preparar sensor DHT</em> al área de trabajo. Selecciona el modelo <b>DHT11</b> (o DHT22 si tienes ese) y el pin <b>4</b>. Este bloque va <b>una sola vez</b> al inicio del programa.",
-        highlightCat: "DHT", expandCat: "Sensores",
+        highlightCat: "DHT11 / DHT22", expandCat: "Sensores",
         bloque: "dht_init", bloqueLabel: "Preparar sensor DHT"
       },
       {
@@ -2136,20 +2136,20 @@ var TUTORIALS = {
       },
       {
         titulo: "Dentro del ciclo: medir el sensor",
-        desc: "Ve a <b>Sensores → Sensores Digitales → DHT</b> y arrastra el bloque <em>Medir DHT</em> como <b>primer bloque dentro del ciclo</b>. Este comando dispara la lectura; sin él los valores de temperatura y humedad no se actualizan.",
-        highlightCat: "DHT", expandCat: "Sensores",
+        desc: "Ve a <b>Sensores → Sensores Digitales → DHT11 / DHT22</b> y arrastra el bloque <em>Medir DHT</em> como <b>primer bloque dentro del ciclo</b>. Este comando dispara la lectura; sin él los valores de temperatura y humedad no se actualizan.",
+        highlightCat: "DHT11 / DHT22", expandCat: "Sensores",
         bloque: "dht_measure", bloqueLabel: "Medir DHT"
       },
       {
         titulo: "Guardar temperatura",
-        desc: "Ve a <b>Variables</b> y arrastra <em>establecer temp a</em> justo después del bloque <em>Medir DHT</em>. Luego ve a <b>Sensores → DHT</b> y conecta el bloque <em>Leer temperatura DHT</em> (pin <b>4</b>) al espacio vacío.",
+        desc: "Ve a <b>Variables</b> y arrastra <em>establecer temp a</em> justo después del bloque <em>Medir DHT</em>. Luego ve a <b>Sensores → DHT11 / DHT22</b> y conecta el bloque <em>Leer temperatura DHT</em> (pin <b>4</b>) al espacio vacío.",
         highlightCat: "Variables",
         bloque: "variables_set", bloqueLabel: "establecer temp a"
       },
       {
         titulo: "Guardar humedad",
-        desc: "Arrastra otro bloque <em>establecer hum a</em> debajo. Conecta el bloque <em>Leer humedad DHT</em> (pin <b>4</b>) desde <b>Sensores → DHT</b>.",
-        highlightCat: "DHT", expandCat: "Sensores",
+        desc: "Arrastra otro bloque <em>establecer hum a</em> debajo. Conecta el bloque <em>Leer humedad DHT</em> (pin <b>4</b>) desde <b>Sensores → DHT11 / DHT22</b>.",
+        highlightCat: "DHT11 / DHT22", expandCat: "Sensores",
         bloque: "dht_humidity", bloqueLabel: "Leer humedad DHT"
       },
       {
@@ -2206,9 +2206,9 @@ var TUTORIALS = {
         highlightCat: null, bloque: null
       },
       {
-        titulo: "Selecciona la subcategoría KY-001",
-        desc: "Dentro de <b>Sensores → Sensores Digitales</b>, haz clic en <b>KY-001</b> para ver los bloques del sensor de temperatura DS18B20.",
-        highlightCat: "KY-001", expandCat: "Sensores", bloque: null
+        titulo: "Selecciona la subcategoría DS18B20 (KY-001)",
+        desc: "Dentro de <b>Sensores → Sensores Digitales</b>, haz clic en <b>DS18B20 (KY-001)</b> para ver los bloques del sensor de temperatura DS18B20.",
+        highlightCat: "DS18B20 (KY-001)", expandCats: ["Sensores", "Sensores Digitales"], bloque: null
       },
       {
         titulo: "Arrastra: Inicializar KY-001",
@@ -2223,8 +2223,8 @@ var TUTORIALS = {
       },
       {
         titulo: "Escanear sensores en el bus",
-        desc: "Ve a <b>Variables</b> y arrastra el bloque <em>establecer roms a</em>. Luego ve a <b>Sensores → Sensores Digitales → KY-001</b> y arrastra el bloque <em>Escanear sensores DS18B20</em> (pin <b>4</b>). Conéctalo al espacio vacío.",
-        highlightCat: "KY-001", expandCat: "Sensores",
+        desc: "Ve a <b>Variables</b> y arrastra el bloque <em>establecer roms a</em>. Luego ve a <b>Sensores → Sensores Digitales → DS18B20 (KY-001)</b> y arrastra el bloque <em>Escanear sensores DS18B20</em> (pin <b>4</b>). Conéctalo al espacio vacío.",
+        highlightCat: "DS18B20 (KY-001)", expandCats: ["Sensores", "Sensores Digitales"],
         bloque: "ky001_scan", bloqueLabel: "Escanear sensores DS18B20"
       },
       {
@@ -2240,8 +2240,8 @@ var TUTORIALS = {
       },
       {
         titulo: "Dentro del ciclo: convertir temperatura",
-        desc: "Ve a <b>Sensores → Sensores Digitales → KY-001</b> y arrastra el bloque <em>Convertir temperatura DS18B20</em> (pin <b>4</b>) como <b>primer bloque dentro del ciclo</b>. Este comando ordena al sensor que tome la medición; sin él la lectura siempre dará el mismo valor.",
-        highlightCat: "KY-001", expandCat: "Sensores",
+        desc: "Ve a <b>Sensores → Sensores Digitales → DS18B20 (KY-001)</b> y arrastra el bloque <em>Convertir temperatura DS18B20</em> (pin <b>4</b>) como <b>primer bloque dentro del ciclo</b>. Este comando ordena al sensor que tome la medición; sin él la lectura siempre dará el mismo valor.",
+        highlightCat: "DS18B20 (KY-001)", expandCats: ["Sensores", "Sensores Digitales"],
         bloque: "ky001_convert", bloqueLabel: "Convertir temperatura DS18B20"
       },
       {
@@ -2258,8 +2258,8 @@ var TUTORIALS = {
       },
       {
         titulo: "Conecta: Leer temperatura DS18B20",
-        desc: "Ve a <b>Sensores → Sensores Digitales → KY-001</b> y arrastra el bloque <em>Leer temperatura DS18B20</em> (pin <b>4</b>, índice <b>0</b> para el primer sensor). Conéctalo al espacio vacío del bloque <em>establecer temperatura a</em>.",
-        highlightCat: "KY-001", expandCat: "Sensores",
+        desc: "Ve a <b>Sensores → Sensores Digitales → DS18B20 (KY-001)</b> y arrastra el bloque <em>Leer temperatura DS18B20</em> (pin <b>4</b>, índice <b>0</b> para el primer sensor). Conéctalo al espacio vacío del bloque <em>establecer temperatura a</em>.",
+        highlightCat: "DS18B20 (KY-001)", expandCats: ["Sensores", "Sensores Digitales"],
         bloque: "ky001_read_index", bloqueLabel: "Leer temperatura DS18B20"
       },
       {
@@ -2276,6 +2276,1344 @@ var TUTORIALS = {
       {
         titulo: "¡Ejecuta y prueba!",
         desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. En el monitor serial verás la temperatura en °C actualizándose cada segundo. Toca el sensor con los dedos y observa cómo sube el valor. 🌡️",
+        highlightElement: "#btnRun", waitForAction: "run"
+      }
+    ]
+  },
+
+  oled_display: {
+    title: "Display OLED (SSD1306)", icon: "🖥️",
+    diagram: "img/conexiones/oled.svg",
+    steps: [
+      {
+        titulo: "¿Qué aprenderemos?",
+        desc: "Vamos a mostrar texto en una pantalla <b>OLED</b> (la típica de 0.96\", chip SSD1306, 128x64 píxeles). Aprenderás a inicializarla, limpiarla y escribir texto en una posición X, Y.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Conexión física",
+        desc: "La OLED se conecta por <b>I2C</b>, 4 pines:<br>⚡ <b>VCC</b> → <b>3.3V</b><br>⏚ <b>GND</b> → GND<br>📌 <b>SDA</b> → pin <b>21</b><br>📌 <b>SCL</b> → pin <b>22</b><br><br>⚠️ Conecta siempre a 3.3V, nunca a 5V.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Abre la categoría Pantallas",
+        desc: "Haz clic en <b>Pantallas</b> en el panel de bloques para desplegarlo.",
+        highlightCat: "Pantallas", expandCat: null, bloque: null
+      },
+      {
+        titulo: "Selecciona la subcategoría OLED",
+        desc: "Dentro de <b>Pantallas</b> haz clic en <b>OLED</b> para ver sus bloques.",
+        highlightCat: "OLED", expandCat: "Pantallas", bloque: null
+      },
+      {
+        titulo: "Arrastra: Inicializar OLED",
+        desc: "Arrastra el bloque <em>Inicializar OLED</em> al área de trabajo. Deja los pines por defecto (SDA <b>21</b>, SCL <b>22</b>, dirección <b>0x27</b>). Este bloque va <b>una sola vez</b> al inicio del programa.",
+        highlightCat: "OLED", expandCat: "Pantallas",
+        bloque: "oled_init", bloqueLabel: "Inicializar OLED"
+      },
+      {
+        titulo: "Arrastra: Limpiar pantalla",
+        desc: "Arrastra el bloque <em>limpiar</em> justo debajo. Borra cualquier contenido anterior antes de dibujar algo nuevo.",
+        highlightCat: "OLED", expandCat: "Pantallas",
+        bloque: "oled_clear", bloqueLabel: "limpiar"
+      },
+      {
+        titulo: "Arrastra: Escribir texto",
+        desc: "Arrastra el bloque <em>texto x y</em> debajo de <em>limpiar</em>. Escribe <b>'Hola ESP32'</b> como texto, y deja <b>x=0, y=0</b> (esquina superior izquierda).",
+        highlightCat: "OLED", expandCat: "Pantallas",
+        bloque: "oled_text", bloqueLabel: "texto x y"
+      },
+      {
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "¡Ejecuta y prueba!",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Deberías ver <b>'Hola ESP32'</b> escrito en la esquina superior izquierda de la pantalla OLED. 🖥️",
+        highlightElement: "#btnRun", waitForAction: "run"
+      }
+    ]
+  },
+
+  lcd_i2c_display: {
+    title: "LCD 16x2 I2C", icon: "📟",
+    diagram: "img/conexiones/lcd_i2c.svg",
+    steps: [
+      {
+        titulo: "¿Qué aprenderemos?",
+        desc: "Vamos a mostrar texto en una pantalla <b>LCD 16x2</b> con módulo adaptador <b>I2C</b> (el que solo tiene 4 pines en vez de 16). Aprenderás a inicializarla y escribir texto.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Conexión física",
+        desc: "El LCD I2C se conecta con solo 4 pines:<br>⚡ <b>VCC</b> → <b>5V</b> (algunos módulos funcionan con 3.3V, revisa el tuyo)<br>⏚ <b>GND</b> → GND<br>📌 <b>SDA</b> → pin <b>21</b><br>📌 <b>SCL</b> → pin <b>22</b>",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Abre la categoría Pantallas",
+        desc: "Haz clic en <b>Pantallas</b> en el panel de bloques para desplegarlo.",
+        highlightCat: "Pantallas", expandCat: null, bloque: null
+      },
+      {
+        titulo: "Selecciona la subcategoría LCD I2C",
+        desc: "Dentro de <b>Pantallas</b> haz clic en <b>LCD I2C</b> para ver sus bloques.",
+        highlightCat: "LCD I2C", expandCat: "Pantallas", bloque: null
+      },
+      {
+        titulo: "Arrastra: Inicializar LCD I2C",
+        desc: "Arrastra el bloque <em>Inicializar LCD I2C</em> al área de trabajo. Deja los pines por defecto (SDA <b>21</b>, SCL <b>22</b>, dirección <b>0x3f</b> — si no funciona, prueba con <b>0x27</b>, es la otra dirección común). Este bloque va <b>una sola vez</b> al inicio.",
+        highlightCat: "LCD I2C", expandCat: "Pantallas",
+        bloque: "lcd_i2c_init", bloqueLabel: "Inicializar LCD I2C"
+      },
+      {
+        titulo: "Arrastra: Limpiar pantalla",
+        desc: "Arrastra el bloque <em>limpiar pantalla</em> justo debajo del bloque de inicializar.",
+        highlightCat: "LCD I2C", expandCat: "Pantallas",
+        bloque: "lcd_i2c_clear", bloqueLabel: "limpiar pantalla"
+      },
+      {
+        titulo: "Arrastra: Escribir texto",
+        desc: "Arrastra el bloque <em>escribir</em> debajo. Conecta un bloque de texto con <b>'Hola ESP32'</b>.",
+        highlightCat: "LCD I2C", expandCat: "Pantallas",
+        bloque: "lcd_i2c_print", bloqueLabel: "escribir"
+      },
+      {
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "¡Ejecuta y prueba!",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Deberías ver <b>'Hola ESP32'</b> escrito en la primera línea del LCD. Si no se ve nada, gira el potenciómetro azul de contraste que trae el módulo I2C. 📟",
+        highlightElement: "#btnRun", waitForAction: "run"
+      }
+    ]
+  },
+
+  rtc_ds3231: {
+    title: "Reloj RTC DS3231", icon: "🕒",
+    diagram: "img/conexiones/rtc_ds3231.svg",
+    steps: [
+      {
+        titulo: "¿Qué aprenderemos?",
+        desc: "Vamos a usar un módulo <b>RTC DS3231</b> (reloj de tiempo real) para guardar y leer la hora, incluso cuando el ESP32 se apaga (tiene su propia pila de respaldo). Aprenderás a inicializarlo, ponerle una hora y leerla de vuelta.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Conexión física",
+        desc: "El DS3231 se conecta por <b>I2C</b>:<br>⚡ <b>VCC</b> → <b>3.3V</b><br>⏚ <b>GND</b> → GND<br>📌 <b>SDA</b> → pin <b>21</b><br>📌 <b>SCL</b> → pin <b>22</b><br><br>⚠️ Conecta siempre a 3.3V, nunca a 5V.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Abre Periféricos › Modulos I2C",
+        desc: "Haz clic en <b>Periféricos</b> y luego en <b>Modulos I2C</b> para desplegarlos.",
+        highlightCat: "Modulos I2C", expandCat: "Periféricos", bloque: null
+      },
+      {
+        titulo: "Selecciona la subcategoría RTC DS3231",
+        desc: "Dentro de <b>Modulos I2C</b> haz clic en <b>RTC DS3231</b> para ver sus bloques.",
+        highlightCat: "RTC DS3231", expandCats: ["Periféricos", "Modulos I2C"], bloque: null
+      },
+      {
+        titulo: "Arrastra: Inicializar RTC DS3231",
+        desc: "Arrastra el bloque <em>Inicializar RTC DS3231</em> al área de trabajo. Deja los pines por defecto (SDA <b>21</b>, SCL <b>22</b>). Este bloque va <b>una sola vez</b> al inicio.",
+        highlightCat: "RTC DS3231", expandCats: ["Periféricos", "Modulos I2C"],
+        bloque: "rtc_ds3231_init", bloqueLabel: "Inicializar RTC DS3231"
+      },
+      {
+        titulo: "Arrastra: Establecer fecha y hora",
+        desc: "Arrastra el bloque <em>establecer año/mes/día/hora/minuto/segundo</em> justo debajo del inicializar. Rellena los números con la fecha y hora actuales (esto solo hace falta la <b>primera vez</b> que programas el módulo — la pila mantiene la hora después). El campo <b>weekday</b> es el día de la semana, del 1 (lunes) al 7 (domingo).",
+        highlightCat: "RTC DS3231", expandCats: ["Periféricos", "Modulos I2C"],
+        bloque: "rtc_ds3231_set_time", bloqueLabel: "establecer fecha y hora"
+      },
+      {
+        titulo: "Agrega un ciclo infinito",
+        desc: "Ve a <b>Ciclos</b> y arrastra el bloque <em>repetir mientras … Verdadero</em>. Leeremos la hora continuamente dentro de este ciclo.",
+        highlightCat: "Ciclos",
+        bloque: "controls_whileUntil", bloqueLabel: "repetir mientras Verdadero"
+      },
+      {
+        titulo: "Dentro del ciclo: leer la hora",
+        desc: "Ve a <b>Textos</b> y arrastra el bloque <em>imprimir</em> dentro del ciclo. Luego ve a <b>Periféricos → Modulos I2C → RTC DS3231</b> y arrastra el bloque con el <b>selector</b> (hora / minuto / segundo) dentro del <em>imprimir</em> — elige <b>hora</b>.",
+        highlightCat: "RTC DS3231", expandCats: ["Periféricos", "Modulos I2C"],
+        bloque: "rtc_ds3231_select", bloqueLabel: "hora / minuto / segundo"
+      },
+      {
+        titulo: "Esperar 1 segundo",
+        desc: "Ve a <b>Tiempo</b> y arrastra el bloque <em>Esperar</em> con <b>1</b> segundo, como último bloque dentro del ciclo.",
+        highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
+      },
+      {
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "¡Ejecuta y prueba!",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. En el monitor serial verás la hora actualizándose cada segundo. 🕒",
+        highlightElement: "#btnRun", waitForAction: "run"
+      }
+    ]
+  },
+
+  mpu6050_imu: {
+    title: "Giroscopio/Acelerómetro MPU6050", icon: "🎮",
+    diagram: "img/conexiones/mpu6050.svg",
+    steps: [
+      {
+        titulo: "¿Qué aprenderemos?",
+        desc: "Vamos a leer un <b>MPU6050</b> (acelerómetro + giroscopio de 6 ejes), muy usado en robots, drones y proyectos de movimiento. Aprenderás a inicializarlo y leer aceleración y giro en cada eje.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Conexión física",
+        desc: "El MPU6050 se conecta por <b>I2C</b>:<br>⚡ <b>VCC</b> → <b>3.3V</b><br>⏚ <b>GND</b> → GND<br>📌 <b>SDA</b> → pin <b>21</b><br>📌 <b>SCL</b> → pin <b>22</b><br><br>⚠️ Conecta siempre a 3.3V, nunca a 5V.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Abre Periféricos › Modulos I2C",
+        desc: "Haz clic en <b>Periféricos</b> y luego en <b>Modulos I2C</b> para desplegarlos.",
+        highlightCat: "Modulos I2C", expandCat: "Periféricos", bloque: null
+      },
+      {
+        titulo: "Selecciona la subcategoría MPU6050 IMU",
+        desc: "Dentro de <b>Modulos I2C</b> haz clic en <b>MPU6050 IMU</b> para ver sus bloques.",
+        highlightCat: "MPU6050 IMU", expandCats: ["Periféricos", "Modulos I2C"], bloque: null
+      },
+      {
+        titulo: "Arrastra: Inicializar MPU6050",
+        desc: "Arrastra el bloque <em>Inicializar MPU6050</em> al área de trabajo. Deja los pines por defecto (SDA <b>21</b>, SCL <b>22</b>). Este bloque va <b>una sola vez</b> al inicio.",
+        highlightCat: "MPU6050 IMU", expandCats: ["Periféricos", "Modulos I2C"],
+        bloque: "mpu6050_init", bloqueLabel: "Inicializar MPU6050"
+      },
+      {
+        titulo: "Agrega un ciclo infinito",
+        desc: "Ve a <b>Ciclos</b> y arrastra el bloque <em>repetir mientras … Verdadero</em>. Leeremos los sensores continuamente dentro de este ciclo.",
+        highlightCat: "Ciclos",
+        bloque: "controls_whileUntil", bloqueLabel: "repetir mientras Verdadero"
+      },
+      {
+        titulo: "Dentro del ciclo: leer aceleración",
+        desc: "Ve a <b>Textos</b> y arrastra un bloque <em>imprimir</em> dentro del ciclo. Luego ve a <b>Periféricos → Modulos I2C → MPU6050 IMU</b> y arrastra el bloque <em>aceleración [selector]</em> dentro del <em>imprimir</em> — elige el eje <b>X</b>.",
+        highlightCat: "MPU6050 IMU", expandCats: ["Periféricos", "Modulos I2C"],
+        bloque: "mpu6050_select_accel", bloqueLabel: "aceleración X/Y/Z"
+      },
+      {
+        titulo: "Dentro del ciclo: leer giro",
+        desc: "Arrastra otro bloque <em>imprimir</em> debajo. Luego ve a <b>Periféricos → Modulos I2C → MPU6050 IMU</b> y arrastra el bloque <em>giro [selector]</em> — elige el eje <b>Z</b> (útil para saber cuánto ha girado el robot).",
+        highlightCat: "MPU6050 IMU", expandCats: ["Periféricos", "Modulos I2C"],
+        bloque: "mpu6050_select_gyro", bloqueLabel: "giro X/Y/Z"
+      },
+      {
+        titulo: "Esperar",
+        desc: "Ve a <b>Tiempo</b> y arrastra el bloque <em>Esperar</em> con <b>0.2</b> segundos, como último bloque dentro del ciclo.",
+        highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
+      },
+      {
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "¡Ejecuta y prueba!",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Mueve y gira el MPU6050 con la mano y observa cómo cambian los valores en el monitor serial. 🎮",
+        highlightElement: "#btnRun", waitForAction: "run"
+      }
+    ]
+  },
+
+  tm1637_display: {
+    title: "Display TM1637 (4 dígitos)", icon: "🔢",
+    diagram: "img/conexiones/tm1637.svg",
+    steps: [
+      {
+        titulo: "¿Qué aprenderemos?",
+        desc: "Vamos a mostrar números en un display <b>TM1637</b> de 4 dígitos (el típico rojo de reloj). Aprenderás a inicializarlo, ajustar el brillo y mostrar un valor.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Conexión física",
+        desc: "El TM1637 tiene 4 pines:<br>⚡ <b>VCC</b> → <b>5V</b> (o 3.3V, revisa tu módulo)<br>⏚ <b>GND</b> → GND<br>📌 <b>CLK</b> → pin <b>21</b><br>📌 <b>DIO</b> → pin <b>22</b>",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Abre la categoría Pantallas",
+        desc: "Haz clic en <b>Pantallas</b> en el panel de bloques para desplegarlo.",
+        highlightCat: "Pantallas", expandCat: null, bloque: null
+      },
+      {
+        titulo: "Selecciona la subcategoría TM1637",
+        desc: "Dentro de <b>Pantallas</b> haz clic en <b>TM1637</b> para ver sus bloques.",
+        highlightCat: "TM1637", expandCat: "Pantallas", bloque: null
+      },
+      {
+        titulo: "Arrastra: Inicializar TM1637",
+        desc: "Arrastra el bloque <em>iniciar CLK DIO brillo</em> al área de trabajo. Deja los pines por defecto (CLK <b>21</b>, DIO <b>22</b>) y el brillo en <b>7</b> (máximo). Este bloque va <b>una sola vez</b> al inicio.",
+        highlightCat: "TM1637", expandCat: "Pantallas",
+        bloque: "tm1637_init", bloqueLabel: "iniciar CLK DIO brillo"
+      },
+      {
+        titulo: "Arrastra: Mostrar valor",
+        desc: "Arrastra el bloque <em>mostrar valor</em> debajo. Conecta un bloque numérico con, por ejemplo, <b>1234</b>.",
+        highlightCat: "TM1637", expandCat: "Pantallas",
+        bloque: "tm1637_number", bloqueLabel: "mostrar valor"
+      },
+      {
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "¡Ejecuta y prueba!",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Deberías ver <b>1234</b> en el display. Prueba luego el bloque <em>brillo</em> con distintos valores para ver cómo cambia la intensidad. 🔢",
+        highlightElement: "#btnRun", waitForAction: "run"
+      }
+    ]
+  },
+
+  matrix8_display: {
+    title: "Matriz LED 8x8 (MAX7219)", icon: "🟥",
+    diagram: "img/conexiones/matrix8.svg",
+    steps: [
+      {
+        titulo: "¿Qué aprenderemos?",
+        desc: "Vamos a mostrar texto en una <b>matriz de LEDs 8x8</b> controlada por un chip <b>MAX7219</b>. Aprenderás a inicializarla y mostrar texto.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Conexión física",
+        desc: "El módulo MAX7219 se conecta por SPI, 5 pines:<br>⚡ <b>VCC</b> → <b>5V</b><br>⏚ <b>GND</b> → GND<br>📌 <b>DIN</b> → pin <b>13</b><br>📌 <b>CS</b> → pin <b>5</b><br>📌 <b>CLK</b> → pin <b>18</b>",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Abre la categoría Pantallas",
+        desc: "Haz clic en <b>Pantallas</b> en el panel de bloques para desplegarlo.",
+        highlightCat: "Pantallas", expandCat: null, bloque: null
+      },
+      {
+        titulo: "Selecciona la subcategoría Matrix 8x8",
+        desc: "Dentro de <b>Pantallas</b> haz clic en <b>Matrix 8x8</b> para ver sus bloques.",
+        highlightCat: "Matrix 8x8", expandCat: "Pantallas", bloque: null
+      },
+      {
+        titulo: "Arrastra: Inicializar Matrix 8x8",
+        desc: "Arrastra el bloque <em>Inicializar</em> al área de trabajo. Deja los pines por defecto (DIN <b>13</b>, CS <b>5</b>, CLK <b>18</b>). Este bloque va <b>una sola vez</b> al inicio.",
+        highlightCat: "Matrix 8x8", expandCat: "Pantallas",
+        bloque: "matrix8_init", bloqueLabel: "Inicializar Matrix 8x8"
+      },
+      {
+        titulo: "Arrastra: Limpiar",
+        desc: "Arrastra el bloque <em>limpiar matrix</em> justo debajo del inicializar.",
+        highlightCat: "Matrix 8x8", expandCat: "Pantallas",
+        bloque: "matrix8_clear", bloqueLabel: "limpiar matrix"
+      },
+      {
+        titulo: "Arrastra: Escribir texto",
+        desc: "Arrastra el bloque <em>texto</em> debajo. Conecta un bloque de texto con, por ejemplo, <b>'Hola'</b>.",
+        highlightCat: "Matrix 8x8", expandCat: "Pantallas",
+        bloque: "matrix8_text", bloqueLabel: "texto"
+      },
+      {
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "¡Ejecuta y prueba!",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Deberías ver el texto en la matriz de LEDs. Prueba después el bloque <em>scroll texto</em> para que el texto se desplace. 🟥",
+        highlightElement: "#btnRun", waitForAction: "run"
+      }
+    ]
+  },
+
+  gps_modulo: {
+    title: "Módulo GPS", icon: "🛰️",
+    diagram: "img/conexiones/gps.svg",
+    steps: [
+      {
+        titulo: "¿Qué aprenderemos?",
+        desc: "Vamos a leer la posición (latitud/longitud) de un módulo <b>GPS</b> (tipo NEO-6M). Ten en cuenta que el GPS necesita <b>vista al cielo abierto</b> — dentro de un edificio puede tardar varios minutos (o nunca) en obtener señal.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Conexión física",
+        desc: "El GPS se conecta por <b>UART</b> (serial):<br>⚡ <b>VCC</b> → <b>3.3V</b> o <b>5V</b> (revisa tu módulo)<br>⏚ <b>GND</b> → GND<br>📌 <b>TX</b> del GPS → pin <b>16</b> (RX del ESP32)<br>📌 <b>RX</b> del GPS → pin <b>17</b> (TX del ESP32)",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Abre Periféricos › Modulos UART",
+        desc: "Haz clic en <b>Periféricos</b> y luego en <b>Modulos UART</b> para desplegarlos.",
+        highlightCat: "Modulos UART", expandCat: "Periféricos", bloque: null
+      },
+      {
+        titulo: "Selecciona la subcategoría GPS",
+        desc: "Dentro de <b>Modulos UART</b> haz clic en <b>GPS</b> para ver sus bloques.",
+        highlightCat: "GPS", expandCats: ["Periféricos", "Modulos UART"], bloque: null
+      },
+      {
+        titulo: "Arrastra: Inicializar GPS",
+        desc: "Arrastra el bloque <em>Inicializar GPS</em> al área de trabajo. Deja los pines por defecto (TX <b>17</b>, RX <b>16</b>, baudios <b>9600</b>). Este bloque va <b>una sola vez</b> al inicio.",
+        highlightCat: "GPS", expandCats: ["Periféricos", "Modulos UART"],
+        bloque: "gps_init", bloqueLabel: "Inicializar GPS"
+      },
+      {
+        titulo: "Agrega un ciclo infinito",
+        desc: "Ve a <b>Ciclos</b> y arrastra el bloque <em>repetir mientras … Verdadero</em>. El GPS necesita leerse continuamente para actualizar su posición.",
+        highlightCat: "Ciclos",
+        bloque: "controls_whileUntil", bloqueLabel: "repetir mientras Verdadero"
+      },
+      {
+        titulo: "Dentro del ciclo: actualizar el GPS",
+        desc: "Ve a <b>Periféricos → Modulos UART → GPS</b> y arrastra el bloque <em>actualizar</em> como <b>primer bloque dentro del ciclo</b>. Este comando procesa los datos que va enviando el módulo.",
+        highlightCat: "GPS", expandCats: ["Periféricos", "Modulos UART"],
+        bloque: "gps_update", bloqueLabel: "actualizar"
+      },
+      {
+        titulo: "Imprimir la posición",
+        desc: "Ve a <b>Textos</b> y arrastra el bloque <em>imprimir</em> dentro del ciclo. Luego ve a <b>Periféricos → Modulos UART → GPS</b> y arrastra el bloque con el <b>selector</b> (latitud / longitud / hora) dentro del <em>imprimir</em> — elige <b>latitud</b>.",
+        highlightCat: "GPS", expandCats: ["Periféricos", "Modulos UART"],
+        bloque: "gps_select", bloqueLabel: "latitud / longitud / hora"
+      },
+      {
+        titulo: "Esperar",
+        desc: "Ve a <b>Tiempo</b> y arrastra el bloque <em>Esperar</em> con <b>1</b> segundo, como último bloque dentro del ciclo.",
+        highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
+      },
+      {
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "¡Ejecuta y prueba!",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Lleva el ESP32 a un lugar con vista al cielo abierto y espera — al principio puede imprimir <b>0</b> hasta que el GPS obtenga señal. 🛰️",
+        highlightElement: "#btnRun", waitForAction: "run"
+      }
+    ]
+  },
+
+  encoder_rotatorio: {
+    title: "Encoder Rotatorio (KY-040)", icon: "🎛️",
+    diagram: "img/conexiones/encoder_ky040.svg",
+    steps: [
+      {
+        titulo: "¿Qué aprenderemos?",
+        desc: "Vamos a leer un <b>encoder rotatorio</b> (la perilla que gira sin límite, tipo KY-040). Aprenderás a inicializarlo y leer su valor, que sube o baja según el sentido de giro.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Conexión física",
+        desc: "El KY-040 tiene 5 pines (usaremos 4):<br>⚡ <b>+</b> → <b>3.3V</b><br>⏚ <b>GND</b> → GND<br>📌 <b>CLK</b> → pin <b>18</b><br>📌 <b>DT</b> → pin <b>19</b><br><br>(El pin <b>SW</b> es el botón que trae al presionar la perilla — no lo usamos en este tutorial).",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Abre la categoría Periféricos",
+        desc: "Haz clic en <b>Periféricos</b> en el panel de bloques para desplegarlo.",
+        highlightCat: "Periféricos", expandCat: null, bloque: null
+      },
+      {
+        titulo: "Selecciona la subcategoría Encoder Rotatorio",
+        desc: "Dentro de <b>Periféricos</b> haz clic en <b>Encoder Rotatorio</b> para ver sus bloques.",
+        highlightCat: "Encoder Rotatorio", expandCat: "Periféricos", bloque: null
+      },
+      {
+        titulo: "Arrastra: Inicializar encoder",
+        desc: "Arrastra el bloque <em>Inicializar</em> al área de trabajo. Deja los pines por defecto (CLK <b>18</b>, DT <b>19</b>). Este bloque va <b>una sola vez</b> al inicio.",
+        highlightCat: "Encoder Rotatorio", expandCat: "Periféricos",
+        bloque: "encoder_rotary_init", bloqueLabel: "Inicializar encoder"
+      },
+      {
+        titulo: "Agrega un ciclo infinito",
+        desc: "Ve a <b>Ciclos</b> y arrastra el bloque <em>repetir mientras … Verdadero</em>. Leeremos el valor del encoder continuamente.",
+        highlightCat: "Ciclos",
+        bloque: "controls_whileUntil", bloqueLabel: "repetir mientras Verdadero"
+      },
+      {
+        titulo: "Dentro del ciclo: imprimir el valor",
+        desc: "Ve a <b>Textos</b> y arrastra el bloque <em>imprimir</em> dentro del ciclo. Luego ve a <b>Periféricos → Encoder Rotatorio</b> y arrastra el bloque <em>valor</em> dentro del <em>imprimir</em>.",
+        highlightCat: "Encoder Rotatorio", expandCat: "Periféricos",
+        bloque: "encoder_rotary_value", bloqueLabel: "valor"
+      },
+      {
+        titulo: "Esperar",
+        desc: "Ve a <b>Tiempo</b> y arrastra el bloque <em>Esperar</em> con <b>0.2</b> segundos, como último bloque dentro del ciclo.",
+        highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
+      },
+      {
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "¡Ejecuta y prueba!",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Gira la perilla en ambos sentidos y observa cómo el número sube o baja en el monitor serial. 🎛️",
+        highlightElement: "#btnRun", waitForAction: "run"
+      }
+    ]
+  },
+
+  rfid_mfrc522: {
+    title: "RFID MFRC522", icon: "💳",
+    diagram: "img/conexiones/rfid_mfrc522.svg",
+    steps: [
+      {
+        titulo: "¿Qué aprenderemos?",
+        desc: "Vamos a detectar tarjetas/llaveros <b>RFID</b> con el lector <b>MFRC522</b>. Aprenderás a inicializarlo, detectar cuándo hay una tarjeta cerca y leer su identificador único (UID).",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Conexión física",
+        desc: "El MFRC522 se conecta por <b>SPI</b>:<br>⚡ <b>3.3V</b> → <b>3.3V</b><br>⏚ <b>GND</b> → GND<br>📌 <b>SCK</b> → pin <b>18</b><br>📌 <b>MOSI</b> → pin <b>23</b><br>📌 <b>MISO</b> → pin <b>19</b><br>📌 <b>RST</b> → pin <b>22</b><br>📌 <b>SDA (SS)</b> → pin <b>21</b><br><br>⚠️ Conecta siempre a 3.3V, nunca a 5V — este módulo no tolera 5V.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Abre Periféricos › Modulos SPI",
+        desc: "Haz clic en <b>Periféricos</b> y luego en <b>Modulos SPI</b> para desplegarlos.",
+        highlightCat: "Modulos SPI", expandCat: "Periféricos", bloque: null
+      },
+      {
+        titulo: "Selecciona la subcategoría RFID MFRC522",
+        desc: "Dentro de <b>Modulos SPI</b> haz clic en <b>RFID MFRC522</b> para ver sus bloques.",
+        highlightCat: "RFID MFRC522", expandCats: ["Periféricos", "Modulos SPI"], bloque: null
+      },
+      {
+        titulo: "Arrastra: Inicializar RFID",
+        desc: "Arrastra el bloque <em>Inicializar</em> al área de trabajo. Deja los pines por defecto. Este bloque va <b>una sola vez</b> al inicio.",
+        highlightCat: "RFID MFRC522", expandCats: ["Periféricos", "Modulos SPI"],
+        bloque: "rfid_mfrc522_init", bloqueLabel: "Inicializar RFID"
+      },
+      {
+        titulo: "Agrega un ciclo infinito",
+        desc: "Ve a <b>Ciclos</b> y arrastra el bloque <em>repetir mientras … Verdadero</em>. Revisaremos continuamente si hay una tarjeta cerca.",
+        highlightCat: "Ciclos",
+        bloque: "controls_whileUntil", bloqueLabel: "repetir mientras Verdadero"
+      },
+      {
+        titulo: "Dentro del ciclo: si hay tarjeta",
+        desc: "Ve a <b>Lógica</b> y arrastra un bloque <em>si … entonces</em> dentro del ciclo. Luego ve a <b>Periféricos → Modulos SPI → RFID MFRC522</b> y conecta el bloque <em>tarjeta presente</em> en la condición.",
+        highlightCat: "RFID MFRC522", expandCats: ["Periféricos", "Modulos SPI"],
+        bloque: "rfid_mfrc522_detect", bloqueLabel: "tarjeta presente"
+      },
+      {
+        titulo: "Dentro del sí: leer el UID e imprimir",
+        desc: "Ve a <b>Periféricos → Modulos SPI → RFID MFRC522</b> y arrastra el bloque <em>obtener UID</em> dentro del <b>sí</b>. Luego ve a <b>Textos</b> y arrastra un bloque <em>imprimir</em> debajo, conectando la variable <b>UID</b> que se creó automáticamente.",
+        highlightCat: "RFID MFRC522", expandCats: ["Periféricos", "Modulos SPI"],
+        bloque: "rfid_mfrc522_uid", bloqueLabel: "obtener UID"
+      },
+      {
+        titulo: "Esperar",
+        desc: "Ve a <b>Tiempo</b> y arrastra el bloque <em>Esperar</em> con <b>0.5</b> segundos, como último bloque dentro del ciclo (fuera del <b>si</b>).",
+        highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
+      },
+      {
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "¡Ejecuta y prueba!",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Acerca una tarjeta o llavero RFID al lector — debería imprimir su UID en el monitor serial. 💳",
+        highlightElement: "#btnRun", waitForAction: "run"
+      }
+    ]
+  },
+
+  teclado_matricial: {
+    title: "Teclado Matricial 4x4", icon: "🔢",
+    diagram: "img/conexiones/teclado_matricial.svg",
+    steps: [
+      {
+        titulo: "¿Qué aprenderemos?",
+        desc: "Vamos a leer un <b>teclado matricial 4x4</b> (membrana con números 0-9, letras A-D, * y #). Aprenderás a inicializarlo y detectar qué tecla se presiona.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Conexión física",
+        desc: "El teclado 4x4 tiene 8 pines (4 filas + 4 columnas), sin alimentación:<br>📌 <b>R1, R2, R3, R4</b> (filas) → 4 pines digitales cualquiera<br>📌 <b>C1, C2, C3, C4</b> (columnas) → otros 4 pines digitales<br><br>No necesita VCC ni GND — el ESP32 detecta las teclas activando cada fila por turnos.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Abre Periféricos › Teclados",
+        desc: "Haz clic en <b>Periféricos</b> y luego en <b>Teclados</b> para desplegarlos.",
+        highlightCat: "Teclados", expandCat: "Periféricos", bloque: null
+      },
+      {
+        titulo: "Selecciona la subcategoría Teclados Matriciales 4x4",
+        desc: "Dentro de <b>Teclados</b> haz clic en <b>Teclados Matriciales 4x4</b> para ver sus bloques.",
+        highlightCat: "Teclados Matriciales 4x4", expandCats: ["Periféricos", "Teclados"], bloque: null
+      },
+      {
+        titulo: "Arrastra: Inicializar teclado",
+        desc: "Arrastra el bloque <em>Inicializar</em> al área de trabajo y asigna los 8 pines (R1-R4, C1-C4) según tu conexión. Este bloque va <b>una sola vez</b> al inicio.",
+        highlightCat: "Teclados Matriciales 4x4", expandCats: ["Periféricos", "Teclados"],
+        bloque: "init_keypad_4x4", bloqueLabel: "Inicializar teclado 4x4"
+      },
+      {
+        titulo: "Agrega un ciclo infinito",
+        desc: "Ve a <b>Ciclos</b> y arrastra el bloque <em>repetir mientras … Verdadero</em>. Revisaremos continuamente qué tecla se presiona.",
+        highlightCat: "Ciclos",
+        bloque: "controls_whileUntil", bloqueLabel: "repetir mientras Verdadero"
+      },
+      {
+        titulo: "Dentro del ciclo: imprimir la tecla",
+        desc: "Ve a <b>Textos</b> y arrastra el bloque <em>imprimir</em> dentro del ciclo. Luego ve a <b>Periféricos → Teclados → Teclados Matriciales 4x4</b> y arrastra el bloque <em>leer</em> dentro del <em>imprimir</em>.",
+        highlightCat: "Teclados Matriciales 4x4", expandCats: ["Periféricos", "Teclados"],
+        bloque: "keypad_get_key", bloqueLabel: "leer"
+      },
+      {
+        titulo: "Esperar",
+        desc: "Ve a <b>Tiempo</b> y arrastra el bloque <em>Esperar</em> con <b>0.2</b> segundos, como último bloque dentro del ciclo.",
+        highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
+      },
+      {
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "¡Ejecuta y prueba!",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Presiona teclas en el teclado y observa cómo aparecen en el monitor serial. Si no presionas nada, imprimirá vacío. 🔢",
+        highlightElement: "#btnRun", waitForAction: "run"
+      }
+    ]
+  },
+
+  bmp280_presion: {
+    title: "Sensor de Presión BMP280", icon: "🌤️",
+    diagram: "img/conexiones/bmp280.svg",
+    steps: [
+      {
+        titulo: "¿Qué aprenderemos?",
+        desc: "Vamos a leer un sensor <b>BMP280</b> (presión atmosférica, temperatura y altitud estimada). Útil para estaciones meteorológicas o drones.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Conexión física",
+        desc: "El BMP280 se conecta por <b>I2C</b>:<br>⚡ <b>VCC</b> → <b>3.3V</b><br>⏚ <b>GND</b> → GND<br>📌 <b>SDA</b> → pin <b>21</b><br>📌 <b>SCL</b> → pin <b>22</b><br><br>⚠️ Conecta siempre a 3.3V, nunca a 5V.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Abre Periféricos › Modulos I2C",
+        desc: "Haz clic en <b>Periféricos</b> y luego en <b>Modulos I2C</b> para desplegarlos.",
+        highlightCat: "Modulos I2C", expandCat: "Periféricos", bloque: null
+      },
+      {
+        titulo: "Selecciona la subcategoría Sensores Presion",
+        desc: "Dentro de <b>Modulos I2C</b> haz clic en <b>Sensores Presion</b> para ver sus bloques.",
+        highlightCat: "Sensores Presion", expandCats: ["Periféricos", "Modulos I2C"], bloque: null
+      },
+      {
+        titulo: "Arrastra: Inicializar BMP280",
+        desc: "Arrastra el bloque <em>Inicializar</em> al área de trabajo. Elige el modelo <b>BMP280</b> y deja los pines por defecto (SDA <b>21</b>, SCL <b>22</b>, dirección <b>0x76</b>). Este bloque va <b>una sola vez</b> al inicio.",
+        highlightCat: "Sensores Presion", expandCats: ["Periféricos", "Modulos I2C"],
+        bloque: "bmp_sensor_init", bloqueLabel: "Inicializar BMP280"
+      },
+      {
+        titulo: "Agrega un ciclo infinito",
+        desc: "Ve a <b>Ciclos</b> y arrastra el bloque <em>repetir mientras … Verdadero</em>. Leeremos el sensor continuamente.",
+        highlightCat: "Ciclos",
+        bloque: "controls_whileUntil", bloqueLabel: "repetir mientras Verdadero"
+      },
+      {
+        titulo: "Dentro del ciclo: leer presión y temperatura",
+        desc: "Ve a <b>Textos</b> y arrastra el bloque <em>imprimir</em> dentro del ciclo. Luego ve a <b>Periféricos → Modulos I2C → Sensores Presion</b> y arrastra el bloque con el <b>selector</b> (temperatura / presión / altitud) dentro del <em>imprimir</em> — elige <b>presión</b>.",
+        highlightCat: "Sensores Presion", expandCats: ["Periféricos", "Modulos I2C"],
+        bloque: "bmp_select", bloqueLabel: "temperatura / presión / altitud"
+      },
+      {
+        titulo: "Esperar",
+        desc: "Ve a <b>Tiempo</b> y arrastra el bloque <em>Esperar</em> con <b>1</b> segundo, como último bloque dentro del ciclo.",
+        highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
+      },
+      {
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "¡Ejecuta y prueba!",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Verás la presión en Pascales actualizándose cada segundo. Sopla suavemente cerca del sensor y observa el cambio. 🌤️",
+        highlightElement: "#btnRun", waitForAction: "run"
+      }
+    ]
+  },
+
+  bh1750_luz: {
+    title: "Sensor de Luz BH1750", icon: "💡",
+    diagram: "img/conexiones/bh1750.svg",
+    steps: [
+      {
+        titulo: "¿Qué aprenderemos?",
+        desc: "Vamos a medir la intensidad de luz ambiental (en lux) con un sensor <b>BH1750</b>. Útil para proyectos de luces automáticas o estaciones meteorológicas.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Conexión física",
+        desc: "El BH1750 se conecta por <b>I2C</b>:<br>⚡ <b>VCC</b> → <b>3.3V</b><br>⏚ <b>GND</b> → GND<br>📌 <b>SDA</b> → pin <b>21</b><br>📌 <b>SCL</b> → pin <b>22</b><br><br>⚠️ Conecta siempre a 3.3V, nunca a 5V.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Abre Periféricos › Modulos I2C",
+        desc: "Haz clic en <b>Periféricos</b> y luego en <b>Modulos I2C</b> para desplegarlos.",
+        highlightCat: "Modulos I2C", expandCat: "Periféricos", bloque: null
+      },
+      {
+        titulo: "Selecciona la subcategoría Sensor Luz BH1750",
+        desc: "Dentro de <b>Modulos I2C</b> haz clic en <b>Sensor Luz BH1750</b> para ver sus bloques.",
+        highlightCat: "Sensor Luz BH1750", expandCats: ["Periféricos", "Modulos I2C"], bloque: null
+      },
+      {
+        titulo: "Arrastra: Inicializar BH1750",
+        desc: "Arrastra el bloque <em>Inicializar</em> al área de trabajo. Deja los pines por defecto (SDA <b>21</b>, SCL <b>22</b>, dirección <b>0x23</b>). Este bloque va <b>una sola vez</b> al inicio.",
+        highlightCat: "Sensor Luz BH1750", expandCats: ["Periféricos", "Modulos I2C"],
+        bloque: "bh1750_init", bloqueLabel: "Inicializar BH1750"
+      },
+      {
+        titulo: "Agrega un ciclo infinito",
+        desc: "Ve a <b>Ciclos</b> y arrastra el bloque <em>repetir mientras … Verdadero</em>. Leeremos el sensor continuamente.",
+        highlightCat: "Ciclos",
+        bloque: "controls_whileUntil", bloqueLabel: "repetir mientras Verdadero"
+      },
+      {
+        titulo: "Dentro del ciclo: leer e imprimir la luz",
+        desc: "Ve a <b>Textos</b> y arrastra el bloque <em>imprimir</em> dentro del ciclo. Luego ve a <b>Periféricos → Modulos I2C → Sensor Luz BH1750</b> y arrastra el bloque <em>leer luz (lux)</em> dentro del <em>imprimir</em>.",
+        highlightCat: "Sensor Luz BH1750", expandCats: ["Periféricos", "Modulos I2C"],
+        bloque: "bh1750_read_lux", bloqueLabel: "leer luz (lux)"
+      },
+      {
+        titulo: "Esperar",
+        desc: "Ve a <b>Tiempo</b> y arrastra el bloque <em>Esperar</em> con <b>1</b> segundo, como último bloque dentro del ciclo.",
+        highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
+      },
+      {
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "¡Ejecuta y prueba!",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Tapa el sensor con la mano y luego destápalo — verás cómo cambia el valor de lux en el monitor serial. 💡",
+        highlightElement: "#btnRun", waitForAction: "run"
+      }
+    ]
+  },
+
+  qmc5883l_brujula: {
+    title: "Brújula QMC5883L", icon: "🧭",
+    diagram: "img/conexiones/qmc5883l.svg",
+    steps: [
+      {
+        titulo: "¿Qué aprenderemos?",
+        desc: "Vamos a leer un sensor <b>QMC5883L</b> (magnetómetro/brújula de 3 ejes). Aprenderás a inicializarlo y leer el campo magnético en cada eje.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Conexión física",
+        desc: "El QMC5883L se conecta por <b>I2C</b>:<br>⚡ <b>VCC</b> → <b>3.3V</b><br>⏚ <b>GND</b> → GND<br>📌 <b>SDA</b> → pin <b>21</b><br>📌 <b>SCL</b> → pin <b>22</b><br><br>⚠️ Conecta siempre a 3.3V, nunca a 5V. Aléjalo de motores o imanes para que no interfieran con la lectura.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Abre Periféricos › Modulos I2C",
+        desc: "Haz clic en <b>Periféricos</b> y luego en <b>Modulos I2C</b> para desplegarlos.",
+        highlightCat: "Modulos I2C", expandCat: "Periféricos", bloque: null
+      },
+      {
+        titulo: "Selecciona la subcategoría Sensor Brújula QMC5883L",
+        desc: "Dentro de <b>Modulos I2C</b> haz clic en <b>Sensor Brújula QMC5883L</b> para ver sus bloques.",
+        highlightCat: "Sensor Brújula QMC5883L", expandCats: ["Periféricos", "Modulos I2C"], bloque: null
+      },
+      {
+        titulo: "Arrastra: Inicializar QMC5883L",
+        desc: "Arrastra el bloque <em>Inicializar</em> al área de trabajo. Deja los pines por defecto (SDA <b>21</b>, SCL <b>22</b>, dirección <b>0x2c</b>). Este bloque va <b>una sola vez</b> al inicio.",
+        highlightCat: "Sensor Brújula QMC5883L", expandCats: ["Periféricos", "Modulos I2C"],
+        bloque: "qmc5883l_init", bloqueLabel: "Inicializar QMC5883L"
+      },
+      {
+        titulo: "Agrega un ciclo infinito",
+        desc: "Ve a <b>Ciclos</b> y arrastra el bloque <em>repetir mientras … Verdadero</em>. Leeremos el sensor continuamente.",
+        highlightCat: "Ciclos",
+        bloque: "controls_whileUntil", bloqueLabel: "repetir mientras Verdadero"
+      },
+      {
+        titulo: "Dentro del ciclo: leer los 3 ejes",
+        desc: "Ve a <b>Periféricos → Modulos I2C → Sensor Brújula QMC5883L</b> y arrastra el bloque <em>leer XYZ</em> como <b>primer bloque dentro del ciclo</b>. Este comando dispara la lectura de los 3 ejes a la vez; sin él los valores no se actualizan.",
+        highlightCat: "Sensor Brújula QMC5883L", expandCats: ["Periféricos", "Modulos I2C"],
+        bloque: "qmc5883l_read_xyz", bloqueLabel: "leer XYZ"
+      },
+      {
+        titulo: "Imprimir el eje X",
+        desc: "Ve a <b>Textos</b> y arrastra el bloque <em>imprimir</em> debajo de <em>leer XYZ</em>. Luego ve a <b>Periféricos → Modulos I2C → Sensor Brújula QMC5883L</b> y arrastra el bloque con el <b>selector</b> de eje dentro del <em>imprimir</em> — elige <b>X</b>.",
+        highlightCat: "Sensor Brújula QMC5883L", expandCats: ["Periféricos", "Modulos I2C"],
+        bloque: "qmc5883l_select", bloqueLabel: "eje X/Y/Z"
+      },
+      {
+        titulo: "Esperar",
+        desc: "Ve a <b>Tiempo</b> y arrastra el bloque <em>Esperar</em> con <b>0.3</b> segundos, como último bloque dentro del ciclo.",
+        highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
+      },
+      {
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "¡Ejecuta y prueba!",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Gira el sensor y observa cómo cambia el valor del eje X en el monitor serial. 🧭",
+        highlightElement: "#btnRun", waitForAction: "run"
+      }
+    ]
+  },
+
+  display_7seg: {
+    title: "Display 7 Segmentos", icon: "🔟",
+    diagram: "img/conexiones/display_7seg.svg",
+    steps: [
+      {
+        titulo: "¿Qué aprenderemos?",
+        desc: "Vamos a mostrar números del 0 al 9 en un <b>display de 7 segmentos</b> (un solo dígito, sin driver — se conecta directo a pines del ESP32).",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Conexión física",
+        desc: "El display tiene 7 segmentos (A-G) + un pin común:<br>📌 <b>A, B, C, D, E, F, G</b> → 7 pines digitales cualquiera, cada uno con resistencia de <b>220Ω</b><br>⚡/⏚ El pin <b>común</b> va a <b>GND</b> (cátodo común) o <b>3.3V</b> (ánodo común) según tu display.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Abre la categoría Pantallas",
+        desc: "Haz clic en <b>Pantallas</b> en el panel de bloques para desplegarlo.",
+        highlightCat: "Pantallas", expandCat: null, bloque: null
+      },
+      {
+        titulo: "Selecciona la subcategoría DISPLAY 7 SEG",
+        desc: "Dentro de <b>Pantallas</b> haz clic en <b>DISPLAY 7 SEG</b> para ver sus bloques.",
+        highlightCat: "DISPLAY 7 SEG", expandCat: "Pantallas", bloque: null
+      },
+      {
+        titulo: "Arrastra: Inicializar display",
+        desc: "Arrastra el bloque <em>Inicializar</em> al área de trabajo. Elige el tipo (<b>cátodo común</b> o <b>ánodo común</b>, según tu display) y asigna los 7 pines A-G. Este bloque va <b>una sola vez</b> al inicio.",
+        highlightCat: "DISPLAY 7 SEG", expandCat: "Pantallas",
+        bloque: "seg7_init", bloqueLabel: "Inicializar display 7 seg"
+      },
+      {
+        titulo: "Arrastra: Mostrar número",
+        desc: "Arrastra el bloque <em>número</em> debajo. Elige, por ejemplo, <b>5</b>.",
+        highlightCat: "DISPLAY 7 SEG", expandCat: "Pantallas",
+        bloque: "seg7_number", bloqueLabel: "número"
+      },
+      {
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "¡Ejecuta y prueba!",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Deberías ver el número <b>5</b> encendido en el display. Si se ve al revés o con segmentos apagados de más, prueba cambiar entre cátodo/ánodo común. 🔟",
+        highlightElement: "#btnRun", waitForAction: "run"
+      }
+    ]
+  },
+
+  lcd_paralelo: {
+    title: "LCD 16x2 (paralelo)", icon: "📺",
+    diagram: "img/conexiones/lcd_paralelo.svg",
+    steps: [
+      {
+        titulo: "¿Qué aprenderemos?",
+        desc: "Vamos a mostrar texto en un LCD 16x2 <b>sin</b> módulo I2C (conexión directa por 6 pines de datos). Si tu LCD tiene un módulo I2C soldado atrás, mejor usa el tutorial <b>LCD 16x2 I2C</b> — es más simple.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Conexión física",
+        desc: "El LCD paralelo necesita 6 pines de datos + alimentación:<br>⚡ <b>VDD</b> → <b>5V</b>, <b>VSS</b> → GND<br>🎚️ <b>V0</b> (contraste) → potenciómetro de 10kΩ entre 5V y GND<br>📌 <b>RS</b> → pin <b>12</b>, <b>EN</b> → pin <b>13</b><br>📌 <b>D4</b> → pin <b>5</b>, <b>D5</b> → pin <b>23</b>, <b>D6</b> → pin <b>19</b>, <b>D7</b> → pin <b>18</b><br>⏚ <b>RW</b> → GND",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Abre la categoría Pantallas",
+        desc: "Haz clic en <b>Pantallas</b> en el panel de bloques para desplegarlo.",
+        highlightCat: "Pantallas", expandCat: null, bloque: null
+      },
+      {
+        titulo: "Selecciona la subcategoría LCD",
+        desc: "Dentro de <b>Pantallas</b> haz clic en <b>LCD</b> (la que NO dice I2C) para ver sus bloques.",
+        highlightCat: "LCD", expandCat: "Pantallas", bloque: null
+      },
+      {
+        titulo: "Arrastra: Inicializar LCD",
+        desc: "Arrastra el bloque <em>Inicializar LCD</em> al área de trabajo. Deja los pines por defecto (RS <b>12</b>, EN <b>13</b>, D4 <b>5</b>, D5 <b>23</b>, D6 <b>19</b>, D7 <b>18</b>). Este bloque va <b>una sola vez</b> al inicio.",
+        highlightCat: "LCD", expandCat: "Pantallas",
+        bloque: "lcd_init", bloqueLabel: "Inicializar LCD"
+      },
+      {
+        titulo: "Arrastra: Escribir texto",
+        desc: "Arrastra el bloque <em>escribir</em> debajo. Conecta un bloque de texto con <b>'Hola ESP32'</b>.",
+        highlightCat: "LCD", expandCat: "Pantallas",
+        bloque: "lcd_print", bloqueLabel: "escribir"
+      },
+      {
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "¡Ejecuta y prueba!",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Deberías ver <b>'Hola ESP32'</b> en la pantalla. Si no se ve nada, gira el potenciómetro de contraste. 📺",
+        highlightElement: "#btnRun", waitForAction: "run"
+      }
+    ]
+  },
+
+  tft_display: {
+    title: "Pantalla TFT a color", icon: "🎨",
+    diagram: "img/conexiones/tft_display.svg",
+    steps: [
+      {
+        titulo: "¿Qué aprenderemos?",
+        desc: "Vamos a dibujar en una pantalla <b>TFT a color</b> (tipo ST7789, 240x240). Aprenderás a inicializarla, pintar el fondo y escribir texto.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Conexión física",
+        desc: "La TFT se conecta por <b>SPI</b>:<br>⚡ <b>VCC</b> → <b>3.3V</b><br>⏚ <b>GND</b> → GND<br>📌 <b>MOSI</b> → pin <b>23</b><br>📌 <b>SCK</b> → pin <b>18</b><br>📌 <b>DC</b> → pin <b>21</b><br>📌 <b>RST</b> → pin <b>22</b><br><br>⚠️ Conecta siempre a 3.3V, nunca a 5V.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Abre la categoría Pantallas",
+        desc: "Haz clic en <b>Pantallas</b> en el panel de bloques para desplegarlo.",
+        highlightCat: "Pantallas", expandCat: null, bloque: null
+      },
+      {
+        titulo: "Selecciona la subcategoría Pantalla TFT",
+        desc: "Dentro de <b>Pantallas</b> haz clic en <b>Pantalla TFT</b> para ver sus bloques.",
+        highlightCat: "Pantalla TFT", expandCat: "Pantallas", bloque: null
+      },
+      {
+        titulo: "Arrastra: Inicializar TFT",
+        desc: "Arrastra el bloque <em>Inicializar</em> al área de trabajo. Deja los pines por defecto. Este bloque va <b>una sola vez</b> al inicio.",
+        highlightCat: "Pantalla TFT", expandCat: "Pantallas",
+        bloque: "tft_init", bloqueLabel: "Inicializar TFT"
+      },
+      {
+        titulo: "Arrastra: Color de fondo",
+        desc: "Arrastra el bloque <em>color fondo</em> debajo. Elige un color, por ejemplo azul.",
+        highlightCat: "Pantalla TFT", expandCat: "Pantallas",
+        bloque: "tft_fill", bloqueLabel: "color fondo"
+      },
+      {
+        titulo: "Arrastra: Escribir texto",
+        desc: "Arrastra el bloque <em>font texto x y color bg</em> debajo. Escribe <b>'Hola ESP32'</b>, x=<b>10</b>, y=<b>10</b>, elige un color de texto que contraste con el fondo.",
+        highlightCat: "Pantalla TFT", expandCat: "Pantallas",
+        bloque: "tft_text", bloqueLabel: "texto x y color"
+      },
+      {
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "¡Ejecuta y prueba!",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Deberías ver la pantalla pintada del color elegido, con tu texto encima. 🎨",
+        highlightElement: "#btnRun", waitForAction: "run"
+      }
+    ]
+  },
+
+  neopixel_matriz: {
+    title: "Matriz NeoPixel 5x5", icon: "🌈",
+    diagram: "img/conexiones/neopixel_matriz.svg",
+    steps: [
+      {
+        titulo: "¿Qué aprenderemos?",
+        desc: "Vamos a encender píxeles individuales en una <b>matriz NeoPixel 5x5</b> (25 LEDs RGB direccionables). Si tienes la de 8x8, los bloques son iguales — solo usa la categoría <b>NeoPixel 8x8</b>.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Conexión física",
+        desc: "La matriz NeoPixel tiene 3 pines:<br>⚡ <b>5V</b> → <b>5V</b> (una matriz completa puede consumir bastante corriente)<br>⏚ <b>GND</b> → GND<br>📌 <b>DIN</b> (dato) → pin <b>5</b><br><br>💡 Empieza con brillo bajo (20-30%) para no encandilarte ni consumir demasiada corriente.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Abre Pantallas › NeoPixel",
+        desc: "Haz clic en <b>Pantallas</b> y luego en <b>NeoPixel</b> para desplegarlos.",
+        highlightCat: "NeoPixel", expandCat: "Pantallas", bloque: null
+      },
+      {
+        titulo: "Selecciona la subcategoría NeoPixel 5x5",
+        desc: "Dentro de <b>NeoPixel</b> haz clic en <b>NeoPixel 5x5</b> para ver sus bloques.",
+        highlightCat: "NeoPixel 5x5", expandCats: ["Pantallas", "NeoPixel"], bloque: null
+      },
+      {
+        titulo: "Arrastra: Inicializar matriz 5x5",
+        desc: "Arrastra el bloque <em>Inicializar</em> al área de trabajo. Deja el pin por defecto (<b>5</b>). Este bloque va <b>una sola vez</b> al inicio.",
+        highlightCat: "NeoPixel 5x5", expandCats: ["Pantallas", "NeoPixel"],
+        bloque: "neopixel_init_5x5", bloqueLabel: "Inicializar matriz 5x5"
+      },
+      {
+        titulo: "Arrastra: Pintar un píxel",
+        desc: "Arrastra el bloque <em>pixel x y color</em> debajo. Pon x=<b>2</b>, y=<b>2</b> (el centro) y elige un color.",
+        highlightCat: "NeoPixel 5x5", expandCats: ["Pantallas", "NeoPixel"],
+        bloque: "neopixel_pixel", bloqueLabel: "pixel x y color"
+      },
+      {
+        titulo: "Arrastra: Mostrar con brillo",
+        desc: "Arrastra el bloque <em>brillo</em> debajo — este es el que <b>envía</b> los colores a la matriz (sin él no se ve nada). Usa el slider para poner el brillo en <b>20%</b>.",
+        highlightCat: "NeoPixel 5x5", expandCats: ["Pantallas", "NeoPixel"],
+        bloque: "neopixel_show", bloqueLabel: "brillo"
+      },
+      {
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "¡Ejecuta y prueba!",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Deberías ver un solo LED encendido en el centro de la matriz, con el color y brillo que elegiste. 🌈",
+        highlightElement: "#btnRun", waitForAction: "run"
+      }
+    ]
+  },
+
+  color_tcs34725: {
+    title: "Sensor de Color TCS34725", icon: "🎨",
+    diagram: "img/conexiones/tcs34725.svg",
+    steps: [
+      {
+        titulo: "¿Qué aprenderemos?",
+        desc: "Vamos a detectar colores con el sensor <b>TCS34725</b>. Aprenderás a inicializarlo y leer los canales rojo, verde y azul por separado.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Conexión física",
+        desc: "El TCS34725 se conecta por <b>I2C</b>:<br>⚡ <b>VCC</b> → <b>3.3V</b><br>⏚ <b>GND</b> → GND<br>📌 <b>SDA</b> → pin <b>21</b><br>📌 <b>SCL</b> → pin <b>22</b><br><br>⚠️ Conecta siempre a 3.3V, nunca a 5V.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Abre Periféricos › Modulos I2C",
+        desc: "Haz clic en <b>Periféricos</b> y luego en <b>Modulos I2C</b> para desplegarlos.",
+        highlightCat: "Modulos I2C", expandCat: "Periféricos", bloque: null
+      },
+      {
+        titulo: "Selecciona la subcategoría Color TCS34725",
+        desc: "Dentro de <b>Modulos I2C</b> haz clic en <b>Color TCS34725</b> para ver sus bloques.",
+        highlightCat: "Color TCS34725", expandCats: ["Periféricos", "Modulos I2C"], bloque: null
+      },
+      {
+        titulo: "Arrastra: Inicializar sensor de color",
+        desc: "Arrastra el bloque <em>Inicializar</em> al área de trabajo. Deja los pines por defecto (SDA <b>21</b>, SCL <b>22</b>). Este bloque va <b>una sola vez</b> al inicio.",
+        highlightCat: "Color TCS34725", expandCats: ["Periféricos", "Modulos I2C"],
+        bloque: "tcs34725_init", bloqueLabel: "Inicializar sensor de color"
+      },
+      {
+        titulo: "Agrega un ciclo infinito",
+        desc: "Ve a <b>Ciclos</b> y arrastra el bloque <em>repetir mientras … Verdadero</em>. Leeremos el color continuamente.",
+        highlightCat: "Ciclos",
+        bloque: "controls_whileUntil", bloqueLabel: "repetir mientras Verdadero"
+      },
+      {
+        titulo: "Dentro del ciclo: leer un canal de color",
+        desc: "Ve a <b>Textos</b> y arrastra el bloque <em>imprimir</em> dentro del ciclo. Luego ve a <b>Periféricos → Modulos I2C → Color TCS34725</b> y arrastra el bloque con el <b>selector</b> (rojo/verde/azul/luz) dentro del <em>imprimir</em> — elige <b>rojo</b>.",
+        highlightCat: "Color TCS34725", expandCats: ["Periféricos", "Modulos I2C"],
+        bloque: "tcs34725_select", bloqueLabel: "rojo/verde/azul/luz"
+      },
+      {
+        titulo: "Esperar",
+        desc: "Ve a <b>Tiempo</b> y arrastra el bloque <em>Esperar</em> con <b>0.5</b> segundos, como último bloque dentro del ciclo.",
+        highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
+      },
+      {
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "¡Ejecuta y prueba!",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Acerca objetos de distintos colores al sensor y observa cómo cambia el valor del canal rojo. 🎨",
+        highlightElement: "#btnRun", waitForAction: "run"
+      }
+    ]
+  },
+
+  dfplayer_mp3: {
+    title: "Reproductor MP3 DFPlayer", icon: "🎵",
+    diagram: "img/conexiones/dfplayer.svg",
+    steps: [
+      {
+        titulo: "¿Qué aprenderemos?",
+        desc: "Vamos a reproducir archivos <b>MP3</b> desde una tarjeta microSD con el módulo <b>DFPlayer Mini</b>. Necesitas una microSD con archivos MP3 nombrados <b>0001.mp3</b>, <b>0002.mp3</b>, etc. en una carpeta <b>/mp3</b>.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Conexión física",
+        desc: "El DFPlayer se conecta por <b>UART</b> (serial), y necesita una bocina/parlante:<br>⚡ <b>VCC</b> → <b>5V</b><br>⏚ <b>GND</b> → GND<br>📌 <b>TX</b> del DFPlayer → pin <b>16</b> (RX del ESP32)<br>📌 <b>RX</b> del DFPlayer → pin <b>17</b> (TX del ESP32), con una resistencia de <b>1kΩ</b> en serie<br>🔊 <b>SPK_1 / SPK_2</b> → altavoz de 3-8Ω",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Abre Periféricos › Modulos UART",
+        desc: "Haz clic en <b>Periféricos</b> y luego en <b>Modulos UART</b> para desplegarlos.",
+        highlightCat: "Modulos UART", expandCat: "Periféricos", bloque: null
+      },
+      {
+        titulo: "Selecciona la subcategoría DFPlayer",
+        desc: "Dentro de <b>Modulos UART</b> haz clic en <b>DFPlayer</b> para ver sus bloques.",
+        highlightCat: "DFPlayer", expandCats: ["Periféricos", "Modulos UART"], bloque: null
+      },
+      {
+        titulo: "Arrastra: Inicializar DFPlayer",
+        desc: "Arrastra el bloque <em>Inicializar</em> al área de trabajo. Deja los pines por defecto (TX <b>17</b>, RX <b>16</b>). Este bloque va <b>una sola vez</b> al inicio.",
+        highlightCat: "DFPlayer", expandCats: ["Periféricos", "Modulos UART"],
+        bloque: "dfplayer_init", bloqueLabel: "Inicializar DFPlayer"
+      },
+      {
+        titulo: "Arrastra: Ajustar volumen",
+        desc: "Arrastra el bloque <em>volumen</em> debajo. Usa el slider para elegir un volumen, por ejemplo <b>15</b> (de 0 a 30).",
+        highlightCat: "DFPlayer", expandCats: ["Periféricos", "Modulos UART"],
+        bloque: "dfplayer_volume", bloqueLabel: "volumen"
+      },
+      {
+        titulo: "Arrastra: Reproducir",
+        desc: "Arrastra el bloque <em>reproducir</em> debajo. Reproduce la primera pista de la tarjeta SD.",
+        highlightCat: "DFPlayer", expandCats: ["Periféricos", "Modulos UART"],
+        bloque: "dfplayer_play", bloqueLabel: "reproducir"
+      },
+      {
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "¡Ejecuta y prueba!",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Deberías escuchar la primera pista de tu microSD. Si no suena, revisa que la tarjeta tenga los MP3 bien nombrados y el altavoz esté bien conectado. 🎵",
+        highlightElement: "#btnRun", waitForAction: "run"
+      }
+    ]
+  },
+
+  sdcard_modulo: {
+    title: "Módulo SD Card", icon: "💾",
+    diagram: "img/conexiones/sdcard.svg",
+    steps: [
+      {
+        titulo: "¿Qué aprenderemos?",
+        desc: "Vamos a escribir y leer archivos en una tarjeta <b>microSD</b> conectada por SPI. Útil para guardar registros (logs) de sensores.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Conexión física",
+        desc: "El módulo SD se conecta por <b>SPI</b>:<br>⚡ <b>VCC</b> → <b>5V</b><br>⏚ <b>GND</b> → GND<br>📌 <b>SCK</b> → pin <b>18</b><br>📌 <b>MOSI</b> → pin <b>23</b><br>📌 <b>MISO</b> → pin <b>19</b><br>📌 <b>CS</b> → pin <b>5</b>",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Abre Periféricos › Modulos SPI",
+        desc: "Haz clic en <b>Periféricos</b> y luego en <b>Modulos SPI</b> para desplegarlos.",
+        highlightCat: "Modulos SPI", expandCat: "Periféricos", bloque: null
+      },
+      {
+        titulo: "Selecciona la subcategoría SDCard",
+        desc: "Dentro de <b>Modulos SPI</b> haz clic en <b>SDCard</b> para ver sus bloques.",
+        highlightCat: "SDCard", expandCats: ["Periféricos", "Modulos SPI"], bloque: null
+      },
+      {
+        titulo: "Arrastra: Inicializar SD",
+        desc: "Arrastra el bloque <em>Inicializar</em> al área de trabajo. Deja los pines por defecto. Este bloque va <b>una sola vez</b> al inicio.",
+        highlightCat: "SDCard", expandCats: ["Periféricos", "Modulos SPI"],
+        bloque: "sdcard_init", bloqueLabel: "Inicializar SD"
+      },
+      {
+        titulo: "Arrastra: Escribir archivo",
+        desc: "Arrastra el bloque <em>escribir archivo texto</em> debajo. Pon como nombre de archivo <b>'datos.txt'</b> y como texto <b>'Hola desde el ESP32'</b>.",
+        highlightCat: "SDCard", expandCats: ["Periféricos", "Modulos SPI"],
+        bloque: "sdcard_write", bloqueLabel: "escribir archivo texto"
+      },
+      {
+        titulo: "Imprimir el contenido leído",
+        desc: "Ve a <b>Textos</b> y arrastra el bloque <em>imprimir</em> debajo. Luego ve a <b>Periféricos → Modulos SPI → SDCard</b> y conecta el bloque <em>leer archivo</em> con el nombre <b>'datos.txt'</b>.",
+        highlightCat: "SDCard", expandCats: ["Periféricos", "Modulos SPI"],
+        bloque: "sdcard_read", bloqueLabel: "leer archivo"
+      },
+      {
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "¡Ejecuta y prueba!",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Deberías ver <b>'Hola desde el ESP32'</b> impreso en el monitor serial — el mismo texto que se acaba de leer del archivo que se escribió. 💾",
+        highlightElement: "#btnRun", waitForAction: "run"
+      }
+    ]
+  },
+
+  fpm383c_huella: {
+    title: "Sensor de Huella FPM383C", icon: "👆",
+    diagram: "img/conexiones/fpm383c.svg",
+    steps: [
+      {
+        titulo: "¿Qué aprenderemos?",
+        desc: "Vamos a detectar y verificar huellas dactilares con el sensor <b>FPM383C</b>. Útil para proyectos de control de acceso.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Conexión física",
+        desc: "El FPM383C se conecta por <b>UART</b> (serial):<br>⚡ <b>VCC</b> → <b>3.3V</b><br>⏚ <b>GND</b> → GND<br>📌 <b>TX</b> del sensor → pin <b>16</b> (RX del ESP32)<br>📌 <b>RX</b> del sensor → pin <b>17</b> (TX del ESP32)",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Abre Periféricos › Modulos UART",
+        desc: "Haz clic en <b>Periféricos</b> y luego en <b>Modulos UART</b> para desplegarlos.",
+        highlightCat: "Modulos UART", expandCat: "Periféricos", bloque: null
+      },
+      {
+        titulo: "Selecciona la subcategoría FPM383C",
+        desc: "Dentro de <b>Modulos UART</b> haz clic en <b>FPM383C</b> para ver sus bloques.",
+        highlightCat: "FPM383C", expandCats: ["Periféricos", "Modulos UART"], bloque: null
+      },
+      {
+        titulo: "Arrastra: Inicializar sensor",
+        desc: "Arrastra el bloque <em>Inicializar</em> al área de trabajo. Deja los pines por defecto (TX <b>17</b>, RX <b>16</b>). Este bloque va <b>una sola vez</b> al inicio.",
+        highlightCat: "FPM383C", expandCats: ["Periféricos", "Modulos UART"],
+        bloque: "fpm_init", bloqueLabel: "Inicializar sensor de huella"
+      },
+      {
+        titulo: "Agrega un ciclo infinito",
+        desc: "Ve a <b>Ciclos</b> y arrastra el bloque <em>repetir mientras … Verdadero</em>. Revisaremos continuamente si hay un dedo sobre el sensor.",
+        highlightCat: "Ciclos",
+        bloque: "controls_whileUntil", bloqueLabel: "repetir mientras Verdadero"
+      },
+      {
+        titulo: "Dentro del ciclo: si detecta un dedo",
+        desc: "Ve a <b>Lógica</b> y arrastra un bloque <em>si … entonces</em> dentro del ciclo. Luego ve a <b>Periféricos → Modulos UART → FPM383C</b> y conecta el bloque <em>detectar huella</em> en la condición.",
+        highlightCat: "FPM383C", expandCats: ["Periféricos", "Modulos UART"],
+        bloque: "fpm_wait_finger", bloqueLabel: "detectar huella"
+      },
+      {
+        titulo: "Dentro del sí: verificar la huella",
+        desc: "Ve a <b>Periféricos → Modulos UART → FPM383C</b> y arrastra el bloque <em>verificar huella</em> dentro del <b>sí</b>. Compara la huella detectada contra las que ya estén registradas en el sensor.",
+        highlightCat: "FPM383C", expandCats: ["Periféricos", "Modulos UART"],
+        bloque: "fpm_verify", bloqueLabel: "verificar huella"
+      },
+      {
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "¡Ejecuta y prueba!",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Coloca un dedo sobre el sensor. Nota: para que <em>verificar huella</em> encuentre una coincidencia, primero necesitas registrar huellas con el bloque <em>registrar ID</em>. 👆",
+        highlightElement: "#btnRun", waitForAction: "run"
+      }
+    ]
+  },
+
+  inmp441_microfono: {
+    title: "Micrófono INMP441", icon: "🎙️",
+    diagram: "img/conexiones/inmp441.svg",
+    steps: [
+      {
+        titulo: "¿Qué aprenderemos?",
+        desc: "Vamos a leer el nivel de sonido con un micrófono digital <b>INMP441</b> (I2S). Útil para proyectos que reaccionan al sonido o la voz.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Conexión física",
+        desc: "El INMP441 se conecta por <b>I2S</b>:<br>⚡ <b>VDD</b> → <b>3.3V</b><br>⏚ <b>GND</b> → GND<br>📌 <b>SD</b> (datos) → pin <b>32</b><br>📌 <b>WS</b> (word select) → pin <b>25</b><br>📌 <b>SCK</b> (reloj) → pin <b>26</b><br>⏚ <b>L/R</b> → GND (canal izquierdo)",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Abre Periféricos › Modulos I2S",
+        desc: "Haz clic en <b>Periféricos</b> y luego en <b>Modulos I2S</b> para desplegarlos.",
+        highlightCat: "Modulos I2S", expandCat: "Periféricos", bloque: null
+      },
+      {
+        titulo: "Selecciona la subcategoría Micrófono INMP441",
+        desc: "Dentro de <b>Modulos I2S</b> haz clic en <b>Micrófono INMP441</b> para ver sus bloques.",
+        highlightCat: "Micrófono INMP441", expandCats: ["Periféricos", "Modulos I2S"], bloque: null
+      },
+      {
+        titulo: "Arrastra: Inicializar micrófono",
+        desc: "Arrastra el bloque <em>Inicializar</em> al área de trabajo. Este bloque va <b>una sola vez</b> al inicio.",
+        highlightCat: "Micrófono INMP441", expandCats: ["Periféricos", "Modulos I2S"],
+        bloque: "inmp441_init", bloqueLabel: "Inicializar micrófono"
+      },
+      {
+        titulo: "Agrega un ciclo infinito",
+        desc: "Ve a <b>Ciclos</b> y arrastra el bloque <em>repetir mientras … Verdadero</em>. Leeremos el nivel de sonido continuamente.",
+        highlightCat: "Ciclos",
+        bloque: "controls_whileUntil", bloqueLabel: "repetir mientras Verdadero"
+      },
+      {
+        titulo: "Dentro del ciclo: leer e imprimir el nivel de sonido",
+        desc: "Ve a <b>Textos</b> y arrastra el bloque <em>imprimir</em> dentro del ciclo. Luego ve a <b>Periféricos → Modulos I2S → Micrófono INMP441</b> y arrastra el bloque <em>nivel sonido</em> dentro del <em>imprimir</em>.",
+        highlightCat: "Micrófono INMP441", expandCats: ["Periféricos", "Modulos I2S"],
+        bloque: "inmp441_volume", bloqueLabel: "nivel sonido"
+      },
+      {
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "¡Ejecuta y prueba!",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Habla o haz ruido cerca del micrófono y observa cómo sube el nivel de sonido en el monitor serial. 🎙️",
+        highlightElement: "#btnRun", waitForAction: "run"
+      }
+    ]
+  },
+
+  flujo_agua: {
+    title: "Sensor de Flujo de Agua (YF-201)", icon: "💧",
+    diagram: "img/conexiones/flujo_agua.svg",
+    steps: [
+      {
+        titulo: "¿Qué aprenderemos?",
+        desc: "Vamos a medir el caudal de agua con un sensor <b>YF-201</b> (o similar), que tiene una turbina que gira al pasar el agua. Útil para proyectos de riego o control de consumo.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Conexión física",
+        desc: "El sensor de flujo tiene 3 cables:<br>⚡ <b>Rojo (VCC)</b> → <b>5V</b><br>⏚ <b>Negro (GND)</b> → GND<br>📌 <b>Amarillo (señal)</b> → pin <b>27</b><br><br>💧 El sensor va instalado en la tubería, con el agua fluyendo en el sentido que indica la flecha en su carcasa.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Abre la categoría Periféricos",
+        desc: "Haz clic en <b>Periféricos</b> en el panel de bloques para desplegarlo.",
+        highlightCat: "Periféricos", expandCat: null, bloque: null
+      },
+      {
+        titulo: "Selecciona la subcategoría Flujo Agua",
+        desc: "Dentro de <b>Periféricos</b> haz clic en <b>Flujo Agua</b> para ver sus bloques.",
+        highlightCat: "Flujo Agua", expandCat: "Periféricos", bloque: null
+      },
+      {
+        titulo: "Arrastra: Inicializar sensor de flujo",
+        desc: "Arrastra el bloque <em>Inicializar</em> al área de trabajo. Este bloque va <b>una sola vez</b> al inicio.",
+        highlightCat: "Flujo Agua", expandCat: "Periféricos",
+        bloque: "yf201_init", bloqueLabel: "Inicializar sensor de flujo"
+      },
+      {
+        titulo: "Agrega un ciclo infinito",
+        desc: "Ve a <b>Ciclos</b> y arrastra el bloque <em>repetir mientras … Verdadero</em>. Leeremos el flujo continuamente.",
+        highlightCat: "Ciclos",
+        bloque: "controls_whileUntil", bloqueLabel: "repetir mientras Verdadero"
+      },
+      {
+        titulo: "Dentro del ciclo: imprimir el flujo",
+        desc: "Ve a <b>Textos</b> y arrastra el bloque <em>imprimir</em> dentro del ciclo. Luego ve a <b>Periféricos → Flujo Agua</b> y arrastra el bloque <em>flujo L/min</em> dentro del <em>imprimir</em>.",
+        highlightCat: "Flujo Agua", expandCat: "Periféricos",
+        bloque: "yf201_flow_rate", bloqueLabel: "flujo L/min"
+      },
+      {
+        titulo: "Esperar",
+        desc: "Ve a <b>Tiempo</b> y arrastra el bloque <em>Esperar</em> con <b>1</b> segundo, como último bloque dentro del ciclo.",
+        highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
+      },
+      {
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "¡Ejecuta y prueba!",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Deja pasar agua por el sensor y observa cómo aumenta el valor de litros por minuto en el monitor serial. 💧",
         highlightElement: "#btnRun", waitForAction: "run"
       }
     ]

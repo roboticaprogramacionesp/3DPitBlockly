@@ -24,6 +24,7 @@ var SerialMonitor = (() => {
   let showTimestamp = false;
   let lineBuffer = "";
   let suppressingPaste = false;
+  let _pasteSuppressTimer = null;
 
   /* Archivo cargado localmente */
   let _loadedFileContent = null;
@@ -549,46 +550,6 @@ var SerialMonitor = (() => {
     return isError ? `\x1b[31m${line}\x1b[0m` : line;
   }
 
-  /* ── Helpers internos de copia ────────────────────────────── */
-  function _getFullTerminalText() {
-    if (!smTerm) return "";
-    const buffer = smTerm.buffer.active;
-    const lines = [];
-    for (let i = 0; i < buffer.length; i++) {
-      const line = buffer.getLine(i);
-      if (line) lines.push(line.translateToString(true));
-    }
-    while (lines.length && !lines[lines.length - 1].trim()) lines.pop();
-    return lines.join("");
-  }
-
-  function _smToast(msg) {
-    document.getElementById("smToast")?.remove();
-    const toast = document.createElement("div");
-    toast.id = "smToast";
-    toast.textContent = msg;
-    toast.style.cssText = [
-      "position:fixed", "z-index:9999",
-      "background:#3454d1", "color:#e8eeff",
-      "font-family:Consolas,monospace", "font-size:11px",
-      "padding:4px 12px", "border-radius:4px",
-      "box-shadow:0 2px 8px rgba(0,0,0,.5)",
-      "pointer-events:none", "opacity:1",
-      "transition:opacity .4s ease",
-    ].join(";");
-    const modal = document.getElementById("serialMonitorModal");
-    if (modal) {
-      const r = modal.getBoundingClientRect();
-      toast.style.left = (r.left + 10) + "px";
-      toast.style.top = (r.top - 28) + "px";
-    } else {
-      toast.style.bottom = "72px"; toast.style.right = "28px";
-    }
-    document.body.appendChild(toast);
-    setTimeout(() => { toast.style.opacity = "0"; }, 1200);
-    setTimeout(() => toast.remove(), 1700);
-  }
-
   /* ── feed(chunk) — desde readSerialLoop ──────────────────── */
   /**
    * Acumula en lineBuffer hasta tener líneas completas.
@@ -621,8 +582,6 @@ var SerialMonitor = (() => {
       }
 
       // ── Máquina de estados paste-mode ──
-      let _pasteSuppressTimer = null;
-
       // dentro de feed(), donde se activa:
       if (/paste mode/i.test(line)) {
         suppressingPaste = true;

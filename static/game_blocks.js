@@ -88,7 +88,7 @@ Blockly.defineBlocksWithJsonArray([
   {
     type: "sprite_load_image",
     message0: "📂 precargar imagen %1",
-    args0: [{ type: "input_value", name: "FILE" }],
+    args0: [{ type: "input_value", name: "FILE", check: "String" }],
     previousStatement: null,
     nextStatement: null,
     colour: 20,

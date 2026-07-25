@@ -8654,7 +8654,7 @@ class Na extends r {
       "LOGS" !== this._state
         ? this._error
           ? ([e, t] = this._renderError(this._error))
-          : (t = this._renderProgress("Connecting"))
+          : (t = this._renderProgress("Conectando"))
         : "INSTALL" === this._state
           ? ([e, t, i] = this._renderInstall())
           : "ASK_ERASE" === this._state
@@ -8709,7 +8709,7 @@ class Na extends r {
         .label=${e}
       ></ewt-page-message>
       <div slot="actions">
-        <ew-text-button @click=${this._closeDialog}>Close</ew-text-button>
+        <ew-text-button @click=${this._closeDialog}>Cerrar</ew-text-button>
       </div>
     `,
     ];
@@ -8853,7 +8853,7 @@ class Na extends r {
             }}
           >
             ${Sa}
-            <div slot="headline">${`Install ${this._manifest.name}`}</div>
+            <div slot="headline">${`Instalar ${this._manifest.name}`}</div>
           </ew-list-item>
           <ew-list-item
             type="button"
@@ -8862,7 +8862,7 @@ class Na extends r {
             }}
           >
             ${Ca}
-            <div slot="headline">Logs & Console</div>
+            <div slot="headline">Registros y consola</div>
           </ew-list-item>
         </ew-list>
       </div>
@@ -9058,16 +9058,16 @@ class Na extends r {
   }
   _renderAskErase() {
     return [
-      "Erase device",
+      "Borrar dispositivo",
       o`
       <div slot="content">
         <div>
-          Do you want to erase the device before installing
-          ${this._manifest.name}? All data on the device will be lost.
+          ¿Quieres borrar el dispositivo antes de instalar
+          ${this._manifest.name}? Se perderán todos los datos del dispositivo.
         </div>
         <label class="formfield">
           <ew-checkbox touch-target="wrapper" class="danger"></ew-checkbox>
-          Erase device
+          Borrar dispositivo
         </label>
       </div>
       <div slot="actions">
@@ -9076,7 +9076,7 @@ class Na extends r {
             this._state = "DASHBOARD";
           }}
         >
-          Back
+          Atrás
         </ew-text-button>
         <ew-text-button
           @click=${() => {
@@ -9084,7 +9084,7 @@ class Na extends r {
             this._startInstall(e.checked);
           }}
         >
-          Next
+          Siguiente
         </ew-text-button>
       </div>
     `,
@@ -9094,15 +9094,15 @@ class Na extends r {
     let e, t;
     const i = !this._installErase && this._isSameFirmware;
     if (!this._installConfirmed && this._isSameVersion)
-      ((e = "Erase User Data"),
+      ((e = "Borrar datos de usuario"),
         (t = o`
         <div slot="content">
-          Do you want to reset your device and erase all user data from your
-          device?
+          ¿Quieres reiniciar el dispositivo y borrar todos los datos de
+          usuario?
         </div>
         <div slot="actions">
           <ew-text-button class="danger" @click=${this._confirmInstall}>
-            Erase User Data
+            Borrar datos de usuario
           </ew-text-button>
         </div>
       `));
@@ -9113,25 +9113,25 @@ class Na extends r {
         "preparing" !== this._installState.state
       )
         if ("erasing" === this._installState.state)
-          ((e = "Installing"), (t = this._renderProgress("Erasing")));
+          ((e = "Instalando"), (t = this._renderProgress("Borrando")));
         else if (
           "writing" === this._installState.state ||
           ("finished" === this._installState.state && void 0 === this._client)
         ) {
           let i, r;
-          ((e = "Installing"),
+          ((e = "Instalando"),
             "finished" === this._installState.state
-              ? (r = "Wrapping up")
+              ? (r = "Finalizando")
               : this._installState.details.percentage < 4
-                ? (r = "Installing")
+                ? (r = "Instalando")
                 : (i = this._installState.details.percentage),
             (t = this._renderProgress(
               o`
           ${r ? o`${r}<br />` : ""}
           <br />
-          This will take
-          ${"ESP8266" === this._installState.chipFamily ? "a minute" : "2 minutes"}.<br />
-          Keep this page visible to prevent slow down
+          Esto tomará
+          ${"ESP8266" === this._installState.chipFamily ? "un minuto" : "2 minutos"}.<br />
+          Mantén esta página visible para evitar que se ralentice
         `,
               i,
             )));
@@ -9142,7 +9142,7 @@ class Na extends r {
         <ewt-page-message
           slot="content"
           .icon=${"🎉"}
-          label="Installation complete!"
+          label="¡Instalación completa!"
         ></ewt-page-message>
 
         <div slot="actions">
@@ -9151,13 +9151,13 @@ class Na extends r {
               this._state = i && this._installErase ? "PROVISION" : "DASHBOARD";
             }}
           >
-            Next
+            Siguiente
           </ew-text-button>
         </div>
       `;
         } else
           "error" === this._installState.state &&
-            ((e = "Installation failed"),
+            ((e = "Instalación fallida"),
             (t = o`
         <ewt-page-message
           slot="content"
@@ -9170,27 +9170,27 @@ class Na extends r {
               (this._initialize(), (this._state = "DASHBOARD"));
             }}
           >
-            Back
+            Atrás
           </ew-text-button>
         </div>
       `));
       else
-        ((e = "Installing"),
-          (t = this._renderProgress("Preparing installation")));
+        ((e = "Instalando"),
+          (t = this._renderProgress("Preparando instalación")));
     else {
-      e = "Confirm Installation";
-      const r = i ? "update to" : "install";
+      e = "Confirmar instalación";
+      const r = i ? "actualizar a" : "instalar";
       t = o`
         <div slot="content">
           ${
             i
-              ? o`Your device is running
+              ? o`Tu dispositivo tiene instalado
                 ${this._info.firmware}&nbsp;${this._info.version}.<br /><br />`
               : ""
           }
-          Do you want to ${r}
+          ¿Quieres ${r}
           ${this._manifest.name}&nbsp;${this._manifest.version}?
-          ${this._installErase ? o`<br /><br />All data on the device will be erased.` : ""}
+          ${this._installErase ? o`<br /><br />Se borrarán todos los datos del dispositivo.` : ""}
         </div>
         <div slot="actions">
           <ew-text-button
@@ -9198,10 +9198,10 @@ class Na extends r {
               this._state = "DASHBOARD";
             }}
           >
-            Back
+            Atrás
           </ew-text-button>
           <ew-text-button @click=${this._confirmInstall}>
-            Install
+            Instalar
           </ew-text-button>
         </div>
       `;
@@ -9221,7 +9221,7 @@ class Na extends r {
             await this.shadowRoot.querySelector("ewt-console").reset();
           }}
         >
-          Reset Device
+          Reiniciar dispositivo
         </ew-text-button>
         <ew-text-button
           @click=${() => {
@@ -9232,7 +9232,7 @@ class Na extends r {
               this.shadowRoot.querySelector("ewt-console").reset());
           }}
         >
-          Download Logs
+          Descargar registros
         </ew-text-button>
         <ew-text-button
           @click=${async () => {
@@ -9241,11 +9241,11 @@ class Na extends r {
               this._initialize());
           }}
         >
-          Back
+          Atrás
         </ew-text-button>
       </div>
     `),
-      ["Logs", e]
+      ["Registros", e]
     );
   }
   willUpdate(e) {
@@ -9457,19 +9457,19 @@ class Na extends r {
           }
         (n({
           state: "preparing",
-          message: "Installation prepared",
+          message: "Instalación preparada",
           details: { done: !0 },
         }),
           o &&
             (n({
               state: "erasing",
-              message: "Erasing device...",
+              message: "Borrando dispositivo...",
               details: { done: !1 },
             }),
             await d.eraseFlash(),
             n({
               state: "erasing",
-              message: "Device erased",
+              message: "Dispositivo borrado",
               details: { done: !0 },
             })),
           n({

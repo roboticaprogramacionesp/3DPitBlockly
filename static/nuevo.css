@@ -12,11 +12,15 @@
 }
 
 .modal-box {
-  background: #2b00fff6;
+  background: var(--panel-bg-alt, #1a1a2e);
+  border: 1px solid var(--brand-blue, #3454d1);
+  color: #fff;
   width: 200px;
+  max-width: calc(100vw - 32px);
+  box-sizing: border-box;
   padding: 25px;
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  border-radius: var(--panel-radius, 10px);
+  box-shadow: var(--panel-shadow, 0 8px 32px rgba(0, 0, 0, 0.6));
   text-align: center;
   animation: fadeIn 0.2s ease;
 }

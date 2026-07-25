@@ -53,7 +53,8 @@ Blockly.defineBlocksWithJsonArray([
     ],
     output: "String",
     colour: 160,
-    tooltip: "Convierte bytes/bytearray a texto UTF-8. Activa 'limpiar' para quitar \\r\\n del final (común en UART).",
+    tooltip:
+      "Convierte bytes/bytearray a texto UTF-8. Activa 'limpiar' para quitar \\r\\n del final (común en UART).",
   },
   {
     type: "objecto",
@@ -69,7 +70,7 @@ Blockly.defineBlocksWithJsonArray([
     message0: "%1.%2",
     args0: [
       { type: "field_input", name: "OBJECT", text: "" },
-      { type: "field_input", name: "ATTRIBUTE", text: "" }
+      { type: "field_input", name: "ATTRIBUTE", text: "" },
     ],
     previousStatement: null,
     nextStatement: null,
@@ -367,13 +368,12 @@ Blockly.defineBlocksWithJsonArray([
   {
     type: "text_format",
     message0: "formato '%1'",
-    args0: [
-      { type: "field_input", name: "TEMPLATE", text: 'PASS = "%s"\\n' },
-    ],
+    args0: [{ type: "field_input", name: "TEMPLATE", text: 'PASS = "%s"\\n' }],
     inputsInline: true,
     output: "String",
     colour: 160,
-    tooltip: "Escribe la plantilla con marcadores:%s=texto  %d=entero  %f=decimal  %r=repr\nEl bloque crea una entrada por marcador automaticamente.",
+    tooltip:
+      "Escribe la plantilla con marcadores:%s=texto  %d=entero  %f=decimal  %r=repr\nEl bloque crea una entrada por marcador automaticamente.",
     mutator: "text_format_mutator",
   },
   {
@@ -967,38 +967,38 @@ Blockly.defineBlocksWithJsonArray([
     helpUrl: "",
   },
   {
-    "type": "math_map",
-    "message0": "mapear %1 de [%2 - %3] a [%4 - %5]",
-    "args0": [
+    type: "math_map",
+    message0: "mapear %1 de [%2 - %3] a [%4 - %5]",
+    args0: [
       {
-        "type": "input_value",
-        "name": "X"
+        type: "input_value",
+        name: "X",
       },
       {
-        "type": "input_value",
-        "name": "IN_MIN",
-        "check": "Number"
+        type: "input_value",
+        name: "IN_MIN",
+        check: "Number",
       },
       {
-        "type": "input_value",
-        "name": "IN_MAX",
-        "check": "Number"
+        type: "input_value",
+        name: "IN_MAX",
+        check: "Number",
       },
       {
-        "type": "input_value",
-        "name": "OUT_MIN",
-        "check": "Number"
+        type: "input_value",
+        name: "OUT_MIN",
+        check: "Number",
       },
       {
-        "type": "input_value",
-        "name": "OUT_MAX",
-        "check": "Number"
-      }
+        type: "input_value",
+        name: "OUT_MAX",
+        check: "Number",
+      },
     ],
-    "output": "Number",
-    "colour": 230,
-    "tooltip": "Convierte un valor de un rango a otro",
-    "helpUrl": ""
+    output: "Number",
+    colour: 230,
+    tooltip: "Convierte un valor de un rango a otro",
+    helpUrl: "",
   },
   {
     type: "machine_reset",
@@ -1883,12 +1883,7 @@ Blockly.defineBlocksWithJsonArray([
     type: "time_sleep",
     message0: "esperar %1 %2",
     args0: [
-      {
-        type: "field_number",
-        name: "VALUE",
-        value: 1,
-        min: 0,
-      },
+      { type: "input_value", name: "VALUE", check: "Number" },
       {
         type: "field_dropdown",
         name: "UNIT",
@@ -1929,14 +1924,7 @@ Blockly.defineBlocksWithJsonArray([
   {
     type: "time_every",
     message0: "Ejecutar cada %1 ms",
-    args0: [
-      {
-        type: "field_number",
-        name: "INTERVAL",
-        value: 1000,
-        min: 1,
-      },
-    ],
+    args0: [{ type: "input_value", name: "INTERVAL", check: "Number" }],
     message1: "%1",
     args1: [
       {
@@ -1952,117 +1940,106 @@ Blockly.defineBlocksWithJsonArray([
   },
 
   {
-    "type": "rtc_init",
-    "message0": "%1 inicializar",
-    "args0": [
-      { "type": "field_input", "name": "RTC", "text": "rtc" },
-    ],
-    "previousStatement": null,
-    "nextStatement": null,
-    "colour": 120,
-    "tooltip": "Inicializa el reloj en tiempo real",
-    "helpUrl": ""
+    type: "rtc_init",
+    message0: "%1 inicializar",
+    args0: [{ type: "field_input", name: "RTC", text: "rtc" }],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 120,
+    tooltip: "Inicializa el reloj en tiempo real",
+    helpUrl: "",
   },
   {
-    "type": "rtc_set_datetime",
-    "message0": "%1 establecer año %2 mes %3 día %4 hora %5 min %6 seg %7",
-    "args0": [
-      { "type": "field_input", "name": "RTC", "text": "rtc" },
-      { "type": "input_value", "name": "YEAR", "value": 2026 },
-      { "type": "input_value", "name": "MONTH", "value": 1, "min": 1, "max": 12 },
-      { "type": "input_value", "name": "DAY", "value": 1, "min": 1, "max": 31 },
-      { "type": "input_value", "name": "HOUR", "value": 0, "min": 0, "max": 23 },
-      { "type": "input_value", "name": "MIN", "value": 0, "min": 0, "max": 59 },
-      { "type": "input_value", "name": "SEC", "value": 0, "min": 0, "max": 59 }
+    type: "rtc_set_datetime",
+    message0: "%1 establecer año %2 mes %3 día %4 hora %5 min %6 seg %7",
+    args0: [
+      { type: "field_input", name: "RTC", text: "rtc" },
+      { type: "input_value", name: "YEAR", value: 2026 },
+      { type: "input_value", name: "MONTH", value: 1, min: 1, max: 12 },
+      { type: "input_value", name: "DAY", value: 1, min: 1, max: 31 },
+      { type: "input_value", name: "HOUR", value: 0, min: 0, max: 23 },
+      { type: "input_value", name: "MIN", value: 0, min: 0, max: 59 },
+      { type: "input_value", name: "SEC", value: 0, min: 0, max: 59 },
     ],
-    "previousStatement": null,
-    "nextStatement": null,
-    "inputsInline": true,
-    "colour": 120,
-    "tooltip": "Configura fecha y hora del RTC",
-    "helpUrl": ""
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+    colour: 120,
+    tooltip: "Configura fecha y hora del RTC",
+    helpUrl: "",
   },
   {
-    "type": "rtc_get_datetime",
-    "message0": "%1 obtener fecha y hora",
-    "args0": [
-      { "type": "field_input", "name": "RTC", "text": "rtc" },
-    ],
-    "output": "Array",
-    "colour": 120,
-    "tooltip": "Devuelve fecha y hora del RTC",
-    "helpUrl": ""
+    type: "rtc_get_datetime",
+    message0: "%1 obtener fecha y hora",
+    args0: [{ type: "field_input", name: "RTC", text: "rtc" }],
+    output: "Array",
+    colour: 120,
+    tooltip: "Devuelve fecha y hora del RTC",
+    helpUrl: "",
   },
   {
-    "type": "wdt_init",
-    "message0": "%1 inicializar tiempo(ms) %2",
-    "args0": [
+    type: "wdt_init",
+    message0: "%1 inicializar tiempo(ms) %2",
+    args0: [
       {
-        "type": "field_input",
-        "name": "WDT",
-        "text": "wdt"
+        type: "field_input",
+        name: "WDT",
+        text: "wdt",
       },
       {
-        "type": "field_number",
-        "name": "TIMEOUT",
-        "value": 5000,
-        "min": 1000
-      }
+        type: "field_number",
+        name: "TIMEOUT",
+        value: 5000,
+        min: 1000,
+      },
     ],
-    "previousStatement": null,
-    "nextStatement": null,
-    "colour": 120,
-    "tooltip": "Inicializa el watchdog timer",
-    "helpUrl": ""
+    previousStatement: null,
+    nextStatement: null,
+    colour: 120,
+    tooltip: "Inicializa el watchdog timer",
+    helpUrl: "",
   },
   {
-    "type": "wdt_feed",
-    "message0": "%1 alimentar",
-    "args0": [
+    type: "wdt_feed",
+    message0: "%1 alimentar",
+    args0: [
       {
-        "type": "field_input",
-        "name": "WDT",
-        "text": "wdt"
-      }
+        type: "field_input",
+        name: "WDT",
+        text: "wdt",
+      },
     ],
-    "previousStatement": null,
-    "nextStatement": null,
-    "colour": 120,
-    "tooltip": "Reinicia el watchdog para evitar reset",
-    "helpUrl": ""
+    previousStatement: null,
+    nextStatement: null,
+    colour: 120,
+    tooltip: "Reinicia el watchdog para evitar reset",
+    helpUrl: "",
   },
   {
-    "type": "machine_reset_cause",
-    "message0": "si viene de deep sleep",
-    "message1": "hacer %1",
-    "args1": [
+    type: "machine_reset_cause",
+    message0: "si viene de deep sleep",
+    message1: "hacer %1",
+    args1: [
       {
-        "type": "input_statement",
-        "name": "DO"
-      }
+        type: "input_statement",
+        name: "DO",
+      },
     ],
-    "previousStatement": null,
-    "nextStatement": null,
-    "colour": 120,
-    "tooltip": "Ejecuta código si el ESP32 despertó de deep sleep",
-    "helpUrl": ""
+    previousStatement: null,
+    nextStatement: null,
+    colour: 120,
+    tooltip: "Ejecuta código si el ESP32 despertó de deep sleep",
+    helpUrl: "",
   },
   {
-    "type": "machine_deepsleep",
-    "message0": "deep sleep por %1 ms",
-    "args0": [
-      {
-        "type": "field_number",
-        "name": "TIME",
-        "value": 10000,
-        "min": 0
-      }
-    ],
-    "previousStatement": null,
-    "nextStatement": null,
-    "colour": 120,
-    "tooltip": "Pone el ESP32 en modo deep sleep",
-    "helpUrl": ""
+    type: "machine_deepsleep",
+    message0: "deep sleep por %1 ms",
+    args0: [{ type: "input_value", name: "TIME", check: "Number" }],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 120,
+    tooltip: "Pone el ESP32 en modo deep sleep",
+    helpUrl: "",
   },
   {
     type: "timer_init",
@@ -2257,9 +2234,7 @@ Blockly.defineBlocksWithJsonArray([
   {
     type: "toggle_led",
     message0: "%1 alternar",
-    args0: [
-      { type: "field_input", name: "NAME", text: "led" },
-    ],
+    args0: [{ type: "field_input", name: "NAME", text: "led" }],
     previousStatement: null,
     nextStatement: null,
     colour: "#2ECC71",
@@ -3112,7 +3087,7 @@ Blockly.defineBlocksWithJsonArray([
   },
   {
     type: "ky001_read_index",
-    message0: "leer %1 temperatura sensor #%2 de %3",
+    message0: "leer %1 temperatura sensor%2#[%3]",
     args0: [
       {
         type: "field_dropdown",
@@ -3146,14 +3121,12 @@ Blockly.defineBlocksWithJsonArray([
       },
       {
         type: "input_value",
-        name: "INDEX",
-        check: "Number",
+        name: "ROM",
       },
       {
         type: "input_value",
-        name: "ROMS",
-        check: "Array",
-      },
+        name: "INDEX",
+      }
     ],
     output: "Number",
     colour: "#1ABC9C",
@@ -3597,6 +3570,53 @@ Blockly.defineBlocksWithJsonArray([
     output: "Number",
     colour: "#2ECC71",
   },
+  {
+    type: "dht_select",
+    message0: "DHT pin %1 %2",
+    args0: [
+      {
+        type: "field_dropdown",
+        name: "PIN",
+        options: [
+          ["0", "0"],
+          ["2", "2"],
+          ["4", "4"],
+          ["5", "5"],
+          ["12", "12"],
+          ["13", "13"],
+          ["14", "14"],
+          ["15", "15"],
+          ["16", "16"],
+          ["17", "17"],
+          ["18", "18"],
+          ["19", "19"],
+          ["21 SDA", "21"],
+          ["22 SCL", "22"],
+          ["23", "23"],
+          ["25", "25"],
+          ["26", "26"],
+          ["27", "27"],
+          ["32", "32"],
+          ["33", "33"],
+          ["34", "34"],
+          ["35", "35"],
+          ["36", "36"],
+          ["39", "39"],
+        ],
+      },
+      {
+        type: "field_dropdown",
+        name: "TYPE",
+        options: [
+          ["temperatura", "temperature"],
+          ["humedad", "humidity"],
+        ],
+      },
+    ],
+    output: "Number",
+    colour: "#2ECC71",
+    tooltip: "DHT: selecciona qué valor leer",
+  },
 
   {
     type: "analog_sensor_init",
@@ -3834,6 +3854,25 @@ Blockly.defineBlocksWithJsonArray([
     colour: "#FF7043",
   },
   {
+    type: "ky023_select",
+    message0: "%1 leer %2",
+    args0: [
+      { type: "field_input", name: "NAME", text: "joystick" },
+      {
+        type: "field_dropdown",
+        name: "AXIS",
+        options: [
+          ["X", "X"],
+          ["Y", "Y"],
+          ["botón", "SW"],
+        ],
+      },
+    ],
+    output: "Number",
+    colour: "#FF7043",
+    tooltip: "Joystick KY-023: selecciona qué valor leer",
+  },
+  {
     type: "pot_slider_init",
     message0: "%1 %2 A %3 B %4 atten %5 width %6",
     args0: [
@@ -3935,6 +3974,28 @@ Blockly.defineBlocksWithJsonArray([
     ],
     output: "Number",
     colour: 60,
+  },
+  {
+    type: "pot_slider_select",
+    message0: "%1 valor %2",
+    args0: [
+      {
+        type: "field_input",
+        name: "NAME",
+        text: "deslizador",
+      },
+      {
+        type: "field_dropdown",
+        name: "AXIS",
+        options: [
+          ["A", "A"],
+          ["B", "B"],
+        ],
+      },
+    ],
+    output: "Number",
+    colour: 60,
+    tooltip: "Deslizador: selecciona qué potenciómetro leer",
   },
   {
     type: "hybrid_sensor_init",
@@ -4343,47 +4404,47 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_input",
         name: "NAME",
-        text: "l298n"
+        text: "l298n",
       },
       {
         type: "field_dropdown",
         name: "motor",
         options: [
           ["A", "A"],
-          ["B", "B"]
-        ]
+          ["B", "B"],
+        ],
       },
       {
         type: "field_label",
         name: "LABEL1",
-        text: "IN1"
+        text: "IN1",
       },
       {
         type: "field_dropdown",
         name: "in1",
         options: [
           ["off", "off"],
-          ["on", "on"]
-        ]
+          ["on", "on"],
+        ],
       },
       {
         type: "field_label",
         name: "LABEL2",
-        text: "IN2"
+        text: "IN2",
       },
       {
         type: "field_dropdown",
         name: "in2",
         options: [
           ["off", "off"],
-          ["on", "on"]
-        ]
-      }
+          ["on", "on"],
+        ],
+      },
     ],
     previousStatement: null,
     nextStatement: null,
     colour: 20,
-    extensions: ["motor_label_update"]
+    extensions: ["motor_label_update"],
   },
 
   {
@@ -4657,7 +4718,7 @@ Blockly.defineBlocksWithJsonArray([
 
   {
     type: "move_dc_motor1_pwm",
-    message0: "%1 Motor %2 velocidad %3 mover %4",
+    message0: "%1 Motor %2 velocidad%3mover %4",
     args0: [
       { type: "field_input", name: "NAME", text: "l298n" },
       {
@@ -4669,8 +4730,11 @@ Blockly.defineBlocksWithJsonArray([
         ],
       },
       {
-        type: "input_value",
-        name: "VALUE",
+        type: "field_slider",
+        name: "VELOCIDAD", // este es el nombre que lees luego
+        value: 50, // valor inicial
+        min: 0,
+        max: 100,
       },
       {
         type: "field_dropdown",
@@ -4686,27 +4750,25 @@ Blockly.defineBlocksWithJsonArray([
     nextStatement: null,
     inputsInline: true,
     colour: 20,
+    tooltip: "Velocidad 0–100%. Se mapea a 0–1023 (PWM 10-bit).",
   },
-
   {
-    type: "move_dc_motor2_pwm",
-    message0: "%1 Motor A velocidad %2 mover %3 B velocidad %4 mover %5",
+    type: "move_dc_motor1_pwm_var",
+    message0: "%1 Motor %2 velocidad%3mover %4",
     args0: [
       { type: "field_input", name: "NAME", text: "l298n" },
-      { type: "input_value", name: "VALUEA" },
       {
         type: "field_dropdown",
-        name: "motorA",
+        name: "motor",
         options: [
-          ["Adelante", "Adelante"],
-          ["Atrás", "Atrás"],
-          ["Detener", "Detener"],
+          ["A", "A"],
+          ["B", "B"],
         ],
       },
-      { type: "input_value", name: "VALUEB" },
+      { type: "input_value", name: "VELOCIDAD", check: "Number" },
       {
         type: "field_dropdown",
-        name: "motorB",
+        name: "mover",
         options: [
           ["Adelante", "Adelante"],
           ["Atrás", "Atrás"],
@@ -4718,6 +4780,74 @@ Blockly.defineBlocksWithJsonArray([
     nextStatement: null,
     inputsInline: true,
     colour: 20,
+    tooltip: "Como 'velocidad' (0–100%), pero se conecta como valor — puedes usar una variable.",
+  },
+
+  {
+    type: "move_dc_motor2_pwm",
+    message0: "%1 Motor %2 velocidad%3mover %4",
+    args0: [
+      { type: "field_input", name: "NAME", text: "l298n" },
+      {
+        type: "field_dropdown",
+        name: "motor",
+        options: [
+          ["A", "A"],
+          ["B", "B"],
+        ],
+      },
+      {
+        type: "field_slider", // ← slider en vez de input_value
+        name: "SPEED", // ← este nombre lo lee el generador
+        value: 50,
+        min: 0,
+        max: 100,
+      },
+      {
+        type: "field_dropdown",
+        name: "mover",
+        options: [
+          ["Adelante", "Adelante"],
+          ["Atrás", "Atrás"],
+          ["Detener", "Detener"],
+        ],
+      },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+    colour: 20,
+    tooltip: "Velocidad 0–100%. Se mapea a 0–1023 (PWM 10-bit).",
+  },
+  {
+    type: "move_dc_motor2_pwm_var",
+    message0: "%1 Motor %2 velocidad%3mover %4",
+    args0: [
+      { type: "field_input", name: "NAME", text: "l298n" },
+      {
+        type: "field_dropdown",
+        name: "motor",
+        options: [
+          ["A", "A"],
+          ["B", "B"],
+        ],
+      },
+      { type: "input_value", name: "SPEED", check: "Number" },
+      {
+        type: "field_dropdown",
+        name: "mover",
+        options: [
+          ["Adelante", "Adelante"],
+          ["Atrás", "Atrás"],
+          ["Detener", "Detener"],
+        ],
+      },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+    colour: 20,
+    tooltip: "Como 'velocidad' (0–100%), pero se conecta como valor — puedes usar una variable.",
   },
 
   {
@@ -4777,6 +4907,31 @@ Blockly.defineBlocksWithJsonArray([
     previousStatement: null,
     nextStatement: null,
     colour: 20,
+  },
+  {
+    type: "move_servo_var",
+    message0: "servo pin%1 mover a %2",
+    args0: [
+      {
+        type: "field_dropdown",
+        name: "PIN",
+        options: [
+          ["26", "26"],
+          ["25", "25"],
+          ["27", "27"],
+          ["14", "14"],
+          ["12", "12"],
+          ["13", "13"],
+          ["32", "32"],
+          ["33", "33"],
+        ],
+      },
+      { type: "input_value", name: "ANGLE", check: "Number" },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 20,
+    tooltip: "Como 'mover a', pero el ángulo se conecta como valor — puedes usar una variable o un cálculo en vez de un número fijo.",
   },
 
   {
@@ -4883,6 +5038,30 @@ Blockly.defineBlocksWithJsonArray([
     previousStatement: null,
     nextStatement: null,
     colour: 20,
+  },
+  {
+    type: "stepper_degrees_var",
+    message0: "%1 girar %2 grados",
+    args0: [
+      { type: "field_input", name: "NAME", text: "motor_pasos" },
+      { type: "input_value", name: "ANGLE", check: "Number" },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 20,
+    tooltip: "Como 'girar grados', pero el ángulo se conecta como valor — puedes usar una variable.",
+  },
+  {
+    type: "stepper_angle_var",
+    message0: "%1 ir al angulo %2",
+    args0: [
+      { type: "field_input", name: "NAME", text: "motor_pasos" },
+      { type: "input_value", name: "ANGLE", check: "Number" },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 20,
+    tooltip: "Como 'ir al ángulo', pero el ángulo se conecta como valor — puedes usar una variable.",
   },
 
   {
@@ -5502,9 +5681,17 @@ Blockly.defineBlocksWithJsonArray([
 
   {
     type: "spi_init",
-    message0: "%1 SCK %2 MOSI %3 MISO %4 baudios %5",
+    message0: "%1 id %2 SCK %3 MOSI %4 MISO %5 baudios %6",
     args0: [
       { type: "field_input", name: "NAME", text: "spi" },
+      {
+        type: "field_dropdown",
+        name: "ID",
+        options: [
+          ["1", "1"],
+          ["2", "2"],
+        ],
+      },
       {
         type: "field_dropdown",
         name: "SCK",
@@ -5575,12 +5762,20 @@ Blockly.defineBlocksWithJsonArray([
   },
   {
     type: "i2s_init",
-    message0: "%1 BCLK %2 WS %3 SD %4 rate %5",
+    message0: "%1 id %2 BCLK %3 WS %4 SD %5 rate %6",
     args0: [
       {
         type: "field_input",
         name: "NAME",
         text: "i2s",
+      },
+      {
+        type: "field_dropdown",
+        name: "ID",
+        options: [
+          ["0", "0"],
+          ["1", "1"],
+        ],
       },
       {
         type: "field_dropdown",
@@ -6172,7 +6367,8 @@ Blockly.defineBlocksWithJsonArray([
     previousStatement: null,
     nextStatement: null,
     colour: 210,
-    tooltip: "Guarda ap.ifconfig() en una variable para consultarla después.\nEjemplo: cfg = ap.ifconfig()",
+    tooltip:
+      "Guarda ap.ifconfig() en una variable para consultarla después.\nEjemplo: cfg = ap.ifconfig()",
     helpUrl: "",
   },
   {
@@ -6193,7 +6389,8 @@ Blockly.defineBlocksWithJsonArray([
     ],
     output: "String",
     colour: 210,
-    tooltip: "Lee un campo del ifconfig guardado.\ncfg[0]=IP, cfg[1]=Máscara, cfg[2]=Gateway, cfg[3]=DNS",
+    tooltip:
+      "Lee un campo del ifconfig guardado.\ncfg[0]=IP, cfg[1]=Máscara, cfg[2]=Gateway, cfg[3]=DNS",
     helpUrl: "",
   },
 
@@ -6510,7 +6707,8 @@ Blockly.defineBlocksWithJsonArray([
     previousStatement: null,
     nextStatement: null,
     colour: 270,
-    tooltip: "e.irq(callback) — llama a la función cuando llega un mensaje, sin bloquear el while.",
+    tooltip:
+      "e.irq(callback) — llama a la función cuando llega un mensaje, sin bloquear el while.",
   },
   {
     type: "espnow_irq_callback",
@@ -6527,7 +6725,8 @@ Blockly.defineBlocksWithJsonArray([
     previousStatement: null,
     nextStatement: null,
     colour: 270,
-    tooltip: "Define la función callback que e.irq() llamará al recibir. Usa 'leer mensaje ESP-NOW' dentro.",
+    tooltip:
+      "Define la función callback que e.irq() llamará al recibir. Usa 'leer mensaje ESP-NOW' dentro.",
   },
 
   {
@@ -6613,15 +6812,17 @@ Blockly.defineBlocksWithJsonArray([
     previousStatement: null,
     nextStatement: null,
     colour: 220,
-    tooltip: "Inicia Bluetooth Classic SPP en modo esclavo. Requiere firmware shariltumin.",
-    helpUrl: "https://github.com/shariltumin/esp32-bluetooth-classic-micropython"
+    tooltip:
+      "Inicia Bluetooth Classic SPP en modo esclavo. Requiere firmware shariltumin.",
+    helpUrl:
+      "https://github.com/shariltumin/esp32-bluetooth-classic-micropython",
   },
   {
     type: "bt_classic_slave",
     message0: "Bluetooth Esclavo: nombre %1 PIN %2",
     args0: [
       { type: "input_value", name: "NAME", check: "String" },
-      { type: "input_value", name: "PIN", check: "String" }
+      { type: "input_value", name: "PIN", check: "String" },
     ],
     previousStatement: null,
     nextStatement: null,
@@ -6632,12 +6833,11 @@ Blockly.defineBlocksWithJsonArray([
   {
     type: "bt_classic_master",
     message0: "Bluetooth Maestro: nombre %1",
-    args0: [
-      { type: "input_value", name: "NAME", check: "String" },
-    ],
-    previousStatement: null, "nextStatement": null,
+    args0: [{ type: "input_value", name: "NAME", check: "String" }],
+    previousStatement: null,
+    nextStatement: null,
     colour: 220,
-    tooltip: "Inicializa ESP32 como maestro BT Classic SPP."
+    tooltip: "Inicializa ESP32 como maestro BT Classic SPP.",
   },
   // ── up() ──
   {
@@ -6645,7 +6845,7 @@ Blockly.defineBlocksWithJsonArray([
     message0: "¿inicialización exitosa?",
     output: "Boolean",
     colour: 220,
-    tooltip: "True si Bluetooth está listo, False si no."
+    tooltip: "True si Bluetooth está listo, False si no.",
   },
   // ── ready() ──
   {
@@ -6653,7 +6853,7 @@ Blockly.defineBlocksWithJsonArray([
     message0: "¿listo para enviar?",
     output: "Boolean",
     colour: 220,
-    tooltip: "True si hay conexión activa y puede enviar datos."
+    tooltip: "True si hay conexión activa y puede enviar datos.",
   },
   // ── open() — solo maestro ──
   {
@@ -6661,33 +6861,32 @@ Blockly.defineBlocksWithJsonArray([
     message0: "Conectar a esclavo %1 PIN %2",
     args0: [
       { type: "input_value", name: "NAME", check: "String" },
-      { type: "input_value", name: "PIN", check: "String" }
+      { type: "input_value", name: "PIN", check: "String" },
     ],
-    previousStatement: null, "nextStatement": null,
+    previousStatement: null,
+    nextStatement: null,
     colour: 220,
-    tooltip: "Maestro: conecta al esclavo por nombre y PIN."
+    tooltip: "Maestro: conecta al esclavo por nombre y PIN.",
   },
   // ── send_str() ──
   {
     type: "bt_classic_send_str",
     message0: "Enviar texto %1",
-    args0: [
-      { type: "input_value", name: "MSG", check: "String" }
-    ],
-    previousStatement: null, "nextStatement": null,
+    args0: [{ type: "input_value", name: "MSG", check: "String" }],
+    previousStatement: null,
+    nextStatement: null,
     colour: 220,
-    tooltip: "Envía un string (máx 990 caracteres)."
+    tooltip: "Envía un string (máx 990 caracteres).",
   },
   // ── send_bin() ──
   {
     type: "bt_classic_send_bin",
     message0: "Enviar bytes %1",
-    args0: [
-      { type: "input_value", name: "DATA", check: "String" }
-    ],
-    previousStatement: null, "nextStatement": null,
+    args0: [{ type: "input_value", name: "DATA", check: "String" }],
+    previousStatement: null,
+    nextStatement: null,
     colour: 220,
-    tooltip: "Envía bytearray (máx 990 bytes)."
+    tooltip: "Envía bytearray (máx 990 bytes).",
   },
   // ── data() ──
   {
@@ -6695,59 +6894,60 @@ Blockly.defineBlocksWithJsonArray([
     message0: "Bytes en buffer",
     output: "Number",
     colour: 220,
-    tooltip: "Retorna cantidad de bytes disponibles en el buffer (0 si vacío, máx 1024)."
+    tooltip:
+      "Retorna cantidad de bytes disponibles en el buffer (0 si vacío, máx 1024).",
   },
   // ── get_str() ──
   {
     type: "bt_classic_get_str",
     message0: "Leer texto máx %1 bytes",
-    args0: [
-      { type: "input_value", name: "N", check: "Number" }
-    ],
+    args0: [{ type: "input_value", name: "N", check: "Number" }],
     output: "String",
     colour: 220,
-    tooltip: "Lee hasta N bytes del buffer como string."
+    tooltip: "Lee hasta N bytes del buffer como string.",
   },
   // ── get_bin() ──
   {
     type: "bt_classic_get_bin",
     message0: "Leer bytes máx %1",
-    args0: [
-      { type: "input_value", name: "N", check: "Number" }
-    ],
+    args0: [{ type: "input_value", name: "N", check: "Number" }],
     output: null,
     colour: 220,
-    tooltip: "Lee hasta N bytes del buffer como bytes."
+    tooltip: "Lee hasta N bytes del buffer como bytes.",
   },
   // ── close() ──
   {
     type: "bt_classic_close",
     message0: "Cerrar Esclavo",
-    previousStatement: null, "nextStatement": null,
+    previousStatement: null,
+    nextStatement: null,
     colour: 220,
-    tooltip: "Cierra la conexión activa."
+    tooltip: "Cierra la conexión activa.",
   },
   // ── deinit() ──
   {
     type: "bt_classic_deinit",
     message0: "Desactiva Esclavo",
-    previousStatement: null, "nextStatement": null,
+    previousStatement: null,
+    nextStatement: null,
     colour: 220,
-    tooltip: "Desactiva completamente el Bluetooth (útil antes de deep-sleep)."
+    tooltip: "Desactiva completamente el Bluetooth (útil antes de deep-sleep).",
   },
   {
     type: "bt_classic_master_close",
     message0: "Cierra Maestro",
-    previousStatement: null, "nextStatement": null,
+    previousStatement: null,
+    nextStatement: null,
     colour: 220,
-    tooltip: "Cierra la conexión activa."
+    tooltip: "Cierra la conexión activa.",
   },
   {
     type: "bt_classic_master_deinit",
     message0: "Desactiva Maestro",
-    previousStatement: null, "nextStatement": null,
+    previousStatement: null,
+    nextStatement: null,
     colour: 220,
-    tooltip: "Desactiva completamente el Bluetooth (útil antes de deep-sleep)."
+    tooltip: "Desactiva completamente el Bluetooth (útil antes de deep-sleep).",
   },
   {
     type: "portal_init",
@@ -8215,12 +8415,30 @@ Blockly.defineBlocksWithJsonArray([
         name: "NAME",
         text: "matrix8x8",
       },
-      { type: "input_value", name: "VALUE" },
+      { type: "field_slider", name: "VALUE", value: 5, min: 0, max: 15 },
     ],
     inputsInline: true,
     previousStatement: null,
     nextStatement: null,
     colour: "#26A69A",
+    tooltip: "Brillo 0–15 (MAX7219).",
+  },
+  {
+    type: "matrix8_brightness_var",
+    message0: "%1 brillo %2",
+    args0: [
+      {
+        type: "field_input",
+        name: "NAME",
+        text: "matrix8x8",
+      },
+      { type: "input_value", name: "VALUE", check: "Number" },
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: "#26A69A",
+    tooltip: "Como 'brillo' (0–15), pero se conecta como valor — puedes usar una variable.",
   },
 
   {
@@ -8347,13 +8565,33 @@ Blockly.defineBlocksWithJsonArray([
         text: "tm1637",
       },
       {
-        type: "input_value",
+        type: "field_slider",
         name: "BRIGHT",
+        value: 7,
+        min: 0,
+        max: 7,
       },
     ],
     previousStatement: null,
     nextStatement: null,
     colour: 20,
+    tooltip: "Brillo 0–7 (TM1637).",
+  },
+  {
+    type: "tm1637_brightness_var",
+    message0: "%1 brillo valor %2",
+    args0: [
+      {
+        type: "field_input",
+        name: "NAME",
+        text: "tm1637",
+      },
+      { type: "input_value", name: "BRIGHT", check: "Number" },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 20,
+    tooltip: "Como 'brillo valor' (0–7), pero se conecta como valor — puedes usar una variable.",
   },
 
   {
@@ -8711,22 +8949,21 @@ Blockly.defineBlocksWithJsonArray([
 
   {
     type: "neopixel_show",
-    message0: "%1 mostrar %2",
+    message0: "%1 brillo %2", // ← nuevo mensaje
     args0: [
+      { type: "field_input", name: "NAME", text: "neopixel5x5" },
       {
-        type: "field_input",
-        name: "NAME",
-        text: "neopixel5x5",
+        type: "field_slider", // ← antes era "field_number"
+        name: "BRIGHT", // ← antes era "N"
+        value: 50,
+        min: 0,
+        max: 100,
       },
-      {
-        type: "field_number",
-        name: "N",
-        value: 0.5,
-      }
     ],
     previousStatement: null,
     nextStatement: null,
     colour: "#26A69A",
+    tooltip: "Brillo 0–100%. Se mapea a 0.0–1.0 con def map().",
   },
 
   {
@@ -8978,7 +9215,8 @@ Blockly.defineBlocksWithJsonArray([
 
   {
     type: "neopixel_marquee",
-    message0: "%1 scroll texto %2 color %3 x %4 y %5 tiempo %6 dirección %7 brillo %8",
+    message0:
+      "%1 scroll texto %2 color %3 x %4 y %5 tiempo %6 dirección %7 brillo %8",
     args0: [
       { type: "field_input", name: "NAME", text: "neopixel5x5" },
       { type: "input_value", name: "TEXT" },
@@ -8997,20 +9235,17 @@ Blockly.defineBlocksWithJsonArray([
         ],
       },
       {
-        type: "field_dropdown",
+        type: "field_slider",
         name: "BRIGHTNESS",
-        options: [
-          ["10%", "0.1"],
-          ["20%", "0.2"],
-          ["30%", "0.3"],
-          ["50%", "0.5"],
-          ["100%", "1.0"],
-        ],
+        value: 20,
+        min: 0,
+        max: 100,
       },
     ],
     previousStatement: null,
     nextStatement: null,
     colour: "#26A69A",
+    tooltip: "Brillo 0–100%.",
   },
 
   {
@@ -9409,7 +9644,8 @@ Blockly.defineBlocksWithJsonArray([
   },
   {
     type: "shield_set_motor",
-    message0: "%1 pin direccionA %2 pin velocidadA %3 pin direccionB %4 pin velocidadB %5",
+    message0:
+      "%1 pin direccionA %2 pin velocidadA %3 pin direccionB %4 pin velocidadB %5",
     args0: [
       {
         type: "field_image",
@@ -9538,7 +9774,8 @@ Blockly.defineBlocksWithJsonArray([
     colour: 260,
     previousStatement: null,
     nextStatement: null,
-    tooltip: "Configura los pines para controlar dos motores con un shield de control de motores",
+    tooltip:
+      "Configura los pines para controlar dos motores con un shield de control de motores",
   },
   {
     type: "set_speed_motorA",
@@ -9549,20 +9786,39 @@ Blockly.defineBlocksWithJsonArray([
         name: "DIR",
         options: [
           ["Horario (1)", "1"],
-          ["Antihorario (0)", "0"]
-        ]
+          ["Antihorario (0)", "0"],
+        ],
       },
       {
-        type: "field_number",
+        type: "field_slider",
         name: "SPEED",
         value: 500,
         min: 0,
-        max: 1023
-      }
+        max: 1023,
+      },
     ],
     previousStatement: null,
     nextStatement: null,
-    colour: 260
+    colour: 260,
+  },
+  {
+    type: "set_speed_motorA_var",
+    message0: "Motor A dirección %1 velocidad %2",
+    args0: [
+      {
+        type: "field_dropdown",
+        name: "DIR",
+        options: [
+          ["Horario (1)", "1"],
+          ["Antihorario (0)", "0"],
+        ],
+      },
+      { type: "input_value", name: "SPEED", check: "Number" },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 260,
+    tooltip: "Como 'velocidad' (0–1023), pero se conecta como valor — puedes usar una variable.",
   },
   {
     type: "set_speed_motorB",
@@ -9573,20 +9829,39 @@ Blockly.defineBlocksWithJsonArray([
         name: "DIR",
         options: [
           ["Horario (1)", "1"],
-          ["Antihorario (0)", "0"]
-        ]
+          ["Antihorario (0)", "0"],
+        ],
       },
       {
-        type: "field_number",
+        type: "field_slider",
         name: "SPEED",
         value: 500,
         min: 0,
-        max: 1023
-      }
+        max: 1023,
+      },
     ],
     previousStatement: null,
     nextStatement: null,
-    colour: 260
+    colour: 260,
+  },
+  {
+    type: "set_speed_motorB_var",
+    message0: "Motor B dirección %1 velocidad %2",
+    args0: [
+      {
+        type: "field_dropdown",
+        name: "DIR",
+        options: [
+          ["Horario (1)", "1"],
+          ["Antihorario (0)", "0"],
+        ],
+      },
+      { type: "input_value", name: "SPEED", check: "Number" },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 260,
+    tooltip: "Como 'velocidad' (0–1023), pero se conecta como valor — puedes usar una variable.",
   },
 
   {
@@ -10009,6 +10284,25 @@ Blockly.defineBlocksWithJsonArray([
     colour: 285,
   },
   {
+    type: "rtc_ds3231_select",
+    message0: "%1 %2",
+    args0: [
+      { type: "field_input", name: "NAME", text: "rtc_ds3231" },
+      {
+        type: "field_dropdown",
+        name: "UNIT",
+        options: [
+          ["hora", "HOUR"],
+          ["minuto", "MINUTE"],
+          ["segundo", "SECOND"],
+        ],
+      },
+    ],
+    output: "Number",
+    colour: 285,
+    tooltip: "RTC DS3231: selecciona qué valor leer",
+  },
+  {
     type: "rfid_mfrc522_init",
     message0: "%1 %2 SCK %3 MOSI %4 MISO %5 RST %6 SDA(SS) %7",
     args0: [
@@ -10427,6 +10721,26 @@ Blockly.defineBlocksWithJsonArray([
     colour: 190,
   },
   {
+    type: "tcs34725_select",
+    message0: "%1 %2",
+    args0: [
+      { type: "field_input", name: "NAME", text: "color" },
+      {
+        type: "field_dropdown",
+        name: "CHANNEL",
+        options: [
+          ["rojo", "0"],
+          ["verde", "1"],
+          ["azul", "2"],
+          ["luz", "3"],
+        ],
+      },
+    ],
+    output: "Number",
+    colour: 190,
+    tooltip: "TCS34725: selecciona qué canal de color leer",
+  },
+  {
     type: "tcs34725_integration",
     message0: "%1 integracion %2",
     args0: [
@@ -10576,11 +10890,24 @@ Blockly.defineBlocksWithJsonArray([
     message0: "%1 volumen %2",
     args0: [
       { type: "field_input", name: "NAME", text: "dfplayer" },
-      { type: "input_value", name: "VOLUME" },
+      { type: "field_slider", name: "VOLUME", value: 20, min: 0, max: 30 },
     ],
     previousStatement: null,
     nextStatement: null,
     colour: 330,
+    tooltip: "Volumen 0–30 (DFPlayer Mini).",
+  },
+  {
+    type: "dfplayer_volume_var",
+    message0: "%1 volumen %2",
+    args0: [
+      { type: "field_input", name: "NAME", text: "dfplayer" },
+      { type: "input_value", name: "VOLUME", check: "Number" },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 330,
+    tooltip: "Como 'volumen' (0–30), pero se conecta como valor — puedes usar una variable.",
   },
   {
     type: "dfplayer_next",
@@ -10973,6 +11300,44 @@ Blockly.defineBlocksWithJsonArray([
     output: "Number",
     colour: 230,
   },
+  {
+    type: "mpu6050_select_accel",
+    message0: "%1 aceleración %2",
+    args0: [
+      { type: "field_input", name: "NAME", text: "mpu" },
+      {
+        type: "field_dropdown",
+        name: "AXIS",
+        options: [
+          ["X", "x"],
+          ["Y", "y"],
+          ["Z", "z"],
+        ],
+      },
+    ],
+    output: "Number",
+    colour: 230,
+    tooltip: "MPU6050: selecciona el eje de aceleración",
+  },
+  {
+    type: "mpu6050_select_gyro",
+    message0: "%1 giro %2",
+    args0: [
+      { type: "field_input", name: "NAME", text: "mpu" },
+      {
+        type: "field_dropdown",
+        name: "AXIS",
+        options: [
+          ["X", "x"],
+          ["Y", "y"],
+          ["Z", "z"],
+        ],
+      },
+    ],
+    output: "Number",
+    colour: 230,
+    tooltip: "MPU6050: selecciona el eje de giro",
+  },
 
   {
     type: "bh1750_init",
@@ -11136,6 +11501,26 @@ Blockly.defineBlocksWithJsonArray([
     args0: [{ type: "field_input", name: "NAME", text: "qmc" }],
     output: "Number",
     colour: 20,
+  },
+  {
+    type: "qmc5883l_select",
+    message0: "%1 eje %2",
+    args0: [
+      { type: "field_input", name: "NAME", text: "qmc" },
+      {
+        type: "field_dropdown",
+        name: "AXIS",
+        options: [
+          ["X", "0"],
+          ["Y", "1"],
+          ["Z", "2"],
+        ],
+      },
+    ],
+    output: "Number",
+    colour: 20,
+    tooltip:
+      "QMC5883L: selecciona el eje (usa el último valor leído con 'leer XYZ')",
   },
   {
     type: "sdcard_init",
@@ -11374,6 +11759,25 @@ Blockly.defineBlocksWithJsonArray([
     colour: 200,
   },
   {
+    type: "bmp_select",
+    message0: "%1 %2",
+    args0: [
+      { type: "field_input", name: "NAME", text: "bmp" },
+      {
+        type: "field_dropdown",
+        name: "TYPE",
+        options: [
+          ["temperatura", "TEMP"],
+          ["presión", "PRESSURE"],
+          ["altitud", "ALTITUDE"],
+        ],
+      },
+    ],
+    output: "Number",
+    colour: 200,
+    tooltip: "BMP280: selecciona qué valor leer",
+  },
+  {
     type: "cp2102_init",
     message0: "%1 %2 id %3 TX %4 RX %5 baudios %6",
     args0: [
@@ -11528,26 +11932,60 @@ Blockly.defineBlocksWithJsonArray([
         type: "field_dropdown",
         name: "TX",
         options: [
-          ["0", "0"], ["2", "2"], ["4", "4"], ["5", "5"],
-          ["12", "12"], ["13", "13"], ["14", "14"], ["15", "15"],
-          ["16", "16"], ["17", "17"], ["18", "18"], ["19", "19"],
-          ["21 SDA", "21"], ["22 SCL", "22"], ["23", "23"],
-          ["25", "25"], ["26", "26"], ["27", "27"],
-          ["32", "32"], ["33", "33"], ["34", "34"],
-          ["35", "35"], ["36", "36"], ["39", "39"],
+          ["0", "0"],
+          ["2", "2"],
+          ["4", "4"],
+          ["5", "5"],
+          ["12", "12"],
+          ["13", "13"],
+          ["14", "14"],
+          ["15", "15"],
+          ["16", "16"],
+          ["17", "17"],
+          ["18", "18"],
+          ["19", "19"],
+          ["21 SDA", "21"],
+          ["22 SCL", "22"],
+          ["23", "23"],
+          ["25", "25"],
+          ["26", "26"],
+          ["27", "27"],
+          ["32", "32"],
+          ["33", "33"],
+          ["34", "34"],
+          ["35", "35"],
+          ["36", "36"],
+          ["39", "39"],
         ],
       },
       {
         type: "field_dropdown",
         name: "RX",
         options: [
-          ["0", "0"], ["2", "2"], ["4", "4"], ["5", "5"],
-          ["12", "12"], ["13", "13"], ["14", "14"], ["15", "15"],
-          ["16", "16"], ["17", "17"], ["18", "18"], ["19", "19"],
-          ["21 SDA", "21"], ["22 SCL", "22"], ["23", "23"],
-          ["25", "25"], ["26", "26"], ["27", "27"],
-          ["32", "32"], ["33", "33"], ["34", "34"],
-          ["35", "35"], ["36", "36"], ["39", "39"],
+          ["0", "0"],
+          ["2", "2"],
+          ["4", "4"],
+          ["5", "5"],
+          ["12", "12"],
+          ["13", "13"],
+          ["14", "14"],
+          ["15", "15"],
+          ["16", "16"],
+          ["17", "17"],
+          ["18", "18"],
+          ["19", "19"],
+          ["21 SDA", "21"],
+          ["22 SCL", "22"],
+          ["23", "23"],
+          ["25", "25"],
+          ["26", "26"],
+          ["27", "27"],
+          ["32", "32"],
+          ["33", "33"],
+          ["34", "34"],
+          ["35", "35"],
+          ["36", "36"],
+          ["39", "39"],
         ],
       },
       {
@@ -11624,7 +12062,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "input_value",
         name: "UPDATED",
-      }
+      },
     ],
     output: null,
     colour: 120,
@@ -11649,6 +12087,25 @@ Blockly.defineBlocksWithJsonArray([
     args0: [{ type: "field_input", name: "NAME", text: "gps" }],
     output: null,
     colour: 120,
+  },
+  {
+    type: "gps_select",
+    message0: "%1 %2",
+    args0: [
+      { type: "field_input", name: "NAME", text: "gps" },
+      {
+        type: "field_dropdown",
+        name: "TYPE",
+        options: [
+          ["latitud", "latitude"],
+          ["longitud", "longitude"],
+          ["hora", "timestamp"],
+        ],
+      },
+    ],
+    output: null,
+    colour: 120,
+    tooltip: "GPS: selecciona qué valor leer",
   },
   {
     type: "yf201_init",
@@ -13127,24 +13584,21 @@ Blockly.Extensions.register("auto_comment", function () {
   this.setCommentText("Bloque configurable");
 });
 
-Blockly.Extensions.register(
-  "motor_label_update",
-  function () {
-    this.setOnChange(function (event) {
-      if (!event) return;
+Blockly.Extensions.register("motor_label_update", function () {
+  this.setOnChange(function (event) {
+    if (!event) return;
 
-      const motor = this.getFieldValue("motor");
+    const motor = this.getFieldValue("motor");
 
-      if (motor === "A") {
-        this.getField("LABEL1").setValue("IN1");
-        this.getField("LABEL2").setValue("IN2");
-      } else if (motor === "B") {
-        this.getField("LABEL1").setValue("IN3");
-        this.getField("LABEL2").setValue("IN4");
-      }
-    });
-  }
-);
+    if (motor === "A") {
+      this.getField("LABEL1").setValue("IN1");
+      this.getField("LABEL2").setValue("IN2");
+    } else if (motor === "B") {
+      this.getField("LABEL1").setValue("IN3");
+      this.getField("LABEL2").setValue("IN4");
+    }
+  });
+});
 // =============================================
 // PORTAL CAUTIVO - BLOQUES DE DEFINICIÓN
 // Nota: se usa un segundo defineBlocksWithJsonArray separado intencionalmente
@@ -13173,9 +13627,7 @@ Blockly.defineBlocksWithJsonArray([
   {
     type: "portal_set_page",
     message0: "página HTML del portal %1",
-    args0: [
-      { type: "field_input", name: "PAGE", text: "index3" },
-    ],
+    args0: [{ type: "field_input", name: "PAGE", text: "index3" }],
     previousStatement: null,
     nextStatement: null,
     colour: "#8E44AD",
@@ -13206,9 +13658,7 @@ Blockly.defineBlocksWithJsonArray([
   {
     type: "portal_si_tipo",
     message0: "si tipo es %1",
-    args0: [
-      { type: "field_input", name: "TIPO", text: "led" },
-    ],
+    args0: [{ type: "field_input", name: "TIPO", text: "led" }],
     output: "Boolean",
     colour: "#E67E22",
     tooltip: "Compara el tipo recibido por el portal",
@@ -13218,9 +13668,7 @@ Blockly.defineBlocksWithJsonArray([
   {
     type: "portal_si_valor",
     message0: "si valor es %1",
-    args0: [
-      { type: "field_input", name: "VALOR", text: "on" },
-    ],
+    args0: [{ type: "field_input", name: "VALOR", text: "on" }],
     output: "Boolean",
     colour: "#E67E22",
     tooltip: "Compara el valor recibido por el portal",
@@ -13248,9 +13696,7 @@ Blockly.defineBlocksWithJsonArray([
   {
     type: "async_sleep_ms",
     message0: "async esperar %1 ms",
-    args0: [
-      { type: "field_number", name: "MS", value: 100, min: 0 },
-    ],
+    args0: [{ type: "input_value", name: "MS", check: "Number" }],
     previousStatement: null,
     nextStatement: null,
     colour: 120,
@@ -13261,9 +13707,7 @@ Blockly.defineBlocksWithJsonArray([
   {
     type: "async_sleep_s",
     message0: "esperar %1 segundos (async)",
-    args0: [
-      { type: "field_number", name: "S", value: 1, min: 0 },
-    ],
+    args0: [{ type: "input_value", name: "S", check: "Number" }],
     previousStatement: null,
     nextStatement: null,
     colour: "#1ABC9C",
@@ -13318,7 +13762,8 @@ Blockly.defineBlocksWithJsonArray([
     previousStatement: null,
     nextStatement: null,
     colour: "#1A6B3C",
-    tooltip: "Inicializa la cámara OV2640 con la configuración ai_thinker. Requiere firmware ESP32-CAM.",
+    tooltip:
+      "Inicializa la cámara OV2640 con la configuración ai_thinker. Requiere firmware ESP32-CAM.",
   },
   // --- Capturar frame ---
   {
@@ -13398,7 +13843,8 @@ Blockly.defineBlocksWithJsonArray([
     previousStatement: null,
     nextStatement: null,
     colour: "#1A6B3C",
-    tooltip: "Envía un stream MJPEG continuo al cliente HTTP. Usar dentro de un manejador async.",
+    tooltip:
+      "Envía un stream MJPEG continuo al cliente HTTP. Usar dentro de un manejador async.",
   },
 
   // --- Ruta /video_feed ---
@@ -13425,7 +13871,8 @@ Blockly.defineBlocksWithJsonArray([
     previousStatement: null,
     nextStatement: null,
     colour: "#1A6B3C",
-    tooltip: "Genera el manejador HTTP completo para ESP32-CAM: sirve index.html, /video_feed y /cmd.",
+    tooltip:
+      "Genera el manejador HTTP completo para ESP32-CAM: sirve index.html, /video_feed y /cmd.",
   },
 
   // --- Bloque principal completo ESPCam ---
@@ -13442,7 +13889,8 @@ Blockly.defineBlocksWithJsonArray([
     previousStatement: null,
     nextStatement: null,
     colour: "#1A6B3C",
-    tooltip: "Genera el programa completo: AP, DNS, servidor HTTP con stream de cámara.",
+    tooltip:
+      "Genera el programa completo: AP, DNS, servidor HTTP con stream de cámara.",
   },
 
   // --- LED Flash ---
@@ -13473,8 +13921,6 @@ Blockly.defineBlocksWithJsonArray([
   },
 ]);
 
-
-
 const BLOCK_PRINT_MULTI = {
   type: "print_multi",
   message0: "🖨️ print sep %1 end %2",
@@ -13483,12 +13929,13 @@ const BLOCK_PRINT_MULTI = {
     { type: "field_input", name: "END", text: "\\n" },
   ],
   message1: "%1",
-  args1: [{ type: "input_statement", name: "DUMMY" }],  // placeholder; el mutador agrega las entradas
+  args1: [{ type: "input_statement", name: "DUMMY" }], // placeholder; el mutador agrega las entradas
   previousStatement: null,
   nextStatement: null,
   colour: 160,
-  tooltip: "print() con múltiples valores. Conecta bloques de texto o variables.",
-  mutator: "print_multi_mutator",   // se define abajo
+  tooltip:
+    "print() con múltiples valores. Conecta bloques de texto o variables.",
+  mutator: "print_multi_mutator", // se define abajo
 };
 
 /*  El mutador reutiliza la lógica de text_join de Blockly.
@@ -13529,8 +13976,8 @@ if (Blockly && Blockly.Extensions) {
       const connections = [];
       while (itemBlock && !itemBlock.isInsertionMarker()) {
         connections.push(itemBlock.valueConnection_);
-        itemBlock = itemBlock.nextConnection &&
-          itemBlock.nextConnection.targetBlock();
+        itemBlock =
+          itemBlock.nextConnection && itemBlock.nextConnection.targetBlock();
       }
       // Desconectar entradas que sobran
       for (let i = connections.length; i < this.itemCount_; i++) {
@@ -13556,8 +14003,8 @@ if (Blockly && Blockly.Extensions) {
         const input = this.getInput("ADD" + i);
         itemBlock.valueConnection_ = input && input.connection.targetConnection;
         i++;
-        itemBlock = itemBlock.nextConnection &&
-          itemBlock.nextConnection.targetBlock();
+        itemBlock =
+          itemBlock.nextConnection && itemBlock.nextConnection.targetBlock();
       }
     },
 
@@ -13570,8 +14017,7 @@ if (Blockly && Blockly.Extensions) {
       }
       // Crear las nuevas
       for (let j = 0; j < this.itemCount_; j++) {
-        this.appendValueInput("ADD" + j)
-          .appendField(j === 0 ? "valor" : "");
+        this.appendValueInput("ADD" + j).appendField(j === 0 ? "valor" : "");
       }
     },
   };
@@ -13582,7 +14028,7 @@ if (Blockly && Blockly.Extensions) {
       "print_multi_mutator",
       PRINT_MULTI_MIXIN,
       null,
-      ["print_multi_item"]
+      ["print_multi_item"],
     );
   } catch (e) {
     // Ya registrado (recarga de página)
@@ -13623,8 +14069,8 @@ if (Blockly && Blockly.Extensions) {
       const connections = [];
       while (itemBlock && !itemBlock.isInsertionMarker()) {
         connections.push(itemBlock.valueConnection_);
-        itemBlock = itemBlock.nextConnection &&
-          itemBlock.nextConnection.targetBlock();
+        itemBlock =
+          itemBlock.nextConnection && itemBlock.nextConnection.targetBlock();
       }
       for (let i = connections.length; i < this.itemCount_; i++) {
         const input = this.getInput("VAL" + i);
@@ -13648,8 +14094,8 @@ if (Blockly && Blockly.Extensions) {
         const input = this.getInput("VAL" + i);
         itemBlock.valueConnection_ = input && input.connection.targetConnection;
         i++;
-        itemBlock = itemBlock.nextConnection &&
-          itemBlock.nextConnection.targetBlock();
+        itemBlock =
+          itemBlock.nextConnection && itemBlock.nextConnection.targetBlock();
       }
     },
 
@@ -13665,8 +14111,7 @@ if (Blockly && Blockly.Extensions) {
       this.itemCount_ = count;
       for (let j = 0; j < count; j++) {
         const lbl = (markers[j] || "%s") + " →";
-        this.appendValueInput("VAL" + j)
-          .appendField(lbl);
+        this.appendValueInput("VAL" + j).appendField(lbl);
       }
     },
   };
@@ -13676,9 +14121,11 @@ if (Blockly && Blockly.Extensions) {
       "text_format_mutator",
       TEXT_FORMAT_MIXIN,
       null,
-      ["text_format_item"]
+      ["text_format_item"],
     );
-  } catch (e) { /* ya registrado */ }
+  } catch (e) {
+    /* ya registrado */
+  }
 }
 
 // ── Registrar el bloque print_multi con su definición JSON ───────────
