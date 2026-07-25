@@ -2,7 +2,7 @@
    Service Worker — 3DPit Blocks PWA
    ============================================================ */
 
-const CACHE_NAME = '3dpit-blocks-v33';
+const CACHE_NAME = '3dpit-blocks-v34';
 
 /* ── INSTALL ── */
 self.addEventListener('install', event => {
@@ -66,9 +66,19 @@ self.addEventListener('install', event => {
         return caches.open(CACHE_NAME).then(cache =>
           Promise.allSettled(
             allFiles.map(url =>
-              cache.add(url).catch(err =>
-                console.warn('[SW] No se pudo cachear:', url, err)
-              )
+              /* cache.add() usa la caché HTTP del navegador, que a veces ya
+                 tiene guardada una respuesta 206 (Partial Content) para este
+                 mismo archivo — típico en audio/video que se pidió antes con
+                 Range. La Cache API no acepta 206, así que forzamos una
+                 petición de red completa ({cache:'reload'}) y solo guardamos
+                 si la respuesta es un 200 normal. */
+              fetch(url, { cache: 'reload' })
+                .then(response => {
+                  if (response.status === 200) return cache.put(url, response);
+                })
+                .catch(err =>
+                  console.warn('[SW] No se pudo cachear:', url, err)
+                )
             )
           )
         );
