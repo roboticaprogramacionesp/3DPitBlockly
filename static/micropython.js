@@ -1670,6 +1670,44 @@ ${name}_pwmD.duty(${d})
 `;
 };
 
+Blockly.Python["move_dc_motor_pwm1_slider"] = function (block) {
+  const name = block.getFieldValue("NAME");
+  const motor = block.getFieldValue("motor");
+  const speedA = block.getFieldValue("VALUEA") || "0";
+  const speedB = block.getFieldValue("VALUEB") || "0";
+
+  Blockly.Python.definitions_["map_function"] =
+    `def map(x, in_min=0, in_max=100, out_min=0, out_max=1023):
+    return int((x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min)
+`;
+
+  let pwm1, pwm2;
+  if (motor == "A") { pwm1 = `${name}_pwmA`; pwm2 = `${name}_pwmB`; }
+  else              { pwm1 = `${name}_pwmC`; pwm2 = `${name}_pwmD`; }
+
+  return `${pwm1}.duty(map(${speedA}))\n${pwm2}.duty(map(${speedB}))\n`;
+};
+
+Blockly.Python["move_dc_motor_pwm2_slider"] = function (block) {
+  const name = block.getFieldValue("NAME");
+  const a = block.getFieldValue("VALUEA") || "0";
+  const b = block.getFieldValue("VALUEB") || "0";
+  const c = block.getFieldValue("VALUEC") || "0";
+  const d = block.getFieldValue("VALUED") || "0";
+
+  Blockly.Python.definitions_["map_function"] =
+    `def map(x, in_min=0, in_max=100, out_min=0, out_max=1023):
+    return int((x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min)
+`;
+
+  return `
+${name}_pwmA.duty(map(${a}))
+${name}_pwmB.duty(map(${b}))
+${name}_pwmC.duty(map(${c}))
+${name}_pwmD.duty(map(${d}))
+`;
+};
+
 Blockly.Python["init3_dc_motor_pwm"] = function (block) {
   const name = block.getFieldValue("NAME");
   const ena = block.getFieldValue("ENA");

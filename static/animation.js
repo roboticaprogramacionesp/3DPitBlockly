@@ -1821,6 +1821,8 @@ Blockly.JavaScript["move_dc_motor1_pwm"] = function (b) { return ""; };
 Blockly.JavaScript["move_dc_motor2_pwm"] = function (b) { return ""; };
 Blockly.JavaScript["move_dc_motor_pwm1"] = function (b) { return ""; };
 Blockly.JavaScript["move_dc_motor_pwm2"] = function (b) { return ""; };
+Blockly.JavaScript["move_dc_motor_pwm1_slider"] = function (b) { return ""; };
+Blockly.JavaScript["move_dc_motor_pwm2_slider"] = function (b) { return ""; };
 Blockly.JavaScript["set_speed_motorA"] = function (b) { return ""; };
 Blockly.JavaScript["set_speed_motorB"] = function (b) { return ""; };
 Blockly.JavaScript["shield_set_motor"] = function (b) { return ""; };
@@ -2795,6 +2797,22 @@ function _gameLoop() {
 /* ══════════════════════════════════════════════════════
    EJECUTAR
 ══════════════════════════════════════════════════════ */
+/* Blockly.JavaScript.workspaceToCode() lanza una excepción si encuentra un
+   bloque cuyo tipo no tiene generador JS registrado (rompiendo TODA la
+   generación, no solo ese bloque) — algo que pasa con cualquier bloque de
+   hardware (WiFi, LCD, RFID, etc.) que solo tiene sentido en el ESP32 real
+   y nunca se implementó para el modo Juego/Animación. En vez de mantener a
+   mano un stub por cada bloque de hardware (y acordarnos de agregarlo cada
+   vez que sumamos uno nuevo), se rellenan aquí, justo antes de generar,
+   los que falten con un generador vacío — no reemplaza ninguno real. */
+function _ensureJsGeneratorsForAllBlocks(workspace) {
+  workspace.getAllBlocks(false).forEach(function (block) {
+    if (typeof Blockly.JavaScript[block.type] !== "function") {
+      Blockly.JavaScript[block.type] = function () { return ""; };
+    }
+  });
+}
+
 function runBlocklyAnimation() {
   /* Detener todo lo anterior */
   if (runner) {
@@ -2811,6 +2829,7 @@ function runBlocklyAnimation() {
   /* Diferir la compilación para no bloquear el hilo en el handler del botón */
   setTimeout(function () {
     Blockly.JavaScript.init(Code.workspace);
+    _ensureJsGeneratorsForAllBlocks(Code.workspace);
     var code = Blockly.JavaScript.workspaceToCode(Code.workspace);
 
     gameMode = _detectGameMode();
@@ -2865,6 +2884,7 @@ function _ensureInterpreterReady() {
   if (!Code || !Code.workspace) return false;
 
   Blockly.JavaScript.init(Code.workspace);
+  _ensureJsGeneratorsForAllBlocks(Code.workspace);
   var code = Blockly.JavaScript.workspaceToCode(Code.workspace);
   if (!code || !code.trim()) return false;
 

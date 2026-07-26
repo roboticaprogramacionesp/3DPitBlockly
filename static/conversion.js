@@ -4645,6 +4645,44 @@ Blockly.defineBlocksWithJsonArray([
     colour: 20,
   },
   {
+    type: "move_dc_motor_pwm1_slider",
+    message0: "%1 Motor %2 velocidad IN1 %3 velocidad IN2 %4",
+    args0: [
+      { type: "field_input", name: "NAME", text: "l298n" },
+      {
+        type: "field_dropdown",
+        name: "motor",
+        options: [
+          ["A", "A"],
+          ["B", "B"],
+        ],
+      },
+      { type: "field_slider", name: "VALUEA", value: 0, min: 0, max: 100 },
+      { type: "field_slider", name: "VALUEB", value: 0, min: 0, max: 100 },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+    colour: 20,
+    tooltip: "Velocidad de IN1/IN2 con deslizador (0-100%) para un solo motor.",
+  },
+  {
+    type: "move_dc_motor_pwm2_slider",
+    message0: "%1 Motor A IN1 %2 IN2 %3 Motor B IN3 %4 IN4 %5",
+    args0: [
+      { type: "field_input", name: "NAME", text: "l298n" },
+      { type: "field_slider", name: "VALUEA", value: 0, min: 0, max: 100 },
+      { type: "field_slider", name: "VALUEB", value: 0, min: 0, max: 100 },
+      { type: "field_slider", name: "VALUEC", value: 0, min: 0, max: 100 },
+      { type: "field_slider", name: "VALUED", value: 0, min: 0, max: 100 },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+    colour: 20,
+    tooltip: "Velocidad de IN1-IN4 con deslizador (0-100%) para ambos motores.",
+  },
+  {
     type: "init3_dc_motor_pwm",
     message0: "%1 %2 ENA %3 in1 %4 in2 %5 in3 %6 in4 %7 ENB %8",
     args0: [
