@@ -19,6 +19,8 @@
   header { text-align: center; margin-bottom: 2rem; }
   header h1 { font-size: 22px; font-weight: 600; color: #fff; }
   header p { font-size: 13px; color: #555; margin-top: 4px; }
+  header .ios-note { font-size: 11px; color: #777; margin-top: 8px; max-width: 360px; }
+  header .ios-note a { color: #6680ff; }
 
   .panel { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 12px; }
 
@@ -88,6 +90,7 @@
 <header>
   <h1>ESP32 BLE UART</h1>
   <p>Web Bluetooth</p>
+  <p class="ios-note">En iOS, Safari/Chrome/Firefox no soportan Web Bluetooth (limitación de Apple/WebKit). Usa una app como <b>Bluefy</b> o <b>WebBLE</b> para abrir esta página.</p>
 </header>
 
 <div class="panel">
@@ -146,8 +149,13 @@ const RX_UUID  = '6e400002-b5a3-f393-e0a9-e50e24dcca9e';
 const TX_UUID  = '6e400003-b5a3-f393-e0a9-e50e24dcca9e';
 
 let device, rxChar;
+let desconexionIntencional = false;
+let intentosReconexion = 0;
+const MAX_INTENTOS_RECONEXION = 3;
 
 const ctrlBtns = ['c-up','c-down','c-left','c-right','c-stop','btn-send'];
+
+const MAX_LOG_LINES = 200;
 
 function log(msg, tipo) {
   const el = document.getElementById('log');
@@ -156,6 +164,7 @@ function log(msg, tipo) {
   const ts = new Date().toLocaleTimeString('es', {hour12: false});
   d.textContent = ts + '  ' + msg;
   el.appendChild(d);
+  while (el.childElementCount > MAX_LOG_LINES) el.removeChild(el.firstChild);
   el.scrollTop = el.scrollHeight;
 }
 
@@ -173,44 +182,83 @@ function setConectado(on) {
 
 async function conectar() {
   if (!navigator.bluetooth) {
-    log('Web Bluetooth no disponible. Usa Chrome/Edge.', 'err'); return;
+    log('Web Bluetooth no disponible. Usa Chrome/Edge (Android o escritorio).', 'err'); return;
+  }
+  if (!window.isSecureContext) {
+    log('Esta página debe servirse por HTTPS (o localhost) para usar Web Bluetooth.', 'err'); return;
   }
   try {
     setStatus('Escaneando...', 'scanning');
     log('Abriendo selector de dispositivos...');
     device = await navigator.bluetooth.requestDevice({
-      acceptAllDevices: true,
+      filters: [{ services: [SVC_UUID] }],
       optionalServices: [SVC_UUID]
     });
-    setStatus('Conectando...', 'scanning');
-    log('Seleccionado: ' + device.name);
-    const server  = await device.gatt.connect();
-    const service = await server.getPrimaryService(SVC_UUID);
-    rxChar = await service.getCharacteristic(RX_UUID);
-    const txChar = await service.getCharacteristic(TX_UUID);
-    await txChar.startNotifications();
-    txChar.addEventListener('characteristicvaluechanged', onRecibir);
+    desconexionIntencional = false;
+    intentosReconexion = 0;
     device.addEventListener('gattserverdisconnected', onDesconectado);
-    setStatus('Conectado — ' + device.name, 'connected');
-    setConectado(true);
-    log('Conectado a ' + device.name, 'rx');
+    await conectarGatt();
   } catch (e) {
-    setStatus('Error', 'error');
-    log(e.message || 'Error al conectar', 'err');
+    if (e.name === 'NotFoundError') {
+      setStatus('Desconectado', '');
+      log('Selección cancelada.', 'sys');
+    } else {
+      setStatus('Error', 'error');
+      log(e.message || 'Error al conectar', 'err');
+    }
   }
+}
+
+async function conectarGatt() {
+  setStatus('Conectando...', 'scanning');
+  log('Seleccionado: ' + device.name);
+  const server  = await device.gatt.connect();
+  const service = await server.getPrimaryService(SVC_UUID);
+  rxChar = await service.getCharacteristic(RX_UUID);
+  const txChar = await service.getCharacteristic(TX_UUID);
+  await txChar.startNotifications();
+  txChar.addEventListener('characteristicvaluechanged', onRecibir);
+  setStatus('Conectado — ' + device.name, 'connected');
+  setConectado(true);
+  log('Conectado a ' + device.name, 'rx');
 }
 
 function onRecibir(e) {
   log('← ' + new TextDecoder().decode(e.target.value), 'rx');
 }
 
-function onDesconectado() {
-  setStatus('Desconectado', 'error');
+async function onDesconectado() {
   setConectado(false);
-  log('Dispositivo desconectado.', 'err');
+  rxChar = null;
+
+  if (desconexionIntencional) {
+    setStatus('Desconectado', '');
+    log('Dispositivo desconectado.', 'sys');
+    return;
+  }
+
+  if (intentosReconexion >= MAX_INTENTOS_RECONEXION) {
+    setStatus('Desconectado', 'error');
+    log('Se perdió la conexión y no se pudo reconectar.', 'err');
+    return;
+  }
+
+  intentosReconexion++;
+  setStatus('Reconectando... (' + intentosReconexion + '/' + MAX_INTENTOS_RECONEXION + ')', 'scanning');
+  log('Conexión perdida, reintentando...', 'err');
+  setTimeout(async () => {
+    try {
+      await conectarGatt();
+      intentosReconexion = 0;
+    } catch (e) {
+      log(e.message || 'Falló el intento de reconexión', 'err');
+      onDesconectado();
+    }
+  }, 1500);
 }
 
 function desconectar() {
+  desconexionIntencional = true;
   if (device && device.gatt.connected) device.gatt.disconnect();
 }
 
