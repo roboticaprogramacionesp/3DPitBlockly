@@ -266,6 +266,14 @@
   letter-spacing: .03em;
 }
 
+/* ── Check ✓ de paso ya completado (ver TutorialSteps._actualizarCheck) ──
+   Mismo criterio visual que el tutorial del simulador: el propio título
+   del paso se antepone con "✓ " y cambia de color, sin agregar ningún
+   elemento aparte. */
+.ts-step-title.ts-step-title-done {
+  color: #00e676;
+}
+
 .ts-step-desc {
   margin: 0 0 12px;
   line-height: 1.65;
@@ -548,12 +556,17 @@
   margin: 0 4px;
 }
 
-/* ── Protección: btnWiring siempre visible ── */
+/* ── #btnWiring: ícono de conexiones del menú superior. Oculto por
+   defecto -- TutorialSteps._actualizarBotonWiring() lo muestra
+   (display:flex) solo durante el paso "Conexión física..." del
+   tutorial activo, en vez de durante todo el tutorial. ── */
 #btnWiring {
-  display: flex !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  pointer-events: auto !important;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
 }
 
 /* ════════════════════════════════════════════════════════════════

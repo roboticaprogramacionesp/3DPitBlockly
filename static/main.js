@@ -2228,6 +2228,7 @@ async function sendCodeToDevice() {
         await sendViaPasteMode(code);
       }
     }
+    window._tsCodeRanOk = true; // usado por tutorial-steps.js para el check ✓ del paso "Ejecutar"
     return true;
   } finally {
     window._rawReplHook = null;

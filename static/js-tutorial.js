@@ -103,11 +103,22 @@ function showTutorialStep() {
   const btnNext = document.getElementById("tutorialNext");
 
   const step = uiTutorial[uiStep];
-  const el = document.querySelector(step.el);
+  let el = document.querySelector(step.el);
 
   if (!el) {
     console.warn("No existe:", step.el);
     return;
+  }
+
+  // Si el elemento existe en el DOM pero está oculto (display:none --
+  // ej. "#btnWiring", que TutorialSteps ahora solo muestra durante el
+  // paso de conexión de un tutorial guiado, ver tutorial-steps.js), su
+  // getBoundingClientRect() da todo 0 y el recorte queda como un punto
+  // en la esquina superior izquierda en vez de resaltar algo real. En
+  // ese caso usamos el contenedor visible más cercano como referencia.
+  if (el.getBoundingClientRect().width === 0 && el.offsetParent === null) {
+    const visible = el.closest(".menu-icons, .top-menu") || el.parentElement;
+    if (visible) el = visible;
   }
 
   if (uiStep === 0) {

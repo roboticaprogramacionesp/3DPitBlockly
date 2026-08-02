@@ -238,6 +238,7 @@ var TUTORIALS = {
         desc: "Ve a <b>Variables</b>, crea una variable llamada <b>contador</b>.",
         highlightCat: "Variables",
         highlightFlyoutButton: "create_variable",
+        variable: "contador",
         expandCat: null,
         bloque: null
       },
@@ -259,6 +260,7 @@ var TUTORIALS = {
         desc: "Ve a <b>Variables</b>, crea una variable llamada <b>btn</b>.",
         highlightCat: "Variables",
         highlightFlyoutButton: "create_variable",
+        variable: "btn",
         expandCat: null,
         bloque: null
       },
@@ -526,7 +528,7 @@ var TUTORIALS = {
       {
         titulo: "Crea la variable distancia",
         desc: "Ve a <b>Variables</b> y crea una nueva variable llamada <b>distancia</b>.",
-        highlightCat: "Variables", highlightFlyoutButton: "create_variable", expandCat: null, bloque: null
+        highlightCat: "Variables", highlightFlyoutButton: "create_variable", variable: "distancia", expandCat: null, bloque: null
       },
       {
         titulo: "Establecer el valor de distancia",
@@ -794,7 +796,7 @@ var TUTORIALS = {
       {
         titulo: "Crea la variable ir_valor",
         desc: "Ve a <b>Variables</b> y haz clic en <b>Crear variable</b>. Escribe el nombre <b>ir_valor</b> y confirma. Esta variable guardará la lectura del sensor en cada ciclo.",
-        highlightCat: "Variables", highlightFlyoutButton: "create_variable", bloque: null
+        highlightCat: "Variables", highlightFlyoutButton: "create_variable", variable: "ir_valor", bloque: null
       },
       {
         titulo: "Agrega un ciclo infinito",
@@ -879,6 +881,7 @@ var TUTORIALS = {
         desc: "Ve a <b>Variables</b> y crea una nueva variable llamada <b>adkey</b>.",
         highlightCat: "Variables",
         highlightFlyoutButton: "create_variable",
+        variable: "adkey",
         expandCat: null,
         bloque: null
       },
@@ -1358,7 +1361,7 @@ var TUTORIALS = {
       {
         titulo: "Crea la variable: respuesta",
         desc: "Ve a <b>Variables</b> y haz clic en <b>Crear variable</b>. Escribe el nombre <b>respuesta</b> y confirma. Esta variable guardará los mensajes recibidos de los clientes.",
-        highlightCat: "Variables", highlightFlyoutButton: "create_variable", bloque: null
+        highlightCat: "Variables", highlightFlyoutButton: "create_variable", variable: "respuesta", bloque: null
       },
       {
         titulo: "Guardar respuesta del cliente",
@@ -2126,7 +2129,7 @@ var TUTORIALS = {
       {
         titulo: "Crea las variables: temp y hum",
         desc: "Ve a <b>Variables</b> y crea dos variables: <b>temp</b> (temperatura) y <b>hum</b> (humedad). Las usaremos para guardar las lecturas del sensor.",
-        highlightCat: "Variables", highlightFlyoutButton: "create_variable", bloque: null
+        highlightCat: "Variables", highlightFlyoutButton: "create_variable", variable: ["temp", "hum"], bloque: null
       },
       {
         titulo: "Agrega un ciclo infinito",
@@ -2219,7 +2222,7 @@ var TUTORIALS = {
       {
         titulo: "Crea la variable: roms",
         desc: "Ve a <b>Variables</b> y haz clic en <b>Crear variable</b>. Escribe el nombre <b>roms</b> y confirma. Esta variable guardará la lista de sensores detectados en el bus OneWire.",
-        highlightCat: "Variables", highlightFlyoutButton: "create_variable", bloque: null
+        highlightCat: "Variables", highlightFlyoutButton: "create_variable", variable: "roms", bloque: null
       },
       {
         titulo: "Escanear sensores en el bus",
@@ -2230,7 +2233,7 @@ var TUTORIALS = {
       {
         titulo: "Crea la variable: temperatura",
         desc: "Ve a <b>Variables</b> y haz clic en <b>Crear variable</b>. Escribe el nombre <b>temperatura</b> y confirma. Guardará el valor leído del sensor en cada ciclo.",
-        highlightCat: "Variables", highlightFlyoutButton: "create_variable", bloque: null
+        highlightCat: "Variables", highlightFlyoutButton: "create_variable", variable: "temperatura", bloque: null
       },
       {
         titulo: "Agrega un ciclo infinito",
@@ -3630,6 +3633,7 @@ var TutorialSteps = {
   _glowBlocks: [],     // SVG roots resaltados — SOLO del flyout, nunca del workspace
   _flyoutObs: null,   // MutationObserver del flyout
   _currentTipos: [],    // tipos del paso actual, para el observer
+  _pollTimer: null,   // setInterval del check ✓ (ver _iniciarPolling/_actualizarCheck)
 
   /* ── API pública ─────────────────────────────────────────── */
   cargar: function (id) {
@@ -3640,33 +3644,27 @@ var TutorialSteps = {
     if (typeof showView === 'function') showView('viewBlocks');
     this.tutorial = tut;
     this.paso = 0;
+    // El check ✓ del paso "Ejecuta tu programa" se apoya en este flag
+    // (ver _isPasoCompleto / main.js sendCodeToDevice) -- resetearlo acá
+    // evita que quede "pegado" en true por haber corrido código de un
+    // tutorial anterior, y el paso de este tutorial nuevo se marque
+    // como hecho sin que el usuario haya tocado Ejecutar todavía.
+    window._tsCodeRanOk = false;
     document.getElementById('ts-panel').style.display = 'flex';
     // Restaurar botones por si el tutorial anterior terminó en _mostrarFin
     var btnNext = document.getElementById('ts-btn-next');
     var btnPrev = document.getElementById('ts-btn-prev');
     if (btnNext) btnNext.style.display = '';
     if (btnPrev) btnPrev.style.display = '';
-    // Mostrar botón de conexiones en la barra superior solo si el tutorial tiene diagrama
-    var btnWiring = document.getElementById('btnWiring');
-    if (btnWiring) {
-      if (tut.diagram) {
-        btnWiring.style.display = '';
-        btnWiring.classList.add('ts-has-wiring');
-        var iconEl = btnWiring.querySelector('.icon-btn');
-        if (iconEl) iconEl.style.visibility = 'visible';
-      } else {
-        //btnWiring.style.display = 'none';
-        btnWiring.classList.remove('ts-has-wiring');
-      }
-    }
-    // Mostrar botón de conexiones en el panel tutorial
-    var btnTsWiring = document.getElementById('ts-btn-wiring');
-    if (btnTsWiring) btnTsWiring.style.display = tut.diagram ? '' : 'none';
+    // El botón de conexiones (top bar y panel) ya NO se muestra para todo
+    // el tutorial -- ver _actualizarBotonWiring(), llamado desde
+    // _renderPaso(): solo aparece durante el paso "Conexión física...".
     // Restaurar body si fue reemplazado por pantalla de fin
     if (!document.getElementById('ts-step-num')) {
       document.getElementById('ts-body').innerHTML = this._bodyTpl();
     }
     this._renderPaso();
+    this._iniciarPolling();
   },
 
   siguiente: function () {
@@ -3712,6 +3710,7 @@ var TutorialSteps = {
   },
 
   cerrar: function () {
+    this._detenerPolling();
     this._limpiarTodo();
     this.tutorial = null;
     this.paso = 0;
@@ -3719,14 +3718,8 @@ var TutorialSteps = {
     if (panel) panel.style.display = 'none';
     var sel = document.getElementById('tutorialSelect');
     if (sel) sel.value = '';
-    // Ocultar botón de conexiones al cerrar
-    var btnWiring = document.getElementById('btnWiring');
-    if (btnWiring) {
-      btnWiring.style.display = 'none';
-      btnWiring.classList.remove('ts-has-wiring');
-    }
-    var btnTsWiring = document.getElementById('ts-btn-wiring');
-    if (btnTsWiring) btnTsWiring.style.display = 'none';
+    // Ocultar botón de conexiones al cerrar (this.tutorial ya es null acá)
+    this._actualizarBotonWiring();
   },
 
   /* ── Render ──────────────────────────────────────────────── */
@@ -3754,6 +3747,8 @@ var TutorialSteps = {
     document.getElementById('ts-step-num').textContent = this.paso + 1;
     document.getElementById('ts-step-title').textContent = step.titulo;
     document.getElementById('ts-step-desc').innerHTML = step.desc;
+
+    this._actualizarBotonWiring();
 
 
     // Mostrar u ocultar el panel de categoría/bloque según el paso
@@ -3839,6 +3834,148 @@ var TutorialSteps = {
     } else {
       this._currentBloques = [];
     }
+
+    this._actualizarCheck();
+  },
+
+  /* ── Check ✓ de paso ya completado ───────────────────────────
+     No navega solo ni fuerza nada — solo le avisa al usuario que
+     ya puede pasar de paso cuando quiera. Se recalcula al entrar a
+     cada paso y, mientras el tutorial sigue abierto, cada 500ms
+     (ver _iniciarPolling) para reflejar cambios hechos en el
+     workspace/conexión sin que el usuario tenga que tocar
+     Anterior/Siguiente. ────────────────────────────────────────── */
+  _isPasoCompleto: function () {
+    var tut = this.tutorial;
+    if (!tut) return false;
+    var step = tut.steps[this.paso];
+    if (!step) return false;
+    var self = this;
+
+    // Paso pide arrastrar uno o más bloques al workspace principal.
+    //
+    // OJO: muchos tutoriales piden el MISMO tipo genérico (math_number,
+    // time_sleep, variables_set sin "valor") en varios pasos distintos.
+    // Si acá solo revisáramos "¿existe al menos uno de ese tipo?", con
+    // arrastrar UN math_number ya quedarían todos esos pasos marcados
+    // ✓ de una, sin haber arrastrado nada para el resto. Por eso se
+    // compara CANTIDAD pedida acumulada hasta este paso (cuántas veces
+    // salió ese mismo tipo/valor en los pasos 0..actual) contra cuántos
+    // bloques de ese tipo/valor hay AHORA en el workspace -- así el ✓ de
+    // este paso solo prende cuando se arrastró uno nuevo para él.
+    if (step.bloque) {
+      var ws = this._getWorkspace();
+      if (!ws || !ws.getAllBlocks) return false;
+      var bloques = this._normalizarBloques(step.bloque);
+      var allBlocks = ws.getAllBlocks(false);
+      return bloques.every(function (b) {
+        var key = self._bloqueKey(b);
+        var necesarios = self._bloqueRequeridoHasta(self.paso, key);
+        var actuales = allBlocks.filter(function (block) {
+          return self._bloqueCoincide(block, b);
+        }).length;
+        return actuales >= necesarios;
+      });
+    }
+
+    // Paso pide crear una variable nueva (botón "Crear variable" del
+    // flyout de Variables) -- si el step declara "variable" (nombre o
+    // array de nombres) revisamos que YA exista en el workspace, en vez
+    // de darlo por hecho apenas se muestra el paso.
+    if (step.highlightFlyoutButton === "create_variable" && step.variable) {
+      var ws2 = this._getWorkspace();
+      if (!ws2 || !ws2.getAllVariables) return false;
+      var nombres = Array.isArray(step.variable) ? step.variable : [step.variable];
+      var vars = ws2.getAllVariables();
+      return nombres.every(function (nombre) {
+        return vars.some(function (v) { return v.name === nombre; });
+      });
+    }
+
+    // Paso pide abrir/seleccionar una categoría o subcategoría del
+    // toolbox (sin bloque para arrastrar todavía, ej. "Abre la categoría
+    // LEDs" o "Selecciona la subcategoría LED"). Blockly le agrega la
+    // clase .blocklyTreeSelected a la fila del toolbox recién clickeada
+    // (ver Blockly.ToolboxCategory.prototype.setSelected en
+    // blockly_compressed.js) -- se usa esa clase para saber si el
+    // usuario YA hizo clic ahí, en vez de darlo por hecho apenas se
+    // muestra el paso.
+    //
+    // Si el paso pide crear variable pero (por lo que sea) no tiene
+    // "variable" declarado, cae acá y NO se marca como hecho por solo
+    // haber clickeado la categoría -- sigue el fallback informativo de
+    // más abajo (mismo comportamiento que tenía antes de este chequeo).
+    if (!step.bloque && step.highlightCat && !step.highlightFlyoutButton) {
+      return this._categoriaSeleccionada(step.highlightCat);
+    }
+
+    // Paso pide conectar el ESP32.
+    if (step.highlightElement === "#btnConnection" || step.waitForAction === "connect") {
+      return typeof isConnected !== "undefined" && !!isConnected;
+    }
+
+    // Paso pide ejecutar el código (ver el flag seteado en main.js,
+    // sendCodeToDevice(), justo antes de su "return true" final).
+    if (step.waitForAction === "run") {
+      return !!window._tsCodeRanOk;
+    }
+
+    // Pasos informativos (sin bloque ni acción detectable): no hay
+    // nada que verificar, se dan por leídos apenas se muestran.
+    return true;
+  },
+
+  _actualizarCheck: function () {
+    var titleEl = document.getElementById('ts-step-title');
+    var tut = this.tutorial;
+    var step = tut && tut.steps[this.paso];
+    if (!titleEl || !step) return;
+
+    // Mismo criterio que TutorialManager._updateDoneIndicator() del
+    // simulador: antepone "✓ " al título del paso y le cambia el color
+    // vía la clase .ts-step-title-done -- puramente informativo, nunca
+    // navega solo.
+    var done = this._isPasoCompleto();
+    titleEl.textContent = done ? ('✓ ' + step.titulo) : step.titulo;
+    titleEl.classList.toggle('ts-step-title-done', done);
+  },
+
+  _iniciarPolling: function () {
+    this._detenerPolling();
+    var self = this;
+    this._pollTimer = setInterval(function () { self._actualizarCheck(); }, 500);
+  },
+
+  _detenerPolling: function () {
+    clearInterval(this._pollTimer);
+    this._pollTimer = null;
+  },
+
+  /* ── Botón de conexiones (🔌) ─────────────────────────────────
+     Antes se mostraba durante TODO el tutorial (y de hecho ni
+     siquiera se ocultaba al terminarlo, por una regla CSS que lo
+     forzaba siempre visible -- ver #btnWiring en tutorial-steps.css).
+     Ahora aparece SOLO en el paso "Conexión física..." de cada
+     tutorial, que es cuando realmente hace falta consultar el
+     diagrama; en cualquier otro paso, al cerrar el tutorial o al
+     terminarlo, se oculta. ────────────────────────────────────── */
+  _esPasoDeConexion: function (step) {
+    return !!(step && typeof step.titulo === 'string' &&
+      step.titulo.indexOf('Conexión física') === 0);
+  },
+
+  _actualizarBotonWiring: function () {
+    var tut = this.tutorial;
+    var step = tut ? tut.steps[this.paso] : null;
+    var mostrar = !!(tut && tut.diagram && this._esPasoDeConexion(step));
+
+    var btnWiring = document.getElementById('btnWiring');
+    if (btnWiring) {
+      btnWiring.style.display = mostrar ? 'flex' : 'none';
+    }
+
+    var btnTsWiring = document.getElementById('ts-btn-wiring');
+    if (btnTsWiring) btnTsWiring.style.display = mostrar ? '' : 'none';
   },
 
   /* Convierte string | objeto | array mixto → array de { tipo, valor? } */
@@ -3848,6 +3985,29 @@ var TutorialSteps = {
       if (typeof b === 'string') return { tipo: b };
       return b;
     });
+  },
+
+  /* Clave única por descriptor { tipo, valor? } -- usada para contar
+     cuántas veces se repite el mismo pedido (ver _bloqueRequeridoHasta). */
+  _bloqueKey: function (b) {
+    return b.valor ? (b.tipo + '::' + b.valor) : b.tipo;
+  },
+
+  /* Cuántas veces se pidió esta MISMA clave (tipo+valor) entre el paso 0
+     y idxPaso (inclusive) -- la demanda acumulada que _isPasoCompleto()
+     compara contra los bloques que hay ahora en el workspace. */
+  _bloqueRequeridoHasta: function (idxPaso, key) {
+    var self = this;
+    var steps = this.tutorial.steps;
+    var count = 0;
+    for (var i = 0; i <= idxPaso; i++) {
+      var s = steps[i];
+      if (!s.bloque) continue;
+      this._normalizarBloques(s.bloque).forEach(function (b) {
+        if (self._bloqueKey(b) === key) count++;
+      });
+    }
+    return count;
   },
 
   /*
@@ -4069,6 +4229,24 @@ var TutorialSteps = {
     }
   },
 
+  /* ¿El usuario ya hizo clic en la fila del toolbox llamada "nombre"?
+     (ver _isPasoCompleto) -- Blockly marca la fila activa con la clase
+     .blocklyTreeSelected apenas se clickea, así que no hace falta nada
+     propio: alcanza con leer esa clase. */
+  _categoriaSeleccionada: function (nombre) {
+    if (!nombre) return false;
+    var target = nombre.trim();
+    var rows = document.querySelectorAll('.blocklyTreeRow');
+    for (var i = 0; i < rows.length; i++) {
+      var label = rows[i].querySelector('.blocklyTreeLabel');
+      if (!label) continue;
+      if (label.textContent.trim() === target) {
+        return rows[i].classList.contains('blocklyTreeSelected');
+      }
+    }
+    return false;
+  },
+
   _highlightHTMLElement: function (selector) {
     const el = document.querySelector(selector);
 
@@ -4265,6 +4443,9 @@ var TutorialSteps = {
       '</div>';
     document.getElementById('ts-btn-next').style.display = 'none';
     document.getElementById('ts-btn-prev').style.display = 'none';
+    // Ya no hay un "paso de conexión" activo -- ocultar el botón de
+    // conexiones (antes quedaba visible incluso en la pantalla de fin).
+    this._actualizarBotonWiring();
   },
 
   _reiniciar: function () {
@@ -4283,7 +4464,7 @@ var TutorialSteps = {
   // tiene highlightCat o bloque. No eliminar.
   _bodyTpl: function () {
     return (
-      '<div class="ts-step-header">' +
+      '<div class="ts-step-header" id="ts-step-header">' +
       '  <span class="ts-step-num"  id="ts-step-num">1</span>' +
       '  <h3  class="ts-step-title" id="ts-step-title"></h3>' +
       '</div>' +
