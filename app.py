@@ -3,6 +3,7 @@ import threading
 import webview
 import os
 import base64
+import socket
 
 app = Flask(__name__)
 
@@ -208,20 +209,35 @@ def service_worker():
     return send_from_directory(root, "service-worker.js")
 
 
-def start_flask():
+def _find_free_port(preferred=5000, host="127.0.0.1"):
+    """Usa 'preferred' si está libre; si no (otra app ya lo tiene),
+    le pide uno libre al sistema operativo. Evita que la app deje de
+    abrir solo porque el 5000 está ocupado por otra cosa."""
+    for port in (preferred, 0):
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            try:
+                s.bind((host, port))
+                return s.getsockname()[1]
+            except OSError:
+                continue
+    raise RuntimeError("No se encontró un puerto libre para el servidor local.")
+
+
+def start_flask(port):
     app.run(
         host="127.0.0.1",
-        port=5000,
+        port=port,
         debug=False
     )
 
 
 if __name__ == "__main__":
-    threading.Thread(target=start_flask, daemon=True).start()
+    port = _find_free_port(5000)
+    threading.Thread(target=start_flask, args=(port,), daemon=True).start()
     api = Api()
     webview.create_window(
         "3DPit Blocks",
-        "http://127.0.0.1:5000/",
+        f"http://127.0.0.1:{port}/",
         min_size=(950, 600),
         resizable=True,
         js_api=api,
