@@ -2796,7 +2796,7 @@ Blockly.Python["lcd_init"] = function (block) {
   const d6 = block.getFieldValue("D6");
   const d7 = block.getFieldValue("D7");
 
-  return `${name} = CharLCD(rs=${rs},en=${en},d4=${d4},d5=${d5},d6=${d6},d7= ${d7}, cols=16, rows=2)\n`;
+  return `${name} = CharLCD(rs=${rs},en=${en},d4=${d4},d5=${d5},d6=${d6},d7=${d7}, cols=16, rows=2)\n`;
 };
 
 Blockly.Python["lcd_print"] = function (block) {
