@@ -603,6 +603,24 @@
       }
     }
 
+    /* Botones de zoom del diagrama de conexiones (＋ / － / 1:1): estaban
+       con padding:2px 8px (pensado para mouse) en cualquier tamaño de
+       pantalla -- muy chicos para tocar con precisión. Se agranda a
+       44×44 px (Apple HIG / WCAG, mismo criterio que .menu-buttons
+       button) en pantallas chicas Y en cualquier dispositivo táctil,
+       sin importar el ancho (una tablet en horizontal puede superar
+       los 700px y seguir siendo pantalla táctil). El zoom/pan del
+       propio diagrama (pinch, arrastrar, doble-tap) ya soporta touch
+       -- ver wiring-zoom.js -- esto solo agranda los botones. */
+    @media (max-width: 950px), (pointer: coarse) {
+      #wiringHeader button {
+        min-width: 44px;
+        min-height: 44px;
+        padding: 8px 10px !important;
+        font-size: 18px !important;
+      }
+    }
+
     /* CodeMirror: touch-action para scroll nativo en iOS */
     @media (max-width: 700px) {
       .CodeMirror {
@@ -2874,7 +2892,7 @@
             <block type="ky001_scan"></block>
             <block type="ky001_convert"></block>
             <block type="ky001_read_index">
-              <field name="PIN">5</field>
+              <field name="PIN">4</field>
               <value name="ROM">
                 <block type="variables_get">
                   <field name="VAR">roms</field>
