@@ -988,12 +988,12 @@ Blockly.Python["rtc_init"] = function (block) {
 
 Blockly.Python["rtc_set_datetime"] = function (block) {
   const rtc = block.getFieldValue("RTC");
-  const year = block.getFieldValue("YEAR");
-  const month = block.getFieldValue("MONTH");
-  const day = block.getFieldValue("DAY");
-  const hour = block.getFieldValue("HOUR");
-  const min = block.getFieldValue("MIN");
-  const sec = block.getFieldValue("SEC");
+  const year = Blockly.Python.valueToCode(block, "YEAR", Blockly.Python.ORDER_ATOMIC) || 2026;
+  const month = Blockly.Python.valueToCode(block, "MONTH", Blockly.Python.ORDER_ATOMIC) || 1;
+  const day = Blockly.Python.valueToCode(block, "DAY", Blockly.Python.ORDER_ATOMIC) || 1;
+  const hour = Blockly.Python.valueToCode(block, "HOUR", Blockly.Python.ORDER_ATOMIC) || 0;
+  const min = Blockly.Python.valueToCode(block, "MIN", Blockly.Python.ORDER_ATOMIC) || 0;
+  const sec = Blockly.Python.valueToCode(block, "SEC", Blockly.Python.ORDER_ATOMIC) || 0;
 
   Blockly.Python.definitions_["import_rtc"] = "from machine import RTC";
 
@@ -3255,9 +3255,7 @@ Blockly.Python["tm1637_init"] = function (block) {
   const name = block.getFieldValue("NAME");
   const clk = block.getFieldValue("SDA");
   const dio = block.getFieldValue("SCL");
-  const bright =
-    Blockly.Python.valueToCode(block, "BRIGHT", Blockly.Python.ORDER_ATOMIC) ||
-    7;
+  const bright = block.getFieldValue("BRIGHT") || 7;
   Blockly.Python.definitions_["import_tm1637"] = "from tm1637 import TM1637";
 
   return `${name} = TM1637(clk=${clk}, dio=${dio}, brightness=${bright})\n`;
