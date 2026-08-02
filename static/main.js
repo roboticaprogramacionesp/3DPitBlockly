@@ -199,8 +199,49 @@ function blurBlockly() {
   } catch (e) { }
 }
 
+/**
+ * Blockly.Python declara TODAS las variables del workspace como
+ * "nombre = None" al principio del código generado -- es su red de
+ * seguridad para no explotar con NameError si alguna rama llegara a
+ * leer una variable antes de que el programa le asigne un valor real.
+ * Si esa misma variable YA tiene una asignación real en otra línea
+ * (ej. "contador = 0" puesto por el bloque "establecer variable"), esa
+ * declaración es puro ruido visual para quien está aprendiendo.
+ *
+ * Esto solo limpia lo que se MUESTRA en el visor de código -- el
+ * código que se guarda (.py), se sube al ESP32 o se ejecuta sigue
+ * generándose completo con Blockly.Python.workspaceToCode() sin pasar
+ * por acá (ver getCode() / Tabs.getActiveCode()), así que la red de
+ * seguridad real de Blockly queda intacta.
+ */
+function tsCleanCodeForDisplay(code) {
+  if (typeof code !== "string" || !code) return code;
+
+  const lines = code.split("\n");
+  const noneDeclRe = /^([A-Za-z_]\w*)\s*=\s*None\s*$/;
+  // "nombre = <algo que no sea None>", cuidando de no confundir el "="
+  // con comparaciones (==, <=, >=) ni con la propia declaración None.
+  const realAssignRe = /^\s*([A-Za-z_]\w*)\s*=(?!=)\s*(?!None\s*$)\S.*$/;
+
+  const varsConValorReal = new Set();
+  lines.forEach((line) => {
+    const m = line.match(realAssignRe);
+    if (m) varsConValorReal.add(m[1]);
+  });
+
+  return lines
+    .filter((line) => {
+      const m = line.match(noneDeclRe);
+      return !m || !varsConValorReal.has(m[1]);
+    })
+    .join("\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .replace(/^\n+/, "");
+}
+window.tsCleanCodeForDisplay = tsCleanCodeForDisplay;
+
 function updateCodeFromBlockly() {
-  const code = Blockly.Python.workspaceToCode(Code.workspace);
+  const code = tsCleanCodeForDisplay(Blockly.Python.workspaceToCode(Code.workspace));
   // [TABS] Refrescar SOLO la pestaña Bloques. Si la activa es editable,
   // el editor conserva su contenido.
   if (typeof Tabs !== "undefined" && Tabs.refreshBlocksTab) {

@@ -292,6 +292,19 @@
     document.head.appendChild(style);
   }
 
+  /* Versión del código de Blockly para MOSTRAR en el editor -- limpia
+     los "nombre = None" redundantes (ver tsCleanCodeForDisplay en
+     main.js) cuando esa variable ya tiene una asignación real más
+     abajo. Solo se usa para refrescar lo que se VE; getActiveCode()
+     (guardar .py / subir al ESP32 / ejecutar) sigue usando
+     _getBlocklyCode() crudo, sin pasar por acá. */
+  function _getBlocklyCodeForDisplay() {
+    const raw = _getBlocklyCode ? _getBlocklyCode() : '';
+    return (typeof window !== 'undefined' && typeof window.tsCleanCodeForDisplay === 'function')
+      ? window.tsCleanCodeForDisplay(raw)
+      : raw;
+  }
+
   /* ── API pública ────────────────────────────────────────── */
   const Tabs = {
     /** Inicializar. Llamar una vez tras DOMContentLoaded. */
@@ -359,7 +372,7 @@
         _suspendEditorSave = true;
         try {
           if (active.kind === 'blocks') {
-            const code = _getBlocklyCode();
+            const code = _getBlocklyCodeForDisplay();
             active.content = code;
             _editor.setValue(code);
           } else {
@@ -424,7 +437,7 @@
     refreshBlocksTab(code) {
       const blocksTab = _findBlocksTab();
       if (!blocksTab) return;
-      if (typeof code !== 'string') code = _getBlocklyCode();
+      if (typeof code !== 'string') code = _getBlocklyCodeForDisplay();
       blocksTab.content = code;
 
       if (_activeTabId === blocksTab.id && _editor) {
@@ -453,7 +466,7 @@
         _suspendEditorSave = true;
         try {
           if (tab.kind === 'blocks') {
-            const code = _getBlocklyCode();
+            const code = _getBlocklyCodeForDisplay();
             tab.content = code;
             _editor.setValue(code);
           } else {
@@ -515,7 +528,7 @@
             _suspendEditorSave = true;
             try {
               if (next.kind === 'blocks') {
-                const code = _getBlocklyCode();
+                const code = _getBlocklyCodeForDisplay();
                 next.content = code;
                 _editor.setValue(code);
               } else {
@@ -569,7 +582,7 @@
       if (_editor) {
         _suspendEditorSave = true;
         try {
-          const code = _getBlocklyCode();
+          const code = _getBlocklyCodeForDisplay();
           _tabs[0].content = code;
           _editor.setValue(code);
         } finally { setTimeout(() => { _suspendEditorSave = false; }, 50); }
