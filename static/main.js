@@ -2197,6 +2197,86 @@ async function sendViaPasteMode(codeStr) {
 }
 
 // ─────────────────────────────────────────────────────────────
+// CLIC DERECHO EN UN BLOQUE → "Ejecutar este bloque"
+// ─────────────────────────────────────────────────────────────
+// Corre SOLO el código de ese bloque (sin la cadena de bloques debajo)
+// vía paste mode, sin tocar/reenviar el resto del programa. Pensado
+// para probar o reajustar un bloque suelto (ej. "mover servo a 90°")
+// sin correr todo el script de nuevo. OJO: si ese bloque depende de
+// una variable creada por otro bloque (ej. "servo" de "preparar servo
+// motor"), esa variable tiene que existir ya en el REPL -- típicamente
+// porque corriste el programa completo al menos una vez antes.
+async function runBlockOnDevice(block) {
+  if (!isConnected || !serialWriter) {
+    _smCall("warn", "Sin conexión — conecta el dispositivo primero");
+    return false;
+  }
+  if (isSendingCode) {
+    term.writeln("\r\n⚠ Ya se está enviando código, espera a que termine.\r\n");
+    return false;
+  }
+
+  let code;
+  try {
+    // blockToCode() por sí solo NO resuelve nombres de variable -- eso lo
+    // hace init(), que registra el mapa de variables del workspace en
+    // nameDB_ (lo mismo que ya hace workspaceToCode() para "Ejecutar").
+    // Sin este paso, Blockly.Names.getName() no encuentra la variable por
+    // su ID interno y cae a "sanear" ese ID crudo como si fuera el
+    // nombre -- ahí salían esos strings tipo "_Vq__5D_VBB..." en vez de
+    // "temp". finish("") al final resetea ese estado (igual que hace
+    // workspaceToCode) para no dejarlo pisado para la próxima vez.
+    Blockly.Python.init(Code.workspace);
+    // true = SOLO este bloque, sin arrastrar los bloques conectados debajo.
+    const result = Blockly.Python.blockToCode(block, true);
+    // Bloques de valor (ej. "leer distancia") devuelven [código, orden] en
+    // vez de una sentencia -- envolver en print() para ver algo en la
+    // terminal, si no la ejecución no tendría ningún efecto visible.
+    code = Array.isArray(result) ? `print(${result[0]})\n` : result;
+    Blockly.Python.finish("");
+  } catch (e) {
+    term.writeln(`\r\n⚠ No se pudo generar código para este bloque: ${e.message}\r\n`);
+    return false;
+  }
+
+  if (!code || !code.trim()) {
+    term.writeln("\r\nEste bloque no genera código para ejecutar.\r\n");
+    return false;
+  }
+
+  _stopRequested = false;
+  isSendingCode = true;
+  try {
+    _smCall("notifySending", code);
+    term.writeln(`\r\n\x1b[36m▶ Ejecutando bloque:\x1b[0m ${code.trim()}\r\n`);
+    await sendViaPasteMode(code);
+    return true;
+  } finally {
+    isSendingCode = false;
+    _smCall("notifyDone");
+    term.focus();
+  }
+}
+
+if (typeof Blockly !== "undefined" && Blockly.ContextMenuRegistry) {
+  Blockly.ContextMenuRegistry.registry.register({
+    id: "run_block_on_device",
+    scopeType: Blockly.ContextMenuRegistry.ScopeType.BLOCK,
+    weight: 100,
+    displayText: "▶ Ejecutar este bloque",
+    preconditionFn: function (scope) {
+      const block = scope.block;
+      if (!block || !block.isEnabled()) return "hidden";
+      if (!isConnected || !serialWriter || isSendingCode) return "disabled";
+      return "enabled";
+    },
+    callback: function (scope) {
+      if (scope.block) runBlockOnDevice(scope.block);
+    },
+  });
+}
+
+// ─────────────────────────────────────────────────────────────
 // BOTÓN: EJECUTAR
 // ─────────────────────────────────────────────────────────────
 
