@@ -1,5 +1,91 @@
 //import * as Blockly from "blockly";
 
+// ════════════════════════════════════════════════════════════════════
+// PINES POR PLACA (Wroom / S3 / C3 / …)
+// ────────────────────────────────────────────────────────────────────
+// Cada desplegable "PIN" de los bloques ya traía su propia lista fija
+// de pines válidos para ESE bloque (ej. el DAC solo tiene 25/26, touch
+// solo un puñado de pines capacitivos). Esta capa NO reemplaza esas
+// listas -- las FILTRA según qué pines existen físicamente en la placa
+// activa, elegida en #boardSelect (ver templates/index.html) y
+// persistida en localStorage.
+//
+// Para agregar una placa nueva en el futuro: sumar una entrada acá
+// (clave + label + array de pines) y una <option> en #boardSelect.
+// Nada más -- los ~60 desplegables de PIN ya filtran solos, porque
+// todos pasan por makePinOptionsFn() más abajo.
+window.ESP32_BOARDS = {
+  esp32_wroom: {
+    label: "ESP32",
+    pins: ["0", "1", "2", "3", "4", "5", "12", "13", "14", "15", "16", "17",
+      "18", "19", "21", "22", "23", "25", "26", "27", "32", "33", "34", "35", "36", "39"],
+  },
+  esp32_s3: {
+    label: "ESP32 S3",
+    pins: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11",
+      "12", "13", "14", "15", "16", "17", "18", "19", "20", "21",
+      "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48"],
+  },
+  esp32_c3: {
+    label: "ESP32 C3",
+    pins: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "18", "19", "20", "21"],
+  },
+};
+
+window.getCurrentBoard = function () {
+  const key = localStorage.getItem("esp32_board");
+  return window.ESP32_BOARDS[key] ? key : "esp32_wroom";
+};
+
+window.setCurrentBoard = function (key) {
+  if (!window.ESP32_BOARDS[key]) return;
+  localStorage.setItem("esp32_board", key);
+};
+
+/**
+ * Envuelve una lista fija de opciones [label, value] de un PIN dropdown
+ * para que Blockly la filtre según la placa activa cada vez que el
+ * usuario ABRE el desplegable (Blockly.FieldDropdown soporta pasarle
+ * una función en vez de un array -- la vuelve a llamar en cada click,
+ * así que el filtro siempre está al día sin necesidad de refrescar
+ * nada a mano al cambiar de placa).
+ * @param {Array<[string,string]>} fullOptions Todas las opciones posibles del bloque.
+ */
+window.makePinOptionsFn = function (fullOptions) {
+  return function () {
+    const board = window.ESP32_BOARDS[window.getCurrentBoard()];
+    const valid = new Set(board.pins);
+    const filtered = fullOptions.filter((opt) => valid.has(opt[1]));
+    // Blockly.FieldDropdown exige al menos una opción -- si la placa no
+    // tiene NINGÚN pin de esta categoría (ej. DAC en el C3, que no
+    // tiene ese periférico), mejor mostrar la lista completa que
+    // romper el bloque.
+    return filtered.length ? filtered : fullOptions;
+  };
+};
+
+// Llena y conecta el <select id="boardSelect"> (barra superior, ver
+// templates/index.html / index.html) con las placas de ESP32_BOARDS --
+// agregar una placa nueva ahí arriba alcanza para que aparezca acá
+// también, sin tocar el HTML.
+(function () {
+  const sel = document.getElementById("boardSelect");
+  if (!sel) return;
+
+  Object.keys(window.ESP32_BOARDS).forEach((key) => {
+    const opt = document.createElement("option");
+    opt.value = key;
+    opt.textContent = window.ESP32_BOARDS[key].label;
+    sel.appendChild(opt);
+  });
+
+  sel.value = window.getCurrentBoard();
+
+  sel.addEventListener("change", () => {
+    window.setCurrentBoard(sel.value);
+  });
+})();
+
 Blockly.defineBlocksWithJsonArray([
   {
     type: "lists_append",
@@ -1040,7 +1126,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -1062,7 +1148,7 @@ Blockly.defineBlocksWithJsonArray([
           ["33", "33"],
           ["34", "34"],
           ["35", "35"],
-        ],
+        ]),
       },
       {
         type: "field_dropdown",
@@ -1086,7 +1172,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -1108,7 +1194,7 @@ Blockly.defineBlocksWithJsonArray([
           ["33", "33"],
           ["34", "34"],
           ["35", "35"],
-        ],
+        ]),
       },
       {
         type: "field_dropdown",
@@ -1133,7 +1219,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -1155,7 +1241,7 @@ Blockly.defineBlocksWithJsonArray([
           ["33", "33"],
           ["34", "34"],
           ["35", "35"],
-        ],
+        ]),
       },
       {
         type: "field_dropdown",
@@ -1179,7 +1265,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -1201,7 +1287,7 @@ Blockly.defineBlocksWithJsonArray([
           ["33", "33"],
           ["34", "34"],
           ["35", "35"],
-        ],
+        ]),
       },
     ],
     previousStatement: null,
@@ -1217,7 +1303,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -1239,7 +1325,7 @@ Blockly.defineBlocksWithJsonArray([
           ["33", "33"],
           ["34", "34"],
           ["35", "35"],
-        ],
+        ]),
       },
     ],
     previousStatement: null,
@@ -1255,7 +1341,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -1277,7 +1363,7 @@ Blockly.defineBlocksWithJsonArray([
           ["33", "33"],
           ["34", "34"],
           ["35", "35"],
-        ],
+        ]),
       },
     ],
     output: "Number",
@@ -1292,7 +1378,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -1314,7 +1400,7 @@ Blockly.defineBlocksWithJsonArray([
           ["33", "33"],
           ["34", "34"],
           ["35", "35"],
-        ],
+        ]),
       },
       {
         type: "field_dropdown",
@@ -1338,7 +1424,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["1", "1"],
           ["2", "2"],
@@ -1354,7 +1440,7 @@ Blockly.defineBlocksWithJsonArray([
           ["33", "33"],
           ["34", "34"],
           ["35", "35"],
-        ],
+        ]),
       },
     ],
     previousStatement: null,
@@ -1368,7 +1454,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["1", "1"],
           ["2", "2"],
@@ -1384,7 +1470,7 @@ Blockly.defineBlocksWithJsonArray([
           ["33", "33"],
           ["34", "34"],
           ["35", "35"],
-        ],
+        ]),
       },
       {
         type: "field_dropdown",
@@ -1408,7 +1494,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["1", "1"],
           ["2", "2"],
@@ -1432,7 +1518,7 @@ Blockly.defineBlocksWithJsonArray([
           ["33", "33"],
           ["34", "34"],
           ["35", "35"],
-        ],
+        ]),
       },
       {
         type: "field_dropdown",
@@ -1456,7 +1542,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["1", "1"],
           ["2", "2"],
@@ -1480,7 +1566,7 @@ Blockly.defineBlocksWithJsonArray([
           ["33", "33"],
           ["34", "34"],
           ["35", "35"],
-        ],
+        ]),
       },
     ],
     output: "Number",
@@ -1494,7 +1580,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["1", "1"],
           ["2", "2"],
@@ -1518,7 +1604,7 @@ Blockly.defineBlocksWithJsonArray([
           ["33", "33"],
           ["34", "34"],
           ["35", "35"],
-        ],
+        ]),
       },
     ],
     output: "Number",
@@ -1532,7 +1618,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["1", "1"],
           ["2", "2"],
@@ -1556,7 +1642,7 @@ Blockly.defineBlocksWithJsonArray([
           ["33", "33"],
           ["34", "34"],
           ["35", "35"],
-        ],
+        ]),
       },
     ],
     output: "Number",
@@ -1570,7 +1656,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["1", "1"],
           ["2", "2"],
@@ -1594,7 +1680,7 @@ Blockly.defineBlocksWithJsonArray([
           ["33", "33"],
           ["34", "34"],
           ["35", "35"],
-        ],
+        ]),
       },
       {
         type: "field_number",
@@ -1622,7 +1708,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["1", "1"],
           ["2", "2"],
@@ -1646,7 +1732,7 @@ Blockly.defineBlocksWithJsonArray([
           ["33", "33"],
           ["34", "34"],
           ["35", "35"],
-        ],
+        ]),
       },
       {
         type: "field_number",
@@ -1667,7 +1753,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["1", "1"],
           ["2", "2"],
@@ -1691,7 +1777,7 @@ Blockly.defineBlocksWithJsonArray([
           ["33", "33"],
           ["34", "34"],
           ["35", "35"],
-        ],
+        ]),
       },
       {
         type: "field_number",
@@ -1712,7 +1798,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["1", "1"],
           ["2", "2"],
@@ -1736,7 +1822,7 @@ Blockly.defineBlocksWithJsonArray([
           ["33", "33"],
           ["34", "34"],
           ["35", "35"],
-        ],
+        ]),
       },
     ],
     output: "Number",
@@ -1749,7 +1835,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["1", "1"],
           ["2", "2"],
@@ -1773,7 +1859,7 @@ Blockly.defineBlocksWithJsonArray([
           ["33", "33"],
           ["34", "34"],
           ["35", "35"],
-        ],
+        ]),
       },
     ],
     output: "Number",
@@ -1786,10 +1872,10 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["25", "25"],
           ["26", "26"],
-        ],
+        ]),
       },
     ],
     previousStatement: null,
@@ -1803,10 +1889,10 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["25", "25"],
           ["26", "26"],
-        ],
+        ]),
       },
       {
         type: "field_number",
@@ -1828,7 +1914,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -1839,7 +1925,7 @@ Blockly.defineBlocksWithJsonArray([
           ["27", "27"],
           ["32", "32"],
           ["33", "33"],
-        ],
+        ]),
       },
     ],
     previousStatement: null,
@@ -1853,7 +1939,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -1864,7 +1950,7 @@ Blockly.defineBlocksWithJsonArray([
           ["27", "27"],
           ["32", "32"],
           ["33", "33"],
-        ],
+        ]),
       },
       {
         type: "field_number",
@@ -1885,7 +1971,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -1896,7 +1982,7 @@ Blockly.defineBlocksWithJsonArray([
           ["27", "27"],
           ["32", "32"],
           ["33", "33"],
-        ],
+        ]),
       },
     ],
     output: "Number",
@@ -2185,7 +2271,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["1", "1"],
           ["2", "2"],
@@ -2228,7 +2314,7 @@ Blockly.defineBlocksWithJsonArray([
           ["46", "46"],
           ["47", "47"],
           ["48", "48"],
-        ],
+        ]),
       },
     ],
     previousStatement: null,
@@ -2708,7 +2794,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -2733,7 +2819,7 @@ Blockly.defineBlocksWithJsonArray([
           ["35", "35"],
           ["36", "36"],
           ["39", "39"],
-        ],
+        ]),
       },
     ],
     previousStatement: null,
@@ -2850,7 +2936,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -2875,7 +2961,7 @@ Blockly.defineBlocksWithJsonArray([
           ["35", "35"],
           ["36", "36"],
           ["39", "39"],
-        ],
+        ]),
       },
       {
         type: "field_dropdown",
@@ -2899,7 +2985,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -2924,7 +3010,7 @@ Blockly.defineBlocksWithJsonArray([
           ["35", "35"],
           ["36", "36"],
           ["39", "39"],
-        ],
+        ]),
       },
     ],
     output: "Boolean",
@@ -2937,7 +3023,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -2962,7 +3048,7 @@ Blockly.defineBlocksWithJsonArray([
           ["35", "35"],
           ["36", "36"],
           ["39", "39"],
-        ],
+        ]),
       },
       {
         type: "field_dropdown",
@@ -3000,7 +3086,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -3025,7 +3111,7 @@ Blockly.defineBlocksWithJsonArray([
           ["35", "35"],
           ["36", "36"],
           ["39", "39"],
-        ],
+        ]),
       },
     ],
     previousStatement: null,
@@ -3039,7 +3125,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -3064,7 +3150,7 @@ Blockly.defineBlocksWithJsonArray([
           ["35", "35"],
           ["36", "36"],
           ["39", "39"],
-        ],
+        ]),
       },
     ],
     output: "Array",
@@ -3077,7 +3163,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -3102,7 +3188,7 @@ Blockly.defineBlocksWithJsonArray([
           ["35", "35"],
           ["36", "36"],
           ["39", "39"],
-        ],
+        ]),
       },
     ],
     previousStatement: null,
@@ -3116,7 +3202,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -3141,7 +3227,7 @@ Blockly.defineBlocksWithJsonArray([
           ["35", "35"],
           ["36", "36"],
           ["39", "39"],
-        ],
+        ]),
       },
       {
         type: "input_value",
@@ -3170,7 +3256,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -3195,7 +3281,7 @@ Blockly.defineBlocksWithJsonArray([
           ["35", "35"],
           ["36", "36"],
           ["39", "39"],
-        ],
+        ]),
       },
       {
         type: "field_dropdown",
@@ -3310,7 +3396,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -3335,7 +3421,7 @@ Blockly.defineBlocksWithJsonArray([
           ["35", "35"],
           ["36", "36"],
           ["39", "39"],
-        ],
+        ]),
       },
       {
         type: "field_dropdown",
@@ -3384,7 +3470,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -3409,7 +3495,7 @@ Blockly.defineBlocksWithJsonArray([
           ["35", "35"],
           ["36", "36"],
           ["39", "39"],
-        ],
+        ]),
       },
     ],
     previousStatement: null,
@@ -3447,7 +3533,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -3472,7 +3558,7 @@ Blockly.defineBlocksWithJsonArray([
           ["35", "35"],
           ["36", "36"],
           ["39", "39"],
-        ],
+        ]),
       },
     ],
     previousStatement: null,
@@ -3486,7 +3572,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -3511,7 +3597,7 @@ Blockly.defineBlocksWithJsonArray([
           ["35", "35"],
           ["36", "36"],
           ["39", "39"],
-        ],
+        ]),
       },
     ],
     previousStatement: null,
@@ -3525,7 +3611,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -3550,7 +3636,7 @@ Blockly.defineBlocksWithJsonArray([
           ["35", "35"],
           ["36", "36"],
           ["39", "39"],
-        ],
+        ]),
       },
     ],
     output: "Number",
@@ -3563,7 +3649,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -3588,7 +3674,7 @@ Blockly.defineBlocksWithJsonArray([
           ["35", "35"],
           ["36", "36"],
           ["39", "39"],
-        ],
+        ]),
       },
     ],
     output: "Number",
@@ -3601,7 +3687,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -3626,7 +3712,7 @@ Blockly.defineBlocksWithJsonArray([
           ["35", "35"],
           ["36", "36"],
           ["39", "39"],
-        ],
+        ]),
       },
       {
         type: "field_dropdown",
@@ -3693,7 +3779,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["1", "1"],
           ["2", "2"],
@@ -3709,7 +3795,7 @@ Blockly.defineBlocksWithJsonArray([
           ["35", "35"],
           ["32", "32"],
           ["33", "33"],
-        ],
+        ]),
       },
       {
         type: "field_dropdown",
@@ -4285,7 +4371,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -4310,7 +4396,7 @@ Blockly.defineBlocksWithJsonArray([
           ["35", "35"],
           ["36", "36"],
           ["39", "39"],
-        ],
+        ]),
       },
     ],
     previousStatement: null,
@@ -4326,7 +4412,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -4351,7 +4437,7 @@ Blockly.defineBlocksWithJsonArray([
           ["35", "35"],
           ["36", "36"],
           ["39", "39"],
-        ],
+        ]),
       },
       {
         type: "field_dropdown",
@@ -4928,7 +5014,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["26", "26"],
           ["25", "25"],
           ["27", "27"],
@@ -4937,7 +5023,7 @@ Blockly.defineBlocksWithJsonArray([
           ["13", "13"],
           ["32", "32"],
           ["33", "33"],
-        ],
+        ]),
       },
     ],
     previousStatement: null,
@@ -4951,7 +5037,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["26", "26"],
           ["25", "25"],
           ["27", "27"],
@@ -4960,7 +5046,7 @@ Blockly.defineBlocksWithJsonArray([
           ["13", "13"],
           ["32", "32"],
           ["33", "33"],
-        ],
+        ]),
       },
       {
         type: "field_angle",
@@ -4979,7 +5065,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["26", "26"],
           ["25", "25"],
           ["27", "27"],
@@ -4988,7 +5074,7 @@ Blockly.defineBlocksWithJsonArray([
           ["13", "13"],
           ["32", "32"],
           ["33", "33"],
-        ],
+        ]),
       },
       { type: "input_value", name: "ANGLE", check: "Number" },
     ],
@@ -5168,7 +5254,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -5193,7 +5279,7 @@ Blockly.defineBlocksWithJsonArray([
           ["35", "35"],
           ["36", "36"],
           ["39", "39"],
-        ],
+        ]),
       },
       {
         type: "field_dropdown",
@@ -5216,7 +5302,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -5241,7 +5327,7 @@ Blockly.defineBlocksWithJsonArray([
           ["35", "35"],
           ["36", "36"],
           ["39", "39"],
-        ],
+        ]),
       },
     ],
     output: "Number",
@@ -5356,7 +5442,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -5381,7 +5467,7 @@ Blockly.defineBlocksWithJsonArray([
           ["35", "35"],
           ["36", "36"],
           ["39", "39"],
-        ],
+        ]),
       },
     ],
 
@@ -5900,7 +5986,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -5925,7 +6011,7 @@ Blockly.defineBlocksWithJsonArray([
           ["35", "35"],
           ["36", "36"],
           ["39", "39"],
-        ],
+        ]),
       },
     ],
     previousStatement: null,
@@ -5939,7 +6025,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -5964,7 +6050,7 @@ Blockly.defineBlocksWithJsonArray([
           ["35", "35"],
           ["36", "36"],
           ["39", "39"],
-        ],
+        ]),
       },
     ],
     output: "Array",
@@ -5977,7 +6063,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -6002,7 +6088,7 @@ Blockly.defineBlocksWithJsonArray([
           ["35", "35"],
           ["36", "36"],
           ["39", "39"],
-        ],
+        ]),
       },
     ],
     previousStatement: null,
@@ -6016,7 +6102,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -6041,7 +6127,7 @@ Blockly.defineBlocksWithJsonArray([
           ["35", "35"],
           ["36", "36"],
           ["39", "39"],
-        ],
+        ]),
       },
     ],
     output: "Number",
@@ -6054,7 +6140,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -6079,7 +6165,7 @@ Blockly.defineBlocksWithJsonArray([
           ["35", "35"],
           ["36", "36"],
           ["39", "39"],
-        ],
+        ]),
       },
       {
         type: "input_value",
@@ -6098,7 +6184,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -6123,7 +6209,7 @@ Blockly.defineBlocksWithJsonArray([
           ["35", "35"],
           ["36", "36"],
           ["39", "39"],
-        ],
+        ]),
       },
       {
         type: "input_value",
@@ -6141,7 +6227,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -6166,7 +6252,7 @@ Blockly.defineBlocksWithJsonArray([
           ["35", "35"],
           ["36", "36"],
           ["39", "39"],
-        ],
+        ]),
       },
       {
         type: "input_value",
@@ -8782,7 +8868,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["1", "1"],
           ["2", "2"],
@@ -8825,7 +8911,7 @@ Blockly.defineBlocksWithJsonArray([
           ["46", "46"],
           ["47", "47"],
           ["48", "48"],
-        ],
+        ]),
       },
       {
         type: "input_value",
@@ -8885,7 +8971,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["1", "1"],
           ["2", "2"],
@@ -8912,7 +8998,7 @@ Blockly.defineBlocksWithJsonArray([
           ["35", "35"],
           ["36", "36"],
           ["39", "39"],
-        ],
+        ]),
       },
       {
         type: "field_dropdown",
@@ -8958,7 +9044,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["1", "1"],
           ["2", "2"],
@@ -8985,7 +9071,7 @@ Blockly.defineBlocksWithJsonArray([
           ["35", "35"],
           ["36", "36"],
           ["39", "39"],
-        ],
+        ]),
       },
       {
         type: "field_dropdown",
@@ -9015,7 +9101,7 @@ Blockly.defineBlocksWithJsonArray([
 
   {
     type: "neopixel_show",
-    message0: "%1 brillo %2", // ← nuevo mensaje
+    message0: "%1 mostrar y brillo %2", // ← nuevo mensaje
     args0: [
       { type: "field_input", name: "NAME", text: "neopixel5x5" },
       {
@@ -12188,7 +12274,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: [
+        options: makePinOptionsFn([
           ["0", "0"],
           ["2", "2"],
           ["4", "4"],
@@ -12209,7 +12295,7 @@ Blockly.defineBlocksWithJsonArray([
           ["33", "33"],
           ["34", "34"],
           ["35", "35"],
-        ],
+        ]),
       },
     ],
     previousStatement: null,
