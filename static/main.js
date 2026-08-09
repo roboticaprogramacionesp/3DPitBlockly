@@ -323,10 +323,20 @@ async function _detectDeviceSpeed() {
     await sendSerial("\x02");
     await sleep(100);
 
+    const gotPrompt = _detBuf.includes(">");
     _deviceSpeedMul = elapsed > 400 ? 2.0 : 1.0;
-    const label = _deviceSpeedMul > 1 ? "lento (C3/C6/S2)" : "rápido (Wroom/S3)";
-    console.log(`[DeviceDetect] tiempo raw REPL: ${elapsed} ms → dispositivo ${label} (mul=${_deviceSpeedMul})`);
-    if (term) term.writeln(`\r\n🔍 Dispositivo detectado: ${label}\r\n`);
+
+    if (!gotPrompt) {
+      // El ">" nunca llegó -- "elapsed" es solo el timeout completo, no
+      // una medición real de velocidad. No confundir con "dispositivo
+      // lento": acá el REPL no respondió nada en absoluto.
+      console.warn(`[DeviceDetect] sin respuesta del REPL tras ${elapsed} ms -- el dispositivo no contestó al Ctrl+C/Ctrl+A. Probá presionar RESET en la placa o revisar el cable/puerto.`);
+      if (term) term.writeln(`\r\n⚠ No se detectó respuesta del ESP32 -- si no reacciona, probá presionar RESET en la placa.\r\n`);
+    } else {
+      const label = _deviceSpeedMul > 1 ? "lento (C3/C6/S2)" : "rápido (Wroom/S3)";
+      console.log(`[DeviceDetect] tiempo raw REPL: ${elapsed} ms → dispositivo ${label} (mul=${_deviceSpeedMul})`);
+      if (term) term.writeln(`\r\n🔍 Dispositivo detectado: ${label}\r\n`);
+    }
   } catch (e) {
     console.warn("[DeviceDetect] error:", e);
   } finally {
@@ -1226,13 +1236,43 @@ async function connectSerial() {
     }
 
     serialPort = await navigator.serial.requestPort();
-    await serialPort.open({
+
+    // Algunos puertos (sobre todo USB nativo, como el ESP32-C3 "Super
+    // Mini") a veces fallan el primer open() con "Failed to open serial
+    // port" -- un error transitorio del driver/SO, típicamente si el
+    // puerto acaba de reenumerar o quedó un handle colgando de un
+    // intento anterior. Un reintento tras una pausa corta suele
+    // resolverlo sin que el usuario tenga que hacer nada más.
+    const _openOpts = {
       baudRate: 115200,
       dataBits: 8,
       stopBits: 1,
       parity: "none",
       flowControl: "none",
-    });
+    };
+    try {
+      await serialPort.open(_openOpts);
+    } catch (openErr) {
+      console.warn("[connectSerial] open() falló, reintentando en 500ms:", openErr);
+      await sleep(500);
+      await serialPort.open(_openOpts);
+    }
+
+    // Pulso de reset por RTS (igual al "hard_reset" de esptool, NO el de
+    // entrar a bootloader) -- en placas con el circuito de auto-reset
+    // (CP2102/CH340: RTS -> EN) esto fuerza que el ESP32 arranque
+    // MicroPython de cero, por si había quedado colgado o a mitad de un
+    // script. En placas de USB nativo sin ese circuito (ej. ESP32-C3
+    // "Super Mini", muy comunes) setSignals() no tiene ningún efecto
+    // eléctrico -- inofensivo, por eso se intenta siempre.
+    try {
+      await serialPort.setSignals({ requestToSend: true });
+      await sleep(100);
+      await serialPort.setSignals({ requestToSend: false });
+      await sleep(400); // margen para que MicroPython arranque y muestre su banner
+    } catch (e) {
+      console.warn("[connectSerial] setSignals no soportado o falló:", e);
+    }
 
     serialWriter = serialPort.writable.getWriter();
     serialReader = serialPort.readable.getReader();
@@ -1246,8 +1286,25 @@ async function connectSerial() {
     _deviceDetected = false;  // resetear para nueva conexión
     sleep(400).then(() => _detectDeviceSpeed());
   } catch (error) {
-    if (term) term.writeln("\r\nError conexión: " + error);
-    else console.error(error);
+    console.error("[connectSerial]", error);
+
+    const msg = String(error?.message || error);
+    const friendly = /Failed to open serial port/i.test(msg)
+      ? "⚠ No se pudo abrir el puerto serie. Puede estar en uso por otra " +
+        "aplicación o pestaña (Thonny, Arduino IDE, otro monitor serie, u " +
+        "otra pestaña de esta misma app) -- cerrala e intentá de nuevo. Si " +
+        "es una placa de USB nativo (ej. ESP32-C3 Super Mini), también " +
+        "ayuda desenchufarla y volver a enchufarla antes de reintentar."
+      : "Error de conexión: " + msg;
+
+    if (term) term.writeln("\r\n" + friendly + "\r\n");
+
+    // Limpieza -- evita que un intento fallido deje estado a medio abrir
+    // que rompa el próximo intento de conexión.
+    try { await serialPort?.close(); } catch (_) { }
+    serialPort = null;
+    isConnected = false;
+    serialConnected = false;
   }
 }
 
