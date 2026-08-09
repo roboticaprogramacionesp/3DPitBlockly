@@ -301,36 +301,56 @@ async function _detectDeviceSpeed() {
   const _prevHook = window._rawReplHook;
   window._rawReplHook = (c) => { _detBuf += c; };
 
+  // Reintentos internos: en algunas placas (sobre todo USB nativo) el
+  // primer Ctrl+C/Ctrl+A tras abrir el puerto se pierde -- no por estar
+  // "colgadas", sino por algo transitorio del transporte recién abierto
+  // (se comprobó en la práctica: reintentar "Conectar" a mano, SIN
+  // tocar la placa, alcanza para que responda). En vez de pedirle al
+  // usuario que reintente manualmente, se reintenta acá adentro antes
+  // de darlo por perdido.
+  const MAX_INTENTOS = 3;
+  let gotPrompt = false;
+  let elapsed = 0;
+
   try {
-    await sendSerial("\x03");
-    await sleep(80);
-    await sendSerial("\x03");
-    await sleep(80);
+    for (let intento = 1; intento <= MAX_INTENTOS && !gotPrompt; intento++) {
+      _detBuf = "";
+      await sendSerial("\x03");
+      await sleep(80);
+      await sendSerial("\x03");
+      await sleep(80);
 
-    _detBuf = "";
-    const t0 = Date.now();
-    await sendSerial("\x01");   // entrar en raw REPL
+      _detBuf = "";
+      const t0 = Date.now();
+      await sendSerial("\x01");   // entrar en raw REPL
 
-    // Esperar hasta 1200 ms a que aparezca ">"
-    const deadline = Date.now() + 1200;
-    while (Date.now() < deadline) {
-      if (_detBuf.includes(">")) break;
-      await sleep(20);
+      // Esperar hasta 1200 ms a que aparezca ">"
+      const deadline = Date.now() + 1200;
+      while (Date.now() < deadline) {
+        if (_detBuf.includes(">")) break;
+        await sleep(20);
+      }
+      elapsed = Date.now() - t0;
+      gotPrompt = _detBuf.includes(">");
+
+      // Salir del raw REPL (si llegó a entrar) antes del próximo intento
+      await sendSerial("\x02");
+      await sleep(100);
+
+      if (!gotPrompt && intento < MAX_INTENTOS) {
+        console.warn(`[DeviceDetect] intento ${intento}/${MAX_INTENTOS} sin respuesta (${elapsed} ms) -- reintentando...`);
+        await sleep(200);
+      }
     }
-    const elapsed = Date.now() - t0;
 
-    // Salir inmediatamente del raw REPL
-    await sendSerial("\x02");
-    await sleep(100);
-
-    const gotPrompt = _detBuf.includes(">");
     _deviceSpeedMul = elapsed > 400 ? 2.0 : 1.0;
 
     if (!gotPrompt) {
-      // El ">" nunca llegó -- "elapsed" es solo el timeout completo, no
-      // una medición real de velocidad. No confundir con "dispositivo
-      // lento": acá el REPL no respondió nada en absoluto.
-      console.warn(`[DeviceDetect] sin respuesta del REPL tras ${elapsed} ms -- el dispositivo no contestó al Ctrl+C/Ctrl+A. Probá presionar RESET en la placa o revisar el cable/puerto.`);
+      // El ">" nunca llegó en ningún intento -- "elapsed" es solo el
+      // timeout completo, no una medición real de velocidad. No
+      // confundir con "dispositivo lento": acá el REPL no respondió
+      // nada en absoluto pese a los reintentos.
+      console.warn(`[DeviceDetect] sin respuesta del REPL tras ${MAX_INTENTOS} intentos -- el dispositivo no contestó al Ctrl+C/Ctrl+A. Probá presionar RESET en la placa o revisar el cable/puerto.`);
       if (term) term.writeln(`\r\n⚠ No se detectó respuesta del ESP32 -- si no reacciona, probá presionar RESET en la placa.\r\n`);
     } else {
       const label = _deviceSpeedMul > 1 ? "lento (C3/C6/S2)" : "rápido (Wroom/S3)";
