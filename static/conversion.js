@@ -17,7 +17,10 @@
 window.ESP32_BOARDS = {
   esp32_wroom: {
     label: "ESP32",
-    pins: ["0", "1", "2", "3", "4", "5", "12", "13", "14", "15", "16", "17",
+    // Sin el 1 ni el 3 (TX0/RX0) -- es la UART0 que esta misma app usa
+    // para programar y hablar con la placa por USB; reconfigurarlos
+    // como GPIO corta esa conexión.
+    pins: ["0", "2", "4", "5", "12", "13", "14", "15", "16", "17",
       "18", "19", "21", "22", "23", "25", "26", "27", "32", "33", "34", "35", "36", "39"],
   },
   esp32_s3: {
@@ -28,7 +31,10 @@ window.ESP32_BOARDS = {
   },
   esp32_c3: {
     label: "ESP32 C3",
-    pins: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "18", "19", "20", "21"],
+    // Sin el 18 ni el 19 -- en las placas de USB nativo (ej. Super
+    // Mini) son las señales D-/D+ del propio conector USB. El 20/21 sí
+    // quedan: es una UART aparte, no la del USB.
+    pins: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "20", "21"],
   },
 };
 
