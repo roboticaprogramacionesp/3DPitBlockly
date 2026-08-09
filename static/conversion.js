@@ -1458,7 +1458,9 @@ Blockly.defineBlocksWithJsonArray([
         name: "PIN",
         options: [
           ["0", "0"],
+          ["1", "1"],
           ["2", "2"],
+          ["3", "3"],
           ["4", "4"],
           ["5", "5"],
           ["12", "12"],
@@ -1494,7 +1496,9 @@ Blockly.defineBlocksWithJsonArray([
         name: "PIN",
         options: [
           ["0", "0"],
+          ["1", "1"],
           ["2", "2"],
+          ["3", "3"],
           ["4", "4"],
           ["5", "5"],
           ["12", "12"],
@@ -1530,7 +1534,9 @@ Blockly.defineBlocksWithJsonArray([
         name: "PIN",
         options: [
           ["0", "0"],
+          ["1", "1"],
           ["2", "2"],
+          ["3", "3"],
           ["4", "4"],
           ["5", "5"],
           ["12", "12"],
@@ -1566,7 +1572,9 @@ Blockly.defineBlocksWithJsonArray([
         name: "PIN",
         options: [
           ["0", "0"],
+          ["1", "1"],
           ["2", "2"],
+          ["3", "3"],
           ["4", "4"],
           ["5", "5"],
           ["12", "12"],
@@ -1616,7 +1624,9 @@ Blockly.defineBlocksWithJsonArray([
         name: "PIN",
         options: [
           ["0", "0"],
+          ["1", "1"],
           ["2", "2"],
+          ["3", "3"],
           ["4", "4"],
           ["5", "5"],
           ["12", "12"],
@@ -1659,7 +1669,9 @@ Blockly.defineBlocksWithJsonArray([
         name: "PIN",
         options: [
           ["0", "0"],
+          ["1", "1"],
           ["2", "2"],
+          ["3", "3"],
           ["4", "4"],
           ["5", "5"],
           ["12", "12"],
@@ -1702,7 +1714,9 @@ Blockly.defineBlocksWithJsonArray([
         name: "PIN",
         options: [
           ["0", "0"],
+          ["1", "1"],
           ["2", "2"],
+          ["3", "3"],
           ["4", "4"],
           ["5", "5"],
           ["12", "12"],
@@ -1737,7 +1751,9 @@ Blockly.defineBlocksWithJsonArray([
         name: "PIN",
         options: [
           ["0", "0"],
+          ["1", "1"],
           ["2", "2"],
+          ["3", "3"],
           ["4", "4"],
           ["5", "5"],
           ["12", "12"],
@@ -3679,7 +3695,9 @@ Blockly.defineBlocksWithJsonArray([
         name: "PIN",
         options: [
           ["0", "0"],
+          ["1", "1"],
           ["2", "2"],
+          ["3", "3"],
           ["4", "4"],
           ["12", "12"],
           ["13", "13"],
