@@ -133,25 +133,39 @@ function showTutorialStep() {
     btnNext.innerText = "Siguiente";
   }
 
-  const rect = el.getBoundingClientRect();
   const cutout = document.getElementById("tutorialCutout");
 
-  let top = rect.top;
-  let left = rect.left;
-  let width = rect.width;
-  let height = rect.height;
+  let top, left, width, height;
 
-  // 👇 SOLO para el área de bloques
+  // 👇 SOLO para el área de bloques. ".blocklyWorkspace" es el grupo SVG
+  // interno de Blockly: su getBoundingClientRect() refleja el contenido
+  // dibujado (bloques + fondo del canvas infinito), NO el tamaño visible
+  // del contenedor -- por eso no cambiaba al redimensionar/maximizar la
+  // ventana y el recorte quedaba desalineado. Usamos el <svg> real (o
+  // #blocklyDiv como respaldo), que sí mide el contenedor visible, y le
+  // restamos el ancho real de la caja de herramientas (medido, no un
+  // número fijo) para no taparla.
   if (step.el === ".blocklyWorkspace") {
-    const shrinkX = 150; // cuánto reducir a los lados
-    const shrinkY = 15; // cuánto reducir arriba/abajo
+    const container =
+      document.querySelector("#blocklyDiv svg") ||
+      document.getElementById("blocklyDiv");
+    const rect = container.getBoundingClientRect();
+    const toolboxEl = document.querySelector(".blocklyToolboxDiv");
+    const toolboxWidth = toolboxEl
+      ? toolboxEl.getBoundingClientRect().width
+      : 0;
+    const margin = 10;
 
-    const moveX = shrinkX + 100; // 👉 ajusta aquí
-    const moveY = shrinkY - 5;
-    top += moveY;
-    left += moveX;
-    width -= shrinkX * 2;
-    height -= shrinkY * 2;
+    top = rect.top + margin;
+    left = rect.left + toolboxWidth;
+    width = rect.width - toolboxWidth - margin;
+    height = rect.height - margin * 2;
+  } else {
+    const rect = el.getBoundingClientRect();
+    top = rect.top;
+    left = rect.left;
+    width = rect.width;
+    height = rect.height;
   }
 
   const padding = 0;
@@ -210,7 +224,18 @@ window.tutorialRecalc = function () {
 };
 
 let _tutorialResizeTimer;
+let _tutorialResizeSettleTimer;
 window.addEventListener("resize", function () {
   clearTimeout(_tutorialResizeTimer);
-  _tutorialResizeTimer = setTimeout(window.tutorialRecalc, 80);
+  clearTimeout(_tutorialResizeSettleTimer);
+  _tutorialResizeTimer = setTimeout(function () {
+    window.tutorialRecalc();
+    // En la ventana embebida (WebView2) el tamaño del contenedor y el de
+    // la caja de herramientas a veces terminan de actualizarse en pasadas
+    // de layout distintas tras un resize/maximizado -- una sola lectura
+    // justo después puede mezclar una medida vieja con una nueva y dejar
+    // el recorte deformado. Se recalcula una vez más un poco después para
+    // asentar con las medidas finales ya estables.
+    _tutorialResizeSettleTimer = setTimeout(window.tutorialRecalc, 200);
+  }, 80);
 });
