@@ -516,14 +516,29 @@ window.GameEngine = (function () {
     getX: function(name) { return _sp(name).x; },
     getY: function(name) { return _sp(name).y; },
 
+    /* girar/poner ángulo == el usuario toma control manual de hacia
+       dónde "mira" el sprite. moveSprite() (arriba) pone flipX=true/
+       false solo mirando el signo de dx -- pensado para el caso
+       simple de voltear un sprite izquierda/derecha SIN rotarlo. Si
+       ese flipX automático queda encendido y el sprite además está
+       rotado (p.ej. ángulo=180 para "mirar a la izquierda"), el
+       volteo se suma a la rotación y el dibujo termina mirando
+       exactamente al lado contrario del que se mueve (bug reportado:
+       "gira a un lado pero al presionar la tecla avanza al revés",
+       en los ángulos 0°/180° porque son los únicos donde dx≠0
+       dispara el flip). Por eso girar/poner ángulo limpia flipX: a
+       partir de ahí la orientación la decide solo el ángulo. */
     turnAngle: function(deg, name) {
       var s = _sp(name);
       s.angle = (s.angle + (Number(deg)||0)) % 360;
       if (s.angle < 0) s.angle += 360;
+      s.flipX = false;
     },
     getAngle: function(name) { return _sp(name).angle; },
     setAngle: function(deg, name) {
-      _sp(name).angle = ((Number(deg)||0) % 360 + 360) % 360;
+      var s = _sp(name);
+      s.angle = ((Number(deg)||0) % 360 + 360) % 360;
+      s.flipX = false;
     },
     moveSteps: function(steps, name) {
       var s   = _sp(name);

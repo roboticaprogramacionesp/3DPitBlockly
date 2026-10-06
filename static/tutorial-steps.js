@@ -162,7 +162,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Fase ROJO: encender",
-        desc: "Ve a <b>LEDs › Semáforo (Leds)</b> y arrastra el bloque <em>Cambiar estado semáforo</em> <b>dentro</b> del ciclo. Ajusta los valores a: R=<b>1</b>, G=<b>0</b>, Y=<b>0</b> para encender solo el LED rojo.",
+        desc: "Ve a <b>LEDs › Semáforo (Leds)</b> y arrastra el bloque <em>Cambiar estado semáforo</em> <b>dentro</b> del ciclo. Ajusta los desplegables a: R=<b>on</b>, G=<b>off</b>, Y=<b>off</b> para encender solo el LED rojo. Un semáforo real siempre arranca en rojo (alto).",
         highlightCat: "Semáforo (Leds)", expandCat: "LEDs", bloque: "set_semaforo", bloqueLabel: "Cambiar estado semáforo"
       },
       {
@@ -171,23 +171,23 @@ var TUTORIALS = {
         highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
       },
       {
-        titulo: "Fase AMARILLO: encender",
-        desc: "Ve a <b>LEDs › Semáforo (Leds)</b> y arrastra otro bloque <em>Cambiar estado semáforo</em> después de la espera. Ajusta: R=<b>0</b>, G=<b>0</b>, Y=<b>1</b> para encender solo el LED amarillo.",
-        highlightCat: "Semáforo (Leds)", expandCat: "LEDs", bloque: "set_semaforo", bloqueLabel: "Cambiar estado semáforo"
-      },
-      {
-        titulo: "Fase AMARILLO: esperar",
-        desc: "Ve a <b>Tiempo</b> y arrastra otro bloque <em>time_sleep</em> después del bloque amarillo. Ajusta el valor a <b>1</b> segundo.",
-        highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
-      },
-      {
         titulo: "Fase VERDE: encender",
-        desc: "Ve a <b>LEDs › Semáforo (Leds)</b> y arrastra el último bloque <em>Cambiar estado semáforo</em>. Ajusta: R=<b>0</b>, G=<b>1</b>, Y=<b>0</b> para encender solo el LED verde.",
+        desc: "Ve a <b>LEDs › Semáforo (Leds)</b> y arrastra otro bloque <em>Cambiar estado semáforo</em> después de la espera. Ajusta: R=<b>off</b>, G=<b>on</b>, Y=<b>off</b> para encender solo el LED verde. En un semáforo real, después del rojo siempre sigue el verde (paso).",
         highlightCat: "Semáforo (Leds)", expandCat: "LEDs", bloque: "set_semaforo", bloqueLabel: "Cambiar estado semáforo"
       },
       {
         titulo: "Fase VERDE: esperar",
-        desc: "Ve a <b>Tiempo</b> y arrastra el último bloque <em>time_sleep</em> después del bloque verde. Ajusta el valor a <b>2</b> segundos. Al terminar, el ciclo se repetirá automáticamente.",
+        desc: "Ve a <b>Tiempo</b> y arrastra otro bloque <em>time_sleep</em> después del bloque verde. Ajusta el valor a <b>2</b> segundos.",
+        highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
+      },
+      {
+        titulo: "Fase AMARILLO: encender",
+        desc: "Ve a <b>LEDs › Semáforo (Leds)</b> y arrastra el último bloque <em>Cambiar estado semáforo</em>. Ajusta: R=<b>off</b>, G=<b>off</b>, Y=<b>on</b> para encender solo el LED amarillo. El amarillo va <b>después</b> del verde, como aviso de que el semáforo está por ponerse en rojo -- nunca entre el rojo y el verde.",
+        highlightCat: "Semáforo (Leds)", expandCat: "LEDs", bloque: "set_semaforo", bloqueLabel: "Cambiar estado semáforo"
+      },
+      {
+        titulo: "Fase AMARILLO: esperar",
+        desc: "Ve a <b>Tiempo</b> y arrastra el último bloque <em>time_sleep</em> después del bloque amarillo. Ajusta el valor a <b>1</b> segundo. Al terminar, el ciclo vuelve a empezar en rojo, igual que un semáforo real.",
         highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
       },
       {
@@ -4096,8 +4096,11 @@ var TutorialSteps = {
   },
 
   /*
-   * Desplaza el flyout para que el bloque indicado quede visible.
-   * Intenta 3 estrategias según la versión de Blockly.
+   * Desplaza el flyout para que el bloque indicado quede visible,
+   * usando la API real de Blockly (WorkspaceSvg.scroll) para que la
+   * posición visual y la posición interna que Blockly usa al iniciar
+   * el arrastre queden sincronizadas. scrollIntoView() queda solo
+   * como respaldo si por algún motivo fws no está disponible.
    */
   _scrollFlyoutABloque: function (svg) {
     var ws = this._getWorkspace();
@@ -4107,6 +4110,26 @@ var TutorialSteps = {
     if (!flyout) return;
 
     try {
+      // Si el flyout ya se cerró (p.ej. tras arrastrar el bloque al
+      // workspace) no hay nada que desplazar. OJO -- esto es crítico:
+      // un flyout cerrado sigue existiendo en el DOM con
+      // display:none, así que su getBoundingClientRect() y la del
+      // bloque dan {0,0,0,0}. Sin este chequeo, relTop/relBottom/
+      // flyoutH quedan todos en 0 y la condición de "ya visible" de
+      // abajo (relTop >= 8 && relBottom <= flyoutH - 8) nunca se
+      // cumple -- así que el código de abajo llama a fws.scroll() en
+      // CADA ciclo del MutationObserver, y como fws.scroll() empieza
+      // llamando a Blockly.hideChaff(true) (ver WorkspaceSvg.scroll en
+      // blockly_compressed.js), eso cierra cualquier editor de campo
+      // que el usuario acabe de abrir (p.ej. al intentar cambiar el
+      // 600 de "ancho"/"alto" en el bloque "Iniciar juego"). Peor
+      // aún: fws.scroll() mueve el <g> del flyout, lo cual es en sí
+      // mismo una mutación del DOM que vuelve a disparar este mismo
+      // observer -- un ciclo que no se detiene solo, y que le cierra
+      // el campo de edición al usuario una y otra vez mientras dura
+      // el paso del tutorial.
+      if (!flyout.isVisible || !flyout.isVisible()) return;
+
       var fws = (flyout.getWorkspace && flyout.getWorkspace()) || flyout.workspace_;
 
       // Buscar el elemento DOM del flyout
@@ -4116,6 +4139,11 @@ var TutorialSteps = {
 
       var flyoutRect = flyoutEl.getBoundingClientRect();
       var blockRect  = svg.getBoundingClientRect();
+
+      // Respaldo del chequeo de arriba: si por lo que sea el flyout
+      // reporta isVisible() pero aún no tiene tamaño real en pantalla,
+      // tampoco hay nada que desplazar todavía.
+      if (!flyoutRect.width || !flyoutRect.height) return;
 
       // Posición del bloque relativa al área visible del flyout
       var relTop    = blockRect.top    - flyoutRect.top;
@@ -4129,35 +4157,31 @@ var TutorialSteps = {
       var blockMid = relTop + blockRect.height / 2;
       var delta    = blockMid - flyoutH / 2;
 
-      // ── Estrategia 1: scrollbar interno de Blockly ──────────────
-      if (fws && fws.scrollbar_) {
-        var sb = fws.scrollbar_.vScroll || fws.scrollbar_;
-        if (sb && typeof sb.set === 'function') {
-          var cur = (sb.get && typeof sb.get === 'function') ? sb.get() : 0;
-          sb.set(Math.max(0, cur + delta));
-          return;
-        }
+      // ── Estrategia 1 (la única correcta): WorkspaceSvg.scroll() ──
+      // OJO: la versión anterior de este código buscaba
+      // fws.scrollbar_ (con guion bajo) y sb.get()/sb.set(valor), pero
+      // en esta versión de Blockly la propiedad se llama "scrollbar"
+      // (sin guion bajo, ver Blockly.WorkspaceSvg.prototype.scrollbar
+      // y Blockly.Flyout.prototype.init en blockly_compressed.js) y
+      // Blockly.Scrollbar no tiene método get(). Esa condición nunca se
+      // cumplía, así que SIEMPRE caía a la "Estrategia 2": mover a mano
+      // el transform del <g class="blocklyBlockCanvas"> del flyout.
+      // Eso desplaza el bloque visualmente pero NO actualiza
+      // fws.scrollX/scrollY -- que es justo lo que Blockly usa para
+      // traducir la posición del clic a coordenadas del workspace al
+      // iniciar el arrastre. Resultado: el bloque se ve en un lugar,
+      // pero Blockly "cree" que sigue en su posición original, y el
+      // bloque arrastrado aparece desfasado respecto al mouse.
+      //
+      // fws.scroll(x, y) es el método público de WorkspaceSvg: fija
+      // scrollX/scrollY, mueve el <g> Y actualiza la barra de scroll,
+      // todo en el mismo paso -- por eso no se desincroniza.
+      if (fws && typeof fws.scroll === 'function') {
+        fws.scroll(fws.scrollX, fws.scrollY - delta);
+        return;
       }
 
-      // ── Estrategia 2: ajustar transform del blocklyBlockCanvas ──
-      var blocksSvg = (flyoutEl.tagName === 'svg') ? flyoutEl
-                    : flyoutEl.querySelector('svg');
-      if (blocksSvg) {
-        var grp = blocksSvg.querySelector('g.blocklyBlockCanvas') ||
-                  blocksSvg.querySelector('g[transform]');
-        if (grp) {
-          var m = (grp.getAttribute('transform') || '')
-                    .match(/translate\(\s*([^,]+),\s*([^)]+)\)/);
-          if (m) {
-            var tx = parseFloat(m[1]);
-            var ty = parseFloat(m[2]);
-            grp.setAttribute('transform', 'translate(' + tx + ',' + (ty - delta) + ')');
-            return;
-          }
-        }
-      }
-
-      // ── Estrategia 3: scrollIntoView como último recurso ────────
+      // ── Estrategia 2: scrollIntoView como último recurso ────────
       svg.scrollIntoView({ block: 'center', behavior: 'smooth' });
 
     } catch (e) {

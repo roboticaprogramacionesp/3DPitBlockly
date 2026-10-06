@@ -980,6 +980,17 @@
           <option value="cliente_socket">Cliente Socket (TCP)</option>
           <option value="portal_cautivo">Portal Cautivo (Captive Portal)</option>
         </optgroup>
+        <optgroup label="🎮 Juegos">
+          <option value="juego_direcciones">¡A Moverse! Direcciones en Acción</option>
+          <option value="juego_calculadora_basica">Calculadora Mágica</option>
+          <option value="juego_plano_cartesiano">Cazador de Coordenadas</option>
+          <option value="juego_caja_area">La Caja Misteriosa: Áreas</option>
+          <option value="juego_caja_perimetro">La Caja Misteriosa: Perímetros</option>
+          <option value="juego_evitar_obstaculos">¡Esquiva y Sobrevive!</option>
+          <option value="juego_puntaje_tiempo">Contrarreloj: ¡Suma Puntos!</option>
+          <option value="juego_laberinto">Escape del Laberinto</option>
+          <option value="juego_punteria">Tiro al Blanco: Puntería y Precisión</option>
+        </optgroup>
       </select>
 
       <!-- Custom dropdown temático -->
@@ -1053,6 +1064,17 @@
           <div class="tut-option" data-value="cliente_socket"><span class="tut-opt-icon">📱</span>Cliente Socket (TCP)
           </div>
           <div class="tut-option" data-value="portal_cautivo"><span class="tut-opt-icon">🌐</span>Portal Cautivo</div>
+
+          <div class="tut-group-label">🎮 Juegos</div>
+          <div class="tut-option" data-value="juego_direcciones"><span class="tut-opt-icon">🕹️</span>¡A Moverse! Direcciones en Acción</div>
+          <div class="tut-option" data-value="juego_calculadora_basica"><span class="tut-opt-icon">🧮</span>Calculadora Mágica</div>
+          <div class="tut-option" data-value="juego_plano_cartesiano"><span class="tut-opt-icon">📈</span>Cazador de Coordenadas</div>
+          <div class="tut-option" data-value="juego_caja_area"><span class="tut-opt-icon">📦</span>La Caja Misteriosa: Áreas</div>
+          <div class="tut-option" data-value="juego_caja_perimetro"><span class="tut-opt-icon">📏</span>La Caja Misteriosa: Perímetros</div>
+          <div class="tut-option" data-value="juego_evitar_obstaculos"><span class="tut-opt-icon">🚧</span>¡Esquiva y Sobrevive!</div>
+          <div class="tut-option" data-value="juego_puntaje_tiempo"><span class="tut-opt-icon">⏱️</span>Contrarreloj: ¡Suma Puntos!</div>
+          <div class="tut-option" data-value="juego_laberinto"><span class="tut-opt-icon">🧭</span>Escape del Laberinto</div>
+          <div class="tut-option" data-value="juego_punteria"><span class="tut-opt-icon">🎯</span>Tiro al Blanco: Puntería y Precisión</div>
 
         </div>
       </div>
@@ -3687,6 +3709,231 @@
           </block>
         </category>
 
+        <category name="SH1106">
+          <block type="sh1106_init">
+            <field name="NAME">oledsh</field>
+            <field name="ID">1</field>
+            <field name="SDA">21</field>
+            <field name="SCL">22</field>
+            <field name="ADDR">0x3C</field>
+          </block>
+
+          <block type="sh1106_rotate">
+            <field name="NAME">oledsh</field>
+            <field name="ANGLE">0</field>
+          </block>
+
+          <block type="sh1106_clear">
+            <field name="NAME">oledsh</field>
+          </block>
+
+          <block type="sh1106_text">
+            <field name="NAME">oledsh</field>
+            <value name="TEXT">
+              <shadow type="text">
+                <field name="TEXT">Hola</field>
+              </shadow>
+            </value>
+            <value name="X">
+              <shadow type="math_number">
+                <field name="NUM">0</field>
+              </shadow>
+            </value>
+            <value name="Y">
+              <shadow type="math_number">
+                <field name="NUM">0</field>
+              </shadow>
+            </value>
+          </block>
+
+          <block type="sh1106_text20">
+            <field name="NAME">oledsh</field>
+            <value name="TEXT">
+              <shadow type="text">
+                <field name="TEXT">Texto</field>
+              </shadow>
+            </value>
+            <value name="X">
+              <shadow type="math_number">
+                <field name="NUM">0</field>
+              </shadow>
+            </value>
+            <value name="Y">
+              <shadow type="math_number">
+                <field name="NUM">20</field>
+              </shadow>
+            </value>
+          </block>
+
+          <block type="sh1106_pixel">
+            <field name="NAME">oledsh</field>
+            <value name="X">
+              <shadow type="math_number">
+                <field name="NUM">10</field>
+              </shadow>
+            </value>
+            <value name="Y">
+              <shadow type="math_number">
+                <field name="NUM">10</field>
+              </shadow>
+            </value>
+          </block>
+
+          <block type="sh1106_line">
+            <field name="NAME">oledsh</field>
+            <value name="X">
+              <shadow type="math_number">
+                <field name="NUM">0</field>
+              </shadow>
+            </value>
+            <value name="Y">
+              <shadow type="math_number">
+                <field name="NUM">0</field>
+              </shadow>
+            </value>
+            <value name="X1">
+              <shadow type="math_number">
+                <field name="NUM">50</field>
+              </shadow>
+            </value>
+            <value name="Y1">
+              <shadow type="math_number">
+                <field name="NUM">20</field>
+              </shadow>
+            </value>
+          </block>
+
+          <block type="sh1106_rect">
+            <field name="NAME">oledsh</field>
+            <value name="X">
+              <shadow type="math_number">
+                <field name="NUM">10</field>
+              </shadow>
+            </value>
+            <value name="Y">
+              <shadow type="math_number">
+                <field name="NUM">10</field>
+              </shadow>
+            </value>
+            <value name="W">
+              <shadow type="math_number">
+                <field name="NUM">30</field>
+              </shadow>
+            </value>
+            <value name="H">
+              <shadow type="math_number">
+                <field name="NUM">20</field>
+              </shadow>
+            </value>
+          </block>
+
+          <block type="sh1106_fill_rect">
+            <field name="NAME">oledsh</field>
+            <value name="X">
+              <shadow type="math_number">
+                <field name="NUM">10</field>
+              </shadow>
+            </value>
+            <value name="Y">
+              <shadow type="math_number">
+                <field name="NUM">10</field>
+              </shadow>
+            </value>
+            <value name="W">
+              <shadow type="math_number">
+                <field name="NUM">30</field>
+              </shadow>
+            </value>
+            <value name="H">
+              <shadow type="math_number">
+                <field name="NUM">20</field>
+              </shadow>
+            </value>
+          </block>
+
+          <block type="sh1106_circle">
+            <field name="NAME">oledsh</field>
+            <value name="X">
+              <shadow type="math_number">
+                <field name="NUM">64</field>
+              </shadow>
+            </value>
+            <value name="Y">
+              <shadow type="math_number">
+                <field name="NUM">32</field>
+              </shadow>
+            </value>
+            <value name="R">
+              <shadow type="math_number">
+                <field name="NUM">10</field>
+              </shadow>
+            </value>
+          </block>
+
+          <block type="sh1106_scroll">
+            <field name="NAME">oledsh</field>
+            <value name="DX">
+              <shadow type="math_number">
+                <field name="NUM">1</field>
+              </shadow>
+            </value>
+            <value name="DY">
+              <shadow type="math_number">
+                <field name="NUM">0</field>
+              </shadow>
+            </value>
+          </block>
+
+          <block type="sh1106_contrast">
+            <field name="NAME">oledsh</field>
+            <value name="VALUE">
+              <shadow type="math_number">
+                <field name="NUM">255</field>
+              </shadow>
+            </value>
+          </block>
+          <block type="points_xy"></block>
+          <block type="sh1106_poly">
+            <field name="NAME">oledsh</field>
+            <value name="POINTS">
+              <shadow type="points">
+                <field name="POINTS">[0,0,20,0,10,20,0,0]</field>
+              </shadow>
+            </value>
+            <value name="X">
+              <shadow type="math_number">
+                <field name="NUM">1</field>
+              </shadow>
+            </value>
+            <value name="Y">
+              <shadow type="math_number">
+                <field name="NUM">0</field>
+              </shadow>
+            </value>
+          </block>
+
+          <block type="sh1106_icon">
+            <field name="NAME">oledsh</field>
+            <value name="ICON">
+              <block type="oled_icon_value">
+                <field name="ICON">0</field>
+              </block>
+            </value>
+
+            <value name="X">
+              <shadow type="math_number">
+                <field name="NUM">0</field>
+              </shadow>
+            </value>
+
+            <value name="Y">
+              <shadow type="math_number">
+                <field name="NUM">0</field>
+              </shadow>
+            </value>
+          </block>
+        </category>
+
         <category name="Matrix 8x8">
           <block type="matrix8_init">
             <field name="DIN">13</field>
@@ -5083,6 +5330,7 @@
 
   <script>var TS_STATIC_URL = "static/";</script>
   <script src="static/tutorial-steps.js"></script>
+  <script src="static/tutorialesGames.js"></script>
 
   <script src="static/serial-monitor.js"></script>
 
@@ -5095,13 +5343,17 @@
 
       function open() {
         dropdown.classList.add('open');
-        trigger.classList.add('open');
-        trigger.setAttribute('aria-expanded', 'true');
+        if (trigger) {
+          trigger.classList.add('open');
+          trigger.setAttribute('aria-expanded', 'true');
+        }
       }
       function close() {
         dropdown.classList.remove('open');
-        trigger.classList.remove('open');
-        trigger.setAttribute('aria-expanded', 'false');
+        if (trigger) {
+          trigger.classList.remove('open');
+          trigger.setAttribute('aria-expanded', 'false');
+        }
       }
       function toggle() {
         dropdown.classList.contains('open') ? close() : open();
@@ -5117,41 +5369,49 @@
         if (!document.getElementById('tut-wrapper').contains(e.target)) close();
       });
 
+      function selectTutorial(opt) {
+        var val = opt.getAttribute('data-value');
+        // Sincronizar con el select nativo (lo usa TutorialSteps internamente)
+        selNative.value = val;
+        // Disparar el evento change para que TutorialSteps.cargar() se active
+        selNative.dispatchEvent(new Event('change'));
+        // Actualizar etiqueta del botón de forma segura (sin innerHTML)
+        var span = document.createElement('span');
+        span.className = 'tut-arrow';
+        span.textContent = '▼';
+        trigger.textContent = '';
+        // Copiar solo el texto del ícono y el label del option
+        var icon = opt.querySelector('.tut-opt-icon');
+        if (icon) {
+          var iconClone = document.createElement('span');
+          iconClone.className = 'tut-opt-icon';
+          iconClone.textContent = icon.textContent;
+          trigger.appendChild(iconClone);
+        }
+        // opt.textContent incluiría también el emoji del ícono (es hijo
+        // del option) -- se descarta ese nodo para no duplicarlo junto
+        // al iconClone de arriba.
+        var label = '';
+        opt.childNodes.forEach(function (node) {
+          if (node === icon) return;
+          label += node.textContent;
+        });
+        label = label.trim();
+        var labelNode = document.createElement('span');
+        labelNode.className = 'tut-label';
+        labelNode.textContent = label;
+        trigger.appendChild(labelNode);
+        trigger.appendChild(span);
+        close();
+      }
+
       // Seleccionar opción
       dropdown.querySelectorAll('.tut-option').forEach(function (opt) {
         opt.addEventListener('click', function () {
-          var val = opt.getAttribute('data-value');
-          // Sincronizar con el select nativo (lo usa TutorialSteps internamente)
-          selNative.value = val;
-          // Disparar el evento change para que TutorialSteps.cargar() se active
-          selNative.dispatchEvent(new Event('change'));
-          // Actualizar etiqueta del botón de forma segura (sin innerHTML)
-          var span = document.createElement('span');
-          span.className = 'tut-arrow';
-          span.textContent = '▼';
-          trigger.textContent = '';
-          // Copiar solo el texto del ícono y el label del option
-          var icon = opt.querySelector('.tut-icon');
-          var label = opt.querySelector('.tut-label');
-          if (icon) {
-            var iconClone = document.createElement('span');
-            iconClone.className = 'tut-icon';
-            iconClone.textContent = icon.textContent;
-            trigger.appendChild(iconClone);
-          }
-          if (label) {
-            var labelClone = document.createElement('span');
-            labelClone.className = 'tut-label';
-            labelClone.textContent = label.textContent;
-            trigger.appendChild(labelClone);
-          } else {
-            // Fallback: usar solo el texto del option
-            trigger.appendChild(document.createTextNode(opt.textContent.trim() + ' '));
-          }
-          trigger.appendChild(span);
-          close();
+          selectTutorial(opt);
         });
       });
+
     })();
   </script>
   <!-- ===============================
