@@ -4,8 +4,33 @@ import webview
 import os
 import base64
 import socket
+import clr
+clr.AddReference("System.Threading")
+from System.Threading import Thread as NetThread, ApartmentState, ThreadStart
 
 app = Flask(__name__)
+
+
+def _run_sta(func):
+    """Ejecuta func() en un hilo STA de .NET y devuelve su resultado.
+    pywebview corre cada método de Api en un hilo normal (MTA), y los
+    diálogos nativos de WinForms (SaveFileDialog/OpenFileDialog) necesitan
+    apartamento STA: sin esto, el diálogo se queda colgado en silencio
+    (nunca aparece) en el .exe empaquetado con PyInstaller, aunque sí
+    funciona al ejecutar con `python app.py`."""
+    result = {}
+    def _target():
+        try:
+            result["value"] = func()
+        except Exception as e:
+            result["error"] = e
+    t = NetThread(ThreadStart(_target))
+    t.SetApartmentState(ApartmentState.STA)
+    t.Start()
+    t.Join()
+    if "error" in result:
+        raise result["error"]
+    return result.get("value")
 
 AUTOSAVE_PATH = os.path.join(
     os.path.expanduser("~"),
@@ -85,11 +110,11 @@ class Api:
             return {"status": "error", "message": str(e)}
 
     def save_xml(self, xml_text):
-        file_path = webview.windows[0].create_file_dialog(
+        file_path = _run_sta(lambda: webview.windows[0].create_file_dialog(
             webview.SAVE_DIALOG,
             save_filename="workspace.xml",
             file_types=("Blockly XML (*.xml)",)
-        )
+        ))
 
         if not file_path:
             return {"status": "cancel"}
@@ -108,10 +133,10 @@ class Api:
         """Diálogo nativo para abrir un .xml. A diferencia del <input type="file">
         del navegador, esto sí devuelve la ruta real, así que el frontend puede
         recordarla y usarla luego con save_xml_to_path (Ctrl+S estilo Word)."""
-        file_path = webview.windows[0].create_file_dialog(
+        file_path = _run_sta(lambda: webview.windows[0].create_file_dialog(
             webview.OPEN_DIALOG,
             file_types=("Blockly XML (*.xml)", "Todos los archivos (*.*)")
-        )
+        ))
 
         if not file_path:
             return {"status": "cancel"}
@@ -141,11 +166,11 @@ class Api:
             f.write(xml_text)
 
     def save_py(self, code, default_name="test.py"):
-        file_path = webview.windows[0].create_file_dialog(
+        file_path = _run_sta(lambda: webview.windows[0].create_file_dialog(
             webview.SAVE_DIALOG,
             save_filename=default_name,
             file_types=('Python Files (*.py)',)
-        )
+        ))
 
         if not file_path:
             return {"status": "cancel"}
@@ -172,11 +197,11 @@ class Api:
         return {"status": "ok"}
 
     def save_png(self, base64_data, default_name="mis_bloques.png"):
-        file_path = webview.windows[0].create_file_dialog(
+        file_path = _run_sta(lambda: webview.windows[0].create_file_dialog(
             webview.SAVE_DIALOG,
             save_filename=default_name,
             file_types=('PNG Files (*.png)',)
-        )
+        ))
 
         if not file_path:
             return {"status": "cancel"}
