@@ -70,6 +70,42 @@ window.makePinOptionsFn = function (fullOptions) {
   };
 };
 
+/**
+ * Para desplegables SDA/SCL de bloques I2C (OLED, LCD I2C, SH1106, ...):
+ * a diferencia de las listas fijas de 3 pines "típicos" que tenían antes,
+ * esto ofrece TODOS los pines válidos de la placa activa -- en el C3,
+ * por ejemplo, ninguno de esos 3 típicos (21/19/26 para SDA, 18/22/25
+ * para SCL) existe siquiera en la placa, así que la lista fija dejaba
+ * al usuario sin ninguna opción real. Se recalcula solo, igual que
+ * makePinOptionsFn(), cada vez que se abre el desplegable.
+ */
+window.makeAnyPinOptionsFn = function () {
+  return function () {
+    const board = window.ESP32_BOARDS[window.getCurrentBoard()];
+    return board.pins.map((p) => [p, p]);
+  };
+};
+
+/**
+ * Para el desplegable "id" (número de periférico I2C) de esos mismos
+ * bloques: el ESP32 y el S3 tienen dos controladores I2C de hardware
+ * (0 y 1), pero el C3 solo tiene uno -- id=1 ahí tira
+ * "ValueError: invalid pin" (I2C.init) o deja el objeto a medio
+ * construir. Si la placa activa es el C3, solo se ofrece "0".
+ */
+window.makeI2CIdOptionsFn = function () {
+  return function () {
+    const boardKey = window.getCurrentBoard();
+    if (boardKey === "esp32_c3") {
+      return [["0", "0"]];
+    }
+    return [
+      ["0", "0"],
+      ["1", "1"],
+    ];
+  };
+};
+
 // Llena y conecta el <select id="boardSelect"> (barra superior, ver
 // templates/index.html / index.html) con las placas de ESP32_BOARDS --
 // agregar una placa nueva ahí arriba alcanza para que aparezca acá
@@ -7871,28 +7907,17 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "ID",
-        options: [
-          ["0", "0"],
-          ["1", "1"],
-        ],
+        options: window.makeI2CIdOptionsFn(),
       },
       {
         type: "field_dropdown",
         name: "SDA",
-        options: [
-          ["21", "21"],
-          ["19", "19"],
-          ["26", "26"],
-        ],
+        options: window.makeAnyPinOptionsFn(),
       },
       {
         type: "field_dropdown",
         name: "SCL",
-        options: [
-          ["18", "18"],
-          ["22", "22"],
-          ["25", "25"],
-        ],
+        options: window.makeAnyPinOptionsFn(),
       },
       {
         type: "field_dropdown",
@@ -8055,28 +8080,17 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "ID",
-        options: [
-          ["0", "0"],
-          ["1", "1"],
-        ],
+        options: window.makeI2CIdOptionsFn(),
       },
       {
         type: "field_dropdown",
         name: "SDA",
-        options: [
-          ["21", "21"],
-          ["19", "19"],
-          ["26", "26"],
-        ],
+        options: window.makeAnyPinOptionsFn(),
       },
       {
         type: "field_dropdown",
         name: "SCL",
-        options: [
-          ["18", "18"],
-          ["22", "22"],
-          ["25", "25"],
-        ],
+        options: window.makeAnyPinOptionsFn(),
       },
       {
         type: "field_dropdown",
@@ -8357,6 +8371,351 @@ Blockly.defineBlocksWithJsonArray([
         type: "field_input",
         name: "NAME",
         text: "oled",
+      },
+      {
+        type: "input_value",
+        name: "ICON",
+        check: "Icon",
+      },
+      {
+        type: "input_value",
+        name: "X",
+      },
+      {
+        type: "input_value",
+        name: "Y",
+      },
+      {
+        type: "field_dropdown",
+        name: "SIZE",
+        options: [
+          ["12", "1"],
+          ["24", "2"],
+          ["36", "3"],
+          ["48", "4"],
+          ["60", "5"],
+          ["72", "6"],
+          ["84", "7"],
+          ["96", "8"],
+        ],
+      },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+    colour: "#26A69A",
+  },
+
+  // ── OLED SH1106 (misma API que OLED, driver distinto — ver oledsh1106.py) ──
+  {
+    type: "sh1106_init",
+    message0: "%1 %2 id %3 SDA %4 SCL %5 dirección %6",
+    args0: [
+      {
+        type: "field_input",
+        name: "NAME",
+        text: "oledsh",
+      },
+      {
+        type: "field_image",
+        src: "./static/img/oled.svg",
+        width: 50,
+        height: 50,
+        alt: "SH1106",
+      },
+      {
+        type: "field_dropdown",
+        name: "ID",
+        options: window.makeI2CIdOptionsFn(),
+      },
+      {
+        type: "field_dropdown",
+        name: "SDA",
+        options: window.makeAnyPinOptionsFn(),
+      },
+      {
+        type: "field_dropdown",
+        name: "SCL",
+        options: window.makeAnyPinOptionsFn(),
+      },
+      {
+        type: "field_dropdown",
+        name: "ADDR",
+        options: [
+          ["0x3C", "0x3C"],
+          ["0x3D", "0x3D"],
+          ["0x20", "0x20"],
+          ["0x23", "0x23"],
+          ["0x27", "0x27"],
+          ["0x3f", "0x3f"],
+          ["0x68", "0x68"],
+          ["0x76", "0x76"],
+        ],
+      },
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: "#26A69A",
+  },
+  {
+    type: "sh1106_rotate",
+    message0: "%1 rotar %2",
+    args0: [
+      {
+        type: "field_input",
+        name: "NAME",
+        text: "oledsh",
+      },
+      {
+        type: "field_dropdown",
+        name: "ANGLE",
+        options: [
+          ["0°", "0"],
+          ["90°", "90"],
+          ["180°", "180"],
+          ["270°", "270"],
+        ],
+      },
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: "#26A69A",
+  },
+  {
+    type: "sh1106_text",
+    message0: "%1 texto %2 x %3 y %4",
+    args0: [
+      {
+        type: "field_input",
+        name: "NAME",
+        text: "oledsh",
+      },
+      { type: "input_value", name: "TEXT" },
+      { type: "input_value", name: "X" },
+      { type: "input_value", name: "Y" },
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: "#26A69A",
+  },
+  {
+    type: "sh1106_text20",
+    message0: "%1 texto grande %2 x %3 y %4",
+    args0: [
+      {
+        type: "field_input",
+        name: "NAME",
+        text: "oledsh",
+      },
+      { type: "input_value", name: "TEXT" },
+      { type: "input_value", name: "X" },
+      { type: "input_value", name: "Y" },
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: "#26A69A",
+  },
+  {
+    type: "sh1106_clear",
+    message0: "%1 limpiar",
+    args0: [
+      {
+        type: "field_input",
+        name: "NAME",
+        text: "oledsh",
+      },
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: "#26A69A",
+  },
+  {
+    type: "sh1106_pixel",
+    message0: "%1 pixel x %2 y %3 estado %4",
+    args0: [
+      {
+        type: "field_input",
+        name: "NAME",
+        text: "oledsh",
+      },
+      { type: "input_value", name: "X" },
+      { type: "input_value", name: "Y" },
+      {
+        type: "field_dropdown",
+        name: "STATE",
+        options: [
+          ["encendido", "1"],
+          ["apagado", "0"],
+        ],
+      },
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: "#26A69A",
+  },
+  {
+    type: "sh1106_line",
+    message0: "%1 linea x %2 y %3 x1 %4 y1 %5",
+    args0: [
+      {
+        type: "field_input",
+        name: "NAME",
+        text: "oledsh",
+      },
+      { type: "input_value", name: "X" },
+      { type: "input_value", name: "Y" },
+      { type: "input_value", name: "X1" },
+      { type: "input_value", name: "Y1" },
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: "#26A69A",
+  },
+  {
+    type: "sh1106_rect",
+    message0: "%1 rect x %2 y %3 w %4 h %5",
+    args0: [
+      {
+        type: "field_input",
+        name: "NAME",
+        text: "oledsh",
+      },
+      { type: "input_value", name: "X" },
+      { type: "input_value", name: "Y" },
+      { type: "input_value", name: "W" },
+      { type: "input_value", name: "H" },
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: "#26A69A",
+  },
+  {
+    type: "sh1106_fill_rect",
+    message0: "%1 rect lleno x %2 y %3 w %4 h %5",
+    args0: [
+      {
+        type: "field_input",
+        name: "NAME",
+        text: "oledsh",
+      },
+      { type: "input_value", name: "X" },
+      { type: "input_value", name: "Y" },
+      { type: "input_value", name: "W" },
+      { type: "input_value", name: "H" },
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: "#26A69A",
+  },
+  {
+    type: "sh1106_circle",
+    message0: "%1 circulo x %2 y %3 r %4",
+    args0: [
+      {
+        type: "field_input",
+        name: "NAME",
+        text: "oledsh",
+      },
+      { type: "input_value", name: "X" },
+      { type: "input_value", name: "Y" },
+      { type: "input_value", name: "R" },
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: "#26A69A",
+  },
+  {
+    type: "sh1106_scroll",
+    message0: "%1 scroll dx %2 dy %3",
+    args0: [
+      {
+        type: "field_input",
+        name: "NAME",
+        text: "oledsh",
+      },
+      {
+        type: "input_value",
+        name: "DX",
+      },
+      {
+        type: "input_value",
+        name: "DY",
+      },
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: "#26A69A",
+  },
+  {
+    type: "sh1106_contrast",
+    message0: "%1 contraste %2",
+    args0: [
+      {
+        type: "field_input",
+        name: "NAME",
+        text: "oledsh",
+      },
+      {
+        type: "input_value",
+        name: "VALUE",
+      },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: "#26A69A",
+  },
+  {
+    type: "sh1106_poly",
+    message0: "%1 poligono x %2 y %3 vertices %4 color %5 relleno %6",
+    args0: [
+      {
+        type: "field_input",
+        name: "NAME",
+        text: "oledsh",
+      },
+      { type: "input_value", name: "X" },
+      { type: "input_value", name: "Y" },
+      { type: "input_value", name: "POINTS" },
+      {
+        type: "field_dropdown",
+        name: "COLOR",
+        options: [
+          ["encender", "1"],
+          ["apagar", "0"],
+        ],
+      },
+      {
+        type: "field_dropdown",
+        name: "FILL",
+        options: [
+          ["no", "False"],
+          ["si", "True"],
+        ],
+      },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: "#26A69A",
+  },
+  {
+    type: "sh1106_icon",
+    message0: "%1 ícono %2 x %3 y %4 tamaño %5",
+    args0: [
+      {
+        type: "field_input",
+        name: "NAME",
+        text: "oledsh",
       },
       {
         type: "input_value",

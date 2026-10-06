@@ -3136,6 +3136,191 @@ Blockly.Python["oled_icon"] = function (block) {
   return `${name}.icon2(${icon}, ${x}, ${y}, ${scale})\n`;
 };
 
+// ── OLED SH1106 — misma API que OLED (SSD1306), driver distinto.
+// Se importa con alias ("OLED_SH1106") para que ambos tipos de pantalla
+// puedan usarse juntos en el mismo programa sin que un "from ... import OLED"
+// pise al otro.
+Blockly.Python["sh1106_init"] = function (block) {
+  Blockly.Python.definitions_["sh1106_import"] =
+    `from oledsh1106 import OLED as OLED_SH1106`;
+
+  const name = block.getFieldValue("NAME");
+  const id = block.getFieldValue("ID");
+  const sda = block.getFieldValue("SDA");
+  const scl = block.getFieldValue("SCL");
+  const addr = block.getFieldValue("ADDR");
+
+  return `${name} = OLED_SH1106(id=${id}, sda=${sda}, scl=${scl}, addr=${addr})\n`;
+};
+
+Blockly.Python["sh1106_rotate"] = function (block) {
+  const name = block.getFieldValue("NAME");
+  const angle = block.getFieldValue("ANGLE");
+
+  return `${name}.rotate(${angle})\n`;
+};
+
+Blockly.Python["sh1106_clear"] = function (block) {
+  const name = block.getFieldValue("NAME");
+  return `${name}.clear()\n`;
+};
+
+Blockly.Python["sh1106_text"] = function (block) {
+  const name = block.getFieldValue("NAME");
+
+  const text =
+    Blockly.Python.valueToCode(block, "TEXT", Blockly.Python.ORDER_NONE) ||
+    "''";
+  const x =
+    Blockly.Python.valueToCode(block, "X", Blockly.Python.ORDER_NONE) || 0;
+  const y =
+    Blockly.Python.valueToCode(block, "Y", Blockly.Python.ORDER_NONE) || 0;
+
+  return `${name}.text(${text}, ${x}, ${y}, 1)\n`;
+};
+
+Blockly.Python["sh1106_text20"] = function (block) {
+  const name = block.getFieldValue("NAME");
+
+  const text =
+    Blockly.Python.valueToCode(block, "TEXT", Blockly.Python.ORDER_NONE) ||
+    "''";
+  const x =
+    Blockly.Python.valueToCode(block, "X", Blockly.Python.ORDER_NONE) || 0;
+  const y =
+    Blockly.Python.valueToCode(block, "Y", Blockly.Python.ORDER_NONE) || 0;
+
+  return `${name}.text20(${text}, ${x}, ${y})\n`;
+};
+
+Blockly.Python["sh1106_pixel"] = function (block) {
+  const name = block.getFieldValue("NAME");
+
+  const x =
+    Blockly.Python.valueToCode(block, "X", Blockly.Python.ORDER_NONE) || 0;
+  const y =
+    Blockly.Python.valueToCode(block, "Y", Blockly.Python.ORDER_NONE) || 0;
+  const s = block.getFieldValue("STATE");
+
+  return `${name}.set_pixel(${x}, ${y}, ${s})\n`;
+};
+
+Blockly.Python["sh1106_line"] = function (block) {
+  const name = block.getFieldValue("NAME");
+
+  const x =
+    Blockly.Python.valueToCode(block, "X", Blockly.Python.ORDER_NONE) || 0;
+  const y =
+    Blockly.Python.valueToCode(block, "Y", Blockly.Python.ORDER_NONE) || 0;
+  const x1 =
+    Blockly.Python.valueToCode(block, "X1", Blockly.Python.ORDER_NONE) || 0;
+  const y1 =
+    Blockly.Python.valueToCode(block, "Y1", Blockly.Python.ORDER_NONE) || 0;
+
+  return `${name}.line(${x}, ${y}, ${x1}, ${y1}, 1)\n`;
+};
+
+Blockly.Python["sh1106_rect"] = function (block) {
+  const name = block.getFieldValue("NAME");
+
+  const x =
+    Blockly.Python.valueToCode(block, "X", Blockly.Python.ORDER_NONE) || 0;
+  const y =
+    Blockly.Python.valueToCode(block, "Y", Blockly.Python.ORDER_NONE) || 0;
+  const w =
+    Blockly.Python.valueToCode(block, "W", Blockly.Python.ORDER_NONE) || 0;
+  const h =
+    Blockly.Python.valueToCode(block, "H", Blockly.Python.ORDER_NONE) || 0;
+
+  return `${name}.rect(${x}, ${y}, ${w}, ${h}, 1)\n`;
+};
+
+Blockly.Python["sh1106_fill_rect"] = function (block) {
+  const name = block.getFieldValue("NAME");
+
+  const x =
+    Blockly.Python.valueToCode(block, "X", Blockly.Python.ORDER_NONE) || 0;
+  const y =
+    Blockly.Python.valueToCode(block, "Y", Blockly.Python.ORDER_NONE) || 0;
+  const w =
+    Blockly.Python.valueToCode(block, "W", Blockly.Python.ORDER_NONE) || 0;
+  const h =
+    Blockly.Python.valueToCode(block, "H", Blockly.Python.ORDER_NONE) || 0;
+
+  return `${name}.fill_rect(${x}, ${y}, ${w}, ${h}, 1)\n`;
+};
+
+Blockly.Python["sh1106_circle"] = function (block) {
+  const name = block.getFieldValue("NAME");
+
+  const x =
+    Blockly.Python.valueToCode(block, "X", Blockly.Python.ORDER_NONE) || 0;
+  const y =
+    Blockly.Python.valueToCode(block, "Y", Blockly.Python.ORDER_NONE) || 0;
+  const r =
+    Blockly.Python.valueToCode(block, "R", Blockly.Python.ORDER_NONE) || 0;
+
+  return `${name}.circle(${x}, ${y}, ${r}, 1)\n`;
+};
+
+Blockly.Python["sh1106_scroll"] = function (block) {
+  const name = block.getFieldValue("NAME");
+
+  const dx =
+    Blockly.Python.valueToCode(block, "DX", Blockly.Python.ORDER_NONE) || 0;
+  const dy =
+    Blockly.Python.valueToCode(block, "DY", Blockly.Python.ORDER_NONE) || 0;
+
+  return `${name}.scroll(${dx}, ${dy})\n`;
+};
+
+Blockly.Python["sh1106_contrast"] = function (block) {
+  const name = block.getFieldValue("NAME");
+
+  const value =
+    Blockly.Python.valueToCode(block, "VALUE", Blockly.Python.ORDER_NONE) ||
+    255;
+
+  return `${name}.contrast(${value})\n`;
+};
+
+Blockly.Python["sh1106_poly"] = function (block) {
+  const name = block.getFieldValue("NAME");
+
+  const x = Blockly.Python.valueToCode(block, "X", Blockly.Python.ORDER_NONE);
+  const y = Blockly.Python.valueToCode(block, "Y", Blockly.Python.ORDER_NONE);
+
+  const vertices = Blockly.Python.valueToCode(
+    block,
+    "POINTS",
+    Blockly.Python.ORDER_NONE,
+  );
+
+  const color = block.getFieldValue("COLOR");
+  const fill = block.getFieldValue("FILL");
+
+  return `${name}.poly(${vertices}, ${x}, ${y}, ${color}, ${fill})\n`;
+};
+
+Blockly.Python["sh1106_icon"] = function (block) {
+  Blockly.Python.definitions_["icons_px_import"] =
+    "from icons_px import get_ch";
+
+  const name = block.getFieldValue("NAME");
+
+  const icon =
+    Blockly.Python.valueToCode(block, "ICON", Blockly.Python.ORDER_NONE) || 0;
+
+  const x =
+    Blockly.Python.valueToCode(block, "X", Blockly.Python.ORDER_NONE) || 0;
+  const y =
+    Blockly.Python.valueToCode(block, "Y", Blockly.Python.ORDER_NONE) || 0;
+
+  const scale = block.getFieldValue("SIZE");
+
+  return `${name}.icon2(${icon}, ${x}, ${y}, ${scale})\n`;
+};
+
 Blockly.Python["matrix8_init"] = function (block) {
   const name = block.getFieldValue("NAME");
   const din = block.getFieldValue("DIN");
