@@ -5039,16 +5039,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: makePinOptionsFn([
-          ["26", "26"],
-          ["25", "25"],
-          ["27", "27"],
-          ["14", "14"],
-          ["12", "12"],
-          ["13", "13"],
-          ["32", "32"],
-          ["33", "33"],
-        ]),
+        options: window.makeAnyPinOptionsFn(),
       },
     ],
     previousStatement: null,
@@ -5062,16 +5053,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: makePinOptionsFn([
-          ["26", "26"],
-          ["25", "25"],
-          ["27", "27"],
-          ["14", "14"],
-          ["12", "12"],
-          ["13", "13"],
-          ["32", "32"],
-          ["33", "33"],
-        ]),
+        options: window.makeAnyPinOptionsFn(),
       },
       {
         type: "field_angle",
@@ -5090,16 +5072,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "PIN",
-        options: makePinOptionsFn([
-          ["26", "26"],
-          ["25", "25"],
-          ["27", "27"],
-          ["14", "14"],
-          ["12", "12"],
-          ["13", "13"],
-          ["32", "32"],
-          ["33", "33"],
-        ]),
+        options: window.makeAnyPinOptionsFn(),
       },
       { type: "input_value", name: "ANGLE", check: "Number" },
     ],

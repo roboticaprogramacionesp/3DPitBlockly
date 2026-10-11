@@ -870,6 +870,9 @@
           <a id="btnSave">
             <span class="icon-btn icon-save"></span>Guardar .xml</a>
           <!-- 💾 Guardar .xml -->
+          <a id="btnSaveAs" title="Guardar en otra ubicación o con otro nombre, sin sobrescribir el archivo actual">
+            <span class="icon-btn icon-save"></span>Guardar .xml como...</a>
+          <!-- 💾 Guardar como -->
           <a id="btnLoad">
             <span class="icon-btn icon-load"></span>Abrir .xml
           </a>
@@ -2867,9 +2870,14 @@
           </block>
         </category>
         <category name="Servo">
-          <block type="init_servo"></block>
-          <block type="move_servo"></block>
+          <block type="init_servo">
+            <field name="PIN">26</field>
+          </block>
+          <block type="move_servo">
+            <field name="PIN">26</field>
+          </block>
           <block type="move_servo_var">
+            <field name="PIN">26</field>
             <value name="ANGLE">
               <shadow type="math_number">
                 <field name="NUM">90</field>

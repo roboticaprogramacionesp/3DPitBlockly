@@ -945,14 +945,54 @@ document.getElementById("btnSave").addEventListener("click", async (e) => {
   await saveProject();
 });
 
+/* "Guardar como": a diferencia de saveProject(), ignora a propósito
+   LAST_SAVED_PATH_KEY -- siempre pide dónde guardar (nunca sobrescribe
+   el archivo que ya se tenía abierto) y, si se completa, actualiza esa
+   misma ruta recordada para que el próximo "Guardar"/Ctrl+S normal
+   sobrescriba ESTE nuevo archivo en vez del anterior. */
+async function saveProjectAs() {
+  let xmlText = "";
+  try {
+    const dom = Blockly.Xml.workspaceToDom(Blockly.getMainWorkspace());
+    xmlText = Blockly.Xml.domToPrettyText(dom);
+    _saveLog(`saveProjectAs: xmlText generado, ${xmlText.length} chars, workspace blocks: ${Blockly.getMainWorkspace().getAllBlocks(false).length}`);
+  } catch (err) {
+    _saveLog(`saveProjectAs: error generando XML — ${err.message}`, true);
+    return;
+  }
+
+  if (!window.pywebview?.api?.save_xml) {
+    // Navegador / GitHub Pages: ya se comporta como "Guardar como" siempre
+    // (showSaveFilePicker / descarga preguntan ubicación cada vez).
+    await saveFileAuto(xmlText, "proyecto.xml");
+    return;
+  }
+
+  const result = await window.pywebview.api.save_xml(xmlText);
+  if (result?.status === "ok") {
+    localStorage.setItem(LAST_SAVED_PATH_KEY, result.path);
+    if (DEBUG) console.log("Guardado como:", result.path);
+  }
+}
+
+const _btnSaveAs = document.getElementById("btnSaveAs");
+if (_btnSaveAs) {
+  _btnSaveAs.addEventListener("click", async (e) => {
+    e.preventDefault();
+    await saveProjectAs();
+  });
+}
+
 // Ctrl+S / Cmd+S — en fase de captura para que funcione sin importar
 // dónde esté el foco (editor de código, terminal, etc.).
+// Ctrl+Shift+S / Cmd+Shift+S → "Guardar como" (convención estándar).
 document.addEventListener(
   "keydown",
   (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key?.toLowerCase() === "s") {
       e.preventDefault();
-      saveProject();
+      if (e.shiftKey) saveProjectAs();
+      else saveProject();
     }
   },
   true,
