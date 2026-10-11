@@ -406,12 +406,12 @@ var TUTORIALS = {
       {
         titulo: "Abre Sensores › Buzzer (KY-006)",
         desc: "Expande <b>Sensores</b> y selecciona <b>Buzzer (KY-006)</b>.",
-        highlightCat: "Buzzer (KY-006)", expandCat: "Sensores", bloque: null
+        highlightCat: "Buzzer (KY-006)", expandCats: ["Sensores", "Sensores Digitales"], bloque: null
       },
       {
         titulo: "Arrastra: Tono Buzzer",
         desc: "Arrastra el bloque <em>Reproducir tono (buzzer)</em>. Establece el Pin en <b>12</b> y elige una nota, por ejemplo <b>B2</b>.",
-        highlightCat: "Buzzer (KY-006)", expandCat: "Sensores", bloque: "buzzer_tone", bloqueLabel: "Reproducir tono (buzzer)"
+        highlightCat: "Buzzer (KY-006)", expandCats: ["Sensores", "Sensores Digitales"], bloque: "buzzer_tone", bloqueLabel: "Reproducir tono (buzzer)"
       },
       {
         titulo: "Establecer 1 segundo",
@@ -432,7 +432,7 @@ var TUTORIALS = {
       {
         titulo: "Detener el buzzer",
         desc: "Arrastra el bloque <em>Detener buzzer</em>. Establece el Pin en <b>12</b>. Esto corta el sonido.",
-        highlightCat: "Buzzer (KY-006)", expandCat: "Sensores", bloque: "buzzer_stop", bloqueLabel: "Detener buzzer"
+        highlightCat: "Buzzer (KY-006)", expandCats: ["Sensores", "Sensores Digitales"], bloque: "buzzer_stop", bloqueLabel: "Detener buzzer"
       },
       {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
@@ -513,12 +513,12 @@ var TUTORIALS = {
       {
         titulo: "Abre Sensores Digitales › Ultrasonico",
         desc: "Dentro de <b>Sensores</b>, expande <b>Sensores Digitales</b> y selecciona la subcategoría <b>Ultrasonico</b>.",
-        highlightCat: "Ultrasonico", expandCat: "Sensores", bloque: null
+        highlightCat: "Ultrasonico", expandCats: ["Sensores", "Sensores Digitales"], bloque: null
       },
       {
         titulo: "Arrastra: Inicializar HC-SR04",
         desc: "Arrastra el bloque <em>Preparar sensor ultrasónico</em> al área de trabajo. Los pines predeterminados son TRIG=<b>12</b> y ECHO=<b>13</b>. Conéctalo fuera de cualquier ciclo, al inicio del programa.",
-        highlightCat: "Ultrasonico", expandCat: "Sensores", bloque: "init_ultrasonic_hcsr04", bloqueLabel: "Preparar sensor ultrasónico"
+        highlightCat: "Ultrasonico", expandCats: ["Sensores", "Sensores Digitales"], bloque: "init_ultrasonic_hcsr04", bloqueLabel: "Preparar sensor ultrasónico"
       },
       {
         titulo: "Agrega un ciclo infinito",
@@ -539,7 +539,7 @@ var TUTORIALS = {
       {
         titulo: "Arrastra: Leer distancia",
         desc: "Ve a <b>Sensores › Sensores Digitales › Ultrasonico</b> y arrastra el bloque <em>Leer distancia (cm)</em>. Conéctalo al hueco del bloque <em>establecer distancia a</em>.",
-        highlightCat: "Ultrasonico", expandCat: "Sensores", bloque: "read_ultrasonic_hcsr04", bloqueLabel: "Leer distancia (cm)"
+        highlightCat: "Ultrasonico", expandCats: ["Sensores", "Sensores Digitales"], bloque: "read_ultrasonic_hcsr04", bloqueLabel: "Leer distancia (cm)"
       },
       {
         titulo: "Imprime la distancia",
@@ -569,6 +569,174 @@ var TUTORIALS = {
       {
         titulo: "Ejecuta tu programa",
         desc: "Haz clic en el botón <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span> para enviar el código a tu ESP32.",
+        highlightElement: "#btnRun",
+        waitForAction: "run"
+      },
+    ]
+  },
+
+  carrito_esquiva_obstaculos: {
+    title: "Carrito Esquiva Obstáculos", icon: "🚙",
+    diagram: "img/conexiones/puente_h.svg",
+    steps: [
+      {
+        titulo: "¿Qué aprenderemos?",
+        desc: "Uniremos dos tutoriales que ya conoces -- el sensor <b>HC-SR04</b> y el puente H <b>L298N</b> -- para armar un carrito que <b>avanza solo</b> y, cuando detecta un obstáculo demasiado cerca, se <b>detiene, retrocede y gira</b> para esquivarlo. La idea clave: el programa revisa la distancia en cada vuelta del ciclo y decide qué hacer según qué tan cerca esté el obstáculo.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Conexión física completa",
+        desc: "Este carrito usa <b>dos módulos a la vez</b>, cada uno con sus propios pines (no se cruzan):<br><br>📡 <b>HC-SR04</b> (sensor, al frente del carrito):<br>⚡ VCC → 5V &nbsp; ⏚ GND → GND<br>📌 TRIG → pin <b>12</b> &nbsp; 📌 ECHO → pin <b>13</b><br><br>⚡ <b>L298N</b> (puente H, controla las dos ruedas):<br>⚡ 12V → batería de los motores &nbsp; ⏚ GND → GND del ESP32 y de la batería<br>📌 IN1 → pin <b>26</b> &nbsp; 📌 IN2 → pin <b>25</b> &nbsp; 📌 IN3 → pin <b>17</b> &nbsp; 📌 IN4 → pin <b>16</b><br>🔌 OUT1/OUT2 → Motor izquierdo (A) &nbsp; 🔌 OUT3/OUT4 → Motor derecho (B)<br><br>⚠️ No alimentes los motores directamente del ESP32: usan la batería del L298N. El botón de diagrama muestra el cableado del L298N.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Abre Sensores Digitales › Ultrasonico",
+        desc: "Dentro de <b>Sensores</b>, expande <b>Sensores Digitales</b> y selecciona la subcategoría <b>Ultrasonico</b>.",
+        highlightCat: "Ultrasonico", expandCats: ["Sensores", "Sensores Digitales"], bloque: null
+      },
+      {
+        titulo: "Arrastra: Preparar sensor ultrasónico",
+        desc: "Arrastra el bloque <em>Preparar sensor ultrasónico</em> al área de trabajo. Pines predeterminados TRIG=<b>12</b>, ECHO=<b>13</b>. Va <b>fuera</b> de cualquier ciclo, al inicio del programa.",
+        highlightCat: "Ultrasonico", expandCats: ["Sensores", "Sensores Digitales"], bloque: "init_ultrasonic_hcsr04", bloqueLabel: "Preparar sensor ultrasónico"
+      },
+      {
+        titulo: "Selecciona Actuadores › Motor DC",
+        desc: "Dentro de <b>Actuadores</b>, haz clic en <b>Motor DC</b> para ver los bloques del puente H L298N.",
+        highlightCat: "Motor DC", expandCat: "Actuadores", bloque: null
+      },
+      {
+        titulo: "Arrastra: Preparar el controlador de motores",
+        desc: "Arrastra el bloque <em>Preparar Motor DC (L298N)</em> justo después del bloque del sensor. Configura IN1=<b>26</b>, IN2=<b>25</b>, IN3=<b>17</b>, IN4=<b>16</b>. También va fuera de cualquier ciclo.",
+        highlightCat: "Motor DC", expandCat: "Actuadores", bloque: "init_dc_motor", bloqueLabel: "Preparar Motor DC (L298N)"
+      },
+      {
+        titulo: "Crea la variable distancia",
+        desc: "Ve a <b>Variables</b> y crea una variable llamada <b>distancia</b>.",
+        highlightCat: "Variables", highlightFlyoutButton: "create_variable", variable: "distancia", expandCat: null, bloque: null
+      },
+      {
+        titulo: "Agrega el ciclo infinito",
+        desc: "Ve a <b>Ciclos</b> y arrastra el bloque <em>Repetir mientras Verdadero</em>. El carrito revisará la distancia y decidirá qué hacer en cada vuelta de este ciclo.",
+        highlightCat: "Ciclos", expandCat: null, bloque: "controls_whileUntil", bloqueLabel: "Repetir mientras Verdadero"
+      },
+      {
+        titulo: "Establece el valor de distancia",
+        desc: "Ve a <b>Variables</b> y arrastra <em>Establecer distancia a</em> como primer bloque dentro del ciclo.",
+        highlightCat: "Variables", expandCat: null, bloque: "variables_set", bloqueLabel: "Establecer variable"
+      },
+      {
+        titulo: "Arrastra: Leer distancia",
+        desc: "Ve a <b>Sensores › Sensores Digitales › Ultrasonico</b> y arrastra <em>Leer distancia (cm)</em>. Conéctalo al bloque <em>Establecer distancia a</em>.",
+        highlightCat: "Ultrasonico", expandCats: ["Sensores", "Sensores Digitales"], bloque: "read_ultrasonic_hcsr04", bloqueLabel: "Leer distancia (cm)"
+      },
+      {
+        titulo: "Si hay un obstáculo cerca",
+        desc: "Ve a <b>Lógica</b> y arrastra <em>Si … hacer</em>, después de leer la distancia. Aquí va la maniobra para esquivar.",
+        highlightCat: "Lógica", expandCat: null, bloque: "controls_if", bloqueLabel: "Si … hacer"
+      },
+      {
+        titulo: "Compara la distancia con el umbral",
+        desc: "Ve a <b>Lógica</b> y arrastra el bloque <em>&lt; (menor que)</em> en la condición.",
+        highlightCat: "Lógica", expandCat: null, bloque: "logic_compare", bloqueLabel: "< (menor que)"
+      },
+      {
+        titulo: "Obtén distancia",
+        desc: "Ve a <b>Variables</b> y arrastra <em>obtener distancia</em>. Colócalo en el primer hueco de la comparación.",
+        highlightCat: "Variables", expandCat: null, bloque: { tipo: "variables_get", valor: "distancia" }, bloqueLabel: "obtener distancia"
+      },
+      {
+        titulo: "Escribe el umbral de distancia",
+        desc: "Ve a <b>Matemáticas</b> y arrastra un bloque <em>Número</em> con valor <b>15</b>. Colócalo en el segundo hueco: a menos de 15 cm, el carrito considera que hay un obstáculo.",
+        highlightCat: "Matemáticas", expandCat: null, bloque: "math_number", bloqueLabel: "Número"
+      },
+      {
+        titulo: "Detén el motor izquierdo",
+        desc: "Ve a <b>Actuadores › Motor DC</b> y arrastra <em>Controlar Motor DC (encender/apagar)</em> dentro del <b>hacer</b>. Motor=<b>A</b>, IN1=<b>off</b>, IN2=<b>off</b>: primero frena antes de maniobrar.",
+        highlightCat: "Motor DC", expandCat: "Actuadores", bloque: "move_dc_motor1_on_off", bloqueLabel: "Controlar Motor DC (encender/apagar)"
+      },
+      {
+        titulo: "Detén el motor derecho",
+        desc: "Ve a <b>Actuadores › Motor DC</b> y arrastra otro <em>Controlar Motor DC (encender/apagar)</em>. Motor=<b>B</b>, IN3=<b>off</b>, IN4=<b>off</b>.",
+        highlightCat: "Motor DC", expandCat: "Actuadores", bloque: "move_dc_motor1_on_off", bloqueLabel: "Controlar Motor DC (encender/apagar)"
+      },
+      {
+        titulo: "Espera un instante",
+        desc: "Ve a <b>Tiempo</b> y arrastra <em>time_sleep</em>. Ajusta el valor a <b>0.3</b> segundos.",
+        highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
+      },
+      {
+        titulo: "Retrocede el motor izquierdo",
+        desc: "Ve a <b>Actuadores › Motor DC</b> y arrastra otro <em>Controlar Motor DC (encender/apagar)</em>. Motor=<b>A</b>, IN1=<b>off</b>, IN2=<b>on</b>: así retrocede en vez de avanzar.",
+        highlightCat: "Motor DC", expandCat: "Actuadores", bloque: "move_dc_motor1_on_off", bloqueLabel: "Controlar Motor DC (encender/apagar)"
+      },
+      {
+        titulo: "Retrocede el motor derecho",
+        desc: "Ve a <b>Actuadores › Motor DC</b> y arrastra otro <em>Controlar Motor DC (encender/apagar)</em>. Motor=<b>B</b>, IN3=<b>off</b>, IN4=<b>on</b>.",
+        highlightCat: "Motor DC", expandCat: "Actuadores", bloque: "move_dc_motor1_on_off", bloqueLabel: "Controlar Motor DC (encender/apagar)"
+      },
+      {
+        titulo: "Espera mientras retrocede",
+        desc: "Ve a <b>Tiempo</b> y arrastra otro <em>time_sleep</em>. Ajusta el valor a <b>0.5</b> segundos, para alejarse del obstáculo.",
+        highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
+      },
+      {
+        titulo: "Gira: deja un motor quieto...",
+        desc: "Ve a <b>Actuadores › Motor DC</b> y arrastra otro <em>Controlar Motor DC (encender/apagar)</em>. Motor=<b>A</b>, IN1=<b>off</b>, IN2=<b>off</b>: detén la rueda izquierda.",
+        highlightCat: "Motor DC", expandCat: "Actuadores", bloque: "move_dc_motor1_on_off", bloqueLabel: "Controlar Motor DC (encender/apagar)"
+      },
+      {
+        titulo: "...y el otro avanzando",
+        desc: "Ve a <b>Actuadores › Motor DC</b> y arrastra otro <em>Controlar Motor DC (encender/apagar)</em>. Motor=<b>B</b>, IN3=<b>on</b>, IN4=<b>off</b>: la rueda derecha sigue girando, así que el carrito pivotea hacia un lado. Pruébalo -- si gira hacia el lado que no quieres, solo intercambia cuál motor dejas quieto.",
+        highlightCat: "Motor DC", expandCat: "Actuadores", bloque: "move_dc_motor1_on_off", bloqueLabel: "Controlar Motor DC (encender/apagar)"
+      },
+      {
+        titulo: "Espera mientras gira",
+        desc: "Ve a <b>Tiempo</b> y arrastra otro <em>time_sleep</em>. Ajusta el valor a <b>0.4</b> segundos.",
+        highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
+      },
+      {
+        titulo: "Si el camino está libre",
+        desc: "Ve a <b>Lógica</b> y arrastra otro bloque <em>Si … hacer</em>, después del primero (no dentro): esta condición es para cuando NO hay obstáculo.",
+        highlightCat: "Lógica", expandCat: null, bloque: "controls_if", bloqueLabel: "Si … hacer"
+      },
+      {
+        titulo: "Compara: ¿está libre el camino?",
+        desc: "Ve a <b>Lógica</b> y arrastra el bloque <em>≥ (mayor o igual)</em> en la condición.",
+        highlightCat: "Lógica", expandCat: null, bloque: "logic_compare", bloqueLabel: "≥ (mayor o igual)"
+      },
+      {
+        titulo: "Obtén distancia otra vez",
+        desc: "Ve a <b>Variables</b> y arrastra <em>obtener distancia</em>. Colócalo en el primer hueco.",
+        highlightCat: "Variables", expandCat: null, bloque: { tipo: "variables_get", valor: "distancia" }, bloqueLabel: "obtener distancia"
+      },
+      {
+        titulo: "Escribe el mismo umbral",
+        desc: "Ve a <b>Matemáticas</b> y arrastra un bloque <em>Número</em> con valor <b>15</b>. Debe ser el mismo número que usaste arriba.",
+        highlightCat: "Matemáticas", expandCat: null, bloque: "math_number", bloqueLabel: "Número"
+      },
+      {
+        titulo: "Avanza el motor izquierdo",
+        desc: "Ve a <b>Actuadores › Motor DC</b> y arrastra otro <em>Controlar Motor DC (encender/apagar)</em> dentro de este <b>hacer</b>. Motor=<b>A</b>, IN1=<b>on</b>, IN2=<b>off</b>.",
+        highlightCat: "Motor DC", expandCat: "Actuadores", bloque: "move_dc_motor1_on_off", bloqueLabel: "Controlar Motor DC (encender/apagar)"
+      },
+      {
+        titulo: "Avanza el motor derecho",
+        desc: "Ve a <b>Actuadores › Motor DC</b> y arrastra otro <em>Controlar Motor DC (encender/apagar)</em>. Motor=<b>B</b>, IN3=<b>on</b>, IN4=<b>off</b>: con el camino libre, el carrito sigue avanzando derecho.",
+        highlightCat: "Motor DC", expandCat: "Actuadores", bloque: "move_dc_motor1_on_off", bloqueLabel: "Controlar Motor DC (encender/apagar)"
+      },
+      {
+        titulo: "Agrega una pausa corta",
+        desc: "Ve a <b>Tiempo</b> y arrastra el último <em>time_sleep</em>, como último bloque del ciclo (fuera de los dos <em>Si</em>). Ajusta el valor a <b>0.1</b> segundos, solo para no saturar las lecturas del sensor.",
+        highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
+      },
+      {
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "Ejecuta tu programa",
+        desc: "Haz clic en el botón <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span> para enviar el código a tu ESP32. Coloca el carrito en el piso y acerca la mano o un objeto al sensor para ver cómo esquiva.",
         highlightElement: "#btnRun",
         waitForAction: "run"
       },
@@ -785,7 +953,7 @@ var TUTORIALS = {
       {
         titulo: "Selecciona Sensores IR",
         desc: "Dentro de <b>Sensores → Sensores Digitales</b>, haz clic en <b>Sensores IR</b> para ver los bloques del sensor infrarrojo.",
-        highlightCat: "Sensores IR", expandCat: "Sensores", bloque: null
+        highlightCat: "Sensores IR", expandCats: ["Sensores", "Sensores Digitales"], bloque: null
       },
       {
         titulo: "Arrastra: Preparar sensor infrarrojo",
@@ -1656,23 +1824,23 @@ var TUTORIALS = {
       {
         titulo: "Abre: IR KY-022",
         desc: "Dentro de <b>Sensores Digitales</b>, selecciona <b>IR KY-022</b> para ver los bloques del receptor de control remoto.",
-        highlightCat: "IR KY-022", expandCat: "Sensores", bloque: null
+        highlightCat: "IR KY-022", expandCats: ["Sensores", "Sensores Digitales"], bloque: null
       },
       {
         titulo: "Arrastra: Preparar receptor IR KY-022",
         desc: "Arrastra el bloque <em>Preparar receptor IR KY-022</em> al área de trabajo. Este bloque configura el pin de señal (por defecto <b>15</b>) y se coloca <b>una sola vez</b> al inicio del programa.",
-        highlightCat: "IR KY-022", expandCat: "Sensores",
+        highlightCat: "IR KY-022", expandCats: ["Sensores", "Sensores Digitales"],
         bloque: "init_ir_ky022", bloqueLabel: "Preparar receptor IR KY-022"
       },
       {
         titulo: "Abre IR KY-022 de nuevo",
         desc: "Haz clic en <b>Sensores</b> → <b>Sensores Digitales</b> → <b>IR KY-022</b> para ver el bloque de recepción de código.",
-        highlightCat: "IR KY-022", expandCat: "Sensores", bloque: null
+        highlightCat: "IR KY-022", expandCats: ["Sensores", "Sensores Digitales"], bloque: null
       },
       {
         titulo: "Conecta: Recibir código del control remoto",
         desc: "Arrastra el bloque <em>Recibir código IR (con callback)</em>. Conéctalo al espacio vacío del bloque <em>establecer codigo_ir a</em>. Este bloque espera hasta que llega una señal del control y devuelve su código.",
-        highlightCat: "IR KY-022", expandCat: "Sensores",
+        highlightCat: "IR KY-022", expandCats: ["Sensores", "Sensores Digitales"],
         bloque: "ir_ky022_callback_code", bloqueLabel: "Recibir código IR (con callback)"
       },
       {
@@ -1715,11 +1883,6 @@ var TUTORIALS = {
         highlightCat: null, bloque: null
       },
       {
-        titulo: "Paso previo: anota tu dirección MAC",
-        desc: "El emisor necesitará la <b>dirección MAC</b> de este receptor. Conéctate al ESP32 receptor y ejecuta un programa que imprima su MAC en el monitor serial.<br><br>El formato es <em>AA:BB:CC:DD:EE:FF</em>. Anótala para usarla después en el tutorial del emisor.",
-        highlightCat: null, bloque: null
-      },
-      {
         titulo: "Abre Comunicación Inalambrica › WiFi",
         desc: "ESP-NOW requiere que el Wi-Fi esté activo aunque no te conectes a ningún router. Haz clic en <b>Comunicación Inalambrica</b> → <b>WiFi</b> para ver los bloques de red.",
         highlightCat: "WiFi", expandCat: "Comunicación Inalambrica", bloque: null
@@ -1729,6 +1892,23 @@ var TUTORIALS = {
         desc: "Arrastra el bloque <em>Inicializar WiFi</em> al área de trabajo.",
         highlightCat: "WiFi", expandCat: "Comunicación Inalambrica",
         bloque: "wifi_init", bloqueLabel: "Inicializar WiFi"
+      },
+      {
+        titulo: "Arrastra: imprimir",
+        desc: "Ve a <b>Textos</b> y arrastra el bloque <em>imprimir</em> debajo de <em>Inicializar WiFi</em>.",
+        highlightCat: "Textos", expandCat: null,
+        bloque: "text_print", bloqueLabel: "imprimir"
+      },
+      {
+        titulo: "Imprimir: conecta la Dirección MAC",
+        desc: "Vuelve a <b>WiFi</b>, toma otro bloque <em>Dirección MAC</em> y conéctalo en la entrada del bloque <em>imprimir</em>. Quita el texto <em>3DPit</em> que trae por defecto.",
+        highlightCat: "WiFi", expandCat: "Comunicación Inalambrica",
+        bloque: "mac_address", bloqueLabel: "Dirección MAC"
+      },
+      {
+        titulo: "Anota tu dirección MAC",
+        desc: "El emisor necesitará la <b>dirección MAC</b> para ello abre el munitor serial de este receptor. Conéctate al ESP32 receptor y ejecuta un programa que imprima su MAC en el monitor serial.<br><br>El formato es <em>AA:BB:CC:DD:EE:FF</em>. Anótala para usarla después en el tutorial del emisor.",
+        highlightCat: null, bloque: null
       },
       {
         titulo: "Abre la subcategoría ESP-NOW",
@@ -2118,12 +2298,12 @@ var TUTORIALS = {
       {
         titulo: "Selecciona la subcategoría DHT11 / DHT22",
         desc: "Dentro de <b>Sensores → Sensores Digitales</b>, haz clic en <b>DHT11 / DHT22</b> para ver los bloques del sensor de temperatura y humedad.",
-        highlightCat: "DHT11 / DHT22", expandCat: "Sensores", bloque: null
+        highlightCat: "DHT11 / DHT22", expandCats: ["Sensores", "Sensores Digitales"], bloque: null
       },
       {
         titulo: "Arrastra: Inicializar DHT",
         desc: "Arrastra el bloque <em>Preparar sensor DHT</em> al área de trabajo. Selecciona el modelo <b>DHT11</b> (o DHT22 si tienes ese) y el pin <b>4</b>. Este bloque va <b>una sola vez</b> al inicio del programa.",
-        highlightCat: "DHT11 / DHT22", expandCat: "Sensores",
+        highlightCat: "DHT11 / DHT22", expandCats: ["Sensores", "Sensores Digitales"],
         bloque: "dht_init", bloqueLabel: "Preparar sensor DHT"
       },
       {
@@ -2140,7 +2320,7 @@ var TUTORIALS = {
       {
         titulo: "Dentro del ciclo: medir el sensor",
         desc: "Ve a <b>Sensores → Sensores Digitales → DHT11 / DHT22</b> y arrastra el bloque <em>Medir DHT</em> como <b>primer bloque dentro del ciclo</b>. Este comando dispara la lectura; sin él los valores de temperatura y humedad no se actualizan.",
-        highlightCat: "DHT11 / DHT22", expandCat: "Sensores",
+        highlightCat: "DHT11 / DHT22", expandCats: ["Sensores", "Sensores Digitales"],
         bloque: "dht_measure", bloqueLabel: "Medir DHT"
       },
       {
@@ -2152,7 +2332,7 @@ var TUTORIALS = {
       {
         titulo: "Guardar humedad",
         desc: "Arrastra otro bloque <em>establecer hum a</em> debajo. Conecta el bloque <em>Leer humedad DHT</em> (pin <b>4</b>) desde <b>Sensores → DHT11 / DHT22</b>.",
-        highlightCat: "DHT11 / DHT22", expandCat: "Sensores",
+        highlightCat: "DHT11 / DHT22", expandCats: ["Sensores", "Sensores Digitales"],
         bloque: "dht_humidity", bloqueLabel: "Leer humedad DHT"
       },
       {

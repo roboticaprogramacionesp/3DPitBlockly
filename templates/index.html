@@ -962,6 +962,7 @@
         </optgroup>
         <optgroup label="📡 Sensores">
           <option value="ultrasonico">Sensor Ultrasónico (HC-SR04)</option>
+          <option value="carrito_esquiva_obstaculos">Carrito Esquiva Obstáculos</option>
           <option value="ir_ky022">Control Remoto IR (KY-022)</option>
         </optgroup>
         <optgroup label="🖥️ Pantallas y Módulos">
@@ -1043,6 +1044,7 @@
           <div class="tut-group-label">📡 Sensores</div>
           <div class="tut-option" data-value="ultrasonico"><span class="tut-opt-icon">📡</span>Sensor Ultrasónico
             HC-SR04</div>
+          <div class="tut-option" data-value="carrito_esquiva_obstaculos"><span class="tut-opt-icon">🚙</span>Carrito Esquiva Obstáculos</div>
           <div class="tut-option" data-value="ir_ky022"><span class="tut-opt-icon">📻</span>Control Remoto IR KY-022
           </div>
 
@@ -2850,13 +2852,23 @@
           <block type="actuador_on_off"></block>
         </category>
         <category name="Motor DC">
-          <block type="init_dc_motor"></block>
+          <block type="init_dc_motor">
+            <field name="IN1">26</field>
+            <field name="IN2">25</field>
+            <field name="IN3">17</field>
+            <field name="IN4">16</field>
+          </block>
           <block type="move_dc_motor1_on_off"></block>
           <block type="move_dc_motor1"></block>
           <block type="move_dc_motor2_on_off"></block>
           <block type="move_dc_motor2"></block>
 
-          <block type="init2_dc_motor_pwm"></block>
+          <block type="init2_dc_motor_pwm">
+            <field name="IN1">25</field>
+            <field name="IN2">17</field>
+            <field name="IN3">16</field>
+            <field name="IN4">27</field>
+          </block>
           <block type="move_dc_motor_pwm1"></block>
           <block type="move_dc_motor_pwm2"></block>
           <block type="move_dc_motor_pwm1_slider"></block>
@@ -5057,6 +5069,7 @@
           <block type="wifi_connect"></block>
           <block type="wifi_ap"></block>
           <block type="wifi_start_ap"></block>
+          <block type="mac_address"></block>
           <block type="wifi_scan"></block>
           <block type="wifi_isconnected"></block>
           <block type="wifi_current_ip"></block>

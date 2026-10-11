@@ -2044,6 +2044,29 @@ function initInterpreter(code) {
       }),
     );
 
+    /* ── Math.trunc polyfill ──
+       El Math que trae empaquetado acorn_interpreter.js solo expone
+       "abs acos asin atan atan2 ceil cos exp floor log max min pow
+       random round sin sqrt tan" (ver su función de init de Math) --
+       trunc no está en esa lista, así que cualquier código generado
+       que lo use (p.ej. el bloque "a entero" / convert_to_int, usado
+       en la calculadora y en los tutoriales de la Caja Misteriosa)
+       truena en tiempo de ejecución con "Math.trunc is not a
+       function". Lo agregamos a mano sobre el objeto Math real del
+       intérprete en vez de tocar la librería minificada. */
+    try {
+      var _mathObj = interpreter.getProperty(globalObject, "Math");
+      if (_mathObj && !interpreter.getProperty(_mathObj, "trunc")) {
+        interpreter.setProperty(
+          _mathObj,
+          "trunc",
+          interpreter.createNativeFunction(function (x) {
+            return Math.trunc(x);
+          }),
+        );
+      }
+    } catch (e) { /* si algo cambia en la librería, no romper el resto del init */ }
+
     /* ── alert / console ── */
     interpreter.setProperty(
       globalObject,

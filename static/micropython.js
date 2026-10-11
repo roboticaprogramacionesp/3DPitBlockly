@@ -5257,6 +5257,11 @@ Blockly.Python["wifi_start_ap"] = function (_block) {
   return "wifi_start_access_point()\n";
 };
 
+Blockly.Python["mac_address"] = function (block) {
+  const variable = block.getFieldValue("VAR");
+  return [`${variable}.config('mac')`, Blockly.Python.ORDER_ATOMIC];
+};
+
 // Página HTML por defecto
 Blockly.Python["portal_set_page"] = function (block) {
   const page = block.getFieldValue("PAGE") || "index3";

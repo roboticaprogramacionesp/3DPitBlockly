@@ -22,12 +22,33 @@ window.ESP32_BOARDS = {
     // como GPIO corta esa conexión.
     pins: ["0", "2", "4", "5", "12", "13", "14", "15", "16", "17",
       "18", "19", "21", "22", "23", "25", "26", "27", "32", "33", "34", "35", "36", "39"],
+    // USB vía chip puente (CP2102/CH340): UART de hardware normal,
+    // sin la latencia extra de la pila USB-CDC nativa -- ver
+    // speedMul más abajo (usado en main.js para el timing del raw
+    // REPL / subida de archivos).
+    speedMul: 1.0,
   },
   esp32_s3: {
     label: "ESP32 S3",
+    // Sin el 19 ni el 20 -- son las señales USB D-/D+ nativas del propio
+    // chip (el mismo USB que esta app usa para programar y hablar con la
+    // placa). Mientras esté conectado por USB, el PHY interno mantiene
+    // esas líneas en su estado de bus (D- en 0, D+ en 1 con su pull-up)
+    // sin importar qué valor le pongas por código -- por eso un pin
+    // "de salida" en 19/20 nunca cambia de valor.
     pins: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11",
-      "12", "13", "14", "15", "16", "17", "18", "19", "20", "21",
+      "12", "13", "14", "15", "16", "17", "18", "21",
       "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48"],
+    // El S3 usa el mismo periférico USB-Serial-JTAG nativo que el C3
+    // (no un chip puente externo como el Wroom) -- por eso va en el
+    // grupo "lento": la pila USB-CDC del propio ESP32 agrega latencia
+    // irregular entre mandar Ctrl+A y que aparezca el ">" del raw
+    // REPL. Antes este board estaba agrupado con el Wroom (mul=1.0)
+    // asumiendo "mismo silicio = misma velocidad", pero lo que define
+    // la latencia es el USB nativo, no el chip -- con el margen corto
+    // del Wroom, la primera entrada a raw REPL (p.ej. al subir un
+    // archivo) fallaba seguido y había que reintentar.
+    speedMul: 2.0,
   },
   esp32_c3: {
     label: "ESP32 C3",
@@ -35,6 +56,8 @@ window.ESP32_BOARDS = {
     // Mini) son las señales D-/D+ del propio conector USB. El 20/21 sí
     // quedan: es una UART aparte, no la del USB.
     pins: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "20", "21"],
+    // USB nativo igual que el S3 (ver comentario de speedMul ahí).
+    speedMul: 2.0,
   },
 };
 
@@ -4509,42 +4532,22 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "IN1",
-        options: [
-          ["26", "26"],
-          ["25", "25"],
-          ["17", "17"],
-          ["16", "16"],
-        ],
+        options: window.makeAnyPinOptionsFn(),
       },
       {
         type: "field_dropdown",
         name: "IN2",
-        options: [
-          ["25", "25"],
-          ["26", "26"],
-          ["17", "17"],
-          ["16", "16"],
-        ],
+        options: window.makeAnyPinOptionsFn(),
       },
       {
         type: "field_dropdown",
         name: "IN3",
-        options: [
-          ["17", "17"],
-          ["26", "26"],
-          ["25", "25"],
-          ["16", "16"],
-        ],
+        options: window.makeAnyPinOptionsFn(),
       },
       {
         type: "field_dropdown",
         name: "IN4",
-        options: [
-          ["16", "16"],
-          ["26", "26"],
-          ["25", "25"],
-          ["17", "17"],
-        ],
+        options: window.makeAnyPinOptionsFn(),
       },
     ],
     previousStatement: null,
@@ -4714,42 +4717,22 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "IN1",
-        options: [
-          ["25", "25"],
-          ["26", "26"],
-          ["17", "17"],
-          ["16", "16"],
-        ],
+        options: window.makeAnyPinOptionsFn(),
       },
       {
         type: "field_dropdown",
         name: "IN2",
-        options: [
-          ["17", "17"],
-          ["25", "25"],
-          ["26", "26"],
-          ["16", "16"],
-        ],
+        options: window.makeAnyPinOptionsFn(),
       },
       {
         type: "field_dropdown",
         name: "IN3",
-        options: [
-          ["16", "16"],
-          ["17", "17"],
-          ["25", "25"],
-          ["26", "26"],
-        ],
+        options: window.makeAnyPinOptionsFn(),
       },
       {
         type: "field_dropdown",
         name: "IN4",
-        options: [
-          ["27", "27"],
-          ["16", "16"],
-          ["17", "17"],
-          ["25", "25"],
-        ],
+        options: window.makeAnyPinOptionsFn(),
       },
     ],
     previousStatement: null,
@@ -6470,6 +6453,23 @@ Blockly.defineBlocksWithJsonArray([
     nextStatement: null,
     colour: 210,
     tooltip: "Inicia el punto de acceso WiFi configurado previamente",
+  },
+  {
+    type: "mac_address",
+    message0: "%1obtener dirección MAC",
+    args0: [
+      {
+        type: "field_dropdown",
+        name: "VAR",
+        options: [
+          ["sta_if", "sta_if"],
+          ["wlan", "wlan"],
+        ],
+      },
+    ],
+    output: "String",
+    colour: 210,
+    tooltip: "Obtiene la dirección MAC del dispositivo",
   },
   {
     type: "wifi_scan",

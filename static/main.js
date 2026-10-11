@@ -297,6 +297,28 @@ async function _detectDeviceSpeed() {
   if (_deviceDetected || !serialReader || !serialWriter) return;
   _deviceDetected = true;
 
+  // Preferir el tipo de placa EXPLÍCITO del selector (#boardSelect,
+  // persistido en localStorage -- ver window.ESP32_BOARDS en
+  // conversion.js) en vez de adivinarlo por timing. El usuario ya nos
+  // dice qué placa tiene para filtrar los pines; usar ese mismo dato
+  // acá evita la detección por reloj, que es justo lo que fallaba:
+  // mide UNA vez, justo después de abrir el puerto, cuando el USB-CDC
+  // nativo (S3/C3) todavía puede estar inestable -- un resultado
+  // limítrofe cerca de los 400 ms podía clasificar mal el dispositivo
+  // y dejar timeouts demasiado cortos para subidas de archivo
+  // posteriores. Si el valor explícito existe, se usa directo y NO se
+  // manda ningún Ctrl+C/Ctrl+A de sondeo (uno menos para que la placa
+  // recién conectada tenga que responder).
+  const _boardInfo = window.ESP32_BOARDS?.[window.getCurrentBoard?.()];
+  if (_boardInfo && typeof _boardInfo.speedMul === "number") {
+    _deviceSpeedMul = _boardInfo.speedMul;
+    console.log(`[DeviceDetect] placa seleccionada: ${_boardInfo.label} → mul=${_deviceSpeedMul} (sin sondeo por timing)`);
+    if (term) term.writeln(`\r\n🔍 Placa: ${_boardInfo.label}\r\n`);
+    return;
+  }
+
+  // Placa desconocida (no está en ESP32_BOARDS) -- único caso donde
+  // todavía hace falta adivinar por timing, como respaldo.
   let _detBuf = "";
   const _prevHook = window._rawReplHook;
   window._rawReplHook = (c) => { _detBuf += c; };
@@ -353,7 +375,7 @@ async function _detectDeviceSpeed() {
       console.warn(`[DeviceDetect] sin respuesta del REPL tras ${MAX_INTENTOS} intentos -- el dispositivo no contestó al Ctrl+C/Ctrl+A. Probá presionar RESET en la placa o revisar el cable/puerto.`);
       if (term) term.writeln(`\r\n⚠ No se detectó respuesta del ESP32 -- si no reacciona, probá presionar RESET en la placa.\r\n`);
     } else {
-      const label = _deviceSpeedMul > 1 ? "lento (C3/C6/S2)" : "rápido (Wroom/S3)";
+      const label = _deviceSpeedMul > 1 ? "lento (por timing, placa no reconocida)" : "rápido (por timing, placa no reconocida)";
       console.log(`[DeviceDetect] tiempo raw REPL: ${elapsed} ms → dispositivo ${label} (mul=${_deviceSpeedMul})`);
       if (term) term.writeln(`\r\n🔍 Dispositivo detectado: ${label}\r\n`);
     }
@@ -1285,11 +1307,41 @@ async function connectSerial() {
     // script. En placas de USB nativo sin ese circuito (ej. ESP32-C3
     // "Super Mini", muy comunes) setSignals() no tiene ningún efecto
     // eléctrico -- inofensivo, por eso se intenta siempre.
+    //
+    // OJO con DTR: estos sets nunca mandaban dataTerminalReady, solo
+    // requestToSend -- dejando DTR en lo que haya quedado por defecto
+    // del driver/SO (no necesariamente false) desde que se abrió el
+    // puerto. En el circuito clásico de auto-reset, RTS->EN y DTR->GPIO0
+    // (ambos activos en alto, vía transistor inversor): la secuencia de
+    // esptool para un reset "a correr" (no a bootloader) es DTR=false
+    // sostenido mientras RTS pulsa true→false -- si DTR queda en true
+    // por accidente durante ese pulso, GPIO0 se jala a tierra justo
+    // cuando se libera el reset y el ESP32 arranca en modo bootloader
+    // ROM ("waiting for download") en vez de correr MicroPython. Esto es
+    // justo lo que se veía reportado en placas ESP32-S3: quedaba pegado
+    // ahí hasta presionar RESET a mano. Fijar dataTerminalReady:false en
+    // los dos setSignals (no solo requestToSend) asegura que GPIO0 nunca
+    // quede jalado durante el pulso, sin importar qué dejó el intento
+    // de conexión anterior.
+    // Margen de arranque según la placa elegida en el selector (ver
+    // speedMul en window.ESP32_BOARDS, conversion.js): en las placas de
+    // USB nativo (S3/C3) el arranque pasa primero por el bootloader de
+    // ESP-IDF -- que en algunos módulos S3 sin PSRAM imprime un error
+    // ("PSRAM chip not found ... Bailing out") antes de seguir hacia
+    // MicroPython -- y encima la pila USB-CDC nativa tiene más jitter
+    // que un chip puente serie normal. Los 400 ms fijos de acá alcanzan
+    // para un Wroom con CP2102/CH340, pero no siempre para ese arranque
+    // más largo y variable -- si el primer "\x03" de abajo se manda
+    // antes de que MicroPython esté realmente escuchando, se pierde, y
+    // de ahí salen los "no se pudo entrar en raw REPL" intermitentes
+    // incluso después del fix de DTR.
+    const _bootMul = window.ESP32_BOARDS?.[window.getCurrentBoard?.()]?.speedMul || 1.0;
+
     try {
-      await serialPort.setSignals({ requestToSend: true });
+      await serialPort.setSignals({ dataTerminalReady: false, requestToSend: true });
       await sleep(100);
-      await serialPort.setSignals({ requestToSend: false });
-      await sleep(400); // margen para que MicroPython arranque y muestre su banner
+      await serialPort.setSignals({ dataTerminalReady: false, requestToSend: false });
+      await sleep(400 * _bootMul); // margen para que MicroPython arranque y muestre su banner
     } catch (e) {
       console.warn("[connectSerial] setSignals no soportado o falló:", e);
     }
@@ -1304,7 +1356,7 @@ async function connectSerial() {
     await sendSerial("\x03");
     readSerialLoop();
     _deviceDetected = false;  // resetear para nueva conexión
-    sleep(400).then(() => _detectDeviceSpeed());
+    sleep(400 * _bootMul).then(() => _detectDeviceSpeed());
   } catch (error) {
     console.error("[connectSerial]", error);
 
@@ -2627,6 +2679,15 @@ async function stopExecution() {
     await sendSerial("\x03");
     await sleep(50);
     await sendSerial("\x03");
+    await sleep(50);
+    // Ctrl+B: si el programa se interrumpió mientras corría dentro de Raw
+    // REPL (ej. sendViaRawRepl con un bucle infinito tipo BLE), Ctrl+C solo
+    // aborta la ejecución pero deja la placa atascada en el prompt ">" de
+    // raw REPL -- cualquier byte que llegue después (incluido el \r\n de
+    // abajo) se acumula como "código" en vez de ejecutarse o mostrarse, y
+    // la próxima carga/ejecución falla porque asume que está en REPL normal.
+    // Ctrl+B fuerza la vuelta a REPL normal; en REPL normal es un no-op.
+    await sendSerial("\x02");
     await sleep(50);
     await sendSerial("\r\n");
 
