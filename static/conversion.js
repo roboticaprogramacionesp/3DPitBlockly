@@ -84,12 +84,19 @@ window.makePinOptionsFn = function (fullOptions) {
   return function () {
     const board = window.ESP32_BOARDS[window.getCurrentBoard()];
     const valid = new Set(board.pins);
-    const filtered = fullOptions.filter((opt) => valid.has(opt[1]));
-    // Blockly.FieldDropdown exige al menos una opción -- si la placa no
-    // tiene NINGÚN pin de esta categoría (ej. DAC en el C3, que no
-    // tiene ese periférico), mejor mostrar la lista completa que
-    // romper el bloque.
-    return filtered.length ? filtered : fullOptions;
+    const validFirst = fullOptions.filter((opt) => valid.has(opt[1]));
+    const rest = fullOptions.filter((opt) => !valid.has(opt[1]));
+    // IMPORTANTE: no se puede filtrar ("excluir") y listo -- Blockly usa
+    // este mismo generador para VALIDAR el valor que trae un .xml al
+    // cargarlo (FieldDropdown.fromXml llama a getOptions() ANTES de
+    // fijar el valor nuevo, así que no hay forma de "colar" ese valor
+    // puntual aquí adentro). Si el pin guardado no aparece en la lista
+    // que devolvemos, Blockly lo rechaza en silencio y lo resetea al
+    // primer pin -- por eso NUNCA quitamos pines de fullOptions, solo
+    // reordenamos: los válidos para la placa activa van primero (lo que
+    // ve el usuario al abrir el desplegable), el resto queda al final
+    // como respaldo para no perder valores guardados con otra placa.
+    return validFirst.length ? validFirst.concat(rest) : fullOptions;
   };
 };
 
@@ -104,8 +111,28 @@ window.makePinOptionsFn = function (fullOptions) {
  */
 window.makeAnyPinOptionsFn = function () {
   return function () {
-    const board = window.ESP32_BOARDS[window.getCurrentBoard()];
-    return board.pins.map((p) => [p, p]);
+    const boardKey = window.getCurrentBoard();
+    const board = window.ESP32_BOARDS[boardKey];
+    const seen = new Set(board.pins);
+    const options = board.pins.map((p) => [p, p]);
+    // Mismo motivo que en makePinOptionsFn(): Blockly valida el valor
+    // que trae un .xml contra esta misma lista ANTES de fijarlo
+    // (FieldDropdown.fromXml), así que no hay forma de "colar" ese
+    // valor puntual aquí adentro -- si no aparece en la lista, se
+    // pierde en silencio. Agregamos los pines de las OTRAS placas al
+    // final como respaldo, para no perder un valor guardado con una
+    // placa distinta a la activa en ese momento. No afecta el uso
+    // normal: los pines de la placa activa siguen apareciendo primero.
+    Object.values(window.ESP32_BOARDS).forEach((b) => {
+      if (b === board) return;
+      b.pins.forEach((p) => {
+        if (!seen.has(p)) {
+          seen.add(p);
+          options.push([p, p]);
+        }
+      });
+    });
+    return options;
   };
 };
 
