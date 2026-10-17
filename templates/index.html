@@ -5484,27 +5484,6 @@
         });
       });
 
-      var gameTutorialBtn = document.getElementById('btnGameTutorials');
-      if (gameTutorialBtn) {
-        gameTutorialBtn.addEventListener('click', function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-
-          if (dropdown.classList.contains('open')) {
-            close();
-            return;
-          }
-
-          var rect = gameTutorialBtn.getBoundingClientRect();
-          dropdown.style.position = 'fixed';
-          dropdown.style.left = (Math.min(rect.left, window.innerWidth - 300)) + 'px';
-          dropdown.style.top = (rect.bottom + 8) + 'px';
-          dropdown.style.right = 'auto';
-          dropdown.style.width = '290px';
-
-          open();
-        });
-      }
     })();
   </script>
   <!-- ===============================

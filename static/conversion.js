@@ -141,14 +141,17 @@ window.makeAnyPinOptionsFn = function () {
  * bloques: el ESP32 y el S3 tienen dos controladores I2C de hardware
  * (0 y 1), pero el C3 solo tiene uno -- id=1 ahí tira
  * "ValueError: invalid pin" (I2C.init) o deja el objeto a medio
- * construir. Si la placa activa es el C3, solo se ofrece "0".
+ * construir, así que en la C3 conviene usar "0".
+ *
+ * Aun así "1" queda siempre en la lista (no se filtra según la placa,
+ * a diferencia de los pines) -- mismo motivo que en
+ * makeAnyPinOptionsFn(): Blockly valida el valor que trae un .xml
+ * contra esta lista ANTES de fijarlo (FieldDropdown.fromXml), así que
+ * si "1" no apareciera acá, abrir con la C3 activa un proyecto guardado
+ * con ESP32/S3 (id=1 válido ahí) perdería ese valor en silencio.
  */
 window.makeI2CIdOptionsFn = function () {
   return function () {
-    const boardKey = window.getCurrentBoard();
-    if (boardKey === "esp32_c3") {
-      return [["0", "0"]];
-    }
     return [
       ["0", "0"],
       ["1", "1"],
