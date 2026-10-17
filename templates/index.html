@@ -489,6 +489,26 @@
       justify-content: space-between;
     }
 
+    /* ── Modal Compartir: estado del acortador + QR ── */
+    .share-status {
+      font-size: 12px;
+      color: #a0b8ff;
+      margin: 2px 0 8px;
+      min-height: 14px;
+    }
+
+    .share-qr {
+      display: flex;
+      justify-content: center;
+      margin: 4px 0 10px;
+    }
+
+    .share-qr img {
+      background: #fff;
+      padding: 8px;
+      border-radius: 6px;
+    }
+
     /* ── Botón conexiones eléctricas ── */
     #btnWiring {
       position: relative;
@@ -5346,6 +5366,8 @@
 
   <script src="static/lz-string.js"></script>
 
+  <script src="static/qrcode.js"></script>
+
   <!-- ── Motor de juego (canvas, sprites, teclado, ratón) ── -->
   <script src="static/game-engine.js"></script>
 
@@ -5497,6 +5519,8 @@
     <div class="modal-content">
       <h3>Compartir proyecto</h3>
       <input id="shareInput" name="shareInput" readonly autocomplete="off" />
+      <p id="shareStatus" class="share-status"></p>
+      <div id="shareQr" class="share-qr"></div>
       <div class="modal-buttons">
         <button id="copyBtn">Copiar</button>
         <button id="closeModal">Cerrar</button>

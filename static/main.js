@@ -8,8 +8,19 @@
 // ─────────────────────────────────────────────────────────────
 var Code = {};
 let IS_DESKTOP = typeof window.pywebview !== "undefined";
+
+/* "Compartir" genera un link con el proyecto comprimido en la URL --
+   tiene sentido en la web (GitHub Pages), pero no en la app de
+   escritorio, que es local y no se sirve desde ninguna URL pública. */
+function ocultarBotonCompartirSiEscritorio() {
+  if (!IS_DESKTOP) return;
+  document.getElementById("btnShare")?.style.setProperty("display", "none");
+}
+ocultarBotonCompartirSiEscritorio();
+
 window.addEventListener("pywebviewready", () => {
   IS_DESKTOP = true;
+  ocultarBotonCompartirSiEscritorio();
 });
 
 const DEBUG = false;
@@ -3128,12 +3139,115 @@ function generarLinkCompartir() {
   return window.location.origin + window.location.pathname + "#" + compressed;
 }
 
-function compartir() {
-  const url = generarLinkCompartir();
+/* Clave de caché estable para el link largo (hash simple, no cripto --
+   solo para no repetir pedidos al acortador cuando el usuario abre
+   "Compartir" varias veces sin cambiar el proyecto). v.gd/is.gd son
+   gratis y se rate-limitan rápido con pedidos repetidos. */
+function claveCacheShort(longUrl) {
+  let hash = 0;
+  for (let i = 0; i < longUrl.length; i++) {
+    hash = (hash * 31 + longUrl.charCodeAt(i)) | 0;
+  }
+  return "share_short_" + hash;
+}
+
+/* El link de "Compartir" lleva todo el XML del proyecto comprimido en el
+   hash -- con proyectos grandes termina siendo enorme. Para acortarlo se
+   usan v.gd/is.gd (mismo proveedor, CORS abierto, sin API key): v.gd
+   primero porque acepta URLs más largas. En pruebas ambos fallan de
+   forma intermitente aunque la URL sea válida, así que se reintenta una
+   vez por proveedor antes de rendirse y mostrar el link completo. */
+async function acortarUrl(url, timeoutMs = 6000) {
+  const proveedores = [
+    "https://v.gd/create.php?format=json&url=",
+    "https://is.gd/create.php?format=json&url=",
+  ];
+
+  for (const base of proveedores) {
+    for (let intento = 0; intento < 3; intento++) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), timeoutMs);
+      try {
+        const resp = await fetch(base + encodeURIComponent(url), {
+          signal: controller.signal,
+        });
+        const data = await resp.json();
+        if (data?.shorturl) return data.shorturl;
+      } catch (e) {
+        // Intento fallido (red, timeout, o "database insert failed" del
+        // propio servicio) -- se reintenta o se pasa al otro proveedor.
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+  }
+  return null;
+}
+
+/* Dibuja el QR del link actual en #shareQr. Un QR tiene una capacidad
+   máxima (~2900 bytes en el nivel de corrección más permisivo) -- un
+   proyecto grande sin acortar puede superarla, así que se avisa en vez
+   de romper en lugar de generar el QR. */
+function renderShareQr(text) {
+  const container = document.getElementById("shareQr");
+  if (!container) return;
+  container.innerHTML = "";
+  if (typeof qrcode !== "function") return;
+  try {
+    const qr = qrcode(0, "L");
+    qr.addData(text);
+    qr.make();
+    container.innerHTML = qr.createImgTag(4, 8);
+  } catch (e) {
+    container.textContent =
+      "El proyecto es muy grande para generar un código QR.";
+  }
+}
+
+async function compartir() {
+  const longUrl = generarLinkCompartir();
   const modal = document.getElementById("shareModal");
   const input = document.getElementById("shareInput");
-  input.value = url;
+  const status = document.getElementById("shareStatus");
+  const qrContainer = document.getElementById("shareQr");
+
+  input.value = longUrl;
+  if (qrContainer) qrContainer.innerHTML = "";
   modal.style.display = "block";
+
+  const cacheKey = claveCacheShort(longUrl);
+  let shortUrl = null;
+  try {
+    shortUrl = localStorage.getItem(cacheKey);
+  } catch (e) {
+    /* localStorage no disponible (modo privado, etc.) -- se sigue sin caché */
+  }
+
+  if (shortUrl) {
+    if (status) status.textContent = "";
+  } else {
+    if (status) status.textContent = "Generando enlace corto…";
+    shortUrl = await acortarUrl(longUrl);
+    // El usuario pudo haber cerrado el modal (o vuelto a abrir "Compartir",
+    // regenerando todo) mientras se esperaba la respuesta del acortador.
+    if (modal.style.display !== "block") return;
+    if (shortUrl) {
+      try {
+        localStorage.setItem(cacheKey, shortUrl);
+      } catch (e) {
+        /* sin espacio/permiso para guardar -- no es crítico, solo se pierde el cache */
+      }
+    }
+  }
+
+  const finalUrl = shortUrl || longUrl;
+  input.value = finalUrl;
+  if (status) {
+    status.textContent = shortUrl
+      ? ""
+      : "No se pudo acortar el enlace — se muestra el enlace completo.";
+  }
+  renderShareQr(finalUrl);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
