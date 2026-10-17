@@ -3136,7 +3136,38 @@ function generarLinkCompartir() {
     Blockly.Xml.workspaceToDom(Code.workspace),
   );
   const compressed = LZString.compressToEncodedURIComponent(xmlText);
-  return window.location.origin + window.location.pathname + "#" + compressed;
+  const longUrl =
+    window.location.origin + window.location.pathname + "#" + compressed;
+  return { longUrl, compressed };
+}
+
+/* Backend propio (Cloudflare Worker + KV, ver worker/) -- guarda el
+   proyecto comprimido y devuelve un id corto, en vez de depender de un
+   acortador de terceros. Si no responde (sin desplegar, caído, CORS
+   bloqueado, etc.) se sigue de largo a v.gd/is.gd igual que antes. */
+const WORKER_ENDPOINT = "https://3dpitblockly-share.jp790276.workers.dev";
+
+async function crearLinkCorto(compressed, timeoutMs = 6000) {
+  if (!WORKER_ENDPOINT) return null;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const resp = await fetch(WORKER_ENDPOINT + "/share", {
+      method: "POST",
+      body: compressed,
+      signal: controller.signal,
+    });
+    if (!resp.ok) return null;
+    const data = await resp.json();
+    if (!data?.id) return null;
+    return (
+      window.location.origin + window.location.pathname + "#p=" + data.id
+    );
+  } catch (e) {
+    return null;
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 /* Clave de caché estable para el link largo (hash simple, no cripto --
@@ -3205,7 +3236,7 @@ function renderShareQr(text) {
 }
 
 async function compartir() {
-  const longUrl = generarLinkCompartir();
+  const { longUrl, compressed } = generarLinkCompartir();
   const modal = document.getElementById("shareModal");
   const input = document.getElementById("shareInput");
   const status = document.getElementById("shareStatus");
@@ -3213,7 +3244,7 @@ async function compartir() {
 
   input.value = longUrl;
   if (qrContainer) qrContainer.innerHTML = "";
-  modal.style.display = "block";
+  modal.style.display = "flex";
 
   const cacheKey = claveCacheShort(longUrl);
   let shortUrl = null;
@@ -3227,10 +3258,13 @@ async function compartir() {
     if (status) status.textContent = "";
   } else {
     if (status) status.textContent = "Generando enlace corto…";
-    shortUrl = await acortarUrl(longUrl);
+    // 1) Backend propio (links sin límite real de tamaño) -- 2) v.gd/is.gd
+    // como respaldo si el Worker no responde.
+    shortUrl =
+      (await crearLinkCorto(compressed)) || (await acortarUrl(longUrl));
     // El usuario pudo haber cerrado el modal (o vuelto a abrir "Compartir",
     // regenerando todo) mientras se esperaba la respuesta del acortador.
-    if (modal.style.display !== "block") return;
+    if (modal.style.display !== "flex") return;
     if (shortUrl) {
       try {
         localStorage.setItem(cacheKey, shortUrl);
@@ -3275,19 +3309,41 @@ document.addEventListener("DOMContentLoaded", () => {
   } catch (e) { console.error("[init] Share/Files setup:", e); }
 });
 
-function cargarDesdeURL() {
-  if (window.location.hash.length > 1) {
+function cargarXmlComprimido(compressed) {
+  const xmlText = LZString.decompressFromEncodedURIComponent(compressed);
+  Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(xmlText), Code.workspace);
+}
+
+async function cargarDesdeURL() {
+  const hash = window.location.hash;
+  if (hash.length <= 1) return;
+
+  // "#p=<id>" -- proyecto guardado en el backend propio (worker/), no
+  // autocontenido en la URL. Si no se puede resolver (id vencido/
+  // inválido, backend caído), se avisa en vez de fallar en silencio.
+  if (hash.startsWith("#p=")) {
+    const id = hash.substring(3);
+    if (!WORKER_ENDPOINT) return;
     try {
-      const xmlText = LZString.decompressFromEncodedURIComponent(
-        window.location.hash.substring(1),
-      );
-      Blockly.Xml.domToWorkspace(
-        Blockly.Xml.textToDom(xmlText),
-        Code.workspace,
-      );
+      const resp = await fetch(WORKER_ENDPOINT + "/share/" + id);
+      if (!resp.ok) throw new Error("HTTP " + resp.status);
+      const compressed = await resp.text();
+      cargarXmlComprimido(compressed);
     } catch (e) {
-      console.error("Error al cargar desde URL:", e);
+      console.error("Error al cargar link corto:", e);
+      showToast?.("No se pudo cargar el proyecto compartido (link vencido o inválido)", {
+        id: "shareLoadToast",
+        background: "#c0392b",
+      });
     }
+    return;
+  }
+
+  // Formato original: todo el proyecto comprimido va en el propio hash.
+  try {
+    cargarXmlComprimido(hash.substring(1));
+  } catch (e) {
+    console.error("Error al cargar desde URL:", e);
   }
 }
 

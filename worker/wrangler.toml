@@ -1,0 +1,7 @@
+name = "3dpitblockly-share"
+main = "src/index.js"
+compatibility_date = "2024-01-01"
+
+[[kv_namespaces]]
+binding = "PROJECTS"
+id = "aaa3f0957e9147ca850d2a96af598f3f"
