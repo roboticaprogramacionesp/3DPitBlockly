@@ -2,7 +2,7 @@
    Service Worker — 3DPit Blocks PWA
    ============================================================ */
 
-const CACHE_NAME = '3dpit-blocks-v37';
+const CACHE_NAME = '3dpit-blocks-v38';
 
 /* ── INSTALL ── */
 self.addEventListener('install', event => {
@@ -43,6 +43,7 @@ self.addEventListener('install', event => {
           './static/field_slider.js',
           './static/install-button.js',
           './static/lz-string.js',
+          './static/qrcode.js',
           /* JS ESP32 */
           './static/esp32-DlivVhIs.js',
           './static/esp32c3-f8fwIr7_.js',
