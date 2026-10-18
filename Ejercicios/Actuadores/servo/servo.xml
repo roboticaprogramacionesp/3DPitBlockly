@@ -15,7 +15,7 @@
             <field name="ANGLE">0</field>
             <next>
               <block type="time_sleep" id=":g;]oHT;XG4FUh1gJU=t">
-                <field name="VALUE">1</field>
+                <value name="VALUE"><block type="math_number" id="fixnum001xyz"><field name="NUM">1</field></block></value>
                 <field name="UNIT">S</field>
                 <next>
                   <block type="move_servo" id="3ZBie82c%^wDxJT})==+">
@@ -23,7 +23,7 @@
                     <field name="ANGLE">45</field>
                     <next>
                       <block type="time_sleep" id="c^Jjsr2gpDhnbAFXM$VI">
-                        <field name="VALUE">1</field>
+                        <value name="VALUE"><block type="math_number" id="fixnum002xyz"><field name="NUM">1</field></block></value>
                         <field name="UNIT">S</field>
                         <next>
                           <block type="move_servo" id="EL.co*i(UYsAd4X!_4)f">
@@ -31,7 +31,7 @@
                             <field name="ANGLE">90</field>
                             <next>
                               <block type="time_sleep" id="_vaW4hUpx[i-%pZMkAEs">
-                                <field name="VALUE">1</field>
+                                <value name="VALUE"><block type="math_number" id="fixnum003xyz"><field name="NUM">1</field></block></value>
                                 <field name="UNIT">S</field>
                                 <next>
                                   <block type="move_servo" id="PdC.1,$!IdsrFO.Fn`BK">
@@ -39,15 +39,15 @@
                                     <field name="ANGLE">135</field>
                                     <next>
                                       <block type="time_sleep" id="G`4CYB=E4.rDM+%J!$IY">
-                                        <field name="VALUE">1</field>
+                                        <value name="VALUE"><block type="math_number" id="fixnum004xyz"><field name="NUM">1</field></block></value>
                                         <field name="UNIT">S</field>
                                         <next>
                                           <block type="move_servo" id="Ew|6XV=8X1/Uf[v?b[ka">
                                             <field name="PIN">26</field>
-                                            <field name="ANGLE">135</field>
+                                            <field name="ANGLE">180</field>
                                             <next>
                                               <block type="time_sleep" id="KWB2Lub_[Kl2`fbv4PO7">
-                                                <field name="VALUE">1</field>
+                                                <value name="VALUE"><block type="math_number" id="fixnum005xyz"><field name="NUM">1</field></block></value>
                                                 <field name="UNIT">S</field>
                                               </block>
                                             </next>
