@@ -372,6 +372,52 @@ Blockly.JavaScript["convert_to_str"] = function (block) {
     ) || "''";
   return ["String(" + v + ")", Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
+
+/* ── Texto: repetir / formato / puntos (bloques genéricos, no de
+   hardware — a diferencia de los bloques de sensores, estos sí pueden
+   aparecer en un programa de Juego/Animación normal, así que necesitan
+   un generador JS real en vez del stub de _ensureJsGeneratorsForAllBlocks) ── */
+Blockly.JavaScript["text_repeat"] = function (block) {
+  const text =
+    Blockly.JavaScript.valueToCode(block, "TEXT", Blockly.JavaScript.ORDER_NONE) || "''";
+  const times =
+    Blockly.JavaScript.valueToCode(block, "TIMES", Blockly.JavaScript.ORDER_NONE) || "1";
+  /* String.prototype.repeat (ES2015) no existe en el intérprete sandbox
+     (acorn_interpreter.js) que corre el código en modo Juego/Animación —
+     mismo problema que Math.trunc (ver polyfill en initInterpreter). Se
+     evita del todo usando el truco clásico de ES5 Array(n+1).join(str). */
+  return [
+    "new Array(Math.max(0, " + times + ") + 1).join(" + text + ")",
+    Blockly.JavaScript.ORDER_FUNCTION_CALL,
+  ];
+};
+Blockly.JavaScript["text_format"] = function (block) {
+  const template = block.getFieldValue("TEMPLATE") || "valor: %s";
+  const markers = template.match(/%[sdfr]/g) || [];
+  const count = Math.max(markers.length, block.itemCount_ || 0);
+  const parts = [];
+  for (let i = 0; i < count; i++) {
+    parts.push(
+      Blockly.JavaScript.valueToCode(block, "VAL" + i, Blockly.JavaScript.ORDER_NONE) || "''",
+    );
+  }
+  const tmplEscaped = template
+    .replace(/\\/g, "\\\\")
+    .replace(/'/g, "\\'")
+    .replace(/\n/g, "\\n");
+  const code =
+    "(function(_v){var _i=0;return '" +
+    tmplEscaped +
+    "'.replace(/%[sdfr]/g, function(){return String(_v[_i++]);});})([" +
+    parts.join(", ") +
+    "])";
+  return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
+};
+Blockly.JavaScript["points_xy"] = function (block) {
+  const points = block.getFieldValue("POINTS") || "[]";
+  return [points, Blockly.JavaScript.ORDER_ATOMIC];
+};
+
 Blockly.JavaScript["is_int"] = function (block) {
   const v =
     Blockly.JavaScript.valueToCode(
@@ -466,8 +512,12 @@ Blockly.JavaScript["text_to_bytes"] = function (block) {
       "TEXT",
       Blockly.JavaScript.ORDER_NONE,
     ) || "''";
+  /* Array.from (ES2015) no existe en el intérprete sandbox que corre el
+     código en modo Juego/Animación (mismo problema que Math.trunc,
+     String.repeat, Array.includes y Object.values) — String.split('')
+     (ES5) hace lo mismo para texto normal (sin pares sustitutos). */
   return [
-    "Array.from(String(" + v + ")).map(function(c){return c.charCodeAt(0);})",
+    "String(" + v + ").split('').map(function(c){return c.charCodeAt(0);})",
     Blockly.JavaScript.ORDER_ATOMIC,
   ];
 };
@@ -656,7 +706,15 @@ Blockly.JavaScript["dict_values"] = function (block) {
       "DICT",
       Blockly.JavaScript.ORDER_MEMBER,
     ) || "{}";
-  return ["Object.values(" + d + ")", Blockly.JavaScript.ORDER_FUNCTION_CALL];
+  /* Object.values (ES2017) no existe en el intérprete sandbox que corre
+     el código en modo Juego/Animación (mismo problema que Math.trunc,
+     String.repeat y Array.includes) — se arma a mano con Object.keys
+     (ES5) + .map, que sí están soportados. */
+  const dRef = "(" + d + ")";
+  return [
+    "Object.keys(" + dRef + ").map(function(_k){return " + dRef + "[_k];})",
+    Blockly.JavaScript.ORDER_FUNCTION_CALL,
+  ];
 };
 Blockly.JavaScript["dict_length"] = function (block) {
   const d =
@@ -867,10 +925,14 @@ Blockly.JavaScript["in"] = function (block) {
   const b =
     Blockly.JavaScript.valueToCode(block, "B", Blockly.JavaScript.ORDER_NONE) ||
     "[]";
-  /* JS: usa .includes() para arrays/strings */
+  /* .includes() (ES2016) no existe en el intérprete sandbox que corre
+     el código en modo Juego/Animación (mismo problema que Math.trunc y
+     String.repeat, ver notas en initInterpreter y text_repeat) — se usa
+     .indexOf() !== -1 en su lugar, funciona igual para arrays y strings
+     y es ES5 puro. */
   return [
-    "(" + b + ").includes(" + a + ")",
-    Blockly.JavaScript.ORDER_FUNCTION_CALL,
+    "(" + b + ").indexOf(" + a + ") !== -1",
+    Blockly.JavaScript.ORDER_EQUALITY,
   ];
 };
 Blockly.JavaScript["is"] = function (block) {
@@ -2827,11 +2889,18 @@ function _gameLoop() {
    y nunca se implementó para el modo Juego/Animación. En vez de mantener a
    mano un stub por cada bloque de hardware (y acordarnos de agregarlo cada
    vez que sumamos uno nuevo), se rellenan aquí, justo antes de generar,
-   los que falten con un generador vacío — no reemplaza ninguno real. */
+   los que falten con un generador vacío — no reemplaza ninguno real.
+   IMPORTANTE: un bloque con conexión de salida (output, ej. un sensor que
+   "devuelve" un valor) no puede rellenarse con un generador que devuelve
+   "" — Blockly exige una tupla [codigo, orden] para esos bloques, y si no
+   la recibe tira "Expecting tuple from value block: <tipo>" y rompe TODA
+   la generación igual. Por eso se distingue aquí: statement -> "", value -> 0. */
 function _ensureJsGeneratorsForAllBlocks(workspace) {
   workspace.getAllBlocks(false).forEach(function (block) {
     if (typeof Blockly.JavaScript[block.type] !== "function") {
-      Blockly.JavaScript[block.type] = function () { return ""; };
+      Blockly.JavaScript[block.type] = block.outputConnection
+        ? function () { return ["0", Blockly.JavaScript.ORDER_ATOMIC]; }
+        : function () { return ""; };
     }
   });
 }

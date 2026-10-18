@@ -810,7 +810,7 @@
       steps: [
         {
           titulo: '¿Qué aprenderemos?',
-          desc: 'Un juego de <b>4 opciones</b>: aparece un rectángulo con base y altura al azar, y 4 posibles áreas repartidas en un tablero de 2×2. Solo una es correcta, y <b>cambia de casilla en cada ronda</b> -- tienes que calcular, no memorizar en qué esquina está. Usarás tu propia <b>función</b> para no repetir bloques.',
+          desc: 'Un juego de <b>4 opciones</b>: aparece un rectángulo con base y altura al azar, y 4 posibles áreas repartidas en un tablero de 2×2. Solo una es correcta, y <b>cambia de casilla en cada ronda</b> -- tienes que calcular, no memorizar en qué esquina está. Cada clic te avisa si acertaste o no (y te muestra la respuesta correcta si fallaste) antes de pasar a la siguiente pregunta. Usarás tu propia <b>función</b> para no repetir bloques.',
           highlightCat: null, bloque: null
         },
         {
@@ -1309,8 +1309,8 @@
           highlightCat: 'Matemáticas', expandCat: null, bloque: 'math_number', bloqueLabel: 'Número'
         },
         {
-          titulo: 'Si tocaste la casilla correcta',
-          desc: 'Ve a <b>Lógica</b> y arrastra otro bloque <em>Si … hacer</em>, dentro del mismo <b>hacer</b> del clic.',
+          titulo: 'Si tocaste la casilla correcta (o no)',
+          desc: 'Ve a <b>Lógica</b> y arrastra otro bloque <em>Si … hacer</em>, dentro del mismo <b>hacer</b> del clic. Hacé clic en el <b>⚙️</b> (engranaje) del bloque y arrastrale un <b>"si no"</b> (else) adentro -- lo vamos a necesitar para avisar también cuando la respuesta sea incorrecta, no solo cuando aciertes.',
           highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer'
         },
         {
@@ -1330,7 +1330,7 @@
         },
         {
           titulo: 'Suma un punto',
-          desc: 'Ve a <b>Variables</b> y arrastra otro bloque <em>Establecer puntos a</em>, dentro del <b>hacer</b> más interno. <b>Revisa el desplegable:</b> como acabas de usar zonaClic/zonaCorrecta, Blockly puede dejarlo apuntando a esa variable en vez de a <b>puntos</b> -- si no dice "puntos", cámbialo con el menú del bloque.',
+          desc: 'Ve a <b>Variables</b> y arrastra otro bloque <em>Establecer puntos a</em>, dentro del <b>hacer</b> más interno (la rama de "acertaste"). <b>Revisa el desplegable:</b> como acabas de usar zonaClic/zonaCorrecta, Blockly puede dejarlo apuntando a esa variable en vez de a <b>puntos</b> -- si no dice "puntos", cámbialo con el menú del bloque.',
           highlightCat: 'Variables', expandCat: null, bloque: { tipo: 'variables_set', valor: 'puntos' }, bloqueLabel: 'Establecer puntos'
         },
         {
@@ -1349,8 +1349,48 @@
           highlightCat: 'Matemáticas', expandCat: null, bloque: 'math_number', bloqueLabel: 'Número'
         },
         {
+          titulo: 'Avisa que acertaste',
+          desc: 'Todavía dentro de la rama de "acertaste", ve a <b>Inicio</b> y arrastra <em>rectángulo sólido</em>: X=<b>0</b>, Y=<b>0</b>, ancho=<b>480</b>, alto=<b>360</b>, color verde (<b>#1b5e20</b>) -- tapa todo el tablero con una pantalla de aviso.',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'game_draw_rect', bloqueLabel: 'rectángulo sólido'
+        },
+        {
+          titulo: 'Muestra "¡Correcto!"',
+          desc: 'Debajo, arrastra <em>Escribir texto en pantalla</em>. Escribe "¡Correcto! +1" en X=<b>140</b>, Y=<b>170</b>, color blanco, tamaño <b>28</b>.',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'game_show_text', bloqueLabel: 'Escribir texto en pantalla'
+        },
+        {
+          titulo: 'Espera un momento',
+          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>esperar … segundos</em>. Dejalo en <b>0.7</b> -- así te da tiempo de leer el aviso antes de pasar a la siguiente pregunta.',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'game_wait', bloqueLabel: 'esperar … segundos'
+        },
+        {
           titulo: 'Prepara la siguiente pregunta',
-          desc: 'Ve a <b>Funciones</b> y arrastra otro bloque <em>nueva_pregunta</em>, después de sumar el punto: nuevo rectángulo y las 4 casillas se reparten de nuevo, en otro orden.',
+          desc: 'Ve a <b>Funciones</b> y arrastra otro bloque <em>nueva_pregunta</em>, como último bloque de la rama de "acertaste": nuevo rectángulo y las 4 casillas se reparten de nuevo, en otro orden.',
+          highlightCat: 'Funciones', expandCat: null, bloque: 'procedures_callnoreturn', bloqueLabel: 'nueva_pregunta'
+        },
+        {
+          titulo: 'Ahora la rama "si no" (fallaste)',
+          desc: 'Bajá hasta la sección <b>"si no"</b> del mismo bloque "Si" (la que agregaste con el engranaje). Todo lo que sigue va ahí dentro, y se ejecuta cuando la respuesta fue incorrecta.',
+          highlightCat: null, bloque: null
+        },
+        {
+          titulo: 'Avisa que fallaste',
+          desc: 'Dentro del "si no", ve a <b>Inicio</b> y arrastra <em>rectángulo sólido</em>: X=<b>0</b>, Y=<b>0</b>, ancho=<b>480</b>, alto=<b>360</b>, color rojo (<b>#7f1d1d</b>).',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'game_draw_rect', bloqueLabel: 'rectángulo sólido'
+        },
+        {
+          titulo: 'Muestra la respuesta correcta',
+          desc: 'Debajo, arrastra <em>Escribir texto en pantalla</em>. En el hueco de texto, ve a <b>Textos</b> y arrastra <em>unir</em> (join): primer hueco el texto "✗ Era: ", segundo hueco <em>obtener area</em> (<b>Variables</b>) -- así ves cuál era la respuesta real. Ubícalo en X=<b>100</b>, Y=<b>170</b>, color blanco, tamaño <b>26</b>.',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'game_show_text', bloqueLabel: 'Escribir texto en pantalla'
+        },
+        {
+          titulo: 'Espera un momento (si fallaste)',
+          desc: 'Ve a <b>Inicio</b> y arrastra otro bloque <em>esperar … segundos</em>. Dejalo en <b>1</b> -- un poco más que al acertar, para que te dé tiempo de leer cuál era la respuesta correcta.',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'game_wait', bloqueLabel: 'esperar … segundos'
+        },
+        {
+          titulo: 'Prepara la siguiente pregunta (si fallaste)',
+          desc: 'Ve a <b>Funciones</b> y arrastra otro bloque <em>nueva_pregunta</em>, como último bloque del "si no": acertando o fallando, siempre pasás a la próxima pregunta.',
           highlightCat: 'Funciones', expandCat: null, bloque: 'procedures_callnoreturn', bloqueLabel: 'nueva_pregunta'
         },
         {
@@ -1365,7 +1405,7 @@
         },
         {
           titulo: 'Juega y calcula',
-          desc: 'Ejecuta el programa y haz clic en la casilla con el área correcta. Fíjate que la respuesta correcta cambia de esquina en cada ronda -- ¡hay que calcular cada vez!',
+          desc: 'Ejecuta el programa y haz clic en la casilla con el área correcta. La pantalla se pone verde si acertaste o roja si fallaste (mostrando cuál era la respuesta), y enseguida aparece una pregunta nueva en otra esquina -- ¡hay que calcular cada vez!',
           highlightElement: '#btnGameRun'
         }
       ]
@@ -1378,7 +1418,7 @@
       steps: [
         {
           titulo: '¿Qué aprenderemos?',
-          desc: 'La versión de <b>perímetros</b> del mismo juego de 4 opciones: aparece un rectángulo con base y altura al azar, y 4 posibles perímetros repartidos en un tablero de 2×2. Solo uno es correcto, y <b>cambia de casilla en cada ronda</b>. Volverás a usar una <b>función</b> para no repetir bloques.',
+          desc: 'La versión de <b>perímetros</b> del mismo juego de 4 opciones: aparece un rectángulo con base y altura al azar, y 4 posibles perímetros repartidos en un tablero de 2×2. Solo uno es correcto, y <b>cambia de casilla en cada ronda</b>. Cada clic te avisa si acertaste o no (y te muestra la respuesta correcta si fallaste) antes de pasar a la siguiente pregunta. Volverás a usar una <b>función</b> para no repetir bloques.',
           highlightCat: null, bloque: null
         },
         {
@@ -1887,8 +1927,8 @@
           highlightCat: 'Matemáticas', expandCat: null, bloque: 'math_number', bloqueLabel: 'Número'
         },
         {
-          titulo: 'Si tocaste la casilla correcta',
-          desc: 'Ve a <b>Lógica</b> y arrastra otro bloque <em>Si … hacer</em>, dentro del mismo <b>hacer</b> del clic.',
+          titulo: 'Si tocaste la casilla correcta (o no)',
+          desc: 'Ve a <b>Lógica</b> y arrastra otro bloque <em>Si … hacer</em>, dentro del mismo <b>hacer</b> del clic. Hacé clic en el <b>⚙️</b> (engranaje) del bloque y arrastrale un <b>"si no"</b> (else) adentro -- lo vamos a necesitar para avisar también cuando la respuesta sea incorrecta, no solo cuando aciertes.',
           highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer'
         },
         {
@@ -1908,7 +1948,7 @@
         },
         {
           titulo: 'Suma un punto',
-          desc: 'Ve a <b>Variables</b> y arrastra otro bloque <em>Establecer puntos a</em>, dentro del <b>hacer</b> más interno. <b>Revisa el desplegable:</b> como acabas de usar zonaClic/zonaCorrecta, Blockly puede dejarlo apuntando a esa variable en vez de a <b>puntos</b> -- si no dice "puntos", cámbialo con el menú del bloque.',
+          desc: 'Ve a <b>Variables</b> y arrastra otro bloque <em>Establecer puntos a</em>, dentro del <b>hacer</b> más interno (la rama de "acertaste"). <b>Revisa el desplegable:</b> como acabas de usar zonaClic/zonaCorrecta, Blockly puede dejarlo apuntando a esa variable en vez de a <b>puntos</b> -- si no dice "puntos", cámbialo con el menú del bloque.',
           highlightCat: 'Variables', expandCat: null, bloque: { tipo: 'variables_set', valor: 'puntos' }, bloqueLabel: 'Establecer puntos'
         },
         {
@@ -1927,8 +1967,48 @@
           highlightCat: 'Matemáticas', expandCat: null, bloque: 'math_number', bloqueLabel: 'Número'
         },
         {
+          titulo: 'Avisa que acertaste',
+          desc: 'Todavía dentro de la rama de "acertaste", ve a <b>Inicio</b> y arrastra <em>rectángulo sólido</em>: X=<b>0</b>, Y=<b>0</b>, ancho=<b>480</b>, alto=<b>360</b>, color verde (<b>#1b5e20</b>) -- tapa todo el tablero con una pantalla de aviso.',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'game_draw_rect', bloqueLabel: 'rectángulo sólido'
+        },
+        {
+          titulo: 'Muestra "¡Correcto!"',
+          desc: 'Debajo, arrastra <em>Escribir texto en pantalla</em>. Escribe "¡Correcto! +1" en X=<b>140</b>, Y=<b>170</b>, color blanco, tamaño <b>28</b>.',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'game_show_text', bloqueLabel: 'Escribir texto en pantalla'
+        },
+        {
+          titulo: 'Espera un momento',
+          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>esperar … segundos</em>. Dejalo en <b>0.7</b> -- así te da tiempo de leer el aviso antes de pasar a la siguiente pregunta.',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'game_wait', bloqueLabel: 'esperar … segundos'
+        },
+        {
           titulo: 'Prepara la siguiente pregunta',
-          desc: 'Ve a <b>Funciones</b> y arrastra otro bloque <em>nueva_pregunta</em>, después de sumar el punto: nuevo rectángulo y las 4 casillas se reparten de nuevo, en otro orden.',
+          desc: 'Ve a <b>Funciones</b> y arrastra otro bloque <em>nueva_pregunta</em>, como último bloque de la rama de "acertaste": nuevo rectángulo y las 4 casillas se reparten de nuevo, en otro orden.',
+          highlightCat: 'Funciones', expandCat: null, bloque: 'procedures_callnoreturn', bloqueLabel: 'nueva_pregunta'
+        },
+        {
+          titulo: 'Ahora la rama "si no" (fallaste)',
+          desc: 'Bajá hasta la sección <b>"si no"</b> del mismo bloque "Si" (la que agregaste con el engranaje). Todo lo que sigue va ahí dentro, y se ejecuta cuando la respuesta fue incorrecta.',
+          highlightCat: null, bloque: null
+        },
+        {
+          titulo: 'Avisa que fallaste',
+          desc: 'Dentro del "si no", ve a <b>Inicio</b> y arrastra <em>rectángulo sólido</em>: X=<b>0</b>, Y=<b>0</b>, ancho=<b>480</b>, alto=<b>360</b>, color rojo (<b>#7f1d1d</b>).',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'game_draw_rect', bloqueLabel: 'rectángulo sólido'
+        },
+        {
+          titulo: 'Muestra la respuesta correcta',
+          desc: 'Debajo, arrastra <em>Escribir texto en pantalla</em>. En el hueco de texto, ve a <b>Textos</b> y arrastra <em>unir</em> (join): primer hueco el texto "✗ Era: ", segundo hueco <em>obtener perimetro</em> (<b>Variables</b>) -- así ves cuál era la respuesta real. Ubícalo en X=<b>100</b>, Y=<b>170</b>, color blanco, tamaño <b>26</b>.',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'game_show_text', bloqueLabel: 'Escribir texto en pantalla'
+        },
+        {
+          titulo: 'Espera un momento (si fallaste)',
+          desc: 'Ve a <b>Inicio</b> y arrastra otro bloque <em>esperar … segundos</em>. Dejalo en <b>1</b> -- un poco más que al acertar, para que te dé tiempo de leer cuál era la respuesta correcta.',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'game_wait', bloqueLabel: 'esperar … segundos'
+        },
+        {
+          titulo: 'Prepara la siguiente pregunta (si fallaste)',
+          desc: 'Ve a <b>Funciones</b> y arrastra otro bloque <em>nueva_pregunta</em>, como último bloque del "si no": acertando o fallando, siempre pasás a la próxima pregunta.',
           highlightCat: 'Funciones', expandCat: null, bloque: 'procedures_callnoreturn', bloqueLabel: 'nueva_pregunta'
         },
         {
@@ -1943,7 +2023,7 @@
         },
         {
           titulo: 'Juega y calcula',
-          desc: 'Ejecuta el programa y haz clic en la casilla con el perímetro correcto. Fíjate que la respuesta correcta cambia de esquina en cada ronda -- ¡hay que calcular cada vez!',
+          desc: 'Ejecuta el programa y haz clic en la casilla con el perímetro correcto. La pantalla se pone verde si acertaste o roja si fallaste (mostrando cuál era la respuesta), y enseguida aparece una pregunta nueva en otra esquina -- ¡hay que calcular cada vez!',
           highlightElement: '#btnGameRun'
         }
       ]
