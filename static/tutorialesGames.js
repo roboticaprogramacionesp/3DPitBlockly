@@ -129,269 +129,398 @@
     },
 
     juego_calculadora_basica: {
-      title: 'Calculadora Mágica',
-      icon: '🧮',
-      diagram: '',
+      title: 'Calculadora con Botones', icon: '🧮', diagram: '',
       steps: [
         {
           titulo: '¿Qué aprenderemos?',
-          desc: 'Vamos a convertir la calculadora en un <b>juego de preguntas</b>: el programa inventa una suma al azar y te muestra dos posibles respuestas. Haz clic en la correcta para ganar un punto -- y aparece una suma nueva, sin parar. También aprenderás a crear tu propia <b>función</b> para no repetir bloques.',
+          desc: 'Vamos a construir una <b>calculadora con botones en pantalla</b>: una cuadrícula de 16 botones grandes (dígitos, +, -, X, /, = y C) que respondés haciendo clic con el mouse, igual que una calculadora de verdad. Son muchos pasos porque hay 16 botones — pero el patrón se repite una y otra vez, así que después de los primeros te vas a dar cuenta solo.',
           highlightCat: null, bloque: null
         },
+
+        /* ───────────── Variables ───────────── */
         {
-          titulo: 'Abre la categoría Inicio',
-          desc: 'Haz clic en <b>Inicio</b> en el panel de bloques para ver los bloques de pantalla y dibujo.',
-          highlightCat: 'Inicio', expandCat: null, bloque: null
+          titulo: 'Crea la variable numero',
+          desc: 'Ve a <b>Variables</b> y crea una variable llamada <b>numero</b>: guarda el último dígito que se apretó.',
+          highlightCat: 'Variables', highlightFlyoutButton: 'create_variable', variable: 'numero', expandCat: null, bloque: null
         },
         {
-          titulo: 'Arrastra: Iniciar juego',
-          desc: 'Arrastra el bloque <em>Iniciar juego</em> al área de trabajo. Configura ancho <b>480</b> y alto <b>360</b>.',
-          highlightCat: 'Inicio', expandCat: null, bloque: 'game_start', bloqueLabel: 'Iniciar juego'
+          titulo: 'Crea la variable posicionX',
+          desc: 'Ve a <b>Variables</b> y crea <b>posicionX</b>: controla en qué lugar de la pantalla se dibuja el próximo dígito que escribas.',
+          highlightCat: 'Variables', highlightFlyoutButton: 'create_variable', variable: 'posicionX', expandCat: null, bloque: null
+        },
+        {
+          titulo: 'Crea la variable operacion',
+          desc: 'Ve a <b>Variables</b> y crea <b>operacion</b>: guarda qué botón de +,-,X,/ se apretó por última vez.',
+          highlightCat: 'Variables', highlightFlyoutButton: 'create_variable', variable: 'operacion', expandCat: null, bloque: null
         },
         {
           titulo: 'Crea la variable numero1',
-          desc: 'Ve a <b>Variables</b> y crea una variable llamada <b>numero1</b>. La usaremos dentro de una función que inventa preguntas nuevas.',
+          desc: 'Ve a <b>Variables</b> y crea <b>numero1</b>: el primer número de la cuenta (como texto, para poder ir pegando dígitos).',
           highlightCat: 'Variables', highlightFlyoutButton: 'create_variable', variable: 'numero1', expandCat: null, bloque: null
         },
         {
           titulo: 'Crea la variable numero2',
-          desc: 'Ve a <b>Variables</b> y crea una variable llamada <b>numero2</b>.',
+          desc: 'Ve a <b>Variables</b> y crea <b>numero2</b>: el segundo número de la cuenta.',
           highlightCat: 'Variables', highlightFlyoutButton: 'create_variable', variable: 'numero2', expandCat: null, bloque: null
         },
         {
-          titulo: 'Crea la variable correcta',
-          desc: 'Ve a <b>Variables</b> y crea una variable llamada <b>correcta</b>: guardará la suma real de numero1 + numero2.',
-          highlightCat: 'Variables', highlightFlyoutButton: 'create_variable', variable: 'correcta', expandCat: null, bloque: null
+          titulo: 'Crea la variable indice_num',
+          desc: 'Ve a <b>Variables</b> y crea <b>indice_num</b>: vale <b>0</b> mientras escribís el primer número, y <b>1</b> mientras escribís el segundo.',
+          highlightCat: 'Variables', highlightFlyoutButton: 'create_variable', variable: 'indice_num', expandCat: null, bloque: null
         },
         {
-          titulo: 'Crea la variable incorrecta',
-          desc: 'Ve a <b>Variables</b> y crea una variable llamada <b>incorrecta</b>: guardará una respuesta falsa, parecida a la correcta.',
-          highlightCat: 'Variables', highlightFlyoutButton: 'create_variable', variable: 'incorrecta', expandCat: null, bloque: null
+          titulo: 'Crea la variable guardar_resultado',
+          desc: 'Ve a <b>Variables</b> y crea <b>guardar_resultado</b>: ahí queda el resultado cuando apretás "=".',
+          highlightCat: 'Variables', highlightFlyoutButton: 'create_variable', variable: 'guardar_resultado', expandCat: null, bloque: null
         },
         {
-          titulo: 'Crea la variable puntos',
-          desc: 'Ve a <b>Variables</b> y crea una variable llamada <b>puntos</b>.',
-          highlightCat: 'Variables', highlightFlyoutButton: 'create_variable', variable: 'puntos', expandCat: null, bloque: null
+          titulo: 'Crea la variable digito_presionado',
+          desc: 'Ve a <b>Variables</b> y crea <b>digito_presionado</b>: queda en <b>verdadero</b> justo el instante en que se apretó un dígito (0-9), para saber cuándo agregarlo al número.',
+          highlightCat: 'Variables', highlightFlyoutButton: 'create_variable', variable: 'digito_presionado', expandCat: null, bloque: null
         },
+
+        /* ───────────── Inicializar ───────────── */
         {
-          titulo: 'Establece puntos',
-          desc: 'Ve a <b>Variables</b> y arrastra el bloque <em>Establecer puntos a</em>, suelto en el área de trabajo (no dentro de nada todavía).',
+          titulo: 'Inicializa numero en 0',
+          desc: 'Ve a <b>Variables</b> y arrastra <em>Establecer numero a</em> al área de trabajo. Conectale un bloque <em>Número</em> (de <b>Matemáticas</b>) con valor <b>0</b>.',
           highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
         },
         {
-          titulo: 'Escribe 0',
-          desc: 'Ve a <b>Matemáticas</b> y arrastra un bloque <em>Número</em> con valor <b>0</b>. Conéctalo al bloque anterior: empiezas con 0 puntos.',
-          highlightCat: 'Matemáticas', expandCat: null, bloque: 'math_number', bloqueLabel: 'Número'
-        },
-        {
-          titulo: 'Crea tu función: nueva_pregunta',
-          desc: 'Ve a <b>Funciones</b> y arrastra el bloque <em>para hacer algo</em>. Haz clic en su nombre y escribe <b>nueva_pregunta</b>. Todo lo que pongas dentro se ejecutará cada vez que "llames" a esta función, sin repetir los bloques.',
-          highlightCat: 'Funciones', expandCat: null, bloque: 'procedures_defnoreturn', bloqueLabel: 'para … hacer'
-        },
-        {
-          titulo: 'Dentro de la función: elige numero1',
-          desc: 'Ve a <b>Variables</b> y arrastra <em>Establecer numero1 a</em> <b>dentro</b> de tu función <b>nueva_pregunta</b>.',
+          titulo: 'Inicializa posicionX en 15',
+          desc: 'Arrastra <em>Establecer posicionX a</em>, debajo del anterior. Conectale un <em>Número</em> con valor <b>15</b> — ahí empieza a escribirse el primer dígito (el margen izquierdo de la pantalla).',
           highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
         },
         {
-          titulo: 'Obtén un número al azar (numero1)',
-          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>Número aleatorio</em>. Conéctalo al bloque anterior, entre <b>1</b> y <b>10</b>.',
-          highlightCat: 'Inicio', expandCat: null, bloque: 'game_random_int', bloqueLabel: 'Número aleatorio'
-        },
-        {
-          titulo: 'Dentro de la función: elige numero2',
-          desc: 'Ve a <b>Variables</b> y arrastra <em>Establecer numero2 a</em>, después del bloque anterior, dentro de la función.',
+          titulo: 'Inicializa operacion vacía',
+          desc: 'Arrastra <em>Establecer operacion a</em>. Ve a <b>Textos</b> y conectale un bloque de <em>texto</em> vacío (sin escribir nada adentro).',
           highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
         },
         {
-          titulo: 'Obtén un número al azar (numero2)',
-          desc: 'Ve a <b>Inicio</b> y arrastra otro bloque <em>Número aleatorio</em>, entre <b>1</b> y <b>10</b>.',
-          highlightCat: 'Inicio', expandCat: null, bloque: 'game_random_int', bloqueLabel: 'Número aleatorio'
-        },
-        {
-          titulo: 'Dentro de la función: calcula la respuesta correcta',
-          desc: 'Ve a <b>Variables</b> y arrastra <em>Establecer correcta a</em>, dentro de la función.',
+          titulo: 'Inicializa numero1 vacío',
+          desc: 'Arrastra <em>Establecer numero1 a</em> y conectale otro bloque de <em>texto</em> vacío.',
           highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
         },
         {
-          titulo: 'Suma los dos números',
-          desc: 'Ve a <b>Matemáticas</b> y arrastra el bloque <em>+ (suma)</em>. Conéctalo al bloque anterior.',
-          highlightCat: 'Matemáticas', expandCat: null, bloque: 'math_arithmetic', bloqueLabel: '+ (suma)'
-        },
-        {
-          titulo: 'Obtén numero1',
-          desc: 'Ve a <b>Variables</b> y arrastra el bloque <em>obtener numero1</em>. Colócalo en el primer hueco de la suma.',
-          highlightCat: 'Variables', expandCat: null, bloque: { tipo: 'variables_get', valor: 'numero1' }, bloqueLabel: 'obtener numero1'
-        },
-        {
-          titulo: 'Obtén numero2',
-          desc: 'Ve a <b>Variables</b> y arrastra el bloque <em>obtener numero2</em>. Colócalo en el segundo hueco de la suma.',
-          highlightCat: 'Variables', expandCat: null, bloque: { tipo: 'variables_get', valor: 'numero2' }, bloqueLabel: 'obtener numero2'
-        },
-        {
-          titulo: 'Dentro de la función: inventa una respuesta falsa',
-          desc: 'Ve a <b>Variables</b> y arrastra <em>Establecer incorrecta a</em>, como último bloque de la función.',
+          titulo: 'Inicializa numero2 vacío',
+          desc: 'Arrastra <em>Establecer numero2 a</em> y conectale otro bloque de <em>texto</em> vacío.',
           highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
         },
         {
-          titulo: 'Súmale un error a la respuesta correcta',
-          desc: 'Ve a <b>Matemáticas</b> y arrastra otro bloque <em>+ (suma)</em>.',
-          highlightCat: 'Matemáticas', expandCat: null, bloque: 'math_arithmetic', bloqueLabel: '+ (suma)'
+          titulo: 'Inicializa indice_num en 0',
+          desc: 'Arrastra <em>Establecer indice_num a</em> y conectale un <em>Número</em> con valor <b>0</b>.',
+          highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
         },
         {
-          titulo: 'Obtén correcta',
-          desc: 'Ve a <b>Variables</b> y arrastra el bloque <em>obtener correcta</em>. Colócalo en el primer hueco.',
-          highlightCat: 'Variables', expandCat: null, bloque: { tipo: 'variables_get', valor: 'correcta' }, bloqueLabel: 'obtener correcta'
+          titulo: 'Inicializa digito_presionado en falso',
+          desc: 'Arrastra <em>Establecer digito_presionado a</em>. Ve a <b>Lógica</b> y conectale el bloque <em>verdadero/falso</em>, dejalo en <b>falso</b>.',
+          highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
+        },
+
+        /* ───────────── Pantalla ───────────── */
+        {
+          titulo: 'Abre la categoría Inicio',
+          desc: 'Haz clic en <b>Inicio</b> en el panel de bloques: ahí están los bloques de pantalla, dibujo y mouse que vamos a usar todo el tutorial.',
+          highlightCat: 'Inicio', expandCat: null, bloque: null
         },
         {
-          titulo: 'Obtén un número al azar para el error',
-          desc: 'Ve a <b>Inicio</b> y arrastra otro bloque <em>Número aleatorio</em>, entre <b>1</b> y <b>5</b>. Así la respuesta falsa nunca es igual a la correcta.',
-          highlightCat: 'Inicio', expandCat: null, bloque: 'game_random_int', bloqueLabel: 'Número aleatorio'
+          titulo: 'Arrastra: Iniciar juego',
+          desc: 'Arrastra el bloque <em>Iniciar juego</em>, como último bloque de todas las inicializaciones. Configura ancho <b>280</b> y alto <b>410</b> — un tamaño cómodo para botones grandes.',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'game_start', bloqueLabel: 'Iniciar juego'
+        },
+
+        /* ───────────── Dibujar los 16 botones ───────────── */
+        {
+          titulo: 'Dibuja el botón "7" (el fondo)',
+          desc: 'Arrastra el bloque <em>rectángulo sólido</em>, después de "Iniciar juego". Ponlo en X=<b>15</b>, Y=<b>140</b>, ancho=<b>55</b>, alto=<b>55</b>, color gris (<b>#999999</b>). Cada botón de la calculadora es un cuadrado grande de 55×55 así.',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'game_draw_rect', bloqueLabel: 'rectángulo sólido'
         },
         {
-          titulo: 'Llama a nueva_pregunta (primera ronda)',
-          desc: 'Ve a <b>Funciones</b> y arrastra el bloque <em>nueva_pregunta</em> que ya apareció ahí. Colócalo <b>fuera</b> de la función, después de "Iniciar juego", para preparar la primera pregunta.',
-          highlightCat: 'Funciones', expandCat: null, bloque: 'procedures_callnoreturn', bloqueLabel: 'nueva_pregunta'
+          titulo: 'Dibuja el botón "7" (el número)',
+          desc: 'Arrastra <em>Escribir texto en pantalla</em>, justo debajo. Escribe <b>"7"</b>, en X=<b>35</b>, Y=<b>174</b> (el centro del cuadrado), color blanco, tamaño <b>24</b>. Esta pareja de 2 bloques (fondo + número) se repite para los otros 15 botones — de acá en más vas a armar lo mismo, cambiando posición y texto.',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'game_show_text', bloqueLabel: 'Escribir texto en pantalla'
         },
+        { titulo: 'Botón "8"', desc: 'Repetí el mismo par de bloques (rectángulo + texto): X=<b>80</b> Y=<b>140</b> para el fondo, texto <b>"8"</b> en X=<b>100</b> Y=<b>174</b>.', highlightCat: 'Inicio', expandCat: null, bloque: 'game_draw_rect', bloqueLabel: 'rectángulo sólido' },
+        { titulo: 'Botón "9"', desc: 'Fondo en X=<b>145</b> Y=<b>140</b>; texto <b>"9"</b> en X=<b>165</b> Y=<b>174</b>.', highlightCat: 'Inicio', expandCat: null, bloque: 'game_draw_rect', bloqueLabel: 'rectángulo sólido' },
+        { titulo: 'Botón "/"', desc: 'Fondo en X=<b>210</b> Y=<b>140</b>; texto <b>"/"</b> en X=<b>230</b> Y=<b>174</b>.', highlightCat: 'Inicio', expandCat: null, bloque: 'game_draw_rect', bloqueLabel: 'rectángulo sólido' },
+        { titulo: 'Botón "4"', desc: 'Fondo en X=<b>15</b> Y=<b>205</b>; texto <b>"4"</b> en X=<b>35</b> Y=<b>239</b>.', highlightCat: 'Inicio', expandCat: null, bloque: 'game_draw_rect', bloqueLabel: 'rectángulo sólido' },
+        { titulo: 'Botón "5"', desc: 'Fondo en X=<b>80</b> Y=<b>205</b>; texto <b>"5"</b> en X=<b>100</b> Y=<b>239</b>.', highlightCat: 'Inicio', expandCat: null, bloque: 'game_draw_rect', bloqueLabel: 'rectángulo sólido' },
+        { titulo: 'Botón "6"', desc: 'Fondo en X=<b>145</b> Y=<b>205</b>; texto <b>"6"</b> en X=<b>165</b> Y=<b>239</b>.', highlightCat: 'Inicio', expandCat: null, bloque: 'game_draw_rect', bloqueLabel: 'rectángulo sólido' },
+        { titulo: 'Botón "X" (multiplicar)', desc: 'Fondo en X=<b>210</b> Y=<b>205</b>; texto <b>"X"</b> mayúscula en X=<b>230</b> Y=<b>239</b>. <b>Importante:</b> tiene que ser mayúscula, lo vamos a comparar así más adelante.', highlightCat: 'Inicio', expandCat: null, bloque: 'game_draw_rect', bloqueLabel: 'rectángulo sólido' },
+        { titulo: 'Botón "1"', desc: 'Fondo en X=<b>15</b> Y=<b>270</b>; texto <b>"1"</b> en X=<b>35</b> Y=<b>304</b>.', highlightCat: 'Inicio', expandCat: null, bloque: 'game_draw_rect', bloqueLabel: 'rectángulo sólido' },
+        { titulo: 'Botón "2"', desc: 'Fondo en X=<b>80</b> Y=<b>270</b>; texto <b>"2"</b> en X=<b>100</b> Y=<b>304</b>.', highlightCat: 'Inicio', expandCat: null, bloque: 'game_draw_rect', bloqueLabel: 'rectángulo sólido' },
+        { titulo: 'Botón "3"', desc: 'Fondo en X=<b>145</b> Y=<b>270</b>; texto <b>"3"</b> en X=<b>165</b> Y=<b>304</b>.', highlightCat: 'Inicio', expandCat: null, bloque: 'game_draw_rect', bloqueLabel: 'rectángulo sólido' },
+        { titulo: 'Botón "-"', desc: 'Fondo en X=<b>210</b> Y=<b>270</b>; texto <b>"-"</b> en X=<b>230</b> Y=<b>304</b>.', highlightCat: 'Inicio', expandCat: null, bloque: 'game_draw_rect', bloqueLabel: 'rectángulo sólido' },
+        { titulo: 'Botón "C" (limpiar)', desc: 'Fondo en X=<b>15</b> Y=<b>335</b>; texto <b>"C"</b> en X=<b>35</b> Y=<b>369</b> — borra todo y empieza de nuevo.', highlightCat: 'Inicio', expandCat: null, bloque: 'game_draw_rect', bloqueLabel: 'rectángulo sólido' },
+        { titulo: 'Botón "0"', desc: 'Fondo en X=<b>80</b> Y=<b>335</b>; texto <b>"0"</b> en X=<b>100</b> Y=<b>369</b>.', highlightCat: 'Inicio', expandCat: null, bloque: 'game_draw_rect', bloqueLabel: 'rectángulo sólido' },
+        { titulo: 'Botón "="', desc: 'Fondo en X=<b>145</b> Y=<b>335</b>; texto <b>"="</b> en X=<b>165</b> Y=<b>369</b>.', highlightCat: 'Inicio', expandCat: null, bloque: 'game_draw_rect', bloqueLabel: 'rectángulo sólido' },
+        { titulo: 'Botón "+"', desc: 'Fondo en X=<b>210</b> Y=<b>335</b>; texto <b>"+"</b> en X=<b>230</b> Y=<b>369</b>. ¡Listo, los 16 botones ya están dibujados!', highlightCat: 'Inicio', expandCat: null, bloque: 'game_draw_rect', bloqueLabel: 'rectángulo sólido' },
+
+        /* ───────────── El ciclo y la detección de clic ───────────── */
         {
           titulo: 'Agrega el ciclo del juego',
-          desc: 'Ve a <b>Ciclos</b> y arrastra el bloque <em>Repetir mientras Verdadero</em>, después de llamar a <em>nueva_pregunta</em>.',
+          desc: 'Ve a <b>Ciclos</b> y arrastra <em>Repetir mientras Verdadero</em>, como último bloque, después de dibujar los botones. Todo lo que detecta clics va <b>dentro</b> de este ciclo.',
           highlightCat: 'Ciclos', expandCat: null, bloque: 'controls_whileUntil', bloqueLabel: 'Repetir mientras Verdadero'
         },
         {
-          titulo: 'Limpia la pantalla',
-          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>Limpiar pantalla</em> como primer bloque dentro del ciclo.',
-          highlightCat: 'Inicio', expandCat: null, bloque: 'game_clear', bloqueLabel: 'Limpiar pantalla'
-        },
-        {
-          titulo: 'Muestra el primer número',
-          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>Escribir texto en pantalla</em>. Ubícalo en X=<b>140</b>, Y=<b>100</b>.',
-          highlightCat: 'Inicio', expandCat: null, bloque: 'game_show_text', bloqueLabel: 'Escribir texto en pantalla'
-        },
-        {
-          titulo: 'Obtén numero1 para mostrarlo',
-          desc: 'Ve a <b>Variables</b> y arrastra <em>obtener numero1</em>. Colócalo en el hueco de texto, en lugar de "¡Hola!".',
-          highlightCat: 'Variables', expandCat: null, bloque: { tipo: 'variables_get', valor: 'numero1' }, bloqueLabel: 'obtener numero1'
-        },
-        {
-          titulo: 'Muestra el signo +',
-          desc: 'Ve a <b>Inicio</b> y arrastra otro bloque <em>Escribir texto en pantalla</em>. Escribe el texto "+" y ubícalo en X=<b>190</b>, Y=<b>100</b>.',
-          highlightCat: 'Inicio', expandCat: null, bloque: 'game_show_text', bloqueLabel: 'Escribir texto en pantalla'
-        },
-        {
-          titulo: 'Muestra el segundo número',
-          desc: 'Ve a <b>Inicio</b> y arrastra otro bloque <em>Escribir texto en pantalla</em>. Ubícalo en X=<b>220</b>, Y=<b>100</b>.',
-          highlightCat: 'Inicio', expandCat: null, bloque: 'game_show_text', bloqueLabel: 'Escribir texto en pantalla'
-        },
-        {
-          titulo: 'Obtén numero2 para mostrarlo',
-          desc: 'Ve a <b>Variables</b> y arrastra <em>obtener numero2</em>. Colócalo en el hueco de texto del bloque anterior.',
-          highlightCat: 'Variables', expandCat: null, bloque: { tipo: 'variables_get', valor: 'numero2' }, bloqueLabel: 'obtener numero2'
-        },
-        {
-          titulo: 'Muestra "= ?"',
-          desc: 'Ve a <b>Inicio</b> y arrastra otro bloque <em>Escribir texto en pantalla</em>. Escribe "= ?" y ubícalo en X=<b>260</b>, Y=<b>100</b>.',
-          highlightCat: 'Inicio', expandCat: null, bloque: 'game_show_text', bloqueLabel: 'Escribir texto en pantalla'
-        },
-        {
-          titulo: 'Muestra la opción izquierda',
-          desc: 'Ve a <b>Inicio</b> y arrastra otro bloque <em>Escribir texto en pantalla</em>. Ubícalo en X=<b>100</b>, Y=<b>250</b>: aquí siempre aparecerá la respuesta <b>correcta</b>.',
-          highlightCat: 'Inicio', expandCat: null, bloque: 'game_show_text', bloqueLabel: 'Escribir texto en pantalla'
-        },
-        {
-          titulo: 'Obtén correcta para mostrarla',
-          desc: 'Ve a <b>Variables</b> y arrastra <em>obtener correcta</em>. Colócalo en el hueco de texto.',
-          highlightCat: 'Variables', expandCat: null, bloque: { tipo: 'variables_get', valor: 'correcta' }, bloqueLabel: 'obtener correcta'
-        },
-        {
-          titulo: 'Muestra la opción derecha',
-          desc: 'Ve a <b>Inicio</b> y arrastra otro bloque <em>Escribir texto en pantalla</em>. Ubícalo en X=<b>340</b>, Y=<b>250</b>: aquí aparecerá la respuesta <b>incorrecta</b>.',
-          highlightCat: 'Inicio', expandCat: null, bloque: 'game_show_text', bloqueLabel: 'Escribir texto en pantalla'
-        },
-        {
-          titulo: 'Obtén incorrecta para mostrarla',
-          desc: 'Ve a <b>Variables</b> y arrastra <em>obtener incorrecta</em>. Colócalo en el hueco de texto.',
-          highlightCat: 'Variables', expandCat: null, bloque: { tipo: 'variables_get', valor: 'incorrecta' }, bloqueLabel: 'obtener incorrecta'
-        },
-        {
-          titulo: 'Muestra los puntos',
-          desc: 'Ve a <b>Inicio</b> y arrastra otro bloque <em>Escribir texto en pantalla</em>. Ubícalo en X=<b>20</b>, Y=<b>20</b>.',
-          highlightCat: 'Inicio', expandCat: null, bloque: 'game_show_text', bloqueLabel: 'Escribir texto en pantalla'
-        },
-        {
-          titulo: 'Obtén puntos para mostrarlos',
-          desc: 'Ve a <b>Variables</b> y arrastra <em>obtener puntos</em>. Colócalo en el hueco de texto.',
-          highlightCat: 'Variables', expandCat: null, bloque: { tipo: 'variables_get', valor: 'puntos' }, bloqueLabel: 'obtener puntos'
-        },
-        {
-          titulo: 'Si haces clic con el mouse',
-          desc: 'Ve a <b>Lógica</b> y arrastra el bloque <em>Si … hacer</em>, después de mostrar los puntos.',
+          titulo: 'Detecta si se hizo clic',
+          desc: 'Ve a <b>Lógica</b> y arrastra <em>Si ... hacer</em>, dentro del ciclo. En el hueco de la condición, ve a <b>Inicio</b> y arrastra el bloque <em>¿Se hizo clic?</em>.',
           highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer'
         },
         {
-          titulo: 'Detecta el clic izquierdo',
-          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>¿Clic izquierdo?</em> en la condición.',
-          highlightCat: 'Inicio', expandCat: null, bloque: 'mouse_left_clicked', bloqueLabel: '¿Clic izquierdo?'
+          titulo: 'Bloque: ¿Se hizo clic?',
+          desc: 'Ve a <b>Inicio</b> y arrastra <em>¿Se hizo clic?</em> dentro del hueco de la condición del "Si" que acabás de poner. Todo lo que sigue va <b>dentro</b> de este "Si".',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'mouse_clicked', bloqueLabel: '¿Se hizo clic?'
+        },
+
+        /* ───────────── Botón 7: el patrón completo de un dígito ───────────── */
+        {
+          titulo: '¿En qué botón hiciste clic? — el truco',
+          desc: 'Para saber qué botón tocaste, comparamos la posición X e Y del clic contra el cuadrado de cada botón (55×55). Vamos a armar eso para el botón <b>7</b> (X entre 15 y 70, Y entre 140 y 195) paso a paso — después para los demás botones es exactamente lo mismo, solo cambian los números.',
+          highlightCat: null, bloque: null
         },
         {
-          titulo: 'Si el clic fue del lado izquierdo',
-          desc: 'Ve a <b>Lógica</b> y arrastra otro bloque <em>Si … hacer</em>, dentro del <b>hacer</b> del bloque anterior: aquí comprobamos si acertaste.',
+          titulo: 'Si X está en el rango del botón 7',
+          desc: 'Dentro del "Si ¿Se hizo clic?", ve a <b>Lógica</b> y arrastra otro <em>Si ... hacer</em>. En su condición vas a armar "X es mayor o igual a 15 Y X es menor o igual a 70".',
           highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer'
         },
         {
-          titulo: 'Compara la posición del clic',
-          desc: 'Ve a <b>Lógica</b> y arrastra el bloque <em>&lt; (menor que)</em> en la condición.',
-          highlightCat: 'Lógica', expandCat: null, bloque: 'logic_compare', bloqueLabel: '< (menor que)'
+          titulo: 'Arma la condición "Y" (AND)',
+          desc: 'Ve a <b>Lógica</b> y arrastra el bloque <em>... y ...</em> (operación lógica) en el hueco de la condición.',
+          highlightCat: 'Lógica', expandCat: null, bloque: 'logic_operation', bloqueLabel: '… y …'
         },
         {
-          titulo: 'Obtén la posición X del mouse',
-          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>Posición X del mouse</em>. Colócalo en el primer hueco.',
+          titulo: 'X mayor o igual a 15',
+          desc: 'Ve a <b>Lógica</b> y arrastra un bloque de <em>comparación</em> (▼) en el primer hueco del "y". Cambialo a <b>≥</b>. A la izquierda va el bloque <em>Posición X del mouse</em> (de <b>Inicio</b>); a la derecha un <em>Número</em> con valor <b>15</b>.',
+          highlightCat: 'Lógica', expandCat: null, bloque: 'logic_compare', bloqueLabel: 'comparación'
+        },
+        {
+          titulo: 'X menor o igual a 70',
+          desc: 'Arrastra otro bloque de <em>comparación</em> en el segundo hueco del "y", cambialo a <b>≤</b>. Izquierda: <em>Posición X del mouse</em> otra vez. Derecha: <em>Número</em> con valor <b>70</b>.',
+          highlightCat: 'Lógica', expandCat: null, bloque: 'logic_compare', bloqueLabel: 'comparación'
+        },
+        {
+          titulo: 'Bloque: Posición X del mouse',
+          desc: 'Ve a <b>Inicio</b> y arrastra <em>Posición X del mouse</em> — lo necesitás dos veces (una en cada comparación que armaste).',
           highlightCat: 'Inicio', expandCat: null, bloque: 'mouse_x', bloqueLabel: 'Posición X del mouse'
         },
         {
-          titulo: 'Escribe 240 (la mitad de la pantalla)',
-          desc: 'Ve a <b>Matemáticas</b> y arrastra un bloque <em>Número</em> con valor <b>240</b>. Colócalo en el segundo hueco: si el clic fue antes de la mitad, elegiste la opción izquierda.',
-          highlightCat: 'Matemáticas', expandCat: null, bloque: 'math_number', bloqueLabel: 'Número'
+          titulo: 'Dentro: si Y está en el rango del botón 7',
+          desc: '<b>Dentro</b> del "Si" que acabás de armar (el de X), ve a <b>Lógica</b> y arrastra otro <em>Si ... hacer</em>. Armá la misma condición "y" pero con <em>Posición Y del mouse</em> (de <b>Inicio</b>), <b>≥ 140</b> y <b>≤ 195</b>.',
+          highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer'
         },
         {
-          titulo: 'Suma un punto',
-          desc: 'Ve a <b>Variables</b> y arrastra otro bloque <em>Establecer puntos a</em>, dentro del <b>hacer</b> más interno. <b>Revisa el desplegable:</b> como acabas de usar zonaClic/zonaCorrecta, Blockly puede dejarlo apuntando a esa variable en vez de a <b>puntos</b> -- si no dice "puntos", cámbialo con el menú del bloque.',
-          highlightCat: 'Variables', expandCat: null, bloque: { tipo: 'variables_set', valor: 'puntos' }, bloqueLabel: 'Establecer puntos'
+          titulo: 'Bloque: Posición Y del mouse',
+          desc: 'Ve a <b>Inicio</b> y arrastra <em>Posición Y del mouse</em> — también lo necesitás dos veces, en las dos comparaciones de Y.',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'mouse_y', bloqueLabel: 'Posición Y del mouse'
         },
         {
-          titulo: 'Suma 1 al puntaje actual',
-          desc: 'Ve a <b>Matemáticas</b> y arrastra el bloque <em>+ (suma)</em>.',
-          highlightCat: 'Matemáticas', expandCat: null, bloque: 'math_arithmetic', bloqueLabel: '+ (suma)'
+          titulo: 'Registra el dígito 7',
+          desc: '<b>Dentro</b> del "Si" de Y (el más adentro de todos), ve a <b>Variables</b> y arrastra <em>Establecer numero a</em>. Conectale un <em>Número</em> con valor <b>7</b>.',
+          highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
         },
         {
-          titulo: 'Obtén los puntos actuales',
-          desc: 'Ve a <b>Variables</b> y arrastra <em>obtener puntos</em>. Colócalo en el primer hueco.',
-          highlightCat: 'Variables', expandCat: null, bloque: { tipo: 'variables_get', valor: 'puntos' }, bloqueLabel: 'obtener puntos'
+          titulo: 'Marca que se apretó un dígito',
+          desc: 'Justo debajo, arrastra <em>Establecer digito_presionado a</em> y conectale el bloque <em>verdadero/falso</em> (de <b>Lógica</b>) en <b>verdadero</b>. ¡El botón 7 ya está completo! Los demás dígitos son exactamente esta misma estructura (dos "Si" anidados + estos dos "Establecer"), cambiando solo los 4 números del rango y el dígito.',
+          highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
+        },
+
+        /* ───────────── Resto de los dígitos (compacto) ───────────── */
+        { titulo: 'Botón 8: detectar y registrar', desc: 'Repetí toda la estructura del botón 7 (los dos "Si" anidados + los dos "Establecer"), como nuevo bloque <b>afuera</b> del "Si" del 7 (mismo nivel, no adentro). Rango: X 80-135, Y 140-195. <em>numero</em> = <b>8</b>, <em>digito_presionado</em> = verdadero.', highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer' },
+        { titulo: 'Botón 9: detectar y registrar', desc: 'Misma estructura. Rango: X 145-200, Y 140-195. <em>numero</em> = <b>9</b>.', highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer' },
+        { titulo: 'Botón 4: detectar y registrar', desc: 'Misma estructura. Rango: X 15-70, Y 205-260. <em>numero</em> = <b>4</b>.', highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer' },
+        { titulo: 'Botón 5: detectar y registrar', desc: 'Misma estructura. Rango: X 80-135, Y 205-260. <em>numero</em> = <b>5</b>.', highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer' },
+        { titulo: 'Botón 6: detectar y registrar', desc: 'Misma estructura. Rango: X 145-200, Y 205-260. <em>numero</em> = <b>6</b>.', highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer' },
+        { titulo: 'Botón 1: detectar y registrar', desc: 'Misma estructura. Rango: X 15-70, Y 270-325. <em>numero</em> = <b>1</b>.', highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer' },
+        { titulo: 'Botón 2: detectar y registrar', desc: 'Misma estructura. Rango: X 80-135, Y 270-325. <em>numero</em> = <b>2</b>.', highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer' },
+        { titulo: 'Botón 3: detectar y registrar', desc: 'Misma estructura. Rango: X 145-200, Y 270-325. <em>numero</em> = <b>3</b>.', highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer' },
+        { titulo: 'Botón 0: detectar y registrar', desc: 'Misma estructura. Rango: X 80-135, Y 335-390. <em>numero</em> = <b>0</b>. Con este ya tenés los 10 dígitos funcionando.', highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer' },
+
+        /* ───────────── Operadores ───────────── */
+        {
+          titulo: 'Botón "/": arma la detección',
+          desc: 'Afuera de los "Si" de los dígitos, armá la misma estructura de dos "Si" anidados para el botón <b>/</b>: rango X 210-265, Y 140-195 (volvé a los pasos del botón 7 si te perdiste con los bloques de comparación).',
+          highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer'
         },
         {
-          titulo: 'Escribe 1 para sumar',
-          desc: 'Ve a <b>Matemáticas</b> y arrastra un bloque <em>Número</em> con valor <b>1</b>.',
-          highlightCat: 'Matemáticas', expandCat: null, bloque: 'math_number', bloqueLabel: 'Número'
+          titulo: 'Guarda la operación "/"',
+          desc: 'Dentro del "Si" de Y, ve a <b>Variables</b> y arrastra <em>Establecer operacion a</em>. Conectale un bloque de <em>texto</em> (<b>Textos</b>) con el símbolo <b>"/"</b>.',
+          highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
         },
         {
-          titulo: 'Prepara la siguiente pregunta',
-          desc: 'Ve a <b>Funciones</b> y arrastra otro bloque <em>nueva_pregunta</em>, después de sumar el punto: así aparecen números nuevos en cada acierto.',
-          highlightCat: 'Funciones', expandCat: null, bloque: 'procedures_callnoreturn', bloqueLabel: 'nueva_pregunta'
+          titulo: 'Avanza indice_num',
+          desc: 'Justo debajo, ve a <b>Variables</b> y arrastra <em>Cambiar indice_num por</em>. Dejalo en <b>1</b> — así el próximo dígito que escribas va al <em>numero2</em> en vez de al <em>numero1</em>.',
+          highlightCat: 'Variables', expandCat: null, bloque: 'math_change', bloqueLabel: 'Cambiar variable por'
         },
         {
-          titulo: 'Avanza al siguiente fotograma',
-          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>Siguiente frame</em> como último bloque del ciclo.',
-          highlightCat: 'Inicio', expandCat: null, bloque: 'game_frame', bloqueLabel: 'Siguiente frame'
+          titulo: 'Muestra el símbolo "/" en pantalla',
+          desc: 'Justo debajo, ve a <b>Inicio</b> y arrastra <em>Escribir texto en pantalla</em>. En el hueco de texto metele <em>obtener operacion</em> (<b>Variables</b>) en vez de escribir texto fijo — así siempre muestra el símbolo que acabás de guardar. X=<em>obtener posicionX</em>, Y=<b>50</b>, color blanco, tamaño <b>24</b>. Sin este paso el símbolo de la operación nunca aparecería en pantalla.',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'game_show_text', bloqueLabel: 'Escribir texto en pantalla'
         },
         {
-          titulo: 'Abre la vista de juego',
-          desc: 'Haz clic en <b>Vista Juego</b> para preparar la pantalla donde verás la calculadora.',
+          titulo: 'Avanza posicionX para el símbolo',
+          desc: 'Por último de este botón, arrastra <em>Cambiar posicionX por</em> con valor <b>18</b> — así el siguiente dígito que teclees aparece después del símbolo, no encima.',
+          highlightCat: 'Variables', expandCat: null, bloque: 'math_change', bloqueLabel: 'Cambiar variable por'
+        },
+        { titulo: 'Botón "X" (multiplicar): detectar y guardar', desc: 'Misma estructura completa (dos "Si" + Establecer operacion + Cambiar indice_num + mostrar símbolo + Cambiar posicionX). Rango: X 210-265, Y 205-260. <em>operacion</em> = <b>"X"</b> mayúscula.', highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer' },
+        { titulo: 'Botón "-": detectar y guardar', desc: 'Misma estructura completa. Rango: X 210-265, Y 270-325. <em>operacion</em> = <b>"-"</b>.', highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer' },
+        { titulo: 'Botón "+": detectar y guardar', desc: 'Misma estructura completa. Rango: X 210-265, Y 335-390. <em>operacion</em> = <b>"+"</b>. Los 4 operadores ya están listos, y ahora su símbolo se ve en pantalla apenas los tocás.', highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer' },
+
+        /* ───────────── Botón "=" ───────────── */
+        {
+          titulo: 'Botón "=": arma la detección',
+          desc: 'Armá la estructura de dos "Si" anidados para <b>=</b>: rango X 145-200, Y 335-390. Todo lo que sigue va dentro del "Si" de Y.',
+          highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer'
+        },
+        {
+          titulo: 'Reinicia indice_num',
+          desc: 'Primero, ve a <b>Variables</b> y arrastra <em>Establecer indice_num a</em> con <b>0</b> — para que la próxima cuenta empiece escribiendo de nuevo en numero1.',
+          highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
+        },
+        {
+          titulo: 'Si la operación fue "/"',
+          desc: 'Ve a <b>Lógica</b> y arrastra otro <em>Si ... hacer</em>, debajo. Hacé clic en el <b>⚙️</b> (engranaje) del bloque y arrastrale <b>3 "si no, si"</b> (else if) adentro — vas a necesitar 4 condiciones en total, una por operador.',
+          highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer'
+        },
+        {
+          titulo: 'Condición: operacion = "/"',
+          desc: 'En la primera condición, ve a <b>Lógica</b> y arrastra <em>comparación</em> con <b>=</b>. Izquierda: <em>obtener operacion</em> (<b>Variables</b>). Derecha: <em>texto</em> <b>"/"</b>.',
+          highlightCat: 'Lógica', expandCat: null, bloque: 'logic_compare', bloqueLabel: 'comparación'
+        },
+        {
+          titulo: 'Calcula la división',
+          desc: 'Dentro del primer "hacer", ve a <b>Variables</b> y arrastra <em>Establecer guardar_resultado a</em>. Conectale un bloque <em>÷ (división)</em> de <b>Matemáticas</b>.',
+          highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
+        },
+        {
+          titulo: 'Convierte numero1 y numero2 a número',
+          desc: 'numero1/numero2 son <b>texto</b> (vas pegando dígitos) — para hacer cuentas hay que convertirlos. Ve a <b>Matemáticas</b> y arrastra dos bloques <em>convertir a entero</em>, uno en cada hueco de la división. Dentro de cada uno, desde <b>Variables</b>, metele <em>obtener numero1</em> y <em>obtener numero2</em> respectivamente.',
+          highlightCat: 'Matemáticas', expandCat: null, bloque: 'convert_to_int', bloqueLabel: 'convertir a entero'
+        },
+        {
+          titulo: 'Condición: operacion = "X"',
+          desc: 'En la segunda condición ("si no, si"), misma comparación pero contra el texto <b>"X"</b> mayúscula.',
+          highlightCat: 'Lógica', expandCat: null, bloque: 'logic_compare', bloqueLabel: 'comparación'
+        },
+        {
+          titulo: 'Calcula la multiplicación',
+          desc: 'En su "hacer", <em>Establecer guardar_resultado a</em> con un bloque <em>× (multiplicación)</em>, mismos <em>convertir a entero</em> de numero1/numero2 adentro.',
+          highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
+        },
+        {
+          titulo: 'Condición: operacion = "-"',
+          desc: 'Tercera condición: comparación contra el texto <b>"-"</b>.',
+          highlightCat: 'Lógica', expandCat: null, bloque: 'logic_compare', bloqueLabel: 'comparación'
+        },
+        {
+          titulo: 'Calcula la resta',
+          desc: '<em>Establecer guardar_resultado a</em> con un bloque <em>− (resta)</em>, mismos <em>convertir a entero</em> adentro.',
+          highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
+        },
+        {
+          titulo: 'Condición: operacion = "+"',
+          desc: 'Cuarta condición: comparación contra el texto <b>"+"</b>.',
+          highlightCat: 'Lógica', expandCat: null, bloque: 'logic_compare', bloqueLabel: 'comparación'
+        },
+        {
+          titulo: 'Calcula la suma',
+          desc: '<em>Establecer guardar_resultado a</em> con un bloque <em>+ (suma)</em>, mismos <em>convertir a entero</em> adentro. Las 4 operaciones ya están armadas.',
+          highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
+        },
+        {
+          titulo: 'Borra toda la pantalla de arriba',
+          desc: 'Debajo de todo el "Si/si no si" (ya afuera de él, pero todavía dentro del "="), ve a <b>Inicio</b> y arrastra <em>rectángulo sólido</em>: X=<b>0</b>, Y=<b>0</b>, ancho=<b>280</b>, alto=<b>130</b>, color <b>#1a1a2e</b> (el mismo gris azulado de fondo). Borra de un solo golpe toda la franja superior (lo que tecleaste y cualquier resultado viejo) antes de mostrar el resultado nuevo — así no quedan restos de texto.',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'game_draw_rect', bloqueLabel: 'rectángulo sólido'
+        },
+        {
+          titulo: 'Muestra el resultado',
+          desc: 'Debajo, arrastra <em>Escribir texto en pantalla</em>. En el hueco de texto metele <em>obtener guardar_resultado</em> (<b>Variables</b>). X=<b>15</b>, Y=<b>90</b>, color blanco, tamaño <b>24</b>.',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'game_show_text', bloqueLabel: 'Escribir texto en pantalla'
+        },
+        {
+          titulo: 'Vacía numero1 y numero2',
+          desc: 'Arrastra <em>Establecer numero1 a</em> con <em>texto</em> vacío, y debajo <em>Establecer numero2 a</em> con <em>texto</em> vacío también — para que la próxima cuenta no se pegue a los dígitos de esta.',
+          highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
+        },
+        {
+          titulo: 'Reinicia posicionX',
+          desc: 'Por último, <em>Establecer posicionX a</em> con <b>15</b> otra vez — el próximo dígito se escribe desde el principio. El botón "=" ya está completo.',
+          highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
+        },
+
+        /* ───────────── Botón "C" ───────────── */
+        {
+          titulo: 'Botón "C": arma la detección',
+          desc: 'Armá la estructura de dos "Si" anidados para <b>C</b>: rango X 15-70, Y 335-390.',
+          highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer'
+        },
+        {
+          titulo: 'C: borra toda la pantalla de arriba',
+          desc: 'Dentro, copiá el mismo <em>rectángulo sólido</em> que usaste en "=" para limpiar la pantalla de un solo golpe: X=<b>0</b>, Y=<b>0</b>, ancho=<b>280</b>, alto=<b>130</b>, color <b>#1a1a2e</b>. <b>Importante:</b> usá un único rectángulo que cubra toda la franja (no dos rectángulos separados) — si quedan huecos sin cubrir entre ellos, pueden quedar pixeles de texto viejo pegados en pantalla.',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'game_draw_rect', bloqueLabel: 'rectángulo sólido'
+        },
+        {
+          titulo: 'C: resetea todo el estado',
+          desc: 'Debajo, los mismos 4 bloques que usaste al final de "=": <em>numero1</em> = texto vacío, <em>numero2</em> = texto vacío, <em>indice_num</em> = 0, <em>posicionX</em> = 15. "C" te deja la calculadora como recién empezada.',
+          highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
+        },
+
+        /* ───────────── Procesar el dígito (fuera de todos los "Si" de botón) ───────────── */
+        {
+          titulo: 'Último paso: agregar el dígito al número',
+          desc: 'Este bloque va <b>afuera</b> de todos los "Si" de botones que armaste, pero sigue <b>dentro</b> del "Si ¿Se hizo clic?" grande. Se encarga de pegar el dígito tecleado al numero1 o numero2, sin importar cuál de los 10 dígitos fue.',
+          highlightCat: null, bloque: null
+        },
+        {
+          titulo: 'Si se presionó un dígito',
+          desc: 'Ve a <b>Lógica</b> y arrastra <em>Si ... hacer</em>. En la condición, desde <b>Variables</b>, metele directamente <em>obtener digito_presionado</em> (es verdadero/falso, no hace falta comparar con nada más).',
+          highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer'
+        },
+        {
+          titulo: '¿A qué número va? — si es el primero',
+          desc: 'Dentro, ve a <b>Lógica</b> y arrastra <em>Si ... hacer</em> con <b>1 "si no, si"</b> (desde el engranaje ⚙️). Primera condición: <em>obtener indice_num</em> <b>=</b> <em>Número</em> <b>0</b>.',
+          highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer'
+        },
+        {
+          titulo: 'Pega el dígito a numero1',
+          desc: 'En el primer "hacer": <em>Establecer numero1 a</em>. Ve a <b>Textos</b> y arrastra <em>unir</em> (join), con <em>obtener numero1</em> en el primer hueco y <em>obtener numero</em> en el segundo — así el dígito nuevo se pega al final.',
+          highlightCat: 'Textos', expandCat: null, bloque: 'text_join', bloqueLabel: 'unir'
+        },
+        {
+          titulo: '¿A qué número va? — si es el segundo',
+          desc: 'En el "si no, si": <em>obtener indice_num</em> <b>=</b> <em>Número</em> <b>1</b>.',
+          highlightCat: 'Lógica', expandCat: null, bloque: 'logic_compare', bloqueLabel: 'comparación'
+        },
+        {
+          titulo: 'Pega el dígito a numero2',
+          desc: 'En su "hacer": <em>Establecer numero2 a</em> con otro bloque <em>unir</em>, <em>obtener numero2</em> + <em>obtener numero</em>.',
+          highlightCat: 'Textos', expandCat: null, bloque: 'text_join', bloqueLabel: 'unir'
+        },
+        {
+          titulo: 'Muestra el dígito en pantalla',
+          desc: 'Afuera de ese "Si/si no si" (pero todavía dentro del "Si digito_presionado"), arrastra <em>Escribir texto en pantalla</em>. Metele <em>obtener numero</em> como texto, <em>obtener posicionX</em> como X, Y=<b>50</b>, color blanco, tamaño <b>24</b>.',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'game_show_text', bloqueLabel: 'Escribir texto en pantalla'
+        },
+        {
+          titulo: 'Apaga digito_presionado',
+          desc: 'Debajo, <em>Establecer digito_presionado a</em> <b>falso</b> — ya lo procesamos, listo para el próximo clic.',
+          highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
+        },
+        {
+          titulo: 'Avanza la posición para el próximo dígito',
+          desc: 'Por último, <em>Cambiar posicionX por</em> <b>18</b> — así el próximo dígito se escribe al lado, no encima. ¡La calculadora está completa!',
+          highlightCat: 'Variables', expandCat: null, bloque: 'math_change', bloqueLabel: 'Cambiar variable por'
+        },
+
+        /* ───────────── Probar ───────────── */
+        {
+          titulo: 'Prueba tu calculadora',
+          desc: 'Ve a la vista <b>Juego</b> (ícono de control 🎮 arriba a la derecha) y hacé clic en los botones: probá una suma simple y fijate que el símbolo "+" aparezca en pantalla al tocarlo, y también escribí dos veces el mismo dígito seguido (ej. "55") para confirmar que no se traba.',
           highlightElement: '#btnGame'
         },
         {
-          titulo: 'Prueba la calculadora',
-          desc: 'Ejecuta el programa y haz clic en la respuesta correcta (izquierda) para sumar puntos. Comprueba que cada acierto trae una suma nueva.',
-          highlightElement: '#btnGameRun'
+          titulo: '¡Listo!',
+          desc: 'Ya tenés una calculadora funcional con 16 botones grandes: suma, resta, multiplicación, división, dígitos repetidos, el símbolo de la operación visible y un botón C que limpia todo sin dejar pixeles pegados. 🧮',
+          highlightCat: null, bloque: null
         }
       ]
     },
