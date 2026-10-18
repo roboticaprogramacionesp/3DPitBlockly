@@ -986,6 +986,9 @@
           <option value="buzzer">Buzzer</option>
           <option value="servo">Servo Motor</option>
           <option value="puente_h">Puente H — Motores DC</option>
+          <option value="relevador">Relevador (Relay)</option>
+          <option value="stepper_motor">Motor Paso a Paso (Stepper)</option>
+          <option value="ir_tx_ky005">Emisor Infrarrojo (KY-005)</option>
         </optgroup>
         <optgroup label="🌡️ Temperatura / Humedad">
           <option value="dht11">DHT11 — Temperatura y Humedad</option>
@@ -1001,6 +1004,7 @@
         </optgroup>
         <optgroup label="🖥️ Pantallas y Módulos">
           <option value="oled_display">Display OLED (SSD1306)</option>
+          <option value="sh1106_display">Display OLED (SH1106)</option>
           <option value="lcd_i2c_display">LCD 16x2 I2C</option>
           <option value="rtc_ds3231">Reloj RTC DS3231</option>
           <option value="mpu6050_imu">Giroscopio/Acelerómetro MPU6050</option>
@@ -1010,6 +1014,8 @@
           <option value="encoder_rotatorio">Encoder Rotatorio (KY-040)</option>
           <option value="rfid_mfrc522">RFID MFRC522</option>
           <option value="teclado_matricial">Teclado Matricial 4x4</option>
+          <option value="teclado_4x3">Teclado Matricial 4x3</option>
+          <option value="teclado_4x4_i2c">Teclado Matricial 4x4 I2C</option>
           <option value="bmp280_presion">Sensor de Presión BMP280</option>
           <option value="bh1750_luz">Sensor de Luz BH1750</option>
           <option value="qmc5883l_brujula">Brújula QMC5883L</option>
@@ -1017,6 +1023,7 @@
           <option value="lcd_paralelo">LCD 16x2 (paralelo)</option>
           <option value="tft_display">Pantalla TFT a color</option>
           <option value="neopixel_matriz">Matriz NeoPixel 5x5</option>
+          <option value="neopixel_matriz_8x8">Matriz NeoPixel 8x8</option>
           <option value="color_tcs34725">Sensor de Color TCS34725</option>
           <option value="dfplayer_mp3">Reproductor MP3 DFPlayer</option>
           <option value="sdcard_modulo">Módulo SD Card</option>
@@ -1025,6 +1032,7 @@
           <option value="flujo_agua">Sensor de Flujo de Agua (YF-201)</option>
         </optgroup>
         <optgroup label="📶 Comunicación Inalámbrica">
+          <option value="wifi_basico">WiFi — Conectarse a una red</option>
           <option value="hc06_basico">Bluetooth HC-06 (Serial)</option>
           <option value="espnow_receptor">ESP-NOW — Receptor</option>
           <option value="espnow_emisor">ESP-NOW — Emisor</option>
@@ -1067,6 +1075,9 @@
           <div class="tut-option" data-value="buzzer"><span class="tut-opt-icon">🔊</span>Buzzer</div>
           <div class="tut-option" data-value="servo"><span class="tut-opt-icon">⚙️</span>Servo Motor</div>
           <div class="tut-option" data-value="puente_h"><span class="tut-opt-icon">🏎️</span>Puente H — Motores DC</div>
+          <div class="tut-option" data-value="relevador"><span class="tut-opt-icon">🔌</span>Relevador (Relay)</div>
+          <div class="tut-option" data-value="stepper_motor"><span class="tut-opt-icon">🌀</span>Motor Paso a Paso (Stepper)</div>
+          <div class="tut-option" data-value="ir_tx_ky005"><span class="tut-opt-icon">📡</span>Emisor Infrarrojo (KY-005)</div>
 
           <div class="tut-group-label">🌡️ Temperatura · Humedad</div>
           <div class="tut-option" data-value="dht11"><span class="tut-opt-icon">🌡️</span>DHT11</div>
@@ -1084,6 +1095,7 @@
 
           <div class="tut-group-label">🖥️ Pantallas y Módulos</div>
           <div class="tut-option" data-value="oled_display"><span class="tut-opt-icon">🖥️</span>Display OLED (SSD1306)</div>
+          <div class="tut-option" data-value="sh1106_display"><span class="tut-opt-icon">🖥️</span>Display OLED (SH1106)</div>
           <div class="tut-option" data-value="lcd_i2c_display"><span class="tut-opt-icon">📟</span>LCD 16x2 I2C</div>
           <div class="tut-option" data-value="rtc_ds3231"><span class="tut-opt-icon">🕒</span>Reloj RTC DS3231</div>
           <div class="tut-option" data-value="mpu6050_imu"><span class="tut-opt-icon">🎮</span>Giroscopio/Acelerómetro MPU6050</div>
@@ -1093,6 +1105,8 @@
           <div class="tut-option" data-value="encoder_rotatorio"><span class="tut-opt-icon">🎛️</span>Encoder Rotatorio (KY-040)</div>
           <div class="tut-option" data-value="rfid_mfrc522"><span class="tut-opt-icon">💳</span>RFID MFRC522</div>
           <div class="tut-option" data-value="teclado_matricial"><span class="tut-opt-icon">🔢</span>Teclado Matricial 4x4</div>
+          <div class="tut-option" data-value="teclado_4x3"><span class="tut-opt-icon">🔢</span>Teclado Matricial 4x3</div>
+          <div class="tut-option" data-value="teclado_4x4_i2c"><span class="tut-opt-icon">🔢</span>Teclado Matricial 4x4 I2C</div>
           <div class="tut-option" data-value="bmp280_presion"><span class="tut-opt-icon">🌤️</span>Sensor de Presión BMP280</div>
           <div class="tut-option" data-value="bh1750_luz"><span class="tut-opt-icon">💡</span>Sensor de Luz BH1750</div>
           <div class="tut-option" data-value="qmc5883l_brujula"><span class="tut-opt-icon">🧭</span>Brújula QMC5883L</div>
@@ -1100,6 +1114,7 @@
           <div class="tut-option" data-value="lcd_paralelo"><span class="tut-opt-icon">📺</span>LCD 16x2 (paralelo)</div>
           <div class="tut-option" data-value="tft_display"><span class="tut-opt-icon">🎨</span>Pantalla TFT a color</div>
           <div class="tut-option" data-value="neopixel_matriz"><span class="tut-opt-icon">🌈</span>Matriz NeoPixel 5x5</div>
+          <div class="tut-option" data-value="neopixel_matriz_8x8"><span class="tut-opt-icon">🌈</span>Matriz NeoPixel 8x8</div>
           <div class="tut-option" data-value="color_tcs34725"><span class="tut-opt-icon">🎨</span>Sensor de Color TCS34725</div>
           <div class="tut-option" data-value="dfplayer_mp3"><span class="tut-opt-icon">🎵</span>Reproductor MP3 DFPlayer</div>
           <div class="tut-option" data-value="sdcard_modulo"><span class="tut-opt-icon">💾</span>Módulo SD Card</div>
@@ -1108,6 +1123,7 @@
           <div class="tut-option" data-value="flujo_agua"><span class="tut-opt-icon">💧</span>Sensor de Flujo de Agua (YF-201)</div>
 
           <div class="tut-group-label">📶 Comunicación Inalámbrica</div>
+          <div class="tut-option" data-value="wifi_basico"><span class="tut-opt-icon">📶</span>WiFi — Conectarse a una red</div>
           <div class="tut-option" data-value="hc06_basico"><span class="tut-opt-icon">🔵</span>Bluetooth HC-06</div>
           <div class="tut-option" data-value="espnow_receptor"><span class="tut-opt-icon">📥</span>ESP-NOW Receptor
           </div>
@@ -1335,8 +1351,37 @@
         <block type="game_clear"></block>
         <block type="game_frame"></block>
 
+        <label role="presentation" text="▸ Texto en pantalla"></label>
+        <block type="game_show_text">
+          <value name="TEXT">
+            <shadow type="text">
+              <field name="TEXT">¡Hola!</field>
+            </shadow>
+          </value>
+          <value name="X">
+            <shadow type="math_number">
+              <field name="NUM">10</field>
+            </shadow>
+          </value>
+          <value name="Y">
+            <shadow type="math_number">
+              <field name="NUM">20</field>
+            </shadow>
+          </value>
+          <value name="COLOR">
+            <shadow type="color_picker">
+              <field name="COLOR">#ffffff</field>
+            </shadow>
+          </value>
+          <value name="SIZE">
+            <shadow type="math_number">
+              <field name="NUM">16</field>
+            </shadow>
+          </value>
+        </block>
+
         <sep></sep>
-        <label role="presentation" text="── Ejemplo completo ──"></label>
+        <label role="presentation" text="── Ejemplo base ──"></label>
         <block type="runstart">
           <next>
             <block type="game_start">
@@ -1776,35 +1821,6 @@
           <value name="NAME">
             <shadow type="text">
               <field name="TEXT">jugador</field>
-            </shadow>
-          </value>
-        </block>
-
-        <label role="presentation" text="▸ Texto en pantalla"></label>
-        <block type="game_show_text">
-          <value name="TEXT">
-            <shadow type="text">
-              <field name="TEXT">¡Hola!</field>
-            </shadow>
-          </value>
-          <value name="X">
-            <shadow type="math_number">
-              <field name="NUM">10</field>
-            </shadow>
-          </value>
-          <value name="Y">
-            <shadow type="math_number">
-              <field name="NUM">20</field>
-            </shadow>
-          </value>
-          <value name="COLOR">
-            <shadow type="color_picker">
-              <field name="COLOR">#ffffff</field>
-            </shadow>
-          </value>
-          <value name="SIZE">
-            <shadow type="math_number">
-              <field name="NUM">16</field>
             </shadow>
           </value>
         </block>

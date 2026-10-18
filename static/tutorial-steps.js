@@ -818,6 +818,55 @@ var TUTORIALS = {
     ]
   },
 
+  stepper_motor: {
+    title: "Motor Paso a Paso (Stepper)", icon: "🌀",
+    diagram: "img/28byj.svg",
+    steps: [
+      {
+        titulo: "¿Qué aprenderemos?",
+        desc: "Vamos a controlar un <b>motor paso a paso 28BYJ-48</b> con su driver <b>ULN2003</b>. A diferencia de un motor DC, este motor se mueve en <b>pasos exactos</b> — ideal para proyectos que necesitan precisión, como un brazo robótico o una base giratoria.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Conexión física",
+        desc: "El driver ULN2003 se conecta así:<br>⚡ <b>VCC</b> → <b>5V</b> (fuente externa recomendada, el motor consume bastante)<br>⏚ <b>GND</b> → GND<br>📌 <b>IN1</b> → pin <b>26</b><br>📌 <b>IN2</b> → pin <b>25</b><br>📌 <b>IN3</b> → pin <b>17</b><br>📌 <b>IN4</b> → pin <b>16</b>",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Abre la categoría Actuadores",
+        desc: "Haz clic en <b>Actuadores</b> en el panel de bloques para desplegarlo.",
+        highlightCat: "Actuadores", expandCat: null, bloque: null
+      },
+      {
+        titulo: "Selecciona la subcategoría Stepper Motor",
+        desc: "Dentro de <b>Actuadores</b> haz clic en <b>Stepper Motor</b> para ver sus bloques.",
+        highlightCat: "Stepper Motor", expandCat: "Actuadores", bloque: null
+      },
+      {
+        titulo: "Arrastra: Inicializar motor",
+        desc: "Arrastra el bloque <em>IN1 IN2 IN3 IN4</em> al área de trabajo. Deja los pines por defecto (<b>26, 25, 17, 16</b>). Este bloque va <b>una sola vez</b> al inicio del programa.",
+        highlightCat: "Stepper Motor", expandCat: "Actuadores",
+        bloque: "stepper_init", bloqueLabel: "IN1 IN2 IN3 IN4"
+      },
+      {
+        titulo: "Arrastra: Girar grados",
+        desc: "Arrastra el bloque <em>girar ... grados</em> debajo. Dejá el ángulo en <b>90</b> grados — el motor va a girar esa cantidad de grados <b>desde donde esté</b> (movimiento relativo).",
+        highlightCat: "Stepper Motor", expandCat: "Actuadores",
+        bloque: "stepper_degrees", bloqueLabel: "girar grados"
+      },
+      {
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "¡Ejecuta y prueba!",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. El motor debería girar 90°. Si querés que vaya a una posición fija (no relativa), probá el bloque <em>ir al ángulo</em> en vez de <em>girar grados</em>. 🌀",
+        highlightElement: "#btnRun", waitForAction: "run"
+      }
+    ]
+  },
+
   puente_h: {
     title: "Puente H — Motores DC", icon: "⚡",
     diagram: "img/conexiones/puente_h.svg",
@@ -928,6 +977,66 @@ var TUTORIALS = {
         highlightElement: "#btnRun",
         waitForAction: "run"
       },
+    ]
+  },
+
+  relevador: {
+    title: "Relevador (Relay)", icon: "🔌",
+    diagram: "img/ky-019.svg",
+    steps: [
+      {
+        titulo: "¿Qué aprenderemos?",
+        desc: "Vamos a controlar un <b>módulo relevador (relay)</b> — un interruptor electrónico que te permite prender/apagar desde el ESP32 cosas que usan corriente más alta (una lámpara, un motor, un electrodoméstico de 110-220V), sin que esa corriente pase por el ESP32.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Conexión física",
+        desc: "El módulo relay típico se conecta así:<br>⚡ <b>VCC</b> → <b>5V</b><br>⏚ <b>GND</b> → GND<br>📌 <b>IN</b> (señal) → pin <b>26</b><br><br>⚠️ Del lado de <b>COM/NO/NC</b> va la carga de alto voltaje — si no sabés cablear 110-220V, pedile ayuda a un adulto. Para practicar podés usar un LED en vez de una carga real.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Abre la categoría Actuadores",
+        desc: "Haz clic en <b>Actuadores</b> en el panel de bloques para desplegarlo.",
+        highlightCat: "Actuadores", expandCat: null, bloque: null
+      },
+      {
+        titulo: "Selecciona la subcategoría Relevador",
+        desc: "Dentro de <b>Actuadores</b> haz clic en <b>Relevador</b> para ver sus bloques.",
+        highlightCat: "Relevador", expandCat: "Actuadores", bloque: null
+      },
+      {
+        titulo: "Arrastra: Inicializar Actuador",
+        desc: "Arrastra el bloque <em>Actuador ... Pin</em> al área de trabajo. En el primer desplegable elegí el ícono de <b>Rele</b> (no Buzzer), y en <b>Pin</b> dejá <b>26</b> (o el pin que usaste). Este bloque va <b>una sola vez</b> al inicio del programa.",
+        highlightCat: "Relevador", expandCat: "Actuadores",
+        bloque: "actuador_init", bloqueLabel: "Actuador ... Pin"
+      },
+      {
+        titulo: "Arrastra: Encender el relay",
+        desc: "Arrastra el bloque <em>Actuador ... value</em>, con el mismo <b>Pin</b> que usaste arriba, y elegí estado <b>on</b>.",
+        highlightCat: "Relevador", expandCat: "Actuadores",
+        bloque: "actuador_on_off", bloqueLabel: "Actuador ... value"
+      },
+      {
+        titulo: "Esperar 2 segundos",
+        desc: "Ve a <b>Tiempo</b> y arrastra <em>time_sleep</em>. Ajustá el valor a <b>2</b> segundos, para ver el relay encendido antes de apagarlo.",
+        highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
+      },
+      {
+        titulo: "Arrastra: Apagar el relay",
+        desc: "Arrastra otro bloque <em>Actuador ... value</em>, mismo <b>Pin</b>, y elegí estado <b>off</b>.",
+        highlightCat: "Relevador", expandCat: "Actuadores",
+        bloque: "actuador_on_off", bloqueLabel: "Actuador ... value"
+      },
+      {
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "¡Ejecuta y prueba!",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Deberías escuchar el <b>clic</b> del relay al encenderse y, 2 segundos después, al apagarse. 🔌",
+        highlightElement: "#btnRun", waitForAction: "run"
+      }
     ]
   },
 
@@ -1873,6 +1982,55 @@ var TUTORIALS = {
     ]
   },
 
+  ir_tx_ky005: {
+    title: "Emisor Infrarrojo (KY-005)", icon: "📡",
+    diagram: "img/ky-005.svg",
+    steps: [
+      {
+        titulo: "¿Qué aprenderemos?",
+        desc: "El módulo <b>KY-005</b> es un LED infrarrojo emisor — lo contrario del KY-022 (que <b>recibe</b>). Vamos a enviar un código infrarrojo con protocolo <b>NEC</b>, el mismo que usan la mayoría de los controles remotos de TV.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Conexión física",
+        desc: "El KY-005 se conecta con 3 pines:<br>⚡ <b>+</b> → <b>3.3V</b><br>⏚ <b>−</b> (GND) → GND<br>📌 <b>S</b> (señal) → pin <b>4</b>",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Abre la categoría LEDs",
+        desc: "Haz clic en <b>LEDs</b> en el panel de bloques para desplegarlo.",
+        highlightCat: "LEDs", expandCat: null, bloque: null
+      },
+      {
+        titulo: "Selecciona la subcategoría IR TX (KY-005)",
+        desc: "Dentro de <b>LEDs</b> haz clic en <b>IR TX (KY-005)</b> para ver sus bloques.",
+        highlightCat: "IR TX (KY-005)", expandCat: "LEDs", bloque: null
+      },
+      {
+        titulo: "Arrastra: Inicializar IR TX",
+        desc: "Arrastra el bloque <em>Pin protocolo NEC</em> al área de trabajo. Dejá el pin en <b>4</b> (o el que usaste). Este bloque va <b>una sola vez</b> al inicio.",
+        highlightCat: "IR TX (KY-005)", expandCat: "LEDs",
+        bloque: "ky005_init", bloqueLabel: "Pin protocolo NEC"
+      },
+      {
+        titulo: "Arrastra: Enviar código NEC",
+        desc: "Arrastra el bloque <em>IR NEC dirección comando</em> debajo. Escribí <b>0</b> en dirección y <b>1</b> en comando — es solo un código de prueba, cada control remoto real usa sus propios números.",
+        highlightCat: "IR TX (KY-005)", expandCat: "LEDs",
+        bloque: "ky005_send_nec", bloqueLabel: "IR NEC dirección comando"
+      },
+      {
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "¡Ejecuta y prueba!",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Para comprobar que realmente emite, usá el tutorial de <b>Control Remoto IR (KY-022)</b> en otro ESP32 como receptor y verificá que le llegue el código. 📡",
+        highlightElement: "#btnRun", waitForAction: "run"
+      }
+    ]
+  },
+
   espnow_receptor: {
     title: "ESP-NOW — Receptor", icon: "📶",
     diagram: "img/conexiones/espnow.svg",
@@ -2081,6 +2239,60 @@ var TUTORIALS = {
       {
         titulo: "¡Ejecuta el emisor y verifica!",
         desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Abre el monitor serial del <b>receptor</b>: verás el mensaje llegando. ¡Dos ESP32 comunicándose sin internet! 🎉<br><br><b>Tip:</b> Para envío continuo, envuelve el bloque <em>enviar</em> dentro de un ciclo <em>Repetir mientras Verdadero</em> con una espera de 1 segundo.",
+        highlightElement: "#btnRun", waitForAction: "run"
+      }
+    ]
+  },
+
+  wifi_basico: {
+    title: "WiFi — Conectarse a una red", icon: "📶",
+    diagram: "img/espwifi.png",
+    steps: [
+      {
+        titulo: "¿Qué aprenderemos?",
+        desc: "El ESP32 tiene WiFi integrado. Vamos a conectarlo a tu red (router de casa/escuela) y mostrar la <b>dirección IP</b> que le asignó, en el monitor serial. Es la base para cualquier proyecto que necesite internet.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Conexión física",
+        desc: "No necesitas conectar nada — el WiFi está integrado en el ESP32. Solo necesitás el nombre y la contraseña de una red WiFi <b>de 2.4GHz</b> (el ESP32 no soporta redes de 5GHz).",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Abre la categoría Comunicación Inalámbrica",
+        desc: "Haz clic en <b>Comunicación Inalambrica</b> en el panel de bloques para desplegarlo.",
+        highlightCat: "Comunicación Inalambrica", expandCat: null, bloque: null
+      },
+      {
+        titulo: "Selecciona la subcategoría WiFi",
+        desc: "Dentro de <b>Comunicación Inalambrica</b> haz clic en <b>WiFi</b> para ver sus bloques.",
+        highlightCat: "WiFi", expandCat: "Comunicación Inalambrica", bloque: null
+      },
+      {
+        titulo: "Arrastra: Conectar WiFi",
+        desc: "Arrastra el bloque <em>conectar SSID contraseña</em> al área de trabajo. Cambiá <b>SSID</b> por el nombre de tu red y <b>contraseña</b> por la clave real. Este bloque ya espera solo hasta 10 segundos a que conecte — no hace falta agregar nada más.",
+        highlightCat: "WiFi", expandCat: "Comunicación Inalambrica",
+        bloque: "wifi_connect", bloqueLabel: "conectar SSID contraseña"
+      },
+      {
+        titulo: "Arrastra: imprimir",
+        desc: "Ve a <b>Textos</b> y arrastra el bloque <em>imprimir</em> debajo, para mostrar algo en el monitor serial.",
+        highlightCat: "Textos", expandCat: null, bloque: "text_print"
+      },
+      {
+        titulo: "Arrastra: WiFi IP actual",
+        desc: "Volvé a <b>Comunicación Inalambrica › WiFi</b> y arrastra el bloque <em>WiFi IP actual</em> dentro del hueco de <em>imprimir</em>.",
+        highlightCat: "WiFi", expandCat: "Comunicación Inalambrica",
+        bloque: "wifi_current_ip", bloqueLabel: "WiFi IP actual"
+      },
+      {
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "¡Ejecuta y prueba!",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Si se conectó bien, vas a ver una IP como <b>192.168.1.XX</b> en el monitor serial. Si ves un mensaje de error, revisá que el SSID/contraseña estén bien escritos y que la red sea de 2.4GHz. 📶",
         highlightElement: "#btnRun", waitForAction: "run"
       }
     ]
@@ -2514,6 +2726,67 @@ var TUTORIALS = {
       {
         titulo: "¡Ejecuta y prueba!",
         desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Deberías ver <b>'Hola ESP32'</b> escrito en la esquina superior izquierda de la pantalla OLED. 🖥️",
+        highlightElement: "#btnRun", waitForAction: "run"
+      }
+    ]
+  },
+
+  sh1106_display: {
+    title: "Display OLED (SH1106)", icon: "🖥️",
+    diagram: "img/oled.svg",
+    steps: [
+      {
+        titulo: "¿Qué aprenderemos?",
+        desc: "Vamos a mostrar texto en una pantalla <b>OLED SH1106</b> (muy parecida a la SSD1306 por fuera, pero con otro chip controlador — si tu OLED no anda con el tutorial de SSD1306, probablemente sea esta). Aprenderás a inicializarla, rotarla, limpiarla y escribir texto.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Conexión física",
+        desc: "La SH1106 se conecta por <b>I2C</b>, 4 pines:<br>⚡ <b>VCC</b> → <b>3.3V</b><br>⏚ <b>GND</b> → GND<br>📌 <b>SDA</b> → pin <b>21</b><br>📌 <b>SCL</b> → pin <b>22</b><br><br>⚠️ Conecta siempre a 3.3V, nunca a 5V.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Abre la categoría Pantallas",
+        desc: "Haz clic en <b>Pantallas</b> en el panel de bloques para desplegarlo.",
+        highlightCat: "Pantallas", expandCat: null, bloque: null
+      },
+      {
+        titulo: "Selecciona la subcategoría SH1106",
+        desc: "Dentro de <b>Pantallas</b> haz clic en <b>SH1106</b> para ver sus bloques.",
+        highlightCat: "SH1106", expandCat: "Pantallas", bloque: null
+      },
+      {
+        titulo: "Arrastra: Inicializar SH1106",
+        desc: "Arrastra el primer bloque al área de trabajo. Deja los valores por defecto (SDA <b>21</b>, SCL <b>22</b>, dirección <b>0x3C</b>). Este bloque va <b>una sola vez</b> al inicio del programa.",
+        highlightCat: "SH1106", expandCat: "Pantallas",
+        bloque: "sh1106_init", bloqueLabel: "Inicializar SH1106"
+      },
+      {
+        titulo: "Arrastra: Limpiar",
+        desc: "Arrastra el bloque <em>limpiar</em> justo debajo. Borra cualquier contenido anterior antes de dibujar algo nuevo.",
+        highlightCat: "SH1106", expandCat: "Pantallas",
+        bloque: "sh1106_clear", bloqueLabel: "limpiar"
+      },
+      {
+        titulo: "Arrastra: Escribir texto",
+        desc: "Arrastra el bloque <em>texto x y</em> debajo de <em>limpiar</em>. Escribe <b>'Hola ESP32'</b> como texto, y deja <b>x=0, y=0</b> (esquina superior izquierda).",
+        highlightCat: "SH1106", expandCat: "Pantallas",
+        bloque: "sh1106_text", bloqueLabel: "texto x y"
+      },
+      {
+        titulo: "¿La ves al revés? Usa: rotar",
+        desc: "Si montaste la pantalla dada vuelta, agregá el bloque <em>rotar</em> justo después de <em>Inicializar SH1106</em> y elegí <b>180°</b>. También sirve <b>90°</b>/<b>270°</b> si tu proyecto necesita la pantalla de costado.",
+        highlightCat: "SH1106", expandCat: "Pantallas",
+        bloque: "sh1106_rotate", bloqueLabel: "rotar"
+      },
+      {
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "¡Ejecuta y prueba!",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Deberías ver <b>'Hola ESP32'</b> escrito en la esquina superior izquierda de la pantalla. 🖥️",
         highlightElement: "#btnRun", waitForAction: "run"
       }
     ]
@@ -3062,6 +3335,126 @@ var TUTORIALS = {
     ]
   },
 
+  teclado_4x3: {
+    title: "Teclado Matricial 4x3", icon: "🔢",
+    diagram: "img/keypad3x4.svg",
+    steps: [
+      {
+        titulo: "¿Qué aprenderemos?",
+        desc: "Vamos a leer un <b>teclado matricial 4x3</b> (membrana con números 0-9, * y # — 4 filas, 3 columnas). Aprenderás a inicializarlo y detectar qué tecla se presiona.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Conexión física",
+        desc: "El teclado 4x3 tiene 7 pines (4 filas + 3 columnas), sin alimentación:<br>📌 <b>R1, R2, R3, R4</b> (filas) → 4 pines digitales cualquiera<br>📌 <b>C1, C2, C3</b> (columnas) → otros 3 pines digitales<br><br>No necesita VCC ni GND — el ESP32 detecta las teclas activando cada fila por turnos.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Abre Periféricos › Teclados",
+        desc: "Haz clic en <b>Periféricos</b> y luego en <b>Teclados</b> para desplegarlos.",
+        highlightCat: "Teclados", expandCat: "Periféricos", bloque: null
+      },
+      {
+        titulo: "Selecciona la subcategoría Teclados Matriciales 4x3",
+        desc: "Dentro de <b>Teclados</b> haz clic en <b>Teclados Matriciales 4x3</b> para ver sus bloques.",
+        highlightCat: "Teclados Matriciales 4x3", expandCats: ["Periféricos", "Teclados"], bloque: null
+      },
+      {
+        titulo: "Arrastra: Inicializar teclado",
+        desc: "Arrastra el bloque <em>R1 R2 R3 R4 C1 C2 C3</em> al área de trabajo y asigná los 7 pines según tu conexión. Este bloque va <b>una sola vez</b> al inicio.",
+        highlightCat: "Teclados Matriciales 4x3", expandCats: ["Periféricos", "Teclados"],
+        bloque: "init_keypad_3x4", bloqueLabel: "Inicializar teclado 4x3"
+      },
+      {
+        titulo: "Agrega un ciclo infinito",
+        desc: "Ve a <b>Ciclos</b> y arrastra el bloque <em>repetir mientras … Verdadero</em>. Revisaremos continuamente qué tecla se presiona.",
+        highlightCat: "Ciclos",
+        bloque: "controls_whileUntil", bloqueLabel: "repetir mientras Verdadero"
+      },
+      {
+        titulo: "Dentro del ciclo: imprimir la tecla",
+        desc: "Ve a <b>Textos</b> y arrastra el bloque <em>imprimir</em> dentro del ciclo. Luego volvé a <b>Periféricos → Teclados → Teclados Matriciales 4x3</b> y arrastra el bloque <em>leer</em> dentro del <em>imprimir</em>.",
+        highlightCat: "Teclados Matriciales 4x3", expandCats: ["Periféricos", "Teclados"],
+        bloque: "keypad_get_key", bloqueLabel: "leer"
+      },
+      {
+        titulo: "Esperar",
+        desc: "Ve a <b>Tiempo</b> y arrastra el bloque <em>Esperar</em> con <b>0.2</b> segundos, como último bloque dentro del ciclo.",
+        highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
+      },
+      {
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "¡Ejecuta y prueba!",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Presiona teclas en el teclado y observa cómo aparecen en el monitor serial. 🔢",
+        highlightElement: "#btnRun", waitForAction: "run"
+      }
+    ]
+  },
+
+  teclado_4x4_i2c: {
+    title: "Teclado Matricial 4x4 I2C", icon: "🔢",
+    diagram: "img/keypad4x4.svg",
+    steps: [
+      {
+        titulo: "¿Qué aprenderemos?",
+        desc: "Vamos a leer un <b>teclado matricial 4x4 con adaptador I2C</b> — a diferencia del 4x4 directo (que usa 8 pines), este solo necesita 2 pines I2C, dejando el resto libres para otros sensores.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Conexión física",
+        desc: "El teclado 4x4 I2C se conecta con solo 4 pines:<br>⚡ <b>VCC</b> → <b>5V</b> (o 3.3V, revisa tu módulo)<br>⏚ <b>GND</b> → GND<br>📌 <b>SDA</b> → pin <b>21</b><br>📌 <b>SCL</b> → pin <b>22</b>",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Abre Periféricos › Teclados",
+        desc: "Haz clic en <b>Periféricos</b> y luego en <b>Teclados</b> para desplegarlos.",
+        highlightCat: "Teclados", expandCat: "Periféricos", bloque: null
+      },
+      {
+        titulo: "Selecciona la subcategoría Teclados Matriciales 4x4 I2C",
+        desc: "Dentro de <b>Teclados</b> haz clic en <b>Teclados Matriciales 4x4 I2C</b> para ver sus bloques.",
+        highlightCat: "Teclados Matriciales 4x4 I2C", expandCats: ["Periféricos", "Teclados"], bloque: null
+      },
+      {
+        titulo: "Arrastra: Inicializar teclado I2C",
+        desc: "Arrastra el bloque <em>SDA SCL dirección</em> al área de trabajo. Dejá los valores por defecto (SDA <b>21</b>, SCL <b>22</b>, dirección <b>0x20</b>). Este bloque va <b>una sola vez</b> al inicio.",
+        highlightCat: "Teclados Matriciales 4x4 I2C", expandCats: ["Periféricos", "Teclados"],
+        bloque: "init_keypad4x4_i2c", bloqueLabel: "Inicializar teclado 4x4 I2C"
+      },
+      {
+        titulo: "Agrega un ciclo infinito",
+        desc: "Ve a <b>Ciclos</b> y arrastra el bloque <em>repetir mientras … Verdadero</em>. Revisaremos continuamente qué tecla se presiona.",
+        highlightCat: "Ciclos",
+        bloque: "controls_whileUntil", bloqueLabel: "repetir mientras Verdadero"
+      },
+      {
+        titulo: "Dentro del ciclo: imprimir la tecla",
+        desc: "Ve a <b>Textos</b> y arrastra el bloque <em>imprimir</em> dentro del ciclo. Luego volvé a <b>Periféricos → Teclados → Teclados Matriciales 4x4 I2C</b> y arrastra el bloque <em>leer</em> dentro del <em>imprimir</em>.",
+        highlightCat: "Teclados Matriciales 4x4 I2C", expandCats: ["Periféricos", "Teclados"],
+        bloque: "keypad_get_key_i2c", bloqueLabel: "leer"
+      },
+      {
+        titulo: "Esperar",
+        desc: "Ve a <b>Tiempo</b> y arrastra el bloque <em>Esperar</em> con <b>0.2</b> segundos, como último bloque dentro del ciclo.",
+        highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
+      },
+      {
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "¡Ejecuta y prueba!",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Presiona teclas en el teclado y observa cómo aparecen en el monitor serial. 🔢",
+        highlightElement: "#btnRun", waitForAction: "run"
+      }
+    ]
+  },
+
   bmp280_presion: {
     title: "Sensor de Presión BMP280", icon: "🌤️",
     diagram: "img/conexiones/bmp280.svg",
@@ -3451,6 +3844,61 @@ var TUTORIALS = {
       {
         titulo: "¡Ejecuta y prueba!",
         desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Deberías ver un solo LED encendido en el centro de la matriz, con el color y brillo que elegiste. 🌈",
+        highlightElement: "#btnRun", waitForAction: "run"
+      }
+    ]
+  },
+
+  neopixel_matriz_8x8: {
+    title: "Matriz NeoPixel 8x8", icon: "🌈",
+    diagram: "img/neopixel8x8.svg",
+    steps: [
+      {
+        titulo: "¿Qué aprenderemos?",
+        desc: "Vamos a encender píxeles individuales en una <b>matriz NeoPixel 8x8</b> (64 LEDs RGB direccionables). Si tenés la de 5x5, los bloques son iguales — solo usá la categoría <b>NeoPixel 5x5</b>.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Conexión física",
+        desc: "La matriz NeoPixel tiene 3 pines:<br>⚡ <b>5V</b> → <b>5V</b> (una matriz completa de 64 LEDs puede consumir bastante corriente)<br>⏚ <b>GND</b> → GND<br>📌 <b>DIN</b> (dato) → el pin que elijas<br><br>💡 Empezá con brillo bajo (20-30%) para no encandilarte ni consumir demasiada corriente.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Abre Pantallas › NeoPixel",
+        desc: "Haz clic en <b>Pantallas</b> y luego en <b>NeoPixel</b> para desplegarlos.",
+        highlightCat: "NeoPixel", expandCat: "Pantallas", bloque: null
+      },
+      {
+        titulo: "Selecciona la subcategoría NeoPixel 8x8",
+        desc: "Dentro de <b>NeoPixel</b> haz clic en <b>NeoPixel 8x8</b> para ver sus bloques.",
+        highlightCat: "NeoPixel 8x8", expandCats: ["Pantallas", "NeoPixel"], bloque: null
+      },
+      {
+        titulo: "Arrastra: Inicializar matriz 8x8",
+        desc: "Arrastra el bloque <em>pin layout rotación</em> al área de trabajo. Dejá el pin y el layout por defecto. Este bloque va <b>una sola vez</b> al inicio.",
+        highlightCat: "NeoPixel 8x8", expandCats: ["Pantallas", "NeoPixel"],
+        bloque: "neopixel_init_8x8", bloqueLabel: "Inicializar matriz 8x8"
+      },
+      {
+        titulo: "Arrastra: Pintar un píxel",
+        desc: "Arrastra el bloque <em>pixel x y color</em> debajo. Poné x=<b>4</b>, y=<b>4</b> (cerca del centro) y elegí un color.",
+        highlightCat: "NeoPixel 8x8", expandCats: ["Pantallas", "NeoPixel"],
+        bloque: "neopixel_pixel", bloqueLabel: "pixel x y color"
+      },
+      {
+        titulo: "Arrastra: Mostrar con brillo",
+        desc: "Arrastra el bloque <em>brillo</em> debajo — este es el que <b>envía</b> los colores a la matriz (sin él no se ve nada). Usá el slider para poner el brillo en <b>20%</b>.",
+        highlightCat: "NeoPixel 8x8", expandCats: ["Pantallas", "NeoPixel"],
+        bloque: "neopixel_show", bloqueLabel: "brillo"
+      },
+      {
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "¡Ejecuta y prueba!",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Deberías ver un solo LED encendido cerca del centro de la matriz, con el color y brillo que elegiste. 🌈",
         highlightElement: "#btnRun", waitForAction: "run"
       }
     ]
