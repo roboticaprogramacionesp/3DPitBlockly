@@ -2036,7 +2036,7 @@
       steps: [
         {
           titulo: '¿Qué aprenderemos?',
-          desc: 'Crearás un juego donde el jugador debe esquivar un obstáculo que cae desde arriba. En vez de dos personajes con nombre (fácil de confundir), el obstáculo será un rectángulo dibujado que se controla con <b>variables</b> -- así solo el jugador responde al teclado.',
+          desc: 'Crearás un juego donde el jugador debe esquivar un obstáculo que cae desde arriba, sobreviviendo el mayor tiempo posible. En vez de dos personajes con nombre (fácil de confundir), el obstáculo será un rectángulo dibujado que se controla con <b>variables</b> -- así solo el jugador responde al teclado. El choque de verdad <b>termina el juego</b> y te muestra cuántos segundos sobreviviste.',
           highlightCat: null, bloque: null
         },
         {
@@ -2085,6 +2085,51 @@
           highlightCat: 'Matemáticas', expandCat: null, bloque: 'math_number', bloqueLabel: 'Número'
         },
         {
+          titulo: 'Crea la variable contador',
+          desc: 'Ve a <b>Variables</b> y crea una variable llamada <b>contador</b>: cuenta los fotogramas desde el último segundo completo. El juego dibuja unos 60 fotogramas por segundo, así que cuando llegue a 60 habrá pasado 1 segundo real.',
+          highlightCat: 'Variables', highlightFlyoutButton: 'create_variable', variable: 'contador', expandCat: null, bloque: null
+        },
+        {
+          titulo: 'Establece contador',
+          desc: 'Ve a <b>Variables</b> y arrastra el bloque <em>Establecer contador a</em>.',
+          highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
+        },
+        {
+          titulo: 'Escribe 0',
+          desc: 'Ve a <b>Matemáticas</b> y arrastra un bloque <em>Número</em> con valor <b>0</b>.',
+          highlightCat: 'Matemáticas', expandCat: null, bloque: 'math_number', bloqueLabel: 'Número'
+        },
+        {
+          titulo: 'Crea la variable segundos',
+          desc: 'Ve a <b>Variables</b> y crea una variable llamada <b>segundos</b>: cuánto tiempo llevas sobreviviendo. Es tu puntaje en este juego.',
+          highlightCat: 'Variables', highlightFlyoutButton: 'create_variable', variable: 'segundos', expandCat: null, bloque: null
+        },
+        {
+          titulo: 'Establece segundos',
+          desc: 'Ve a <b>Variables</b> y arrastra el bloque <em>Establecer segundos a</em>.',
+          highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
+        },
+        {
+          titulo: 'Escribe 0 para segundos',
+          desc: 'Ve a <b>Matemáticas</b> y arrastra un bloque <em>Número</em> con valor <b>0</b>.',
+          highlightCat: 'Matemáticas', expandCat: null, bloque: 'math_number', bloqueLabel: 'Número'
+        },
+        {
+          titulo: 'Crea la variable jugando',
+          desc: 'Ve a <b>Variables</b> y crea una variable llamada <b>jugando</b>: vale verdadero mientras no hayas chocado, y falso después del choque. Así el juego sabe cuándo parar.',
+          highlightCat: 'Variables', highlightFlyoutButton: 'create_variable', variable: 'jugando', expandCat: null, bloque: null
+        },
+        {
+          titulo: 'Establece jugando',
+          desc: 'Ve a <b>Variables</b> y arrastra el bloque <em>Establecer jugando a</em>.',
+          highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
+        },
+        {
+          titulo: 'Escribe verdadero',
+          desc: 'Ve a <b>Lógica</b> y arrastra el bloque <em>verdadero/falso</em>. Déjalo en <b>verdadero</b>.',
+          highlightCat: 'Lógica', expandCat: null, bloque: 'logic_boolean', bloqueLabel: 'verdadero/falso'
+        },
+        {
           titulo: 'Agrega el ciclo del juego',
           desc: 'Ve a <b>Ciclos</b> y arrastra el bloque <em>Repetir mientras Verdadero</em>. Todo el movimiento y el dibujo van dentro de este ciclo.',
           highlightCat: 'Ciclos', expandCat: null, bloque: 'controls_whileUntil', bloqueLabel: 'Repetir mientras Verdadero'
@@ -2095,8 +2140,18 @@
           highlightCat: 'Inicio', expandCat: null, bloque: 'game_clear', bloqueLabel: 'Limpiar pantalla'
         },
         {
+          titulo: 'Si todavía estás jugando',
+          desc: 'Ve a <b>Lógica</b> y arrastra el bloque <em>Si … hacer</em>. Todo el juego (moverte, esquivar, contar segundos) pasa <b>solo</b> mientras <em>jugando</em> sea verdadero.',
+          highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer'
+        },
+        {
+          titulo: 'Condición: obtén jugando',
+          desc: 'Ve a <b>Variables</b> y arrastra <em>obtener jugando</em> directamente en la condición.',
+          highlightCat: 'Variables', expandCat: null, bloque: { tipo: 'variables_get', valor: 'jugando' }, bloqueLabel: 'obtener jugando'
+        },
+        {
           titulo: 'Condición: flecha izquierda',
-          desc: 'Ve a <b>Lógica</b> y arrastra el bloque <em>Si … hacer</em> dentro del ciclo. Como solo hay un personaje (el jugador), esta condición SIEMPRE mueve al jugador, nunca al obstáculo.',
+          desc: 'Dentro del <b>hacer</b>, ve a <b>Lógica</b> y arrastra otro bloque <em>Si … hacer</em>. Como solo hay un personaje (el jugador), esta condición SIEMPRE mueve al jugador, nunca al obstáculo.',
           highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer'
         },
         {
@@ -2126,7 +2181,7 @@
         },
         {
           titulo: 'Haz caer el obstáculo',
-          desc: 'Ve a <b>Variables</b> y arrastra otro bloque <em>Establecer obstaculoY a</em>, fuera de los <em>Si</em>, para que el obstáculo baje un poco en cada vuelta del ciclo.',
+          desc: 'Ve a <b>Variables</b> y arrastra otro bloque <em>Establecer obstaculoY a</em>, fuera de los dos "Si" de flechas (pero dentro del "Si jugando"), para que el obstáculo baje un poco en cada vuelta del ciclo.',
           highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
         },
         {
@@ -2185,8 +2240,48 @@
           highlightCat: 'Inicio', expandCat: null, bloque: 'game_random_int', bloqueLabel: 'Número aleatorio'
         },
         {
+          titulo: 'Avanza el contador de fotogramas',
+          desc: 'Afuera del "Si el obstáculo llega al fondo" (pero dentro del "Si jugando"), ve a <b>Variables</b> y arrastra <em>Cambiar contador por</em>. Dejalo en <b>1</b>.',
+          highlightCat: 'Variables', expandCat: null, bloque: 'math_change', bloqueLabel: 'Cambiar variable por'
+        },
+        {
+          titulo: '¿Pasó un segundo completo?',
+          desc: 'Ve a <b>Lógica</b> y arrastra otro bloque <em>Si … hacer</em>.',
+          highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer'
+        },
+        {
+          titulo: 'Compara el contador con 60',
+          desc: 'Ve a <b>Lógica</b> y arrastra el bloque <em>&gt;= (mayor o igual)</em> en la condición.',
+          highlightCat: 'Lógica', expandCat: null, bloque: 'logic_compare', bloqueLabel: '>= (mayor o igual)'
+        },
+        {
+          titulo: 'Obtén contador para comparar',
+          desc: 'Ve a <b>Variables</b> y arrastra <em>obtener contador</em>. Colócalo en el primer hueco.',
+          highlightCat: 'Variables', expandCat: null, bloque: { tipo: 'variables_get', valor: 'contador' }, bloqueLabel: 'obtener contador'
+        },
+        {
+          titulo: 'Escribe 60',
+          desc: 'Ve a <b>Matemáticas</b> y arrastra un bloque <em>Número</em> con valor <b>60</b>. Colócalo en el segundo hueco.',
+          highlightCat: 'Matemáticas', expandCat: null, bloque: 'math_number', bloqueLabel: 'Número'
+        },
+        {
+          titulo: 'Reinicia el contador',
+          desc: 'Dentro del <b>hacer</b>, ve a <b>Variables</b> y arrastra <em>Establecer contador a</em>.',
+          highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
+        },
+        {
+          titulo: 'Escribe 0 para reiniciar el contador',
+          desc: 'Ve a <b>Matemáticas</b> y arrastra un bloque <em>Número</em> con valor <b>0</b>.',
+          highlightCat: 'Matemáticas', expandCat: null, bloque: 'math_number', bloqueLabel: 'Número'
+        },
+        {
+          titulo: 'Suma un segundo sobrevivido',
+          desc: 'Debajo, todavía dentro del mismo <b>hacer</b>, ve a <b>Variables</b> y arrastra <em>Cambiar segundos por</em>. Dejalo en <b>1</b>.',
+          highlightCat: 'Variables', expandCat: null, bloque: 'math_change', bloqueLabel: 'Cambiar variable por'
+        },
+        {
           titulo: 'Dibuja el obstáculo',
-          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>Rectángulo sólido</em>, después de los dos <em>Si</em>. Usa ancho <b>40</b>, alto <b>40</b> y un color bien visible, por ejemplo <b>#ff3b3b</b> (rojo). Anota ese color: lo necesitas igual en el siguiente paso.',
+          desc: 'Afuera de todos los "Si" anteriores (pero dentro del "Si jugando"), ve a <b>Inicio</b> y arrastra el bloque <em>Rectángulo sólido</em>. Usa ancho <b>40</b>, alto <b>40</b> y un color bien visible, por ejemplo <b>#ff3b3b</b> (rojo). Anota ese color: lo necesitas igual en el siguiente paso.',
           highlightCat: 'Inicio', expandCat: null, bloque: 'game_draw_rect', bloqueLabel: 'Rectángulo sólido'
         },
         {
@@ -2201,27 +2296,47 @@
         },
         {
           titulo: 'Si el jugador toca al obstáculo',
-          desc: 'Ve a <b>Lógica</b> y arrastra el último bloque <em>Si … hacer</em>, después de dibujar el obstáculo.',
+          desc: 'Justo después de dibujar el obstáculo (<b>antes</b> de dibujar al jugador -- es importante el orden, ver el próximo paso), ve a <b>Lógica</b> y arrastra otro bloque <em>Si … hacer</em>.',
           highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer'
         },
         {
           titulo: 'Comprueba el color del choque',
-          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>¿Toca este color?</em> en la condición. Usa <b>exactamente el mismo color</b> que le pusiste al rectángulo (por ejemplo <b>#ff3b3b</b>): así el jugador solo "choca" con el obstáculo, no con el fondo.',
+          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>¿Toca este color?</em> en la condición. Usa <b>exactamente el mismo color</b> que le pusiste al rectángulo (por ejemplo <b>#ff3b3b</b>). <b>Importante:</b> este bloque revisa qué color hay dibujado debajo del jugador <em>en este momento</em> -- si lo revisás después de dibujar al jugador, lo único que vas a encontrar ahí es el propio color del jugador, nunca el del obstáculo. Por eso el choque se comprueba <b>antes</b> de dibujar al jugador.',
           highlightCat: 'Inicio', expandCat: null, bloque: 'touching_color', bloqueLabel: '¿Toca este color?'
         },
         {
-          titulo: 'Muestra el mensaje de choque',
-          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>Escribir texto en pantalla</em> dentro del <b>hacer</b>. Escribe, por ejemplo, "¡Choque!".',
-          highlightCat: 'Inicio', expandCat: null, bloque: 'game_show_text', bloqueLabel: 'Escribir texto en pantalla'
+          titulo: 'Termina el juego al chocar',
+          desc: 'Dentro del <b>hacer</b>, ve a <b>Variables</b> y arrastra <em>Establecer jugando a</em>.',
+          highlightCat: 'Variables', expandCat: null, bloque: { tipo: 'variables_set', valor: 'jugando' }, bloqueLabel: 'Establecer jugando'
+        },
+        {
+          titulo: 'Escribe falso',
+          desc: 'Ve a <b>Lógica</b> y arrastra el bloque <em>verdadero/falso</em>. Cambialo a <b>falso</b>: el choque apaga el juego.',
+          highlightCat: 'Lógica', expandCat: null, bloque: 'logic_boolean', bloqueLabel: 'verdadero/falso'
         },
         {
           titulo: 'Dibuja al jugador',
-          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>Dibujar personaje</em>, como último bloque antes de avanzar el fotograma.',
+          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>Dibujar personaje</em>, <b>después</b> de comprobar el choque (ver los dos pasos anteriores).',
           highlightCat: 'Inicio', expandCat: null, bloque: 'sprite_draw', bloqueLabel: 'Dibujar personaje'
         },
         {
+          titulo: 'Muestra los segundos sobrevividos',
+          desc: 'Ya afuera de todos los "Si" (pero todavía dentro del "Si jugando" grande), ve a <b>Inicio</b> y arrastra <em>Escribir texto en pantalla</em>. En el hueco de texto, ve a <b>Textos</b> y arrastra <em>unir</em> (join) con el texto "Sobreviviste: " y <em>obtener segundos</em>. Ubícalo en X=<b>20</b>, Y=<b>20</b>.',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'game_show_text', bloqueLabel: 'Escribir texto en pantalla'
+        },
+        {
+          titulo: 'Si ya NO estás jugando: muestra el choque',
+          desc: 'Bajá hasta la rama <b>"si no"</b> del primer "Si jugando" (hacé clic en el <b>⚙️</b> de ese bloque y arrastrale un "si no" si todavía no lo tiene). Ve a <b>Inicio</b> y arrastra <em>Escribir texto en pantalla</em> ahí dentro, en X=<b>90</b>, Y=<b>170</b>, tamaño <b>22</b>.',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'game_show_text', bloqueLabel: 'Escribir texto en pantalla'
+        },
+        {
+          titulo: 'Arma el mensaje de choque',
+          desc: 'En el hueco de texto, ve a <b>Textos</b> y arrastra <em>unir</em> (join) con 2 huecos: el texto "¡Choque! Sobreviviste " y <em>obtener segundos</em> (<b>Variables</b>).',
+          highlightCat: 'Textos', expandCat: null, bloque: 'text_join', bloqueLabel: 'unir'
+        },
+        {
           titulo: 'Avanza al siguiente fotograma',
-          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>Siguiente frame</em> como último bloque del ciclo.',
+          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>Siguiente frame</em> como último bloque del ciclo (afuera de todos los "Si").',
           highlightCat: 'Inicio', expandCat: null, bloque: 'game_frame', bloqueLabel: 'Siguiente frame'
         },
         {
@@ -2231,7 +2346,7 @@
         },
         {
           titulo: 'Prueba tu juego',
-          desc: 'Ejecuta y esquiva el obstáculo moviéndote con las flechas. Ajusta la velocidad de caída (el <b>3</b>) hasta que el reto sea divertido y justo.',
+          desc: 'Ejecuta y esquiva el obstáculo moviéndote con las flechas. Al chocar, el juego se detiene y te muestra cuántos segundos sobreviviste. Usa <b>Reiniciar</b> para jugar de nuevo, y ajusta la velocidad de caída (el <b>3</b>) hasta que el reto sea divertido y justo.',
           highlightElement: '#btnGameRun'
         }
       ]
@@ -2244,7 +2359,7 @@
       steps: [
         {
           titulo: '¿Qué aprenderemos?',
-          desc: 'Crearás un juego con contador de <b>puntos</b> y <b>tiempo</b>: cada vez que presiones la barra espaciadora sumas un punto, y el tiempo baja en cada vuelta del ciclo.',
+          desc: 'Crearás un juego con contador de <b>puntos</b> y <b>tiempo</b>: cada vez que presiones la barra espaciadora sumas un punto, y tenés 30 segundos <b>de verdad</b> antes de que el juego termine y te muestre tu puntuación final. Para que el tiempo baje a ritmo de reloj (no en cada vuelta del ciclo, que pasa muchas veces por segundo) vas a usar un <b>contador de fotogramas</b>: el truco que usan la mayoría de los juegos simples para medir segundos.',
           highlightCat: null, bloque: null
         },
         {
@@ -2284,8 +2399,38 @@
         },
         {
           titulo: 'Escribe el tiempo inicial',
-          desc: 'Ve a <b>Matemáticas</b> y arrastra otro bloque <em>Número</em>. Usa <b>30</b> como tiempo de partida.',
+          desc: 'Ve a <b>Matemáticas</b> y arrastra otro bloque <em>Número</em>. Usa <b>30</b> como tiempo de partida, en segundos.',
           highlightCat: 'Matemáticas', expandCat: null, bloque: 'math_number', bloqueLabel: 'Número'
+        },
+        {
+          titulo: 'Crea la variable contador',
+          desc: 'Ve a <b>Variables</b> y crea una variable llamada <b>contador</b>: cuenta los fotogramas (frames) que pasaron desde el último segundo completo. El juego dibuja unos 60 fotogramas por segundo, así que cuando <em>contador</em> llegue a 60, habrá pasado 1 segundo real.',
+          highlightCat: 'Variables', highlightFlyoutButton: 'create_variable', variable: 'contador', expandCat: null, bloque: null
+        },
+        {
+          titulo: 'Establece contador',
+          desc: 'Ve a <b>Variables</b> y arrastra el bloque <em>Establecer contador a</em>.',
+          highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
+        },
+        {
+          titulo: 'Escribe el valor inicial de contador',
+          desc: 'Ve a <b>Matemáticas</b> y arrastra un bloque <em>Número</em>. Déjalo en <b>0</b>.',
+          highlightCat: 'Matemáticas', expandCat: null, bloque: 'math_number', bloqueLabel: 'Número'
+        },
+        {
+          titulo: 'Crea la variable jugando',
+          desc: 'Ve a <b>Variables</b> y crea una variable llamada <b>jugando</b>: vale verdadero mientras quede tiempo, y falso cuando el tiempo se acabe. Así el juego sabe cuándo parar.',
+          highlightCat: 'Variables', highlightFlyoutButton: 'create_variable', variable: 'jugando', expandCat: null, bloque: null
+        },
+        {
+          titulo: 'Establece jugando',
+          desc: 'Ve a <b>Variables</b> y arrastra el bloque <em>Establecer jugando a</em>.',
+          highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
+        },
+        {
+          titulo: 'Escribe verdadero',
+          desc: 'Ve a <b>Lógica</b> y arrastra el bloque <em>verdadero/falso</em>. Déjalo en <b>verdadero</b>: el juego arranca jugándose.',
+          highlightCat: 'Lógica', expandCat: null, bloque: 'logic_boolean', bloqueLabel: 'verdadero/falso'
         },
         {
           titulo: 'Agrega el ciclo del juego',
@@ -2298,8 +2443,18 @@
           highlightCat: 'Inicio', expandCat: null, bloque: 'game_clear', bloqueLabel: 'Limpiar pantalla'
         },
         {
+          titulo: 'Si todavía estás jugando',
+          desc: 'Ve a <b>Lógica</b> y arrastra el bloque <em>Si … hacer</em>, después de limpiar la pantalla. Todo el juego (sumar puntos, bajar el tiempo) va a pasar <b>solo</b> mientras <em>jugando</em> sea verdadero.',
+          highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer'
+        },
+        {
+          titulo: 'Condición: obtén jugando',
+          desc: 'Ve a <b>Variables</b> y arrastra <em>obtener jugando</em> directamente en la condición (ya es verdadero/falso, no hace falta comparar con nada más).',
+          highlightCat: 'Variables', expandCat: null, bloque: { tipo: 'variables_get', valor: 'jugando' }, bloqueLabel: 'obtener jugando'
+        },
+        {
           titulo: 'Condición: barra espaciadora',
-          desc: 'Ve a <b>Lógica</b> y arrastra el bloque <em>Si … hacer</em> dentro del ciclo.',
+          desc: 'Dentro del <b>hacer</b>, ve a <b>Lógica</b> y arrastra otro bloque <em>Si … hacer</em>.',
           highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer'
         },
         {
@@ -2328,28 +2483,78 @@
           highlightCat: 'Matemáticas', expandCat: null, bloque: 'math_number', bloqueLabel: 'Número'
         },
         {
-          titulo: 'Resta 1 al tiempo cada vuelta',
-          desc: 'Ve a <b>Variables</b> y arrastra otro bloque <em>Establecer tiempo a</em>, fuera del <em>Si</em>, para que el tiempo baje en cada vuelta del ciclo.',
-          highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
+          titulo: 'Avanza el contador de fotogramas',
+          desc: 'Afuera del "Si espacio" (pero todavía dentro del "Si jugando"), ve a <b>Variables</b> y arrastra <em>Cambiar contador por</em>. Dejalo en <b>1</b>: este bloque se ejecuta en cada vuelta del ciclo, a diferencia del de espacio que depende de la tecla.',
+          highlightCat: 'Variables', expandCat: null, bloque: 'math_change', bloqueLabel: 'Cambiar variable por'
         },
         {
-          titulo: 'Resta 1 al tiempo actual',
-          desc: 'Ve a <b>Matemáticas</b> y arrastra el bloque <em>- (resta)</em>. Conéctalo al bloque anterior.',
-          highlightCat: 'Matemáticas', expandCat: null, bloque: 'math_arithmetic', bloqueLabel: '- (resta)'
+          titulo: '¿Pasó un segundo completo?',
+          desc: 'Ve a <b>Lógica</b> y arrastra otro bloque <em>Si … hacer</em>: cuando el contador llega a 60 fotogramas, bajamos el tiempo en 1 y reiniciamos el contador.',
+          highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer'
         },
         {
-          titulo: 'Obtén el tiempo actual',
-          desc: 'Ve a <b>Variables</b> y arrastra el bloque <em>obtener tiempo</em>. Colócalo en el primer hueco de la resta.',
-          highlightCat: 'Variables', expandCat: null, bloque: { tipo: 'variables_get', valor: 'tiempo' }, bloqueLabel: 'obtener tiempo'
+          titulo: 'Compara el contador con 60',
+          desc: 'Ve a <b>Lógica</b> y arrastra el bloque <em>&gt;= (mayor o igual)</em> en la condición.',
+          highlightCat: 'Lógica', expandCat: null, bloque: 'logic_compare', bloqueLabel: '>= (mayor o igual)'
         },
         {
-          titulo: 'Escribe 1 para restar',
-          desc: 'Ve a <b>Matemáticas</b> y arrastra un bloque <em>Número</em> con valor <b>1</b>. Colócalo en el segundo hueco de la resta.',
+          titulo: 'Obtén contador para comparar',
+          desc: 'Ve a <b>Variables</b> y arrastra <em>obtener contador</em>. Colócalo en el primer hueco.',
+          highlightCat: 'Variables', expandCat: null, bloque: { tipo: 'variables_get', valor: 'contador' }, bloqueLabel: 'obtener contador'
+        },
+        {
+          titulo: 'Escribe 60',
+          desc: 'Ve a <b>Matemáticas</b> y arrastra un bloque <em>Número</em> con valor <b>60</b>. Colócalo en el segundo hueco.',
           highlightCat: 'Matemáticas', expandCat: null, bloque: 'math_number', bloqueLabel: 'Número'
         },
         {
+          titulo: 'Reinicia el contador',
+          desc: 'Dentro del <b>hacer</b>, ve a <b>Variables</b> y arrastra <em>Establecer contador a</em>.',
+          highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
+        },
+        {
+          titulo: 'Escribe 0 para reiniciar el contador',
+          desc: 'Ve a <b>Matemáticas</b> y arrastra un bloque <em>Número</em> con valor <b>0</b>.',
+          highlightCat: 'Matemáticas', expandCat: null, bloque: 'math_number', bloqueLabel: 'Número'
+        },
+        {
+          titulo: 'Resta 1 al tiempo',
+          desc: 'Debajo, todavía dentro del mismo <b>hacer</b>, ve a <b>Variables</b> y arrastra <em>Cambiar tiempo por</em>. Dejalo en <b>-1</b>: recién ahora el tiempo baja, una vez por segundo real.',
+          highlightCat: 'Variables', expandCat: null, bloque: 'math_change', bloqueLabel: 'Cambiar variable por'
+        },
+        {
+          titulo: '¿Se acabó el tiempo?',
+          desc: 'Afuera del "Si contador>=60" (pero todavía dentro del "Si jugando"), ve a <b>Lógica</b> y arrastra otro bloque <em>Si … hacer</em>.',
+          highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer'
+        },
+        {
+          titulo: 'Compara el tiempo con 0',
+          desc: 'Ve a <b>Lógica</b> y arrastra el bloque <em>&lt;= (menor o igual)</em> en la condición.',
+          highlightCat: 'Lógica', expandCat: null, bloque: 'logic_compare', bloqueLabel: '<= (menor o igual)'
+        },
+        {
+          titulo: 'Obtén tiempo para comparar',
+          desc: 'Ve a <b>Variables</b> y arrastra <em>obtener tiempo</em>. Colócalo en el primer hueco.',
+          highlightCat: 'Variables', expandCat: null, bloque: { tipo: 'variables_get', valor: 'tiempo' }, bloqueLabel: 'obtener tiempo'
+        },
+        {
+          titulo: 'Escribe 0',
+          desc: 'Ve a <b>Matemáticas</b> y arrastra un bloque <em>Número</em> con valor <b>0</b>. Colócalo en el segundo hueco.',
+          highlightCat: 'Matemáticas', expandCat: null, bloque: 'math_number', bloqueLabel: 'Número'
+        },
+        {
+          titulo: 'Termina el juego',
+          desc: 'Dentro del <b>hacer</b>, ve a <b>Variables</b> y arrastra <em>Establecer jugando a</em>: cuando el tiempo llega a 0, dejamos de jugar.',
+          highlightCat: 'Variables', expandCat: null, bloque: { tipo: 'variables_set', valor: 'jugando' }, bloqueLabel: 'Establecer jugando'
+        },
+        {
+          titulo: 'Escribe falso',
+          desc: 'Ve a <b>Lógica</b> y arrastra el bloque <em>verdadero/falso</em>. Cambialo a <b>falso</b>.',
+          highlightCat: 'Lógica', expandCat: null, bloque: 'logic_boolean', bloqueLabel: 'verdadero/falso'
+        },
+        {
           titulo: 'Muestra los puntos en pantalla',
-          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>Escribir texto en pantalla</em>. Ubícalo en X=<b>20</b>, Y=<b>30</b>.',
+          desc: 'Afuera de todos los "Si" anteriores (pero todavía dentro del "Si jugando" grande), ve a <b>Inicio</b> y arrastra el bloque <em>Escribir texto en pantalla</em>. Ubícalo en X=<b>20</b>, Y=<b>30</b>.',
           highlightCat: 'Inicio', expandCat: null, bloque: 'game_show_text', bloqueLabel: 'Escribir texto en pantalla'
         },
         {
@@ -2368,18 +2573,28 @@
           highlightCat: 'Variables', expandCat: null, bloque: { tipo: 'variables_get', valor: 'tiempo' }, bloqueLabel: 'obtener tiempo'
         },
         {
+          titulo: 'Si ya NO estás jugando: muestra el resultado final',
+          desc: 'Bajá hasta la rama <b>"si no"</b> del primer "Si jugando" (hacé clic en el <b>⚙️</b> de ese bloque y arrastrale un "si no" si todavía no lo tiene). Ve a <b>Inicio</b> y arrastra <em>Escribir texto en pantalla</em> ahí dentro, en X=<b>100</b>, Y=<b>170</b>, tamaño <b>22</b>.',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'game_show_text', bloqueLabel: 'Escribir texto en pantalla'
+        },
+        {
+          titulo: 'Arma el mensaje final',
+          desc: 'En el hueco de texto, ve a <b>Textos</b> y arrastra <em>unir</em> (join) con 2 huecos: el texto "¡Tiempo! Puntuación: " y <em>obtener puntos</em> (<b>Variables</b>).',
+          highlightCat: 'Textos', expandCat: null, bloque: 'text_join', bloqueLabel: 'unir'
+        },
+        {
           titulo: 'Avanza al siguiente fotograma',
-          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>Siguiente frame</em> como último bloque del ciclo.',
+          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>Siguiente frame</em> como último bloque del ciclo (afuera de todos los "Si").',
           highlightCat: 'Inicio', expandCat: null, bloque: 'game_frame', bloqueLabel: 'Siguiente frame'
         },
         {
           titulo: 'Abre la vista de juego',
-          desc: 'Usa la <b>vista de juego</b> para ver el marcador y los objetos que van a sumar puntos.',
+          desc: 'Usa la <b>vista de juego</b> para ver el marcador.',
           highlightElement: '#btnGame'
         },
         {
           titulo: 'Prueba el juego',
-          desc: 'Juega varias veces presionando espacio y observa cómo suben los puntos y baja el tiempo. Ajusta el tiempo inicial para que sea entretenido.',
+          desc: 'Presiona espacio varias veces y observa cómo suben los puntos mientras el tiempo baja <b>de a un segundo real por vez</b>. Cuando el tiempo llega a 0, el juego se detiene y muestra tu puntuación final. Usa <b>Reiniciar</b> para jugar de nuevo.',
           highlightElement: '#btnGameRun'
         }
       ]
@@ -2392,12 +2607,12 @@
       steps: [
         {
           titulo: '¿Qué aprenderemos?',
-          desc: 'Construirás un laberinto donde el personaje debe moverse sin salirse del canvas. Practicarás movimiento por teclado y detección de bordes.',
+          desc: 'Construirás un laberinto de <b>verdad</b>: 3 paredes que bloquean el paso de verdad (si las tocás, volvés al inicio) y una meta al otro lado que tenés que alcanzar para escapar. Vas a practicar movimiento por teclado y <b>detección de colisiones por color</b>, la misma técnica de "¡Esquiva y Sobrevive!" pero usada para bloquear el paso en vez de terminar el juego.',
           highlightCat: null, bloque: null
         },
         {
           titulo: 'Abre la categoría Inicio',
-          desc: 'Haz clic en <b>Inicio</b> en el panel de bloques para ver los bloques de pantalla, personaje y bordes.',
+          desc: 'Haz clic en <b>Inicio</b> en el panel de bloques para ver los bloques de pantalla, personaje y colisiones.',
           highlightCat: 'Inicio', expandCat: null, bloque: null
         },
         {
@@ -2407,7 +2622,7 @@
         },
         {
           titulo: 'Crea el personaje',
-          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>Crear personaje</em>. Ubícalo en la entrada del laberinto, por ejemplo X=<b>20</b>, Y=<b>20</b>.',
+          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>Crear personaje</em>. Ubícalo en la entrada del laberinto, X=<b>20</b>, Y=<b>20</b>.',
           highlightCat: 'Inicio', expandCat: null, bloque: 'sprite_create', bloqueLabel: 'Crear personaje'
         },
         {
@@ -2422,17 +2637,27 @@
         },
         {
           titulo: 'Dibuja la primera pared',
-          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>Rectángulo sólido</em> para dibujar una pared del laberinto. Debe estar <b>dentro</b> del ciclo, después de limpiar, para que no se borre.',
+          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>Rectángulo sólido</em>. Usa X=<b>100</b>, Y=<b>0</b>, ancho=<b>20</b>, alto=<b>250</b>, color <b>#777777</b> (gris). Deja un hueco libre en la parte de abajo de la pantalla para poder pasar.',
           highlightCat: 'Inicio', expandCat: null, bloque: 'game_draw_rect', bloqueLabel: 'Rectángulo sólido'
         },
         {
           titulo: 'Dibuja la segunda pared',
-          desc: 'Ve a <b>Inicio</b> y arrastra otro bloque <em>Rectángulo sólido</em> para otra pared, en una posición distinta.',
+          desc: 'Ve a <b>Inicio</b> y arrastra otro bloque <em>Rectángulo sólido</em>. Usa X=<b>250</b>, Y=<b>110</b>, ancho=<b>20</b>, alto=<b>250</b>, mismo color <b>#777777</b>. Esta vez el hueco libre queda arriba: para pasar tenés que subir primero.',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'game_draw_rect', bloqueLabel: 'Rectángulo sólido'
+        },
+        {
+          titulo: 'Dibuja la tercera pared',
+          desc: 'Ve a <b>Inicio</b> y arrastra otro bloque <em>Rectángulo sólido</em>. Usa X=<b>380</b>, Y=<b>0</b>, ancho=<b>20</b>, alto=<b>250</b>, mismo color <b>#777777</b>. Con las 3 paredes, el camino queda en zigzag: abajo, arriba, abajo.',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'game_draw_rect', bloqueLabel: 'Rectángulo sólido'
+        },
+        {
+          titulo: 'Dibuja la meta',
+          desc: 'Ve a <b>Inicio</b> y arrastra otro bloque <em>Rectángulo sólido</em>, para marcar la salida del laberinto. Usa X=<b>440</b>, Y=<b>320</b>, ancho=<b>30</b>, alto=<b>30</b>, color <b>#2ecc71</b> (verde) -- bien distinto del gris de las paredes, para no confundirlos.',
           highlightCat: 'Inicio', expandCat: null, bloque: 'game_draw_rect', bloqueLabel: 'Rectángulo sólido'
         },
         {
           titulo: 'Condición: flecha arriba',
-          desc: 'Ve a <b>Lógica</b> y arrastra el bloque <em>Si … hacer</em>, después de dibujar las paredes.',
+          desc: 'Ve a <b>Lógica</b> y arrastra el bloque <em>Si … hacer</em>, después de dibujar las paredes y la meta.',
           highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer'
         },
         {
@@ -2477,7 +2702,7 @@
         },
         {
           titulo: 'Condición: flecha derecha',
-          desc: 'Ve a <b>Lógica</b> y arrastra el último bloque <em>Si … hacer</em>.',
+          desc: 'Ve a <b>Lógica</b> y arrastra el último bloque <em>Si … hacer</em> del movimiento.',
           highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer'
         },
         {
@@ -2491,8 +2716,48 @@
           highlightCat: 'Inicio', expandCat: null, bloque: 'sprite_move', bloqueLabel: 'Mover personaje'
         },
         {
+          titulo: 'Detecta si toca una pared',
+          desc: 'Ve a <b>Lógica</b> y arrastra otro bloque <em>Si … hacer</em>, <b>antes</b> de dibujar al personaje (todavía no llegamos a ese bloque, pero recordalo: el orden importa, igual que en "¡Esquiva y Sobrevive!").',
+          highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer'
+        },
+        {
+          titulo: 'Comprueba el color de la pared',
+          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>¿Toca este color?</em> en la condición. Usa <b>exactamente</b> el mismo gris de las paredes, <b>#777777</b>.',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'touching_color', bloqueLabel: '¿Toca este color?'
+        },
+        {
+          titulo: 'La pared te manda de vuelta al inicio',
+          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>Poner personaje en X,Y</em> dentro del <b>hacer</b>. Usa X=<b>20</b>, Y=<b>20</b>: si tocás una pared, no podés atravesarla, volvés al principio.',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'sprite_set_pos', bloqueLabel: 'Poner personaje en X,Y'
+        },
+        {
+          titulo: 'Detecta si llegaste a la meta',
+          desc: 'Afuera del "Si toca pared" (pero todavía antes de dibujar al personaje), ve a <b>Lógica</b> y arrastra otro bloque <em>Si … hacer</em>.',
+          highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer'
+        },
+        {
+          titulo: 'Comprueba el color de la meta',
+          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>¿Toca este color?</em> en la condición. Usa el verde de la meta, <b>#2ecc71</b>.',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'touching_color', bloqueLabel: '¿Toca este color?'
+        },
+        {
+          titulo: 'Muestra el mensaje de victoria',
+          desc: 'Dentro del <b>hacer</b>, ve a <b>Inicio</b> y arrastra <em>Escribir texto en pantalla</em>. Escribe "¡Escapaste! 🎉" en X=<b>140</b>, Y=<b>170</b>, color blanco, tamaño <b>22</b>.',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'game_show_text', bloqueLabel: 'Escribir texto en pantalla'
+        },
+        {
+          titulo: 'Espera un momento para festejar',
+          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>esperar … segundos</em>. Dejalo en <b>1.5</b>, para que te dé tiempo de leer el mensaje antes de volver a empezar.',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'game_wait', bloqueLabel: 'esperar … segundos'
+        },
+        {
+          titulo: 'Vuelve a la entrada para jugar de nuevo',
+          desc: 'Ve a <b>Inicio</b> y arrastra <em>Poner personaje en X,Y</em>, como último bloque de este "Si". Usa X=<b>20</b>, Y=<b>20</b>: al escapar, el laberinto se reinicia para que lo puedas recorrer otra vez.',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'sprite_set_pos', bloqueLabel: 'Poner personaje en X,Y'
+        },
+        {
           titulo: 'Detecta si toca el borde',
-          desc: 'Ve a <b>Lógica</b> y arrastra otro bloque <em>Si … hacer</em>, para reiniciar al personaje si se sale del canvas.',
+          desc: 'Afuera del "Si toca meta", ve a <b>Lógica</b> y arrastra otro bloque <em>Si … hacer</em>, para reiniciar al personaje si se sale del canvas.',
           highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer'
         },
         {
@@ -2502,12 +2767,12 @@
         },
         {
           titulo: 'Regresa al punto de inicio',
-          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>Poner personaje en X,Y</em> dentro del <b>hacer</b>. Usa la misma posición inicial, por ejemplo X=<b>20</b>, Y=<b>20</b>.',
+          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>Poner personaje en X,Y</em> dentro del <b>hacer</b>. Usa la misma posición inicial, X=<b>20</b>, Y=<b>20</b>.',
           highlightCat: 'Inicio', expandCat: null, bloque: 'sprite_set_pos', bloqueLabel: 'Poner personaje en X,Y'
         },
         {
           titulo: 'Dibuja el personaje',
-          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>Dibujar personaje</em>, después de comprobar el borde.',
+          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>Dibujar personaje</em>, <b>después</b> de comprobar la pared, la meta y el borde -- igual que en "¡Esquiva y Sobrevive!", si lo dibujás antes, los "¿Toca este color?" van a encontrar el color del propio personaje en vez del de las paredes.',
           highlightCat: 'Inicio', expandCat: null, bloque: 'sprite_draw', bloqueLabel: 'Dibujar personaje'
         },
         {
@@ -2522,7 +2787,7 @@
         },
         {
           titulo: 'Prueba tu laberinto',
-          desc: 'Ejecuta y recorre el laberinto con las flechas. Ajusta las paredes y prueba que la ruta sea posible antes de compartir tu juego.',
+          desc: 'Ejecuta y recorre el laberinto con las flechas: bajá para pasar la primera pared, subí para pasar la segunda, volvé a bajar para pasar la tercera, y llegá al cuadrado verde para escapar. Si tocás una pared gris, volvés al inicio. Ajusta las paredes y prueba que la ruta sea posible antes de compartir tu juego.',
           highlightElement: '#btnGameRun'
         }
       ]
@@ -2535,7 +2800,7 @@
       steps: [
         {
           titulo: '¿Qué aprenderemos?',
-          desc: 'Harás un juego donde el objetivo es hacer clic sobre un blanco que cambia de posición cada vez que lo aciertas.',
+          desc: 'Harás un juego donde el objetivo es hacer clic <b>justo sobre</b> un blanco que cambia de posición cada vez que lo aciertas. Solo cuenta si el clic cae <b>cerca del centro</b> del blanco -- hacer clic en cualquier otro lugar de la pantalla se cuenta como un fallo. Vas a usar la misma herramienta de <b>distancia entre puntos</b> que mide qué tan cerca cayó tu clic.',
           highlightCat: null, bloque: null
         },
         {
@@ -2569,6 +2834,21 @@
           highlightCat: 'Matemáticas', expandCat: null, bloque: 'math_number', bloqueLabel: 'Número'
         },
         {
+          titulo: 'Crea la variable fallos',
+          desc: 'Ve a <b>Variables</b> y crea una variable llamada <b>fallos</b>: cuenta los clics que caen fuera del blanco.',
+          highlightCat: 'Variables', highlightFlyoutButton: 'create_variable', variable: 'fallos', expandCat: null, bloque: null
+        },
+        {
+          titulo: 'Establece fallos',
+          desc: 'Ve a <b>Variables</b> y arrastra el bloque <em>Establecer fallos a</em>.',
+          highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
+        },
+        {
+          titulo: 'Escribe el valor inicial de fallos',
+          desc: 'Ve a <b>Matemáticas</b> y arrastra un bloque <em>Número</em>. Déjalo en <b>0</b>.',
+          highlightCat: 'Matemáticas', expandCat: null, bloque: 'math_number', bloqueLabel: 'Número'
+        },
+        {
           titulo: 'Agrega el ciclo del juego',
           desc: 'Ve a <b>Ciclos</b> y arrastra el bloque <em>Repetir mientras Verdadero</em>. Todo el juego de puntería va dentro de este ciclo.',
           highlightCat: 'Ciclos', expandCat: null, bloque: 'controls_whileUntil', bloqueLabel: 'Repetir mientras Verdadero'
@@ -2594,8 +2874,48 @@
           highlightCat: 'Inicio', expandCat: null, bloque: 'mouse_left_clicked', bloqueLabel: '¿Clic izquierdo?'
         },
         {
+          titulo: '¿El clic cayó cerca del blanco?',
+          desc: 'Dentro del <b>hacer</b>, ve a <b>Lógica</b> y arrastra otro bloque <em>Si … hacer</em>. Hacé clic en el <b>⚙️</b> (engranaje) y arrastrale un <b>"si no"</b> adentro -- lo vas a necesitar para contar los fallos, no solo los aciertos.',
+          highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer'
+        },
+        {
+          titulo: 'Compara la distancia',
+          desc: 'Ve a <b>Lógica</b> y arrastra el bloque <em>&lt; (menor que)</em> en la condición.',
+          highlightCat: 'Lógica', expandCat: null, bloque: 'logic_compare', bloqueLabel: '< (menor que)'
+        },
+        {
+          titulo: 'Calcula la distancia del clic al blanco',
+          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>Distancia entre puntos</em>. Colócalo en el primer hueco de la comparación.',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'game_distance', bloqueLabel: 'Distancia entre puntos'
+        },
+        {
+          titulo: 'Obtén la posición X del clic',
+          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>Posición X del mouse</em>. Colócalo en el primer hueco (X1) de la distancia.',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'mouse_x', bloqueLabel: 'Posición X del mouse'
+        },
+        {
+          titulo: 'Obtén la posición Y del clic',
+          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>Posición Y del mouse</em>. Colócalo en el segundo hueco (Y1).',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'mouse_y', bloqueLabel: 'Posición Y del mouse'
+        },
+        {
+          titulo: 'Obtén la posición X del blanco',
+          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>Posición X del personaje</em>. Colócalo en el tercer hueco (X2).',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'sprite_get_x', bloqueLabel: 'Posición X del personaje'
+        },
+        {
+          titulo: 'Obtén la posición Y del blanco',
+          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>Posición Y del personaje</em>. Colócalo en el cuarto hueco (Y2).',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'sprite_get_y', bloqueLabel: 'Posición Y del personaje'
+        },
+        {
+          titulo: 'Escribe el margen de acierto',
+          desc: 'Ve a <b>Matemáticas</b> y arrastra un bloque <em>Número</em> con valor <b>25</b>. Colócalo en el segundo hueco de la comparación: si el clic cayó a menos de 25 píxeles del centro del blanco, cuenta como acierto.',
+          highlightCat: 'Matemáticas', expandCat: null, bloque: 'math_number', bloqueLabel: 'Número'
+        },
+        {
           titulo: 'Suma un punto',
-          desc: 'Ve a <b>Variables</b> y arrastra otro bloque <em>Establecer puntos a</em> dentro del <b>hacer</b>.',
+          desc: 'En la rama de <b>acertaste</b>, ve a <b>Variables</b> y arrastra otro bloque <em>Establecer puntos a</em>.',
           highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
         },
         {
@@ -2615,7 +2935,7 @@
         },
         {
           titulo: 'Mueve el blanco a una posición nueva',
-          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>Poner personaje en X,Y</em> dentro del <b>hacer</b>, para que el blanco cambie de lugar cada vez que lo aciertas.',
+          desc: 'Todavía dentro de <b>acertaste</b>, ve a <b>Inicio</b> y arrastra el bloque <em>Poner personaje en X,Y</em>, para que el blanco cambie de lugar cada vez que lo aciertas.',
           highlightCat: 'Inicio', expandCat: null, bloque: 'sprite_set_pos', bloqueLabel: 'Poner personaje en X,Y'
         },
         {
@@ -2629,14 +2949,29 @@
           highlightCat: 'Inicio', expandCat: null, bloque: 'game_random_int', bloqueLabel: 'Número aleatorio'
         },
         {
-          titulo: 'Muestra los puntos en pantalla',
-          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>Escribir texto en pantalla</em>, fuera del <em>Si</em>. Ubícalo en X=<b>20</b>, Y=<b>30</b>.',
-          highlightCat: 'Inicio', expandCat: null, bloque: 'game_show_text', bloqueLabel: 'Escribir texto en pantalla'
+          titulo: 'Si no acertaste: suma un fallo',
+          desc: 'Bajá hasta la rama <b>"si no"</b> del mismo bloque "Si" (la que agregaste con el engranaje). Ve a <b>Variables</b> y arrastra <em>Establecer fallos a</em> ahí dentro.',
+          highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
         },
         {
-          titulo: 'Obtén los puntos para mostrarlos',
-          desc: 'Ve a <b>Variables</b> y arrastra el bloque <em>obtener puntos</em>. Colócalo en el hueco de texto.',
-          highlightCat: 'Variables', expandCat: null, bloque: { tipo: 'variables_get', valor: 'puntos' }, bloqueLabel: 'obtener puntos'
+          titulo: 'Suma 1 a los fallos',
+          desc: 'Ve a <b>Matemáticas</b> y arrastra el bloque <em>+ (suma)</em>.',
+          highlightCat: 'Matemáticas', expandCat: null, bloque: 'math_arithmetic', bloqueLabel: '+ (suma)'
+        },
+        {
+          titulo: 'Obtén los fallos actuales',
+          desc: 'Ve a <b>Variables</b> y arrastra <em>obtener fallos</em>. Colócalo en el primer hueco de la suma.',
+          highlightCat: 'Variables', expandCat: null, bloque: { tipo: 'variables_get', valor: 'fallos' }, bloqueLabel: 'obtener fallos'
+        },
+        {
+          titulo: 'Escribe 1 para sumar a fallos',
+          desc: 'Ve a <b>Matemáticas</b> y arrastra un bloque <em>Número</em> con valor <b>1</b>.',
+          highlightCat: 'Matemáticas', expandCat: null, bloque: 'math_number', bloqueLabel: 'Número'
+        },
+        {
+          titulo: 'Muestra los puntos y los fallos',
+          desc: 'Ya afuera de los dos "Si" (pero todavía dentro del ciclo), ve a <b>Inicio</b> y arrastra el bloque <em>Escribir texto en pantalla</em>. En el hueco de texto, ve a <b>Textos</b> y arrastra <em>unir</em> (join) con 4 huecos: "Puntos: ", <em>obtener puntos</em>, "  Fallos: ", <em>obtener fallos</em>. Ubícalo en X=<b>20</b>, Y=<b>20</b>.',
+          highlightCat: 'Inicio', expandCat: null, bloque: 'game_show_text', bloqueLabel: 'Escribir texto en pantalla'
         },
         {
           titulo: 'Avanza al siguiente fotograma',
@@ -2650,7 +2985,7 @@
         },
         {
           titulo: 'Juega y mejora',
-          desc: 'Haz clic sobre el blanco varias veces y observa cómo suben tus puntos. Ajusta el tamaño y la posición para que sea más o menos difícil.',
+          desc: 'Hacé clic justo sobre el blanco para sumar puntos -- si clicás lejos, suma a <b>fallos</b> en vez de a <b>puntos</b>. Ajusta el margen de 25 píxeles para que sea más o menos exigente.',
           highlightElement: '#btnGameRun'
         }
       ]

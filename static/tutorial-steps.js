@@ -43,6 +43,11 @@ var TUTORIALS = {
         highlightCat: "LED", expandCat: "LEDs", bloque: "set_led", bloqueLabel: "Encender / Apagar LED"
       },
       {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
+      },
+      {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
         desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
@@ -117,6 +122,11 @@ var TUTORIALS = {
         highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
       },
       {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
+      },
+      {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
         desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
@@ -189,6 +199,11 @@ var TUTORIALS = {
         titulo: "Fase AMARILLO: esperar",
         desc: "Ve a <b>Tiempo</b> y arrastra el último bloque <em>time_sleep</em> después del bloque amarillo. Ajusta el valor a <b>1</b> segundo. Al terminar, el ciclo vuelve a empezar en rojo, igual que un semáforo real.",
         highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
+      },
+      {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
       },
       {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
@@ -435,6 +450,11 @@ var TUTORIALS = {
         highlightCat: "Buzzer (KY-006)", expandCats: ["Sensores", "Sensores Digitales"], bloque: "buzzer_stop", bloqueLabel: "Detener buzzer"
       },
       {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
+      },
+      {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
         desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
@@ -476,6 +496,11 @@ var TUTORIALS = {
         titulo: "Mueve a 0°, 90° y 180°",
         desc: "Arrastra 3 bloques <em>Mover servo a grados</em> con ángulos <b>0</b>, <b>90</b> y <b>180</b>. Después de cada uno arrastra un bloque <em>Esperar</em> de <b>1</b> segundo.",
         highlightCat: "Servo", expandCat: "Actuadores", bloque: "move_servo", bloqueLabel: "Mover servo a grados"
+      },
+      {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
       },
       {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
@@ -560,6 +585,11 @@ var TUTORIALS = {
         titulo: "Agrega una espera",
         desc: "Ve a <b>Tiempo</b> y arrastra el bloque <em>time_sleep</em> al final del ciclo. Ajusta el valor a <b>0.5</b> segundos para no saturar el monitor serial.",
         highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
+      },
+      {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
       },
       {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
@@ -730,6 +760,11 @@ var TUTORIALS = {
         highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
       },
       {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
+      },
+      {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
         desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
@@ -805,6 +840,11 @@ var TUTORIALS = {
         highlightCat: "NeoPixel", expandCat: "Pantallas", bloque: "neopixel_write", bloqueLabel: "Actualizar LEDs (mostrar colores)"
       },
       {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
+      },
+      {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
         desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
@@ -853,6 +893,11 @@ var TUTORIALS = {
         desc: "Arrastra el bloque <em>girar ... grados</em> debajo. Dejá el ángulo en <b>90</b> grados — el motor va a girar esa cantidad de grados <b>desde donde esté</b> (movimiento relativo).",
         highlightCat: "Stepper Motor", expandCat: "Actuadores",
         bloque: "stepper_degrees", bloqueLabel: "girar grados"
+      },
+      {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
       },
       {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
@@ -967,6 +1012,11 @@ var TUTORIALS = {
         highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
       },
       {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
+      },
+      {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
         desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
@@ -1026,6 +1076,11 @@ var TUTORIALS = {
         desc: "Arrastra otro bloque <em>Actuador ... value</em>, mismo <b>Pin</b>, y elegí estado <b>off</b>.",
         highlightCat: "Relevador", expandCat: "Actuadores",
         bloque: "actuador_on_off", bloqueLabel: "Actuador ... value"
+      },
+      {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
       },
       {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
@@ -1111,6 +1166,11 @@ var TUTORIALS = {
         desc: "Ve a <b>Tiempo</b> y arrastra el bloque <em>Esperar</em> al final del ciclo. Ajusta el valor a <b>0.2</b> segundos para no saturar el monitor serial.",
         highlightCat: "Tiempo",
         bloque: "time_sleep", bloqueLabel: "esperar 0.2 s"
+      },
+      {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
       },
       {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
@@ -1543,6 +1603,11 @@ var TUTORIALS = {
         bloque: "time_sleep"
       },
       {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
+      },
+      {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
         desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
@@ -1681,6 +1746,11 @@ var TUTORIALS = {
         bloque: "socket_close", bloqueLabel: "Cerrar socket"
       },
       {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
+      },
+      {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
         desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
@@ -1781,6 +1851,11 @@ var TUTORIALS = {
         desc: "Ve a <b>Textos</b> y arrastra el bloque <em>texto</em>. Conéctalo al parámetro <b>msg</b> del bloque <em>enviar_msg</em>. Escribe el mensaje que deseas enviar al servidor, por ejemplo <b>Hola desde ESP32!</b>.",
         highlightCat: "Textos", expandCat: null,
         bloque: "text", bloqueLabel: "Texto (cadena)"
+      },
+      {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
       },
       {
         titulo: "Conecta tu ESP32 cliente y Selecciona tu puerto",
@@ -1894,6 +1969,11 @@ var TUTORIALS = {
         highlightCat: "Portal Cautivo", expandCat: "Comunicación Inalambrica", bloque: "async_sleep_ms"
       },
       {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
+      },
+      {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
         desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
@@ -1970,6 +2050,11 @@ var TUTORIALS = {
         }
       },
       {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
+      },
+      {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
         desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
@@ -2017,6 +2102,11 @@ var TUTORIALS = {
         desc: "Arrastra el bloque <em>IR NEC dirección comando</em> debajo. Escribí <b>0</b> en dirección y <b>1</b> en comando — es solo un código de prueba, cada control remoto real usa sus propios números.",
         highlightCat: "IR TX (KY-005)", expandCat: "LEDs",
         bloque: "ky005_send_nec", bloqueLabel: "IR NEC dirección comando"
+      },
+      {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
       },
       {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
@@ -2148,6 +2238,11 @@ var TUTORIALS = {
         highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
       },
       {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
+      },
+      {
         titulo: "Conecta tu ESP32 receptor y Selecciona tu puerto",
         desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
@@ -2227,6 +2322,11 @@ var TUTORIALS = {
         bloque: "text", bloqueLabel: "Texto (mensaje)"
       },
       {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
+      },
+      {
         titulo: "Conecta tu ESP32 emisor y Selecciona tu puerto",
         desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
@@ -2284,6 +2384,11 @@ var TUTORIALS = {
         desc: "Volvé a <b>Comunicación Inalambrica › WiFi</b> y arrastra el bloque <em>WiFi IP actual</em> dentro del hueco de <em>imprimir</em>.",
         highlightCat: "WiFi", expandCat: "Comunicación Inalambrica",
         bloque: "wifi_current_ip", bloqueLabel: "WiFi IP actual"
+      },
+      {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
       },
       {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
@@ -2376,6 +2481,11 @@ var TUTORIALS = {
         titulo: "Instala la app en tu celular",
         desc: "En tu celular Android descarga la app <b>Serial Bluetooth Terminal</b> (o similar). Activa el Bluetooth, busca el HC-06, emparéjalo (contraseña por defecto: <b>1234</b>) y conéctate desde la app.",
         highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
       },
       {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
@@ -2473,6 +2583,11 @@ var TUTORIALS = {
         highlightCat: null, bloque: null
       },
       {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
+      },
+      {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
         desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
@@ -2564,6 +2679,11 @@ var TUTORIALS = {
         desc: "Ve a <b>Tiempo</b> y arrastra el bloque <em>Esperar</em> al final del ciclo. Ajusta el valor a <b>2</b> segundos. El DHT11 necesita al menos 1 segundo entre lecturas; con 2 s tenemos margen.",
         highlightCat: "Tiempo",
         bloque: "time_sleep", bloqueLabel: "esperar 2 s"
+      },
+      {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
       },
       {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
@@ -2664,6 +2784,11 @@ var TUTORIALS = {
         bloque: "text_print", bloqueLabel: "imprimir"
       },
       {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
+      },
+      {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
         desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
@@ -2717,6 +2842,11 @@ var TUTORIALS = {
         desc: "Arrastra el bloque <em>texto x y</em> debajo de <em>limpiar</em>. Escribe <b>'Hola ESP32'</b> como texto, y deja <b>x=0, y=0</b> (esquina superior izquierda).",
         highlightCat: "OLED", expandCat: "Pantallas",
         bloque: "oled_text", bloqueLabel: "texto x y"
+      },
+      {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
       },
       {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
@@ -2780,6 +2910,11 @@ var TUTORIALS = {
         bloque: "sh1106_rotate", bloqueLabel: "rotar"
       },
       {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
+      },
+      {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
         desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
@@ -2833,6 +2968,11 @@ var TUTORIALS = {
         desc: "Arrastra el bloque <em>escribir</em> debajo. Conecta un bloque de texto con <b>'Hola ESP32'</b>.",
         highlightCat: "LCD I2C", expandCat: "Pantallas",
         bloque: "lcd_i2c_print", bloqueLabel: "escribir"
+      },
+      {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
       },
       {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
@@ -2901,6 +3041,11 @@ var TUTORIALS = {
         highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
       },
       {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
+      },
+      {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
         desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
@@ -2967,6 +3112,11 @@ var TUTORIALS = {
         highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
       },
       {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
+      },
+      {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
         desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
@@ -3014,6 +3164,11 @@ var TUTORIALS = {
         desc: "Arrastra el bloque <em>mostrar valor</em> debajo. Conecta un bloque numérico con, por ejemplo, <b>1234</b>.",
         highlightCat: "TM1637", expandCat: "Pantallas",
         bloque: "tm1637_number", bloqueLabel: "mostrar valor"
+      },
+      {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
       },
       {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
@@ -3069,6 +3224,11 @@ var TUTORIALS = {
         desc: "Arrastra el bloque <em>texto</em> debajo. Conecta un bloque de texto con, por ejemplo, <b>'Hola'</b>.",
         highlightCat: "Matrix 8x8", expandCat: "Pantallas",
         bloque: "matrix8_text", bloqueLabel: "texto"
+      },
+      {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
       },
       {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
@@ -3137,6 +3297,11 @@ var TUTORIALS = {
         highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
       },
       {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
+      },
+      {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
         desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
@@ -3195,6 +3360,11 @@ var TUTORIALS = {
         titulo: "Esperar",
         desc: "Ve a <b>Tiempo</b> y arrastra el bloque <em>Esperar</em> con <b>0.2</b> segundos, como último bloque dentro del ciclo.",
         highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
+      },
+      {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
       },
       {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
@@ -3263,6 +3433,11 @@ var TUTORIALS = {
         highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
       },
       {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
+      },
+      {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
         desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
@@ -3321,6 +3496,11 @@ var TUTORIALS = {
         titulo: "Esperar",
         desc: "Ve a <b>Tiempo</b> y arrastra el bloque <em>Esperar</em> con <b>0.2</b> segundos, como último bloque dentro del ciclo.",
         highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
+      },
+      {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
       },
       {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
@@ -3383,6 +3563,11 @@ var TUTORIALS = {
         highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
       },
       {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
+      },
+      {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
         desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
@@ -3441,6 +3626,11 @@ var TUTORIALS = {
         titulo: "Esperar",
         desc: "Ve a <b>Tiempo</b> y arrastra el bloque <em>Esperar</em> con <b>0.2</b> segundos, como último bloque dentro del ciclo.",
         highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
+      },
+      {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
       },
       {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
@@ -3503,6 +3693,11 @@ var TUTORIALS = {
         highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
       },
       {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
+      },
+      {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
         desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
@@ -3561,6 +3756,11 @@ var TUTORIALS = {
         titulo: "Esperar",
         desc: "Ve a <b>Tiempo</b> y arrastra el bloque <em>Esperar</em> con <b>1</b> segundo, como último bloque dentro del ciclo.",
         highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
+      },
+      {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
       },
       {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
@@ -3629,6 +3829,11 @@ var TUTORIALS = {
         highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
       },
       {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
+      },
+      {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
         desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
@@ -3678,6 +3883,11 @@ var TUTORIALS = {
         bloque: "seg7_number", bloqueLabel: "número"
       },
       {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
+      },
+      {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
         desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
@@ -3725,6 +3935,11 @@ var TUTORIALS = {
         desc: "Arrastra el bloque <em>escribir</em> debajo. Conecta un bloque de texto con <b>'Hola ESP32'</b>.",
         highlightCat: "LCD", expandCat: "Pantallas",
         bloque: "lcd_print", bloqueLabel: "escribir"
+      },
+      {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
       },
       {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
@@ -3782,6 +3997,11 @@ var TUTORIALS = {
         bloque: "tft_text", bloqueLabel: "texto x y color"
       },
       {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
+      },
+      {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
         desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
@@ -3837,6 +4057,11 @@ var TUTORIALS = {
         bloque: "neopixel_show", bloqueLabel: "brillo"
       },
       {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
+      },
+      {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
         desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
@@ -3890,6 +4115,11 @@ var TUTORIALS = {
         desc: "Arrastra el bloque <em>brillo</em> debajo — este es el que <b>envía</b> los colores a la matriz (sin él no se ve nada). Usá el slider para poner el brillo en <b>20%</b>.",
         highlightCat: "NeoPixel 8x8", expandCats: ["Pantallas", "NeoPixel"],
         bloque: "neopixel_show", bloqueLabel: "brillo"
+      },
+      {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
       },
       {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
@@ -3952,6 +4182,11 @@ var TUTORIALS = {
         highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
       },
       {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
+      },
+      {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
         desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
@@ -4007,6 +4242,11 @@ var TUTORIALS = {
         bloque: "dfplayer_play", bloqueLabel: "reproducir"
       },
       {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
+      },
+      {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
         desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
@@ -4060,6 +4300,11 @@ var TUTORIALS = {
         desc: "Ve a <b>Textos</b> y arrastra el bloque <em>imprimir</em> debajo. Luego ve a <b>Periféricos → Modulos SPI → SDCard</b> y conecta el bloque <em>leer archivo</em> con el nombre <b>'datos.txt'</b>.",
         highlightCat: "SDCard", expandCats: ["Periféricos", "Modulos SPI"],
         bloque: "sdcard_read", bloqueLabel: "leer archivo"
+      },
+      {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
       },
       {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
@@ -4123,6 +4368,11 @@ var TUTORIALS = {
         bloque: "fpm_verify", bloqueLabel: "verificar huella"
       },
       {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
+      },
+      {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
         desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
         highlightElement: "#btnConnection"
@@ -4176,6 +4426,11 @@ var TUTORIALS = {
         desc: "Ve a <b>Textos</b> y arrastra el bloque <em>imprimir</em> dentro del ciclo. Luego ve a <b>Periféricos → Modulos I2S → Micrófono INMP441</b> y arrastra el bloque <em>nivel sonido</em> dentro del <em>imprimir</em>.",
         highlightCat: "Micrófono INMP441", expandCats: ["Periféricos", "Modulos I2S"],
         bloque: "inmp441_volume", bloqueLabel: "nivel sonido"
+      },
+      {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
       },
       {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
@@ -4236,6 +4491,11 @@ var TUTORIALS = {
         titulo: "Esperar",
         desc: "Ve a <b>Tiempo</b> y arrastra el bloque <em>Esperar</em> con <b>1</b> segundo, como último bloque dentro del ciclo.",
         highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
+      },
+      {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, guarda tu trabajo con el botón <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnSave"
       },
       {
         titulo: "Conecta tu ESP32 y Selecciona tu puerto",
