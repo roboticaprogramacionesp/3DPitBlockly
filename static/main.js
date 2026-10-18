@@ -530,6 +530,18 @@ let autosaveTimer = null;
 const AUTOSAVE_DELAY = 800;
 let isRestoring = false;
 
+/* restoreWorkspaceFromLocal() inserta un bloque por frame (ver abajo) --
+   si el usuario hace clic en "Nuevo" (o abre otro archivo) mientras esa
+   restauración todavía está insertando bloques, el bucle no tenía forma
+   de enterarse y seguía agregando los bloques viejos que le quedaban
+   DESPUÉS de que el usuario ya había limpiado el workspace, dando la
+   impresión de que "Nuevo" no funcionó / quedó código duplicado. Cada
+   restauración toma un número de generación al empezar; cualquier
+   acción que limpie el workspace (Nuevo, Abrir archivo) incrementa
+   _restoreGen, y el bucle aborta en el siguiente frame si la
+   generación con la que arrancó ya quedó obsoleta. */
+let _restoreGen = 0;
+
 function autoSaveWorkspace() {
   const xmlDom = Blockly.Xml.workspaceToDom(Code.workspace);
   localStorage.setItem(AUTOSAVE_KEY, Blockly.Xml.domToText(xmlDom));
@@ -573,8 +585,19 @@ function restoreWorkspaceFromLocal() {
   );
   if (blockNodes.length === 0) return;
 
+  const myGen = ++_restoreGen;
+
   isRestoring = true;
   Blockly.Events.disable();
+
+  // A diferencia de abrir un archivo (_loadXmlTextIntoWorkspace) o del
+  // restore de escritorio (restoreWorkspaceFromPython), que usan
+  // clearWorkspaceAndLoadFromXml, este restore insertaba bloque por
+  // bloque con domToWorkspace SIN limpiar antes — si el workspace ya
+  // tenía algo (p.ej. un cambio de Blockly disparado justo antes de que
+  // este timeout de 800ms corriera) el autoguardado viejo se sumaba
+  // encima en vez de reemplazarlo, y aparecía como código duplicado.
+  Code.workspace.clear();
 
   // Ocultar el SVG mientras se insertan los bloques elimina el costo
   // de reflow/repaint por cada bloque — puede reducir 60-80% el tiempo
@@ -591,6 +614,16 @@ function restoreWorkspaceFromLocal() {
   let index = 0;
 
   function insertNext() {
+    // Otra acción (Nuevo, Abrir archivo) limpió el workspace y empezó
+    // de cero después de que arrancó esta restauración — abortar en vez
+    // de seguir agregando los bloques viejos que todavía quedaban.
+    if (myGen !== _restoreGen) {
+      if (svg) svg.style.visibility = "";
+      Blockly.Events.enable();
+      isRestoring = false;
+      return;
+    }
+
     if (index >= blockNodes.length) {
       // Todo insertado — mostrar SVG y terminar
       if (svg) svg.style.visibility = "";
@@ -664,6 +697,9 @@ document.getElementById("btnNew").addEventListener("click", async function () {
   Blockly.Events.disable();
   try {
     Code.workspace?.clear();
+    // Invalida cualquier restauración de autoguardado que todavía
+    // estuviera insertando bloques en segundo plano (ver _restoreGen).
+    _restoreGen++;
     // [TABS] Limpiar todas las pestañas (dejar Bloques + main.py vacío)
     if (typeof Tabs !== "undefined" && Tabs.resetAll) {
       Tabs.resetAll();
@@ -1040,8 +1076,10 @@ async function _loadXmlTextIntoWorkspace(xmlText, displayName) {
     if (term) term.writeln("\r\n⚠ El archivo no contiene bloques de Blockly.\r\n");
   }
 
-  // Limpiar workspace e insertar bloques
+  // Limpiar workspace e insertar bloques (invalida tambien cualquier
+  // restauracion de autoguardado en curso, ver _restoreGen)
   Code.workspace.clear();
+  _restoreGen++;
   Blockly.Xml.domToWorkspace(dom, Code.workspace);
   _loadLog(`✅ Workspace cargado: ${Blockly.getMainWorkspace().getAllBlocks(false).length} bloques`);
 
@@ -3311,12 +3349,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function cargarXmlComprimido(compressed) {
   const xmlText = LZString.decompressFromEncodedURIComponent(compressed);
+  // Sin limpiar antes, esto se sumaba a lo que ya hubiera en el
+  // workspace (autoguardado restaurado, o lo que el usuario ya había
+  // armado) en vez de reemplazarlo — mismo problema que
+  // restoreWorkspaceFromLocal, y con el agravante de que el hash de un
+  // link compartido se queda en la URL: cada refresh de la página lo
+  // volvía a cargar otra vez encima.
+  Code.workspace.clear();
+  _restoreGen++; // invalida un restore de autoguardado que siga en curso
   Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(xmlText), Code.workspace);
 }
 
 async function cargarDesdeURL() {
   const hash = window.location.hash;
   if (hash.length <= 1) return;
+
+  // Se "consume" el hash de la URL (sin recargar la página) apenas se
+  // intenta cargarlo, para que un refresh posterior no vuelva a traer
+  // el mismo proyecto compartido encima de lo que el usuario haga
+  // después (p.ej. crear un archivo nuevo).
+  history.replaceState(null, "", window.location.pathname + window.location.search);
 
   // "#p=<id>" -- proyecto guardado en el backend propio (worker/), no
   // autocontenido en la URL. Si no se puede resolver (id vencido/
