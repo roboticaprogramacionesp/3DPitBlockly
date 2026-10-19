@@ -21,6 +21,11 @@
           highlightCat: null, bloque: null
         },
         {
+          titulo: 'Crea un proyecto nuevo',
+          desc: 'Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class="icon-btn icon-new"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).',
+          highlightElement: '#btnArchivo'
+        },
+        {
           titulo: 'Abre la categoría Inicio',
           desc: 'Haz clic en <b>Inicio</b> en el panel de bloques. Ahí están todos los bloques de juego: pantalla, personaje, teclado y dibujo.',
           highlightCat: 'Inicio', expandCat: null, bloque: null
@@ -135,6 +140,11 @@
           titulo: '¿Qué aprenderemos?',
           desc: 'Vamos a construir una <b>calculadora con botones en pantalla</b>: una cuadrícula de 16 botones grandes (dígitos, +, -, X, /, = y C) que respondés haciendo clic con el mouse, igual que una calculadora de verdad. Son muchos pasos porque hay 16 botones — pero el patrón se repite una y otra vez, así que después de los primeros te vas a dar cuenta solo.',
           highlightCat: null, bloque: null
+        },
+        {
+          titulo: 'Crea un proyecto nuevo',
+          desc: 'Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class="icon-btn icon-new"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).',
+          highlightElement: '#btnArchivo'
         },
 
         /* ───────────── Variables ───────────── */
@@ -536,6 +546,11 @@
           highlightCat: null, bloque: null
         },
         {
+          titulo: 'Crea un proyecto nuevo',
+          desc: 'Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class="icon-btn icon-new"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).',
+          highlightElement: '#btnArchivo'
+        },
+        {
           titulo: 'Abre la categoría Inicio',
           desc: 'Haz clic en <b>Inicio</b> en el panel de bloques para ver los bloques de pantalla, dibujo y personaje.',
           highlightCat: 'Inicio', expandCat: null, bloque: null
@@ -812,6 +827,11 @@
           titulo: '¿Qué aprenderemos?',
           desc: 'Un juego de <b>4 opciones</b>: aparece un rectángulo con base y altura al azar, y 4 posibles áreas repartidas en un tablero de 2×2. Solo una es correcta, y <b>cambia de casilla en cada ronda</b> -- tienes que calcular, no memorizar en qué esquina está. Cada clic te avisa si acertaste o no (y te muestra la respuesta correcta si fallaste) antes de pasar a la siguiente pregunta. Usarás tu propia <b>función</b> para no repetir bloques.',
           highlightCat: null, bloque: null
+        },
+        {
+          titulo: 'Crea un proyecto nuevo',
+          desc: 'Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class="icon-btn icon-new"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).',
+          highlightElement: '#btnArchivo'
         },
         {
           titulo: 'Abre la categoría Inicio',
@@ -1420,6 +1440,11 @@
           titulo: '¿Qué aprenderemos?',
           desc: 'La versión de <b>perímetros</b> del mismo juego de 4 opciones: aparece un rectángulo con base y altura al azar, y 4 posibles perímetros repartidos en un tablero de 2×2. Solo uno es correcto, y <b>cambia de casilla en cada ronda</b>. Cada clic te avisa si acertaste o no (y te muestra la respuesta correcta si fallaste) antes de pasar a la siguiente pregunta. Volverás a usar una <b>función</b> para no repetir bloques.',
           highlightCat: null, bloque: null
+        },
+        {
+          titulo: 'Crea un proyecto nuevo',
+          desc: 'Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class="icon-btn icon-new"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).',
+          highlightElement: '#btnArchivo'
         },
         {
           titulo: 'Abre la categoría Inicio',
@@ -2040,6 +2065,11 @@
           highlightCat: null, bloque: null
         },
         {
+          titulo: 'Crea un proyecto nuevo',
+          desc: 'Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class="icon-btn icon-new"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).',
+          highlightElement: '#btnArchivo'
+        },
+        {
           titulo: 'Abre la categoría Inicio',
           desc: 'Haz clic en <b>Inicio</b> en el panel de bloques para ver los bloques de personaje, dibujo y colisiones.',
           highlightCat: 'Inicio', expandCat: null, bloque: null
@@ -2363,6 +2393,11 @@
           highlightCat: null, bloque: null
         },
         {
+          titulo: 'Crea un proyecto nuevo',
+          desc: 'Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class="icon-btn icon-new"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).',
+          highlightElement: '#btnArchivo'
+        },
+        {
           titulo: 'Abre la categoría Inicio',
           desc: 'Haz clic en <b>Inicio</b> en el panel de bloques para ver los bloques de pantalla y teclado.',
           highlightCat: 'Inicio', expandCat: null, bloque: null
@@ -2611,6 +2646,11 @@
           highlightCat: null, bloque: null
         },
         {
+          titulo: 'Crea un proyecto nuevo',
+          desc: 'Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class="icon-btn icon-new"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).',
+          highlightElement: '#btnArchivo'
+        },
+        {
           titulo: 'Abre la categoría Inicio',
           desc: 'Haz clic en <b>Inicio</b> en el panel de bloques para ver los bloques de pantalla, personaje y colisiones.',
           highlightCat: 'Inicio', expandCat: null, bloque: null
@@ -2802,6 +2842,11 @@
           titulo: '¿Qué aprenderemos?',
           desc: 'Harás un juego donde el objetivo es hacer clic <b>justo sobre</b> un blanco que cambia de posición cada vez que lo aciertas. Solo cuenta si el clic cae <b>cerca del centro</b> del blanco -- hacer clic en cualquier otro lugar de la pantalla se cuenta como un fallo. Vas a usar la misma herramienta de <b>distancia entre puntos</b> que mide qué tan cerca cayó tu clic.',
           highlightCat: null, bloque: null
+        },
+        {
+          titulo: 'Crea un proyecto nuevo',
+          desc: 'Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class="icon-btn icon-new"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).',
+          highlightElement: '#btnArchivo'
         },
         {
           titulo: 'Abre la categoría Inicio',
