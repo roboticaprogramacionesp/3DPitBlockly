@@ -2449,6 +2449,178 @@ var TUTORIALS = {
     ]
   },
 
+  espnow_chat: {
+    title: "ESP-NOW — Chat entre 2 ESP32", icon: "💬",
+    diagram: "img/conexiones/espnow.svg",
+    steps: [
+      {
+        titulo: "¿Qué vamos a construir?",
+        desc: "Un <b>chat</b> de verdad entre dos ESP32: los dos pueden <b>enviar y recibir al mismo tiempo</b>, sin que uno tenga que esperar al otro. Para eso vamos a usar <b>ESP-NOW al recibir llamar</b> (<code>e.irq()</code>): en vez de estar preguntando todo el rato \"¿llegó algo?\" dentro de un ciclo, el ESP32 sigue con lo suyo (enviando mensajes) y, apenas llega algo, <b>se interrumpe solo</b> para atenderlo. Vas a cargar el <b>mismo programa</b> en los dos ESP32 -- no hace falta armar un \"emisor\" y un \"receptor\" por separado.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Crea un proyecto nuevo",
+        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        highlightElement: "#btnArchivo"
+      },
+      {
+        titulo: "Abre Comunicación Inalambrica › WiFi",
+        desc: "ESP-NOW requiere que el WiFi esté activo, aunque no te conectes a ningún router. Haz clic en <b>Comunicación Inalambrica</b> → <b>WiFi</b>.",
+        highlightCat: "WiFi", expandCat: "Comunicación Inalambrica", bloque: null
+      },
+      {
+        titulo: "Arrastra: Inicializar WiFi",
+        desc: "Arrastra el bloque <em>Inicializar WiFi</em> al área de trabajo. Este bloque va primero, siempre.",
+        highlightCat: "WiFi", expandCat: "Comunicación Inalambrica",
+        bloque: "wifi_init", bloqueLabel: "Inicializar WiFi"
+      },
+      {
+        titulo: "Abre la subcategoría ESP-NOW",
+        desc: "Dentro de <b>Comunicación Inalambrica</b>, selecciona <b>ESP-NOW</b> para ver sus bloques.",
+        highlightCat: "ESP-NOW", expandCat: "Comunicación Inalambrica", bloque: null
+      },
+      {
+        titulo: "Arrastra: Iniciar ESP-NOW",
+        desc: "Arrastra el bloque <em>Iniciar ESP-NOW</em> debajo del WiFi.",
+        highlightCat: "ESP-NOW", expandCat: "Comunicación Inalambrica",
+        bloque: "init_espnow_simple", bloqueLabel: "Iniciar ESP-NOW"
+      },
+      {
+        titulo: "Arrastra: Agregar peer",
+        desc: "Arrastra el bloque <em>Agregar receptor ESP-NOW</em> debajo de los anteriores.",
+        highlightCat: "ESP-NOW", expandCat: "Comunicación Inalambrica",
+        bloque: "espnow_add_peer", bloqueLabel: "Agregar receptor ESP-NOW"
+      },
+      {
+        titulo: "Arrastra: Dirección MAC (peer) broadcast",
+        desc: "Arrastra el bloque <em>Dirección MAC (peer)</em> y conéctalo en el espacio del bloque anterior. Dejá el valor de <b>broadcast</b> que trae por defecto, <code>b'\\xff\\xff\\xff\\xff\\xff\\xff'</code>: así no necesitás saber la MAC exacta del otro ESP32, y como vas a cargar el mismo programa en los dos, los dos van a usar el mismo valor.",
+        highlightCat: "ESP-NOW", expandCat: "Comunicación Inalambrica",
+        bloque: "peer", bloqueLabel: "Dirección MAC (peer)"
+      },
+      {
+        titulo: "Ahora arma la parte que ESCUCHA, por separado",
+        desc: "Vas a armar un segundo grupo de bloques, <b>sin conectarlo</b> a los que ya tenés -- dejalo suelto en otra parte del área de trabajo, por ejemplo más abajo. Es la función que se va a ejecutar sola cada vez que llegue un mensaje, así que no forma parte de la secuencia principal de tu programa (es el mismo caso que una función de <b>Funciones</b>: se define aparte y algo más la activa).",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Arrastra: def ... al recibir hacer",
+        desc: "Ve a <b>ESP-NOW</b> y arrastra el bloque <em>def … al recibir hacer</em> <b>suelto</b> en el área de trabajo, sin conectarlo a nada. Fijate que no tiene conectores arriba ni abajo -- a propósito, para que no lo enganches por error dentro de tu programa principal.",
+        highlightCat: "ESP-NOW", expandCat: "Comunicación Inalambrica",
+        bloque: "espnow_irq_callback", bloqueLabel: "def … al recibir hacer"
+      },
+      {
+        titulo: "Dentro: Recibir mensaje ESP-NOW",
+        desc: "Ve a <b>ESP-NOW</b> y arrastra el bloque <em>Recibir mensaje ESP-NOW</em> <b>dentro</b> del hueco \"hacer\" del bloque que acabás de soltar.",
+        highlightCat: "ESP-NOW", expandCat: "Comunicación Inalambrica",
+        bloque: "espnow_recv", bloqueLabel: "Recibir mensaje ESP-NOW"
+      },
+      {
+        titulo: "Condición: Si hay mensaje",
+        desc: "Ve a <b>Lógica</b> y arrastra un bloque <em>Si … hacer</em> debajo del bloque de recepción, todavía dentro del mismo \"hacer\".",
+        highlightCat: "Lógica", expandCat: null,
+        bloque: "controls_if", bloqueLabel: "Si … hacer"
+      },
+      {
+        titulo: "Condición: obtener variable msg",
+        desc: "Ve a <b>Variables</b> y arrastra el bloque <em>obtener msg</em>. Conéctalo como condición del <em>Si</em>: si <code>msg</code> tiene contenido, la condición es verdadera.",
+        highlightCat: "Variables", expandCat: null,
+        bloque: { tipo: "variables_get", valor: "msg" }
+      },
+      {
+        titulo: "Dentro del Si: imprimir host",
+        desc: "Ve a <b>Textos</b> y arrastra el bloque <em>imprimir</em> dentro de la sección <b>hacer</b>.",
+        highlightCat: "Textos", expandCat: null, bloque: "text_print"
+      },
+      {
+        titulo: "Imprimir: obtener variable host",
+        desc: "Ve a <b>Variables</b> y arrastra el bloque <em>obtener host</em>. Conéctalo a la entrada del <em>imprimir</em> -- así ves de qué dirección vino el mensaje.",
+        highlightCat: "Variables", expandCat: null,
+        bloque: { tipo: "variables_get", valor: "host" }
+      },
+      {
+        titulo: "Dentro del Si: imprimir msg",
+        desc: "Arrastra otro bloque <em>imprimir</em>, debajo del anterior.",
+        highlightCat: "Textos", expandCat: null, bloque: "text_print"
+      },
+      {
+        titulo: "Imprimir: obtener variable msg",
+        desc: "Ve a <b>Variables</b> y arrastra el bloque <em>obtener msg</em>. Conéctalo a la entrada de este <em>imprimir</em>: así ves el mensaje que te mandaron.",
+        highlightCat: "Variables", expandCat: null,
+        bloque: { tipo: "variables_get", valor: "msg" }
+      },
+      {
+        titulo: "Volvé a la pila principal",
+        desc: "Dejá por un momento la función suelta y volvé a los bloques que armaste al principio (el que empieza con <em>Inicializar WiFi</em>). Ahí vamos a <b>activar</b> esa función.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Arrastra: ESP-NOW al recibir llamar",
+        desc: "Ve a <b>ESP-NOW</b> y arrastra el bloque <em>ESP-NOW al recibir llamar</em>. Conéctalo <b>después</b> de \"Agregar receptor ESP-NOW\", en la pila principal. Este bloque sí es una instrucción normal: le dice al ESP32 \"cuando llegue un mensaje, andá a ejecutar la función on_recv que armaste\".",
+        highlightCat: "ESP-NOW", expandCat: "Comunicación Inalambrica",
+        bloque: "espnow_irq", bloqueLabel: "ESP-NOW al recibir llamar"
+      },
+      {
+        titulo: "Imprime mensaje de inicio",
+        desc: "Ve a <b>Textos</b> y arrastra el bloque <em>imprimir</em>. Escribe el texto <b>Chat iniciado, escuchando...</b> para confirmar que arrancó.",
+        highlightCat: "Textos", expandCat: null,
+        bloque: "text_print", bloqueLabel: "imprimir"
+      },
+      {
+        titulo: "Agrega el ciclo infinito",
+        desc: "Ve a <b>Ciclos</b> y arrastra el bloque <em>Repetir mientras Verdadero</em>. Este ciclo va a estar enviando mensajes todo el tiempo, sin que eso le impida recibir -- la recepción pasa aparte, por la función que armaste.",
+        highlightCat: "Ciclos", expandCat: null, bloque: "controls_whileUntil"
+      },
+      {
+        titulo: "Dentro del ciclo: Enviar mensaje ESP-NOW",
+        desc: "Ve a <b>ESP-NOW</b> y arrastra el bloque <em>Enviar mensaje ESP-NOW</em> dentro del ciclo.",
+        highlightCat: "ESP-NOW", expandCat: "Comunicación Inalambrica",
+        bloque: "espnow_send_peer", bloqueLabel: "Enviar mensaje ESP-NOW"
+      },
+      {
+        titulo: "Arrastra: Dirección MAC (peer) broadcast",
+        desc: "Arrastra otro bloque <em>Dirección MAC (peer)</em> y conéctalo en el primer espacio del bloque de envío. Dejá el valor de broadcast, igual que antes.",
+        highlightCat: "ESP-NOW", expandCat: "Comunicación Inalambrica",
+        bloque: "peer", bloqueLabel: "Dirección MAC (peer)"
+      },
+      {
+        titulo: "Escribe el mensaje a enviar",
+        desc: "Ve a <b>Textos</b> y arrastra un bloque de <em>texto</em>. Escribe tu mensaje, por ejemplo <b>Hola desde el ESP32 1</b>. Conéctalo en el segundo espacio del bloque de envío.",
+        highlightCat: "Textos", expandCat: null,
+        bloque: "text", bloqueLabel: "Texto (mensaje)"
+      },
+      {
+        titulo: "Agrega una pausa",
+        desc: "Ve a <b>Tiempo</b> y arrastra el bloque <em>esperar</em>, debajo del envío, todavía dentro del ciclo. Ajusta a <b>3</b> segundos: controla cada cuánto se manda un mensaje nuevo.",
+        highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
+      },
+      {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnArchivo"
+      },
+      {
+        titulo: "Conecta tu primer ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu primer ESP32 y presiona <b>Conectar</b>.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "Ejecuta en el primer ESP32",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. El monitor serial mostrará <em>Chat iniciado, escuchando...</em> y después un mensaje enviado cada 3 segundos.",
+        highlightElement: "#btnRun", waitForAction: "run"
+      },
+      {
+        titulo: "Carga el MISMO programa en el segundo ESP32",
+        desc: "Sin cambiar nada del programa (opcionalmente podés cambiar el texto del mensaje a \"Hola desde el ESP32 2\" para distinguirlos en el monitor serial), conectá el <b>segundo</b> ESP32 con el botón <b>Conectar</b> y hacé clic en <b>Ejecutar</b> de nuevo.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "¡Mira el chat funcionando!",
+        desc: "Con los dos ESP32 corriendo, abrí el monitor serial de cualquiera de los dos: vas a ver <b>tu propio envío</b> cada 3 segundos y, apenas llega algo del otro, aparece <b>enseguida</b> -- sin esperar a que termine tu ciclo. Esa es la diferencia entre revisar \"¿llegó algo?\" a cada rato y que el ESP32 te avise solo cuando pasa algo. 🎉",
+        highlightCat: null, bloque: null
+      }
+    ]
+  },
+
   wifi_basico: {
     title: "WiFi — Conectarse a una red", icon: "📶",
     diagram: "img/espwifi.png",
