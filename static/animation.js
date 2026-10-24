@@ -140,10 +140,20 @@ Blockly.JavaScript["game_play_tone"] = function (block) {
 };
 
 Blockly.JavaScript["time_sleep"] = function (block) {
-  const time = block.getFieldValue("VALUE");
+  // VALUE es un socket (input_value), no un field -- getFieldValue devolvia
+  // siempre undefined/null y el bloque "esperar" quedaba sin efecto real.
+  const value = Blockly.JavaScript.valueToCode(block, "VALUE", Blockly.JavaScript.ORDER_NONE) || "1";
+  const unit = block.getFieldValue("UNIT");
   const id = block.id;
 
-  const code = "highlightBlock('" + id + "');\n" + "sleep(" + time + ");\n";
+  // sleep() del motor de juego espera milisegundos; convertimos segun UNIT
+  // igual que el generador de MicroPython (timeSleepCode_).
+  let ms;
+  if (unit === "MS") ms = "(" + value + ")";
+  else if (unit === "US") ms = "((" + value + ")/1000)";
+  else ms = "((" + value + ")*1000)"; // "S" segundos (default)
+
+  const code = "highlightBlock('" + id + "');\n" + "sleep(" + ms + ");\n";
 
   return code;
 };
@@ -2079,11 +2089,13 @@ Blockly.JavaScript["machine_deepsleep"] = function (b) { return `sleep(999999999
 Blockly.JavaScript["machine_reset_cause"] = function (b) { return [`0`, Blockly.JavaScript.ORDER_ATOMIC]; };
 Blockly.JavaScript["machine_unique_id"] = function (b) { return [`"SIM-0000"`, Blockly.JavaScript.ORDER_ATOMIC]; };
 Blockly.JavaScript["async_sleep_ms"] = function (b) {
-  const t = b.getFieldValue("MS") || "0";
+  // MS es input_value (socket), no field.
+  const t = Blockly.JavaScript.valueToCode(b, "MS", Blockly.JavaScript.ORDER_NONE) || "0";
   return `sleep(${t});\n`;
 };
 Blockly.JavaScript["async_sleep_s"] = function (b) {
-  const t = b.getFieldValue("S") || "0";
+  // S es input_value (socket), no field.
+  const t = Blockly.JavaScript.valueToCode(b, "S", Blockly.JavaScript.ORDER_NONE) || "0";
   return `sleep((${t})*1000);\n`;
 };
 Blockly.JavaScript["gc_collect"] = function (b) { return ""; };

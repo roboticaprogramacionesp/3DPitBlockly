@@ -1109,6 +1109,20 @@ Blockly.defineBlocksWithJsonArray([
     helpUrl: "",
   },
   {
+    type: "convert_to_float",
+    message0: "a decimal %1",
+    args0: [
+      {
+        type: "input_value",
+        name: "VALUE",
+      },
+    ],
+    output: "Number",
+    colour: 230,
+    tooltip: "Convierte un valor a número decimal (float)",
+    helpUrl: "",
+  },
+  {
     type: "convert_to_str",
     message0: "a texto %1",
     args0: [

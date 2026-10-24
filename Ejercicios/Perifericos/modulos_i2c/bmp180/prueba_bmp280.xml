@@ -14,7 +14,11 @@
         </value>
         <statement name="DO">
           <block type="time_sleep" id="$;cuY43E`?2*fv-~rQQS">
-            <field name="VALUE">1</field>
+            <value name="VALUE">
+              <block type="math_number" id="numSleepFix27">
+                <field name="NUM">1</field>
+              </block>
+            </value>
             <field name="UNIT">S</field>
             <next>
               <block type="text_print" id="yULF{y_XOtq)x/;_A%99">

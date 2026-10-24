@@ -47,7 +47,11 @@
                 </value>
                 <next>
                   <block type="time_sleep" id="f6AyI5ze-Y-@}z9^P}M(">
-                    <field name="VALUE">1</field>
+                    <value name="VALUE">
+                      <block type="math_number" id="numSleepFix25">
+                        <field name="NUM">1</field>
+                      </block>
+                    </value>
                     <field name="UNIT">S</field>
                   </block>
                 </next>

@@ -32,7 +32,11 @@
                     </value>
                     <next>
                       <block type="time_sleep" id="ph}7[`i/T^QJE{3Jaa}V">
-                        <field name="VALUE">1</field>
+                        <value name="VALUE">
+                          <block type="math_number" id="numSleepFix23">
+                            <field name="NUM">1</field>
+                          </block>
+                        </value>
                         <field name="UNIT">S</field>
                       </block>
                     </next>

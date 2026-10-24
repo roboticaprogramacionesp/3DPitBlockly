@@ -13,7 +13,11 @@
       <block type="wifi_start_ap" id="kG6$]tShC,ijbF0op#/r">
         <next>
           <block type="time_sleep" id="MNCN|:xy@Gb|%HphN431">
-            <field name="VALUE">1</field>
+            <value name="VALUE">
+              <block type="math_number" id="numSleepFix1">
+                <field name="NUM">1</field>
+              </block>
+            </value>
             <field name="UNIT">S</field>
             <next>
               <block type="socket_create" id="TB0=p,^6#338tx@SKlOT">

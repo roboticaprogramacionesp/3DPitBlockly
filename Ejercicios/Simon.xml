@@ -480,7 +480,11 @@
                                                         </statement>
                                                         <next>
                                                           <block type="time_sleep" id="qudpw(p,@b{77*uL9BfE">
-                                                            <field name="VALUE">1</field>
+                                                            <value name="VALUE">
+                                                              <block type="math_number" id="numSleepFix36">
+                                                                <field name="NUM">1</field>
+                                                              </block>
+                                                            </value>
                                                             <field name="UNIT">S</field>
                                                             <next>
                                                               <block type="set_led" id="o.zz!;/Yu+]/_?$I]=qi">
@@ -500,7 +504,11 @@
                                                                             <field name="STATE">0</field>
                                                                             <next>
                                                                               <block type="time_sleep" id="p7[3Cs{0Cd1@vD=rha+?">
-                                                                                <field name="VALUE">0.5</field>
+                                                                                <value name="VALUE">
+                                                                                  <block type="math_number" id="numSleepFix37">
+                                                                                    <field name="NUM">0.5</field>
+                                                                                  </block>
+                                                                                </value>
                                                                                 <field name="UNIT">S</field>
                                                                                 <next>
                                                                                   <block type="controls_if" id="!91R^g0b|.GBIV]X2RJ4">
@@ -767,7 +775,11 @@
                         </statement>
                         <next>
                           <block type="time_sleep" id="[%}6Poh3[{C[gw@DJd!#">
-                            <field name="VALUE">1</field>
+                            <value name="VALUE">
+                              <block type="math_number" id="numSleepFix38">
+                                <field name="NUM">1</field>
+                              </block>
+                            </value>
                             <field name="UNIT">S</field>
                             <next>
                               <block type="set_led" id="dj7xK$}v*bj07U0|{R1*">
@@ -787,7 +799,11 @@
                                             <field name="STATE">0</field>
                                             <next>
                                               <block type="time_sleep" id="HN`hS[-$J}Jr_$,`!_3+">
-                                                <field name="VALUE">0.5</field>
+                                                <value name="VALUE">
+                                                  <block type="math_number" id="numSleepFix39">
+                                                    <field name="NUM">0.5</field>
+                                                  </block>
+                                                </value>
                                                 <field name="UNIT">S</field>
                                               </block>
                                             </next>

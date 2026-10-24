@@ -24,7 +24,11 @@
                 </value>
                 <next>
                   <block type="time_sleep" id="O_$y?jpv~6}?4X.#HGFZ">
-                    <field name="VALUE">1</field>
+                    <value name="VALUE">
+                      <block type="math_number" id="numSleepFix2">
+                        <field name="NUM">1</field>
+                      </block>
+                    </value>
                     <field name="UNIT">S</field>
                   </block>
                 </next>

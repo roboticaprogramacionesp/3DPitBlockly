@@ -266,7 +266,11 @@
                         </statement>
                         <next>
                           <block type="time_sleep" id="[%}6Poh3[{C[gw@DJd!#">
-                            <field name="VALUE">1</field>
+                            <value name="VALUE">
+                              <block type="math_number" id="numSleepFix34">
+                                <field name="NUM">1</field>
+                              </block>
+                            </value>
                             <field name="UNIT">S</field>
                             <next>
                               <block type="set_led" id="dj7xK$}v*bj07U0|{R1*">
@@ -286,7 +290,11 @@
                                             <field name="STATE">0</field>
                                             <next>
                                               <block type="time_sleep" id="HN`hS[-$J}Jr_$,`!_3+">
-                                                <field name="VALUE">0.5</field>
+                                                <value name="VALUE">
+                                                  <block type="math_number" id="numSleepFix35">
+                                                    <field name="NUM">0.5</field>
+                                                  </block>
+                                                </value>
                                                 <field name="UNIT">S</field>
                                               </block>
                                             </next>

@@ -782,7 +782,10 @@ Blockly.Python["pin_set_value"] = function (block) {
 Blockly.Python["adc_pin"] = function (block) {
   const pin = block.getFieldValue("PIN");
 
-  Blockly.Python.definitions_["import_machine"] =
+  // Clave propia: "import_machine" (sin ADC) la usan muchos otros bloques
+  // y, si un programa combina ambos, el que se genere ultimo pisaria el
+  // import de ADC o de Pin en silencio.
+  Blockly.Python.definitions_["import_machine_adc"] =
     "from machine import Pin, ADC";
 
   return `adc${pin} = ADC(Pin(${pin}))\n`;
@@ -854,7 +857,7 @@ Blockly.Python["read_pwm_duty"] = function (block) {
 Blockly.Python["dac_init"] = function (block) {
   const pin = block.getFieldValue("PIN");
 
-  Blockly.Python.definitions_["import_machine"] =
+  Blockly.Python.definitions_["import_machine_dac"] =
     "from machine import Pin, DAC";
 
   return `dac${pin} = DAC(Pin(${pin}))\n`;
@@ -1028,7 +1031,11 @@ Blockly.Python["wdt_feed"] = function (block) {
 Blockly.Python["machine_reset_cause"] = function (block) {
   const statements_do = Blockly.Python.statementToCode(block, "DO");
 
-  Blockly.Python.definitions_["import_machine"] = "import machine";
+  // Clave distinta de "import_machine" (usada por los bloques que hacen
+  // "from machine import Pin"): este bloque necesita el módulo "machine"
+  // en sí (machine.reset_cause()), no la clase Pin. Si compartiera la
+  // clave, el que se generara último pisaría al otro import en silencio.
+  Blockly.Python.definitions_["import_machine_module"] = "import machine";
 
   const code =
     `if machine.reset_cause() == machine.DEEPSLEEP_RESET:
@@ -1041,7 +1048,7 @@ Blockly.Python["machine_deepsleep"] = function (block) {
     Blockly.Python.valueToCode(block, "TIME", Blockly.Python.ORDER_NONE) ||
     "10000";
 
-  Blockly.Python.definitions_["import_machine"] = "import machine";
+  Blockly.Python.definitions_["import_machine_module"] = "import machine";
 
   return `machine.deepsleep(${time})\n`;
 };
@@ -1196,7 +1203,7 @@ Blockly.Python["ky005_init"] = function (block) {
   const name = block.getFieldValue("NAME");
   const pin = block.getFieldValue("PIN");
 
-  Blockly.Python.definitions_["import_machine"] = `from machine import Pin
+  Blockly.Python.definitions_["import_machine_ir_nec"] = `from machine import Pin
 from ir_tx import NEC`;
 
   return `${name} = NEC(Pin(${pin}, Pin.OUT))\n`;
@@ -1264,7 +1271,7 @@ Blockly.Python["buzzer_tone"] = function (block) {
     Blockly.Python.valueToCode(block, "TIME", Blockly.Python.ORDER_ATOMIC) || 1;
 
   // Imports arriba
-  Blockly.Python.definitions_["import_machine"] =
+  Blockly.Python.definitions_["import_machine_pwm"] =
     "from machine import Pin, PWM";
   Blockly.Python.definitions_["import_sleep"] = "from time import sleep";
 
@@ -1280,7 +1287,7 @@ pwm${pin}.deinit()
 Blockly.Python["buzzer_stop"] = function (block) {
   const pin = block.getFieldValue("PIN");
 
-  Blockly.Python.definitions_["import_machine"] =
+  Blockly.Python.definitions_["import_machine_pwm"] =
     "from machine import Pin, PWM";
 
   return (
@@ -1389,7 +1396,7 @@ Blockly.Python["ky023_analog"] = function (block) {
   const width = block.getFieldValue("WIDTH");
   const pullSW = block.getFieldValue("PULL");
 
-  Blockly.Python.definitions_["import_machine"] =
+  Blockly.Python.definitions_["import_machine_adc"] =
     "from machine import Pin, ADC";
 
   return `${name}_x = ADC(Pin(${pinX}))
@@ -4134,7 +4141,7 @@ Blockly.Python["shield_set_motor"] = function (block) {
   const pinB = block.getFieldValue("PINB");
   const pinSpeedB = block.getFieldValue("PINPWMB");
 
-  Blockly.Python.definitions_["import_machine"] =
+  Blockly.Python.definitions_["import_machine_pwm"] =
     "from machine import Pin, PWM";
 
   return `
@@ -5567,7 +5574,7 @@ Blockly.Python["sprite_turn_right"] = function (block) {
 Blockly.Python["sprite_get_angle"] = function () { return ["0", Blockly.Python.ORDER_ATOMIC]; };
 
 Blockly.Python["sprite_set_angle"] = function (block) {
-  const angle = Blockly.Python.valueToCode(block, "ANGLE", Blockly.Python.ORDER_NONE) || "0";
+  const angle = Blockly.Python.valueToCode(block, "DEG", Blockly.Python.ORDER_NONE) || "0";
   return `# [Juego] ángulo = ${angle}\n`;
 };
 
@@ -5628,8 +5635,8 @@ Blockly.Python["game_draw_rect"] = function (block) {
 Blockly.Python["game_draw_rect_outline"] = function (block) {
   const x = Blockly.Python.valueToCode(block, "X", Blockly.Python.ORDER_NONE) || "0";
   const y = Blockly.Python.valueToCode(block, "Y", Blockly.Python.ORDER_NONE) || "0";
-  const width = Blockly.Python.valueToCode(block, "WIDTH", Blockly.Python.ORDER_NONE) || "40";
-  const height = Blockly.Python.valueToCode(block, "HEIGHT", Blockly.Python.ORDER_NONE) || "40";
+  const width = Blockly.Python.valueToCode(block, "W", Blockly.Python.ORDER_NONE) || "40";
+  const height = Blockly.Python.valueToCode(block, "H", Blockly.Python.ORDER_NONE) || "40";
   return `# [Juego] contorno rectángulo (${x},${y}) ancho=${width}, alto=${height}\n`;
 };
 
@@ -5643,7 +5650,7 @@ Blockly.Python["game_draw_circle"] = function (block) {
 Blockly.Python["game_draw_circle_outline"] = function (block) {
   const x = Blockly.Python.valueToCode(block, "X", Blockly.Python.ORDER_NONE) || "0";
   const y = Blockly.Python.valueToCode(block, "Y", Blockly.Python.ORDER_NONE) || "0";
-  const radius = Blockly.Python.valueToCode(block, "RADIUS", Blockly.Python.ORDER_NONE) || "10";
+  const radius = Blockly.Python.valueToCode(block, "R", Blockly.Python.ORDER_NONE) || "10";
   return `# [Juego] contorno círculo (${x},${y}), radio=${radius}\n`;
 };
 
@@ -5678,14 +5685,14 @@ Blockly.Python["game_draw_line"] = function (block) {
 Blockly.Python["game_draw_image"] = function (block) {
   const x = Blockly.Python.valueToCode(block, "X", Blockly.Python.ORDER_NONE) || "0";
   const y = Blockly.Python.valueToCode(block, "Y", Blockly.Python.ORDER_NONE) || "0";
-  const image = Blockly.Python.valueToCode(block, "IMAGE", Blockly.Python.ORDER_NONE) || "None";
+  const image = Blockly.Python.valueToCode(block, "FILE", Blockly.Python.ORDER_NONE) || "None";
   return `# [Juego] imagen (${x},${y}) ${image}\n`;
 };
 
 Blockly.Python["game_draw_star"] = function (block) {
   const x = Blockly.Python.valueToCode(block, "X", Blockly.Python.ORDER_NONE) || "0";
   const y = Blockly.Python.valueToCode(block, "Y", Blockly.Python.ORDER_NONE) || "0";
-  const size = Blockly.Python.valueToCode(block, "SIZE", Blockly.Python.ORDER_NONE) || "20";
+  const size = Blockly.Python.valueToCode(block, "LENGTH", Blockly.Python.ORDER_NONE) || "20";
   return `# [Juego] estrella (${x},${y}) tamaño=${size}\n`;
 };
 
@@ -5703,17 +5710,17 @@ Blockly.Python["game_draw_quad"] = function (block) {
   const x2 = Blockly.Python.valueToCode(block, "X2", Blockly.Python.ORDER_NONE) || "40";
   const y2 =Blockly.Python.valueToCode(block, "Y2",Blockly.Python.ORDER_NONE) || "40";
   const x3 =Blockly.Python.valueToCode(block, "X3",Blockly.Python.ORDER_NONE) ||"80";
-  const y3 =Blockly.Python.valueToCode(block,("Y3"),Blockly.Python.ORDER.NONE)||"40";
-  const x4=Blockly.Python.valueToCode(block,"X4",Blockly.Python.ORDER.NONE)||"120"
-  const y4=Blockly.Python.valueToCode(block,"Y4",Blockly.Python.ORDER.NONE)||"80"
+  const y3 =Blockly.Python.valueToCode(block,("Y3"),Blockly.Python.ORDER_NONE)||"40";
+  const x4=Blockly.Python.valueToCode(block,"X4",Blockly.Python.ORDER_NONE)||"120"
+  const y4=Blockly.Python.valueToCode(block,"Y4",Blockly.Python.ORDER_NONE)||"80"
  return `# [Juego] cuadrilátero (${x1},${y1})-(${x2},${y2})-(${x3},${y3})-(${x4},${y4})\n`;
 };
 
 Blockly.Python["game_draw_regular_polygon"] = function (block) {
-  const x = BlockchainPython.valueToCode(block,("X"),BlockchainPython.ORDER.NONE)||"0"
-  const y = BlockchainPython.valueToCode(block,("Y"),BlockchainPython.ORDER.NONE)||"0"
-  const radius=BlockchainPython.valueToCode(block,"RADIUS",BlockchainPython.ORDER.NONE)||"20"
-  const sides=BlockchainPython.valueToCode(block,"SIDES",BlockchainPython.ORDER.NONE)||"5"
+  const x = Blockly.Python.valueToCode(block,("X"),Blockly.Python.ORDER_NONE)||"0"
+  const y = Blockly.Python.valueToCode(block,("Y"),Blockly.Python.ORDER_NONE)||"0"
+  const radius=Blockly.Python.valueToCode(block,"RADIUS",Blockly.Python.ORDER_NONE)||"20"
+  const sides=Blockly.Python.valueToCode(block,"SIDES",Blockly.Python.ORDER_NONE)||"5"
   return `# [Juego] polígono regular (${x},${y}) radio=${radius} lados=${sides}\n`;
 }
 
@@ -5736,13 +5743,13 @@ Blockly.Python["game_distance"] = function (block) {
 };
 
 Blockly.Python["game_play_tone"] = function (block) {
-  const frequency = Blockly.Python.valueToCode(block, "FREQUENCY", Blockly.Python.ORDER_NONE) || "440";
-  const duration = Blockly.Python.valueToCode(block, "DURATION", Blockly.Python.ORDER_NONE) || "500";
-  return `# [Juego] reproducir tono ${frequency} Hz durante ${duration} ms\n`;
+  const frequency = Blockly.Python.valueToCode(block, "FREQ", Blockly.Python.ORDER_NONE) || "440";
+  const duration = Blockly.Python.valueToCode(block, "DUR", Blockly.Python.ORDER_NONE) || "0.3";
+  return `# [Juego] reproducir tono ${frequency} Hz durante ${duration} s\n`;
 };
 
 Blockly.Python["game_play_melody"] = function (block) {
-  const melody = Blockly.Python.valueToCode(block, "MELODY", Blockly.Python.ORDER_NONE) || "[]";
+  const melody = Blockly.Python.valueToCode(block, "NOTES", Blockly.Python.ORDER_NONE) || "''";
   return `# [Juego] reproducir melodía ${melody}\n`;
 };
 
@@ -5751,8 +5758,8 @@ Blockly.Python["game_stop_sound"] = function () {
 };
 
 Blockly.Python["game_wait"] = function (block) {
-  const duration = Blockly.Python.valueToCode(block, "DURATION", Blockly.Python.ORDER_NONE) || "1000";
-  return `# [Juego] esperar ${duration} ms\n`;
+  const seconds = Blockly.Python.valueToCode(block, "SECONDS", Blockly.Python.ORDER_NONE) || "1";
+  return `# [Juego] esperar ${seconds} s\n`;
 };
 
 Blockly.Python["game_wait_frames"] = function (block) {
@@ -6246,7 +6253,7 @@ async def send_mjpeg(writer):
 Blockly.Python["espcam_led_flash"] = function (block) {
   const pin   = block.getFieldValue("PIN")   || "4";
   const state = block.getFieldValue("STATE") || "1";
-  Blockly.Python.definitions_["import_machine_Pin"] =
+  Blockly.Python.definitions_["import_machine"] =
     "from machine import Pin";
   return `Pin(${pin}, Pin.OUT).value(${state})\n`;
 };

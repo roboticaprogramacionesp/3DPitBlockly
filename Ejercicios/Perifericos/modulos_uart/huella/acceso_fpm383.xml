@@ -113,7 +113,11 @@
                                 <field name="COLOR">2</field>
                                 <next>
                                   <block type="time_sleep" id="l}^fSJ,nlpqwT?0iiak/">
-                                    <field name="VALUE">0.1</field>
+                                    <value name="VALUE">
+                                      <block type="math_number" id="numSleepFix19">
+                                        <field name="NUM">0.1</field>
+                                      </block>
+                                    </value>
                                     <field name="UNIT">S</field>
                                   </block>
                                 </next>
@@ -134,7 +138,11 @@
                                 <field name="COLOR">4</field>
                                 <next>
                                   <block type="time_sleep" id="AX1Tb,;{(77z!DP{7)OE">
-                                    <field name="VALUE">0.1</field>
+                                    <value name="VALUE">
+                                      <block type="math_number" id="numSleepFix20">
+                                        <field name="NUM">0.1</field>
+                                      </block>
+                                    </value>
                                     <field name="UNIT">S</field>
                                   </block>
                                 </next>

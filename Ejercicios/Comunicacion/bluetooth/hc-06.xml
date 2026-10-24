@@ -26,7 +26,11 @@
             </statement>
             <next>
               <block type="time_sleep" id="Fs1ke|:l6~V3g?3N|@1.">
-                <field name="VALUE">1</field>
+                <value name="VALUE">
+                  <block type="math_number" id="numSleepFix21">
+                    <field name="NUM">1</field>
+                  </block>
+                </value>
                 <field name="UNIT">S</field>
               </block>
             </next>
