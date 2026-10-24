@@ -640,6 +640,166 @@ var TUTORIALS = {
     ]
   },
 
+  medidor_estatura: {
+    title: "Medidor de Estatura (HC-SR04 + Touch)", icon: "📏",
+    diagram: "img/conexiones/ultrasonico.svg",
+    steps: [
+      {
+        titulo: "¿Qué vamos a construir?",
+        desc: "Un medidor de estatura: montamos el sensor <b>HC-SR04</b> mirando hacia <b>abajo</b>, a una altura fija y conocida (por ejemplo, arriba de una puerta). El sensor mide la distancia hasta lo primero que tenga debajo -- si es la cabeza de una persona parada ahí, con una simple resta sabemos cuánto mide: <b>estatura = altura del sensor − distancia medida</b>. Para que no esté midiendo todo el tiempo (y disparando con cualquier cosa que pase por abajo), usamos un <b>TouchPad</b>: un pin del ESP32 que detecta el tacto de un dedo, igual que el botón de una pantalla táctil. Solo mide cuando alguien toca el cable.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Crea un proyecto nuevo",
+        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        highlightElement: "#btnArchivo"
+      },
+      {
+        titulo: "Conexión física",
+        desc: "📡 <b>HC-SR04</b> (mirando hacia abajo, a una altura fija que vas a medir con una cinta métrica -- por ejemplo <b>200 cm</b> desde el piso):<br>⚡ VCC → 5V &nbsp; ⏚ GND → GND<br>📌 TRIG → pin <b>12</b> &nbsp; 📌 ECHO → pin <b>13</b><br><br>👆 <b>TouchPad</b> (el \"botón\"): no hace falta ningún módulo, alcanza con un cable pelado o un trocito de papel aluminio conectado al pin <b>4</b> del ESP32 -- vas a tocarlo con el dedo para activar la medición.<br><br>⚠️ Medí con cinta métrica la altura real a la que quedó el sensor: ese número es el que vas a usar en el bloque <em>altura_sensor</em> más adelante. Si el sensor no está exactamente ahí, la estatura calculada sale mal.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Abre Sensores Digitales › Ultrasonico",
+        desc: "Dentro de <b>Sensores</b>, expande <b>Sensores Digitales</b> y selecciona la subcategoría <b>Ultrasonico</b>.",
+        highlightCat: "Ultrasonico", expandCats: ["Sensores", "Sensores Digitales"], bloque: null
+      },
+      {
+        titulo: "Arrastra: Preparar sensor ultrasónico",
+        desc: "Arrastra el bloque <em>Preparar sensor ultrasónico</em>. Pines predeterminados TRIG=<b>12</b>, ECHO=<b>13</b>. Va fuera de cualquier ciclo, al inicio del programa.",
+        highlightCat: "Ultrasonico", expandCats: ["Sensores", "Sensores Digitales"], bloque: "init_ultrasonic_hcsr04", bloqueLabel: "Preparar sensor ultrasónico"
+      },
+      {
+        titulo: "Abre Machine › TouchPad",
+        desc: "Dentro de <b>Machine</b>, selecciona la subcategoría <b>TouchPad</b> para ver los bloques del sensor táctil.",
+        highlightCat: "TouchPad", expandCat: "Machine", bloque: null
+      },
+      {
+        titulo: "Arrastra: Preparar TouchPad",
+        desc: "Arrastra el bloque <em>TouchPad(Pin(...))</em>, debajo del sensor ultrasónico. Elige el pin <b>4</b> en el desplegable -- ahí vas a conectar el cable que tocás con el dedo.",
+        highlightCat: "TouchPad", expandCat: "Machine", bloque: "touch_init", bloqueLabel: "TouchPad(Pin(...))"
+      },
+      {
+        titulo: "Crea las variables altura_sensor, distancia y estatura",
+        desc: "Ve a <b>Variables</b> y crea tres variables, una por una con <em>Crear variable</em>: <b>altura_sensor</b>, <b>distancia</b> y <b>estatura</b>.",
+        highlightCat: "Variables", highlightFlyoutButton: "create_variable", variable: ["altura_sensor", "distancia", "estatura"], expandCat: null, bloque: null
+      },
+      {
+        titulo: "Configura la altura real del sensor",
+        desc: "Ve a <b>Variables</b> y arrastra <em>Establecer altura_sensor a</em>, debajo de los bloques anteriores (fuera de cualquier ciclo: esto se configura <b>una sola vez</b>, según dónde quedó montado tu sensor).",
+        highlightCat: "Variables", expandCat: null, bloque: "variables_set", bloqueLabel: "Establecer variable"
+      },
+      {
+        titulo: "Escribe la altura medida con la cinta métrica",
+        desc: "Ve a <b>Matemáticas</b> y arrastra un bloque <em>Número</em>. Escribe la altura real en centímetros a la que montaste el sensor (la que mediste con la cinta métrica), por ejemplo <b>200</b>.",
+        highlightCat: "Matemáticas", expandCat: null, bloque: "math_number", bloqueLabel: "Número"
+      },
+      {
+        titulo: "Avisa cómo usar el medidor",
+        desc: "Ve a <b>Textos</b> y arrastra <em>imprimir</em>. Escribe <b>Colócate debajo del sensor y toca el cable para medir tu estatura</b>.",
+        highlightCat: "Textos", expandCat: null, bloque: "text_print", bloqueLabel: "imprimir"
+      },
+      {
+        titulo: "Agrega el ciclo infinito",
+        desc: "Ve a <b>Ciclos</b> y arrastra <em>Repetir mientras Verdadero</em>. El programa va a estar revisando todo el tiempo si alguien toca el cable.",
+        highlightCat: "Ciclos", expandCat: null, bloque: "controls_whileUntil", bloqueLabel: "Repetir mientras Verdadero"
+      },
+      {
+        titulo: "Si tocan el cable",
+        desc: "Ve a <b>Lógica</b> y arrastra <em>Si … hacer</em>, dentro del ciclo.",
+        highlightCat: "Lógica", expandCat: null, bloque: "controls_if", bloqueLabel: "Si … hacer"
+      },
+      {
+        titulo: "Compara la lectura del TouchPad",
+        desc: "Ve a <b>Lógica</b> y arrastra una comparación a la condición del <em>Si</em>. Cambia el operador a <b>&lt;</b>: cuando tocás el cable, la lectura <b>baja</b> en vez de subir -- por eso comparamos \"menor que\", no \"mayor que\".",
+        highlightCat: "Lógica", expandCat: null, bloque: "logic_compare", bloqueLabel: "< (menor que)"
+      },
+      {
+        titulo: "Lee el TouchPad",
+        desc: "Ve a <b>Machine › TouchPad</b> y arrastra <em>leer TouchPad</em> al primer hueco de la comparación. Elegí el mismo pin <b>4</b> que configuraste antes.",
+        highlightCat: "TouchPad", expandCat: "Machine", bloque: "touch_read", bloqueLabel: "leer TouchPad"
+      },
+      {
+        titulo: "Escribe el umbral de toque",
+        desc: "Ve a <b>Matemáticas</b> y arrastra un <em>Número</em> con valor <b>300</b> al segundo hueco de la comparación. Sin tocar el cable, la lectura normalmente da por arriba de ese número; al tocarlo, cae por debajo. Si notás que no detecta bien tu toque, probá subir o bajar este número.",
+        highlightCat: "Matemáticas", expandCat: null, bloque: "math_number", bloqueLabel: "Número"
+      },
+      {
+        titulo: "Dentro del Si: mide la distancia",
+        desc: "Ve a <b>Variables</b> y arrastra <em>Establecer distancia a</em> dentro del <b>hacer</b> del <em>Si</em>.",
+        highlightCat: "Variables", expandCat: null, bloque: "variables_set", bloqueLabel: "Establecer variable"
+      },
+      {
+        titulo: "Arrastra: Leer distancia",
+        desc: "Ve a <b>Sensores › Sensores Digitales › Ultrasonico</b> y arrastra <em>Leer distancia (cm)</em>. Conéctalo al hueco de <em>Establecer distancia a</em>.",
+        highlightCat: "Ultrasonico", expandCats: ["Sensores", "Sensores Digitales"], bloque: "read_ultrasonic_hcsr04", bloqueLabel: "Leer distancia (cm)"
+      },
+      {
+        titulo: "Calcula la estatura",
+        desc: "Ve a <b>Variables</b> y arrastra <em>Establecer estatura a</em>, debajo del anterior, todavía dentro del <b>hacer</b>.",
+        highlightCat: "Variables", expandCat: null, bloque: "variables_set", bloqueLabel: "Establecer variable"
+      },
+      {
+        titulo: "Resta: altura del sensor menos distancia",
+        desc: "Ve a <b>Matemáticas</b> y arrastra un bloque de operación. Cambia el operador a <b>−</b>: la estatura es la altura del sensor menos lo que falta hasta la cabeza.",
+        highlightCat: "Matemáticas", expandCat: null, bloque: "math_arithmetic", bloqueLabel: "− (resta)"
+      },
+      {
+        titulo: "Obtén altura_sensor",
+        desc: "Ve a <b>Variables</b> y arrastra <em>obtener altura_sensor</em> al primer hueco de la resta.",
+        highlightCat: "Variables", expandCat: null,
+        bloque: { tipo: "variables_get", valor: "altura_sensor" }, bloqueLabel: "obtener altura_sensor"
+      },
+      {
+        titulo: "Obtén distancia",
+        desc: "Ve a <b>Variables</b> y arrastra <em>obtener distancia</em> al segundo hueco de la resta.",
+        highlightCat: "Variables", expandCat: null,
+        bloque: { tipo: "variables_get", valor: "distancia" }, bloqueLabel: "obtener distancia"
+      },
+      {
+        titulo: "Muestra el resultado",
+        desc: "Ve a <b>Textos</b> y arrastra <em>imprimir</em>, debajo de <em>Establecer estatura a</em>, todavía dentro del <b>hacer</b>.",
+        highlightCat: "Textos", expandCat: null, bloque: "text_print", bloqueLabel: "imprimir"
+      },
+      {
+        titulo: "Une el texto con el resultado",
+        desc: "Ve a <b>Textos</b> y arrastra <em>crear texto con</em> al hueco del <em>imprimir</em>.",
+        highlightCat: "Textos", expandCat: null, bloque: "text_join", bloqueLabel: "crear texto con"
+      },
+      {
+        titulo: "Escribe la etiqueta",
+        desc: "Arrastra un bloque de texto <em>\" \"</em> al primer hueco de <em>crear texto con</em>. Escribe <b>Tu estatura (cm): </b> (con un espacio al final).",
+        highlightCat: "Textos", expandCat: null, bloque: "text", bloqueLabel: "texto"
+      },
+      {
+        titulo: "Obtén estatura",
+        desc: "Ve a <b>Variables</b> y arrastra <em>obtener estatura</em> al segundo hueco de <em>crear texto con</em>.",
+        highlightCat: "Variables", expandCat: null,
+        bloque: { tipo: "variables_get", valor: "estatura" }, bloqueLabel: "obtener estatura"
+      },
+      {
+        titulo: "Agrega una pausa",
+        desc: "Todavía dentro del <b>hacer</b>, ve a <b>Tiempo</b> y arrastra <em>esperar</em> con <b>1</b> segundo: así, mientras mantenés el dedo en el cable, no te imprime el resultado sin parar.",
+        highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep", bloqueLabel: "esperar … segundos"
+      },
+      {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnArchivo"
+      },
+      {
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "Ejecuta y probá el medidor",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Parate debajo del sensor y tocá el cable del TouchPad con el dedo: el monitor serial debería mostrar tu estatura en centímetros. Si el número sale muy raro, revisá que la altura del sensor que escribiste coincida con la real, y que no haya nada (pelo muy alto, gorra) alterando la medición.",
+        highlightElement: "#btnRun", waitForAction: "run"
+      }
+    ]
+  },
+
   carrito_esquiva_obstaculos: {
     title: "Carrito Esquiva Obstáculos", icon: "🚙",
     diagram: "img/conexiones/puente_h.svg",
