@@ -14,8 +14,14 @@ function addUndoRedoButtons(workspace) {
 
   container.classList.add("floating-tools");
 
-  function createButton(iconPath, offsetY, onClick) {
+  function createButton(iconPath, offsetY, onClick, titleText) {
     const g = document.createElementNS(NS, "g");
+
+    if (titleText) {
+      const title = document.createElementNS(NS, "title");
+      title.textContent = titleText;
+      g.appendChild(title);
+    }
 
     const rect = document.createElementNS(NS, "rect");
     rect.setAttribute("x", 10);
@@ -27,22 +33,29 @@ function addUndoRedoButtons(workspace) {
     rect.setAttribute("fill", "#ffffff");
     rect.setAttribute("stroke", "#888");
 
-    const img = document.createElementNS(NS, "image");
-    img.setAttribute("x", 16);
-    img.setAttribute("y", offsetY + 6);
-    img.setAttribute("width", 40);
-    img.setAttribute("height", 40);
-
-    try {
-      img.setAttribute("href", iconPath);
-    } catch (e) {
-      img.setAttributeNS("http://www.w3.org/1999/xlink", "href", iconPath);
-    }
-
-    img.style.pointerEvents = "none";
-
     g.appendChild(rect);
-    g.appendChild(img);
+
+    let img = null;
+    if (typeof iconPath === "function") {
+      // Ícono dibujado con formas SVG en vez de un PNG (evita tener que
+      // agregar un nuevo archivo de imagen para cada botón nuevo).
+      iconPath(g, offsetY);
+    } else {
+      img = document.createElementNS(NS, "image");
+      img.setAttribute("x", 16);
+      img.setAttribute("y", offsetY + 6);
+      img.setAttribute("width", 40);
+      img.setAttribute("height", 40);
+
+      try {
+        img.setAttribute("href", iconPath);
+      } catch (e) {
+        img.setAttributeNS("http://www.w3.org/1999/xlink", "href", iconPath);
+      }
+
+      img.style.pointerEvents = "none";
+      g.appendChild(img);
+    }
 
     g.addEventListener("mousedown", (e) => {
       e.preventDefault();
@@ -55,13 +68,46 @@ function addUndoRedoButtons(workspace) {
     return { group: g, rect, img };
   }
 
+  // Ícono de "organizar": tres barras horizontales alineadas a la izquierda,
+  // como las filas en las que va a quedar cada pila de bloques.
+  function drawArrangeIcon(g, offsetY) {
+    const widths = [28, 20, 24];
+    widths.forEach((w, i) => {
+      const bar = document.createElementNS(NS, "rect");
+      bar.setAttribute("x", 17);
+      bar.setAttribute("y", offsetY + 13 + i * 9);
+      bar.setAttribute("width", w);
+      bar.setAttribute("height", 5);
+      bar.setAttribute("rx", 2);
+      bar.setAttribute("fill", "#555");
+      bar.style.pointerEvents = "none";
+      g.appendChild(bar);
+    });
+  }
+
   // BOTONES
-  const undoBtn = createButton("./static/img/undo.png", 60, () =>
-    workspace.undo(false),
+  const undoBtn = createButton(
+    "./static/img/undo.png",
+    60,
+    () => workspace.undo(false),
+    "Deshacer",
   );
 
-  const redoBtn = createButton("./static/img/redo.png", 120, () =>
-    workspace.undo(true),
+  const redoBtn = createButton(
+    "./static/img/redo.png",
+    120,
+    () => workspace.undo(true),
+    "Rehacer",
+  );
+
+  // Organizar bloques: acomoda todas las pilas de bloques sueltas en una
+  // columna ordenada, sin que se tapen entre sí -- útil cuando un bloque
+  // quedó escondido debajo de otro más grande y cuesta encontrarlo.
+  const arrangeBtn = createButton(
+    drawArrangeIcon,
+    180,
+    () => workspace.cleanUp(),
+    "Organizar bloques",
   );
 
   // ================= POSICIÓN (MISMA LÓGICA QUE SCREENSHOT)
@@ -123,5 +169,6 @@ function addUndoRedoButtons(workspace) {
     container,
     undoBtn: undoBtn.group,
     redoBtn: redoBtn.group,
+    arrangeBtn: arrangeBtn.group,
   };
 }
