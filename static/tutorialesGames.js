@@ -461,9 +461,9 @@
           highlightCat: 'Variables', highlightFlyoutButton: 'create_variable', variable: 'numero', expandCat: null, bloque: null
         },
         {
-          titulo: 'Crea la variable posicionX',
-          desc: 'Ve a <b>Variables</b> y crea <b>posicionX</b>: controla en qué lugar de la pantalla se dibuja el próximo dígito que escribas.',
-          highlightCat: 'Variables', highlightFlyoutButton: 'create_variable', variable: 'posicionX', expandCat: null, bloque: null
+          titulo: 'Crea la variable posicion_x',
+          desc: 'Ve a <b>Variables</b> y crea <b>posicion_x</b>: controla en qué lugar de la pantalla se dibuja el próximo dígito que escribas.',
+          highlightCat: 'Variables', highlightFlyoutButton: 'create_variable', variable: 'posicion_x', expandCat: null, bloque: null
         },
         {
           titulo: 'Crea la variable operacion',
@@ -503,8 +503,8 @@
           highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
         },
         {
-          titulo: 'Inicializa posicionX en 15',
-          desc: 'Arrastra <em>Establecer posicionX a</em>, debajo del anterior. Conectale un <em>Número</em> con valor <b>15</b> — ahí empieza a escribirse el primer dígito (el margen izquierdo de la pantalla).',
+          titulo: 'Inicializa posicion_x en 15',
+          desc: 'Arrastra <em>Establecer posicion_x a</em>, debajo del anterior. Conectale un <em>Número</em> con valor <b>15</b> — ahí empieza a escribirse el primer dígito (el margen izquierdo de la pantalla).',
           highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
         },
         {
@@ -670,15 +670,15 @@
         },
         {
           titulo: 'Muestra el símbolo "/" en pantalla',
-          desc: 'Justo debajo, ve a <b>Inicio</b> y arrastra <em>Escribir texto en pantalla</em>. En el hueco de texto metele <em>obtener operacion</em> (<b>Variables</b>) en vez de escribir texto fijo — así siempre muestra el símbolo que acabás de guardar. X=<em>obtener posicionX</em>, Y=<b>50</b>, color blanco, tamaño <b>24</b>. Sin este paso el símbolo de la operación nunca aparecería en pantalla.',
+          desc: 'Justo debajo, ve a <b>Inicio</b> y arrastra <em>Escribir texto en pantalla</em>. En el hueco de texto metele <em>obtener operacion</em> (<b>Variables</b>) en vez de escribir texto fijo — así siempre muestra el símbolo que acabás de guardar. X=<em>obtener posicion_x</em>, Y=<b>50</b>, color blanco, tamaño <b>24</b>. Sin este paso el símbolo de la operación nunca aparecería en pantalla.',
           highlightCat: 'Inicio', expandCat: null, bloque: 'game_show_text', bloqueLabel: 'Escribir texto en pantalla'
         },
         {
-          titulo: 'Avanza posicionX para el símbolo',
-          desc: 'Por último de este botón, arrastra <em>Cambiar posicionX por</em> con valor <b>18</b> — así el siguiente dígito que teclees aparece después del símbolo, no encima.',
+          titulo: 'Avanza posicion_x para el símbolo',
+          desc: 'Por último de este botón, arrastra <em>Cambiar posicion_x por</em> con valor <b>18</b> — así el siguiente dígito que teclees aparece después del símbolo, no encima.',
           highlightCat: 'Variables', expandCat: null, bloque: 'math_change', bloqueLabel: 'Cambiar variable por'
         },
-        { titulo: 'Botón "X" (multiplicar): detectar y guardar', desc: 'Misma estructura completa (dos "Si" + Establecer operacion + Cambiar indice_num + mostrar símbolo + Cambiar posicionX). Rango: X 210-265, Y 205-260. <em>operacion</em> = <b>"X"</b> mayúscula.', highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer' },
+        { titulo: 'Botón "X" (multiplicar): detectar y guardar', desc: 'Misma estructura completa (dos "Si" + Establecer operacion + Cambiar indice_num + mostrar símbolo + Cambiar posicion_x). Rango: X 210-265, Y 205-260. <em>operacion</em> = <b>"X"</b> mayúscula.', highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer' },
         { titulo: 'Botón "-": detectar y guardar', desc: 'Misma estructura completa. Rango: X 210-265, Y 270-325. <em>operacion</em> = <b>"-"</b>.', highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer' },
         { titulo: 'Botón "+": detectar y guardar', desc: 'Misma estructura completa. Rango: X 210-265, Y 335-390. <em>operacion</em> = <b>"+"</b>. Los 4 operadores ya están listos, y ahora su símbolo se ve en pantalla apenas los tocás.', highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer' },
 
@@ -759,8 +759,8 @@
           highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
         },
         {
-          titulo: 'Reinicia posicionX',
-          desc: 'Por último, <em>Establecer posicionX a</em> con <b>15</b> otra vez — el próximo dígito se escribe desde el principio. El botón "=" ya está completo.',
+          titulo: 'Reinicia posicion_x',
+          desc: 'Por último, <em>Establecer posicion_x a</em> con <b>15</b> otra vez — el próximo dígito se escribe desde el principio. El botón "=" ya está completo.',
           highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
         },
 
@@ -777,7 +777,7 @@
         },
         {
           titulo: 'C: resetea todo el estado',
-          desc: 'Debajo, los mismos 4 bloques que usaste al final de "=": <em>numero1</em> = texto vacío, <em>numero2</em> = texto vacío, <em>indice_num</em> = 0, <em>posicionX</em> = 15. "C" te deja la calculadora como recién empezada.',
+          desc: 'Debajo, los mismos 4 bloques que usaste al final de "=": <em>numero1</em> = texto vacío, <em>numero2</em> = texto vacío, <em>indice_num</em> = 0, <em>posicion_x</em> = 15. "C" te deja la calculadora como recién empezada.',
           highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
         },
 
@@ -814,7 +814,7 @@
         },
         {
           titulo: 'Muestra el dígito en pantalla',
-          desc: 'Afuera de ese "Si/si no si" (pero todavía dentro del "Si digito_presionado"), arrastra <em>Escribir texto en pantalla</em>. Metele <em>obtener numero</em> como texto, <em>obtener posicionX</em> como X, Y=<b>50</b>, color blanco, tamaño <b>24</b>.',
+          desc: 'Afuera de ese "Si/si no si" (pero todavía dentro del "Si digito_presionado"), arrastra <em>Escribir texto en pantalla</em>. Metele <em>obtener numero</em> como texto, <em>obtener posicion_x</em> como X, Y=<b>50</b>, color blanco, tamaño <b>24</b>.',
           highlightCat: 'Inicio', expandCat: null, bloque: 'game_show_text', bloqueLabel: 'Escribir texto en pantalla'
         },
         {
@@ -824,7 +824,7 @@
         },
         {
           titulo: 'Avanza la posición para el próximo dígito',
-          desc: 'Por último, <em>Cambiar posicionX por</em> <b>18</b> — así el próximo dígito se escribe al lado, no encima. ¡La calculadora está completa!',
+          desc: 'Por último, <em>Cambiar posicion_x por</em> <b>18</b> — así el próximo dígito se escribe al lado, no encima. ¡La calculadora está completa!',
           highlightCat: 'Variables', expandCat: null, bloque: 'math_change', bloqueLabel: 'Cambiar variable por'
         },
 
@@ -1072,13 +1072,13 @@
           highlightCat: 'Inicio', expandCat: null, bloque: 'sprite_create', bloqueLabel: 'Crear personaje'
         },
         {
-          titulo: 'Crea la variable obstaculoX',
-          desc: 'Ve a <b>Variables</b> y crea una variable llamada <b>obstaculoX</b>. En ella guardaremos la posición horizontal del obstáculo (que no es un personaje, sino un rectángulo dibujado).',
-          highlightCat: 'Variables', highlightFlyoutButton: 'create_variable', variable: 'obstaculoX', expandCat: null, bloque: null
+          titulo: 'Crea la variable obstaculo_x',
+          desc: 'Ve a <b>Variables</b> y crea una variable llamada <b>obstaculo_x</b>. En ella guardaremos la posición horizontal del obstáculo (que no es un personaje, sino un rectángulo dibujado).',
+          highlightCat: 'Variables', highlightFlyoutButton: 'create_variable', variable: 'obstaculo_x', expandCat: null, bloque: null
         },
         {
-          titulo: 'Establece obstaculoX',
-          desc: 'Ve a <b>Variables</b> y arrastra el bloque <em>Establecer obstaculoX a</em>.',
+          titulo: 'Establece obstaculo_x',
+          desc: 'Ve a <b>Variables</b> y arrastra el bloque <em>Establecer obstaculo_x a</em>.',
           highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
         },
         {
@@ -1087,13 +1087,13 @@
           highlightCat: 'Matemáticas', expandCat: null, bloque: 'math_number', bloqueLabel: 'Número'
         },
         {
-          titulo: 'Crea la variable obstaculoY',
-          desc: 'Ve a <b>Variables</b> y crea una variable llamada <b>obstaculoY</b> para la posición vertical del obstáculo.',
-          highlightCat: 'Variables', highlightFlyoutButton: 'create_variable', variable: 'obstaculoY', expandCat: null, bloque: null
+          titulo: 'Crea la variable obstaculo_y',
+          desc: 'Ve a <b>Variables</b> y crea una variable llamada <b>obstaculo_y</b> para la posición vertical del obstáculo.',
+          highlightCat: 'Variables', highlightFlyoutButton: 'create_variable', variable: 'obstaculo_y', expandCat: null, bloque: null
         },
         {
-          titulo: 'Establece obstaculoY',
-          desc: 'Ve a <b>Variables</b> y arrastra el bloque <em>Establecer obstaculoY a</em>.',
+          titulo: 'Establece obstaculo_y',
+          desc: 'Ve a <b>Variables</b> y arrastra el bloque <em>Establecer obstaculo_y a</em>.',
           highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
         },
         {
@@ -1198,7 +1198,7 @@
         },
         {
           titulo: 'Haz caer el obstáculo',
-          desc: 'Ve a <b>Variables</b> y arrastra otro bloque <em>Establecer obstaculoY a</em>, fuera de los dos "Si" de flechas (pero dentro del "Si jugando"), para que el obstáculo baje un poco en cada vuelta del ciclo.',
+          desc: 'Ve a <b>Variables</b> y arrastra otro bloque <em>Establecer obstaculo_y a</em>, fuera de los dos "Si" de flechas (pero dentro del "Si jugando"), para que el obstáculo baje un poco en cada vuelta del ciclo.',
           highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
         },
         {
@@ -1208,8 +1208,8 @@
         },
         {
           titulo: 'Obtén la posición actual del obstáculo',
-          desc: 'Ve a <b>Variables</b> y arrastra el bloque <em>obtener obstaculoY</em>. Colócalo en el primer hueco de la suma.',
-          highlightCat: 'Variables', expandCat: null, bloque: { tipo: 'variables_get', valor: 'obstaculoY' }, bloqueLabel: 'obtener obstaculoY'
+          desc: 'Ve a <b>Variables</b> y arrastra el bloque <em>obtener obstaculo_y</em>. Colócalo en el primer hueco de la suma.',
+          highlightCat: 'Variables', expandCat: null, bloque: { tipo: 'variables_get', valor: 'obstaculo_y' }, bloqueLabel: 'obtener obstaculo_y'
         },
         {
           titulo: 'Escribe la velocidad de caída',
@@ -1227,9 +1227,9 @@
           highlightCat: 'Lógica', expandCat: null, bloque: 'logic_compare', bloqueLabel: '> (mayor que)'
         },
         {
-          titulo: 'Obtén obstaculoY para comparar',
-          desc: 'Ve a <b>Variables</b> y arrastra el bloque <em>obtener obstaculoY</em>. Colócalo en el primer hueco de la comparación.',
-          highlightCat: 'Variables', expandCat: null, bloque: { tipo: 'variables_get', valor: 'obstaculoY' }, bloqueLabel: 'obtener obstaculoY'
+          titulo: 'Obtén obstaculo_y para comparar',
+          desc: 'Ve a <b>Variables</b> y arrastra el bloque <em>obtener obstaculo_y</em>. Colócalo en el primer hueco de la comparación.',
+          highlightCat: 'Variables', expandCat: null, bloque: { tipo: 'variables_get', valor: 'obstaculo_y' }, bloqueLabel: 'obtener obstaculo_y'
         },
         {
           titulo: 'Escribe el límite inferior',
@@ -1238,7 +1238,7 @@
         },
         {
           titulo: 'Reinicia el obstáculo arriba',
-          desc: 'Ve a <b>Variables</b> y arrastra otro bloque <em>Establecer obstaculoY a</em> dentro del <b>hacer</b>.',
+          desc: 'Ve a <b>Variables</b> y arrastra otro bloque <em>Establecer obstaculo_y a</em> dentro del <b>hacer</b>.',
           highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
         },
         {
@@ -1247,8 +1247,8 @@
           highlightCat: 'Matemáticas', expandCat: null, bloque: 'math_number', bloqueLabel: 'Número'
         },
         {
-          titulo: 'Cambia obstaculoX a una posición nueva',
-          desc: 'Ve a <b>Variables</b> y arrastra otro bloque <em>Establecer obstaculoX a</em>, para que el obstáculo caiga por una columna distinta cada vez.',
+          titulo: 'Cambia obstaculo_x a una posición nueva',
+          desc: 'Ve a <b>Variables</b> y arrastra otro bloque <em>Establecer obstaculo_x a</em>, para que el obstáculo caiga por una columna distinta cada vez.',
           highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
         },
         {
@@ -1302,14 +1302,14 @@
           highlightCat: 'Inicio', expandCat: null, bloque: 'game_draw_rect', bloqueLabel: 'Rectángulo sólido'
         },
         {
-          titulo: 'Obtén obstaculoX para dibujar',
-          desc: 'Ve a <b>Variables</b> y arrastra el bloque <em>obtener obstaculoX</em>. Colócalo en el hueco X del rectángulo.',
-          highlightCat: 'Variables', expandCat: null, bloque: { tipo: 'variables_get', valor: 'obstaculoX' }, bloqueLabel: 'obtener obstaculoX'
+          titulo: 'Obtén obstaculo_x para dibujar',
+          desc: 'Ve a <b>Variables</b> y arrastra el bloque <em>obtener obstaculo_x</em>. Colócalo en el hueco X del rectángulo.',
+          highlightCat: 'Variables', expandCat: null, bloque: { tipo: 'variables_get', valor: 'obstaculo_x' }, bloqueLabel: 'obtener obstaculo_x'
         },
         {
-          titulo: 'Obtén obstaculoY para dibujar',
-          desc: 'Ve a <b>Variables</b> y arrastra el bloque <em>obtener obstaculoY</em>. Colócalo en el hueco Y del rectángulo.',
-          highlightCat: 'Variables', expandCat: null, bloque: { tipo: 'variables_get', valor: 'obstaculoY' }, bloqueLabel: 'obtener obstaculoY'
+          titulo: 'Obtén obstaculo_y para dibujar',
+          desc: 'Ve a <b>Variables</b> y arrastra el bloque <em>obtener obstaculo_y</em>. Colócalo en el hueco Y del rectángulo.',
+          highlightCat: 'Variables', expandCat: null, bloque: { tipo: 'variables_get', valor: 'obstaculo_y' }, bloqueLabel: 'obtener obstaculo_y'
         },
         {
           titulo: 'Si el jugador toca al obstáculo',
