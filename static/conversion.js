@@ -4786,7 +4786,7 @@ Blockly.defineBlocksWithJsonArray([
   },
   {
     type: "move_dc_motor_pwm1",
-    message0: "%1 Motor %2 velocidad IN1 %3 velocidad IN2 %4",
+    message0: "%1 Motor %2 velocidad %3 %4 velocidad %5 %6",
     args0: [
       { type: "field_input", name: "NAME", text: "l298n" },
       {
@@ -4798,8 +4798,18 @@ Blockly.defineBlocksWithJsonArray([
         ],
       },
       {
+        type: "field_label",
+        name: "LABEL1",
+        text: "IN1",
+      },
+      {
         type: "input_value",
         name: "VALUEA",
+      },
+      {
+        type: "field_label",
+        name: "LABEL2",
+        text: "IN2",
       },
       {
         type: "input_value",
@@ -4810,6 +4820,7 @@ Blockly.defineBlocksWithJsonArray([
     nextStatement: null,
     inputsInline: true,
     colour: 20,
+    extensions: ["motor_label_update"],
   },
   {
     type: "move_dc_motor_pwm2",
@@ -4828,7 +4839,7 @@ Blockly.defineBlocksWithJsonArray([
   },
   {
     type: "move_dc_motor_pwm1_slider",
-    message0: "%1 Motor %2 velocidad IN1 %3 velocidad IN2 %4",
+    message0: "%1 Motor %2 velocidad %3 %4 velocidad %5 %6",
     args0: [
       { type: "field_input", name: "NAME", text: "l298n" },
       {
@@ -4839,14 +4850,25 @@ Blockly.defineBlocksWithJsonArray([
           ["B", "B"],
         ],
       },
+      {
+        type: "field_label",
+        name: "LABEL1",
+        text: "IN1",
+      },
       { type: "field_slider", name: "VALUEA", value: 0, min: 0, max: 100 },
+      {
+        type: "field_label",
+        name: "LABEL2",
+        text: "IN2",
+      },
       { type: "field_slider", name: "VALUEB", value: 0, min: 0, max: 100 },
     ],
     previousStatement: null,
     nextStatement: null,
     inputsInline: true,
     colour: 20,
-    tooltip: "Velocidad de IN1/IN2 con deslizador (0-100%) para un solo motor.",
+    tooltip: "Velocidad con deslizador (0-100%) para un solo motor: IN1/IN2 si elegís Motor A, IN3/IN4 si elegís Motor B.",
+    extensions: ["motor_label_update"],
   },
   {
     type: "move_dc_motor_pwm2_slider",
