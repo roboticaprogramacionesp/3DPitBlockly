@@ -2,7 +2,7 @@
    Service Worker — 3DPit Blocks PWA
    ============================================================ */
 
-const CACHE_NAME = '3dpit-blocks-v53';
+const CACHE_NAME = '3dpit-blocks-v54';
 
 /* ── INSTALL ── */
 self.addEventListener('install', event => {

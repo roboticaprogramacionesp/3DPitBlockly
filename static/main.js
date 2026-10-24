@@ -2214,7 +2214,22 @@ async function sendViaRawRepl(codeStr, chunkSz = 256) {
       _localBuf = "";
       await sendSerial("\x01");
       gotPrompt = await _waitLocal(">", 2500 * _mul);
-      if (!gotPrompt) return false;
+      if (!gotPrompt) {
+        // Si lo que llegó es un banner de arranque (p.ej. el ESP32 se reseteó solo,
+        // o justo se acaba de conectar y MicroPython todavía estaba terminando de
+        // iniciar cuando mandamos el primer Ctrl+A), el chip NO está colgado -- solo
+        // necesita más tiempo. Reintentar una vez más con un margen bien amplio en
+        // vez de rendirnos de una, que es lo que generaba el "No se pudo entrar en
+        // raw REPL" intermitente incluso en un Wroom clásico recién conectado.
+        const bootingDeNuevo = /MicroPython|rst:0x|ets Jun/.test(_localBuf);
+        if (bootingDeNuevo) {
+          await sleep(1500 * _mul);
+          _localBuf = "";
+          await sendSerial("\x01");
+          gotPrompt = await _waitLocal(">", 3000 * _mul);
+        }
+        if (!gotPrompt) return false;
+      }
     }
 
     // 3. Enviar código en bloques con progreso

@@ -497,8 +497,18 @@ var SerialMonitor = (() => {
       } else {
         // USB + script grande (≥ 256 B): raw REPL con barra de progreso (delegamos a main.js)
         if (typeof sendViaRawRepl === "function") {
-          const ok = await sendViaRawRepl(writeScript);
-          if (!ok) { smTerm.writeln("\x1b[31m⚠  No se pudo entrar en raw REPL. Reintenta.\x1b[0m"); return; }
+          let ok = await sendViaRawRepl(writeScript);
+          if (!ok) {
+            // Mismo fallback automático que usa el botón "Ejecutar" (sendCodeToDevice):
+            // si el ESP32 no respondió a tiempo al raw REPL -- típico justo después de
+            // conectar, mientras todavía está terminando de arrancar MicroPython --
+            // probamos con paste mode antes de rendirnos y pedirle al usuario que reintente.
+            smTerm.writeln("\x1b[33m⚠  No se pudo entrar en raw REPL. Intentando Paste Mode...\x1b[0m");
+            if (typeof sendViaPasteMode === "function") {
+              ok = await sendViaPasteMode(writeScript);
+            }
+            if (!ok) { smTerm.writeln("\x1b[31m⚠  No se pudo subir el archivo. Reintenta.\x1b[0m"); return; }
+          }
         } else {
           // Fallback mínimo si main.js no expone sendViaRawRepl
           await fn("\x03"); await _sleep(80);
