@@ -1,0 +1,105 @@
+<xml xmlns="https://developers.google.com/blockly/xml">
+  <variables>
+    <variable id="[q[De*J;[#48(Ob:BTNr">text</variable>
+    <variable id="C9.T`;,t]*Y`2znmuRWN">host</variable>
+    <variable id="mQ!rtqnev^yG;2p-A5lf">msg</variable>
+  </variables>
+  <block type="wifi_init" id="~%A`PD$@:fK,Q)n*P8b:" x="130" y="30">
+    <field name="VAR">sta_if</field>
+    <field name="MODE">STA_IF</field>
+    <next>
+      <block type="init_espnow_simple" id="LjcU755ZwNvpw10c,JCu">
+        <next>
+          <block type="controls_try_except" id="]Yqr}1n$2pib0ie+fa1^">
+            <statement name="TRY">
+              <block type="espnow_add_peer" id="{;6K%^[BVSWiLA@geL_t">
+                <value name="PEER">
+                  <shadow type="peer" id="isZ;3)(1cl38{v%QIVfz">
+                    <field name="PEER_BYTES">b'\xff\xff\xff\xff\xff\xff'</field>
+                  </shadow>
+                  <block type="peer" id="YgH3VRBm2n7,YI|nPW!X">
+                    <field name="PEER_BYTES">b'\xff\xff\xff\xff\xff\xff'</field>
+                  </block>
+                </value>
+              </block>
+            </statement>
+            <statement name="EXCEPT">
+              <block type="pass" id="xr$][Vw9Bl^VQJV.TKrP"></block>
+            </statement>
+            <next>
+              <block type="espnow_irq" id="6/0rK/~*[JXhVZeiGzpA">
+                <field name="CALLBACK">on_recv</field>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </next>
+  </block>
+  <block type="espnow_irq_callback" id="LCU9Om]5$t6jiI[xgzl3" x="590" y="30">
+    <field name="CALLBACK">on_recv</field>
+    <statement name="DO">
+      <block type="espnow_recv" id="?nS?$y[7EXF2bpw,@fX+">
+        <field name="HOST" id="C9.T`;,t]*Y`2znmuRWN">host</field>
+        <field name="MSG" id="mQ!rtqnev^yG;2p-A5lf">msg</field>
+        <next>
+          <block type="controls_if" id="VCO~cCcxUpbozG3C=$w}">
+            <value name="IF0">
+              <block type="variables_get" id="=w.4?lQkG([/DnyK37X`">
+                <field name="VAR" id="mQ!rtqnev^yG;2p-A5lf">msg</field>
+              </block>
+            </value>
+            <statement name="DO0">
+              <block type="text_print" id="7N87=4Xl-=xW7VL}u?h|">
+                <value name="TEXT">
+                  <shadow type="text" id="K6QGyZ2sJ1EEUO%gKgEu">
+                    <field name="TEXT">3DPit</field>
+                  </shadow>
+                  <block type="variables_get" id="LOVN8,m8)`Qv1@4RlR?c">
+                    <field name="VAR" id="C9.T`;,t]*Y`2znmuRWN">host</field>
+                  </block>
+                </value>
+                <next>
+                  <block type="text_print" id="?;G@F4MT_]7s,yKyIq7H">
+                    <value name="TEXT">
+                      <shadow type="text" id="(F.]aev`~uAi:U+9[Hxk">
+                        <field name="TEXT">3DPit</field>
+                      </shadow>
+                      <block type="variables_get" id="[HCzx;bn[~BkPx!U^v-X">
+                        <field name="VAR" id="mQ!rtqnev^yG;2p-A5lf">msg</field>
+                      </block>
+                    </value>
+                  </block>
+                </next>
+              </block>
+            </statement>
+          </block>
+        </next>
+      </block>
+    </statement>
+  </block>
+  <block type="procedures_defnoreturn" id="4-fa#b`=ZA`byf$-8t4A" x="130" y="330">
+    <mutation>
+      <arg name="text" varid="[q[De*J;[#48(Ob:BTNr"></arg>
+    </mutation>
+    <field name="NAME">enviar</field>
+    <comment pinned="false" h="80" w="160">Describe esta función...</comment>
+    <statement name="STACK">
+      <block type="espnow_send_peer" id="cUJZcRoQHo%ALyHD.%~?">
+        <value name="PEER">
+          <shadow type="peer" id="lQRO8uS8~xrSIqyg|LZ]">
+            <field name="PEER_BYTES">b'\xff\xff\xff\xff\xff\xff'</field>
+          </shadow>
+          <block type="peer" id="U^GJr7wNQFl/QNQ6w%Gx">
+            <field name="PEER_BYTES">b'\xff\xff\xff\xff\xff\xff'</field>
+          </block>
+        </value>
+        <value name="TEXT">
+          <block type="variables_get" id="I8uy.:m0n=:4p2AFPbOQ">
+            <field name="VAR" id="[q[De*J;[#48(Ob:BTNr">text</field>
+          </block>
+        </value>
+      </block>
+    </statement>
+  </block>
+</xml>

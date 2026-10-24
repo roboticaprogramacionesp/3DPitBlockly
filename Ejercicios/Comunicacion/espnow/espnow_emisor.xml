@@ -8,15 +8,22 @@
     <next>
       <block type="init_espnow_simple" id="elEuQ*Urpua;._V5G}}x">
         <next>
-          <block type="espnow_add_peer" id="WXYbDbIOq[xu4Fn@,iw5">
-            <value name="PEER">
-              <shadow type="peer" id="y,h8X([{^L*W4+c9YPf;">
-                <field name="PEER_BYTES">b'\xff\xff\xff\xff\xff\xff'</field>
-              </shadow>
-              <block type="peer" id="cFrKDcybId^xMtDls]SD">
-                <field name="PEER_BYTES">b'\xff\xff\xff\xff\xff\xff'</field>
+          <block type="controls_try_except" id="tryExceptAddPeerEmit1">
+            <statement name="TRY">
+              <block type="espnow_add_peer" id="WXYbDbIOq[xu4Fn@,iw5">
+                <value name="PEER">
+                  <shadow type="peer" id="y,h8X([{^L*W4+c9YPf;">
+                    <field name="PEER_BYTES">b'\xff\xff\xff\xff\xff\xff'</field>
+                  </shadow>
+                  <block type="peer" id="cFrKDcybId^xMtDls]SD">
+                    <field name="PEER_BYTES">b'\xff\xff\xff\xff\xff\xff'</field>
+                  </block>
+                </value>
               </block>
-            </value>
+            </statement>
+            <statement name="EXCEPT">
+              <block type="pass" id="passAddPeerEmit1"></block>
+            </statement>
             <next>
               <block type="procedures_callnoreturn" id="WCw?2tihn!zC@!?jF46?" inline="true">
                 <mutation name="send_msg">

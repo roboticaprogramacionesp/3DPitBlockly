@@ -2270,8 +2270,14 @@ var TUTORIALS = {
         bloque: "init_espnow_simple", bloqueLabel: "Iniciar ESP-NOW"
       },
       {
-        titulo: "Arrastra: Agregar peer",
-        desc: "Arrastra el bloque <em>Agregar receptor ESP-NOW</em> debajo de los anteriores. Conecta el bloque <em>peer</em> en su espacio.",
+        titulo: "Protege el programa con try / except",
+        desc: "Ve a <b>Excepciones</b> y arrastra el bloque <em>try</em> debajo de <em>Iniciar ESP-NOW</em>. Si alguna vez ejecutas el programa dos veces sin reiniciar el ESP32, agregar el mismo peer otra vez lanza un error que detendría todo el programa; con <em>try / except</em> lo evitamos.",
+        highlightCat: "Excepciones", expandCat: null,
+        bloque: "controls_try_except", bloqueLabel: "try"
+      },
+      {
+        titulo: "Dentro del try: Agregar peer",
+        desc: "Arrastra el bloque <em>Agregar receptor ESP-NOW</em> <b>dentro</b> del <b>try</b>. Conecta el bloque <em>peer</em> en su espacio.",
         highlightCat: "ESP-NOW", expandCat: "Comunicación Inalambrica",
         bloque: "espnow_add_peer", bloqueLabel: "Agregar receptor ESP-NOW"
       },
@@ -2280,6 +2286,12 @@ var TUTORIALS = {
         desc: "Arrastra el bloque <em>Dirección MAC (peer)</em>. Para el receptor usamos la dirección de <b>broadcast</b>: <code>b'\\xff\\xff\\xff\\xff\\xff\\xff'</code> (acepta mensajes de cualquier emisor). Asegúrate de que ese valor esté en el campo del bloque.",
         highlightCat: "ESP-NOW", expandCat: "Comunicación Inalambrica",
         bloque: "peer", bloqueLabel: "Dirección MAC (peer)"
+      },
+      {
+        titulo: "Dentro del except: pasar",
+        desc: "Ve a <b>Python</b> y arrastra el bloque <em>pasar</em> <b>dentro</b> del <b>except</b>: si el peer ya estaba agregado, simplemente lo ignoramos y seguimos con el programa.",
+        highlightCat: "Python", expandCat: null,
+        bloque: "pass", bloqueLabel: "pasar"
       },
       {
         titulo: "Imprime mensaje de espera",
@@ -2397,8 +2409,14 @@ var TUTORIALS = {
         bloque: "init_espnow_simple", bloqueLabel: "Iniciar ESP-NOW"
       },
       {
-        titulo: "Arrastra: Agregar peer",
-        desc: "Arrastra el bloque <em>Agregar receptor ESP-NOW</em>. Conecta el bloque <em>peer</em> en su espacio.",
+        titulo: "Protege el programa con try / except",
+        desc: "Ve a <b>Excepciones</b> y arrastra el bloque <em>try</em> debajo de <em>Iniciar ESP-NOW</em>. Si alguna vez ejecutas el programa dos veces sin reiniciar el ESP32, agregar el mismo peer otra vez lanza un error que detendría todo el programa; con <em>try / except</em> lo evitamos.",
+        highlightCat: "Excepciones", expandCat: null,
+        bloque: "controls_try_except", bloqueLabel: "try"
+      },
+      {
+        titulo: "Dentro del try: Agregar peer",
+        desc: "Arrastra el bloque <em>Agregar receptor ESP-NOW</em> <b>dentro</b> del <b>try</b>. Conecta el bloque <em>peer</em> en su espacio.",
         highlightCat: "ESP-NOW", expandCat: "Comunicación Inalambrica",
         bloque: "espnow_add_peer", bloqueLabel: "Agregar receptor ESP-NOW"
       },
@@ -2407,6 +2425,12 @@ var TUTORIALS = {
         desc: "Arrastra el bloque <em>Dirección MAC (peer)</em>. En el campo escribe la MAC del receptor en formato <code>b'\\xAA\\xBB\\xCC\\xDD\\xEE\\xFF'</code>.<br><br>O usa broadcast: <code>b'\\xff\\xff\\xff\\xff\\xff\\xff'</code> para enviar a todos sin especificar MAC.",
         highlightCat: "ESP-NOW", expandCat: "Comunicación Inalambrica",
         bloque: "peer", bloqueLabel: "Dirección MAC (peer)"
+      },
+      {
+        titulo: "Dentro del except: pasar",
+        desc: "Ve a <b>Python</b> y arrastra el bloque <em>pasar</em> <b>dentro</b> del <b>except</b>: si el peer ya estaba agregado, simplemente lo ignoramos y seguimos con el programa.",
+        highlightCat: "Python", expandCat: null,
+        bloque: "pass", bloqueLabel: "pasar"
       },
       {
         titulo: "Arrastra: Enviar mensaje ESP-NOW",
@@ -2455,7 +2479,7 @@ var TUTORIALS = {
     steps: [
       {
         titulo: "¿Qué vamos a construir?",
-        desc: "Un <b>chat</b> de verdad entre dos ESP32: los dos pueden <b>enviar y recibir al mismo tiempo</b>, sin que uno tenga que esperar al otro. Para eso vamos a usar <b>ESP-NOW al recibir llamar</b> (<code>e.irq()</code>): en vez de estar preguntando todo el rato \"¿llegó algo?\" dentro de un ciclo, el ESP32 sigue con lo suyo (enviando mensajes) y, apenas llega algo, <b>se interrumpe solo</b> para atenderlo. Vas a cargar el <b>mismo programa</b> en los dos ESP32 -- no hace falta armar un \"emisor\" y un \"receptor\" por separado.",
+        desc: "Un <b>chat</b> de verdad entre dos ESP32: los dos pueden <b>enviar y recibir al mismo tiempo</b>, sin que uno tenga que esperar al otro. Para eso vamos a usar <b>ESP-NOW al recibir llamar</b> (<code>e.irq()</code>): en vez de estar preguntando todo el rato \"¿llegó algo?\" dentro de un ciclo, el ESP32 se queda libre y, apenas llega algo, <b>se interrumpe solo</b> para atenderlo. Tu programa no va a tener ningún ciclo: va a armar una función <b>enviar</b> y, en vez de llamarla sola, vas a escribirla <b>vos mismo</b> en el monitor serial cada vez que quieras mandar un mensaje. Vas a cargar el <b>mismo programa</b> en los dos ESP32 -- no hace falta armar un \"emisor\" y un \"receptor\" por separado.",
         highlightCat: null, bloque: null
       },
       {
@@ -2486,8 +2510,14 @@ var TUTORIALS = {
         bloque: "init_espnow_simple", bloqueLabel: "Iniciar ESP-NOW"
       },
       {
-        titulo: "Arrastra: Agregar peer",
-        desc: "Arrastra el bloque <em>Agregar receptor ESP-NOW</em> debajo de los anteriores.",
+        titulo: "Protege el programa con try / except",
+        desc: "Ve a <b>Excepciones</b> y arrastra el bloque <em>try</em> debajo de <em>Iniciar ESP-NOW</em>. Si alguna vez ejecutas el programa dos veces sin reiniciar el ESP32, agregar el mismo peer otra vez lanza un error que detendría todo el programa; con <em>try / except</em> lo evitamos.",
+        highlightCat: "Excepciones", expandCat: null,
+        bloque: "controls_try_except", bloqueLabel: "try"
+      },
+      {
+        titulo: "Dentro del try: Agregar peer",
+        desc: "Arrastra el bloque <em>Agregar receptor ESP-NOW</em> <b>dentro</b> del <b>try</b>.",
         highlightCat: "ESP-NOW", expandCat: "Comunicación Inalambrica",
         bloque: "espnow_add_peer", bloqueLabel: "Agregar receptor ESP-NOW"
       },
@@ -2496,6 +2526,12 @@ var TUTORIALS = {
         desc: "Arrastra el bloque <em>Dirección MAC (peer)</em> y conéctalo en el espacio del bloque anterior. Dejá el valor de <b>broadcast</b> que trae por defecto, <code>b'\\xff\\xff\\xff\\xff\\xff\\xff'</code>: así no necesitás saber la MAC exacta del otro ESP32, y como vas a cargar el mismo programa en los dos, los dos van a usar el mismo valor.",
         highlightCat: "ESP-NOW", expandCat: "Comunicación Inalambrica",
         bloque: "peer", bloqueLabel: "Dirección MAC (peer)"
+      },
+      {
+        titulo: "Dentro del except: pasar",
+        desc: "Ve a <b>Python</b> y arrastra el bloque <em>pasar</em> <b>dentro</b> del <b>except</b>: si el peer ya estaba agregado, simplemente lo ignoramos y seguimos con el programa.",
+        highlightCat: "Python", expandCat: null,
+        bloque: "pass", bloqueLabel: "pasar"
       },
       {
         titulo: "Ahora arma la parte que ESCUCHA, por separado",
@@ -2555,24 +2591,19 @@ var TUTORIALS = {
       },
       {
         titulo: "Arrastra: ESP-NOW al recibir llamar",
-        desc: "Ve a <b>ESP-NOW</b> y arrastra el bloque <em>ESP-NOW al recibir llamar</em>. Conéctalo <b>después</b> de \"Agregar receptor ESP-NOW\", en la pila principal. Este bloque sí es una instrucción normal: le dice al ESP32 \"cuando llegue un mensaje, andá a ejecutar la función on_recv que armaste\".",
+        desc: "Ve a <b>ESP-NOW</b> y arrastra el bloque <em>ESP-NOW al recibir llamar</em>. Conéctalo <b>después</b> del bloque <em>try / except</em>, en la pila principal. Este bloque sí es una instrucción normal: le dice al ESP32 \"cuando llegue un mensaje, andá a ejecutar la función on_recv que armaste\".",
         highlightCat: "ESP-NOW", expandCat: "Comunicación Inalambrica",
         bloque: "espnow_irq", bloqueLabel: "ESP-NOW al recibir llamar"
       },
       {
-        titulo: "Imprime mensaje de inicio",
-        desc: "Ve a <b>Textos</b> y arrastra el bloque <em>imprimir</em>. Escribe el texto <b>Chat iniciado, escuchando...</b> para confirmar que arrancó.",
-        highlightCat: "Textos", expandCat: null,
-        bloque: "text_print", bloqueLabel: "imprimir"
+        titulo: "Crea tu función: enviar",
+        desc: "Ve a <b>Funciones</b> y arrastra otro bloque <em>para hacer algo</em>, <b>suelto</b> en el área de trabajo (no lo conectes a nada, igual que la función que escucha). Hacé clic en su nombre y escribí <b>enviar</b>. Con el <b>⚙️</b> (engranaje) agregale un parámetro de entrada y nombralo <b>text</b>: así vas a poder decirle qué mensaje mandar cada vez que la llames.",
+        highlightCat: "Funciones", expandCat: null,
+        bloque: "procedures_defnoreturn", bloqueLabel: "para … hacer"
       },
       {
-        titulo: "Agrega el ciclo infinito",
-        desc: "Ve a <b>Ciclos</b> y arrastra el bloque <em>Repetir mientras Verdadero</em>. Este ciclo va a estar enviando mensajes todo el tiempo, sin que eso le impida recibir -- la recepción pasa aparte, por la función que armaste.",
-        highlightCat: "Ciclos", expandCat: null, bloque: "controls_whileUntil"
-      },
-      {
-        titulo: "Dentro del ciclo: Enviar mensaje ESP-NOW",
-        desc: "Ve a <b>ESP-NOW</b> y arrastra el bloque <em>Enviar mensaje ESP-NOW</em> dentro del ciclo.",
+        titulo: "Dentro de enviar: Enviar mensaje ESP-NOW",
+        desc: "Ve a <b>ESP-NOW</b> y arrastra el bloque <em>Enviar mensaje ESP-NOW</em> <b>dentro</b> de la función <b>enviar</b>.",
         highlightCat: "ESP-NOW", expandCat: "Comunicación Inalambrica",
         bloque: "espnow_send_peer", bloqueLabel: "Enviar mensaje ESP-NOW"
       },
@@ -2583,15 +2614,15 @@ var TUTORIALS = {
         bloque: "peer", bloqueLabel: "Dirección MAC (peer)"
       },
       {
-        titulo: "Escribe el mensaje a enviar",
-        desc: "Ve a <b>Textos</b> y arrastra un bloque de <em>texto</em>. Escribe tu mensaje, por ejemplo <b>Hola desde el ESP32 1</b>. Conéctalo en el segundo espacio del bloque de envío.",
-        highlightCat: "Textos", expandCat: null,
-        bloque: "text", bloqueLabel: "Texto (mensaje)"
+        titulo: "Conecta el parámetro text",
+        desc: "Ve a <b>Variables</b> y arrastra el bloque <em>obtener text</em>. Conéctalo en el segundo espacio del bloque de envío: el mensaje que vas a enviar es justamente el que recibe la función como parámetro.",
+        highlightCat: "Variables", expandCat: null,
+        bloque: { tipo: "variables_get", valor: "text" }, bloqueLabel: "obtener text"
       },
       {
-        titulo: "Agrega una pausa",
-        desc: "Ve a <b>Tiempo</b> y arrastra el bloque <em>esperar</em>, debajo del envío, todavía dentro del ciclo. Ajusta a <b>3</b> segundos: controla cada cuánto se manda un mensaje nuevo.",
-        highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
+        titulo: "¿Cómo se manda un mensaje?",
+        desc: "Fijate que la función <b>enviar</b> no se llama en ningún lado de tu programa, y no hay ningún ciclo: tu programa principal termina enseguida (apenas registra el <em>on_recv</em>) y vuelve al <b>prompt</b> del monitor serial. La escucha sigue activa en segundo plano. Para mandar un mensaje, vas a escribir <b>vos mismo</b> la llamada directamente en el monitor serial, por ejemplo <code>enviar('Hola')</code>, y presionar Enter.",
+        highlightCat: null, bloque: null
       },
       {
         titulo: "Guarda tu proyecto",
@@ -2605,17 +2636,22 @@ var TUTORIALS = {
       },
       {
         titulo: "Ejecuta en el primer ESP32",
-        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. El monitor serial mostrará <em>Chat iniciado, escuchando...</em> y después un mensaje enviado cada 3 segundos.",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Como no hay ciclo, el programa termina casi al instante y el monitor serial vuelve a mostrar el <b>prompt</b> <code>&gt;&gt;&gt;</code>. Eso es correcto: la escucha de ESP-NOW ya quedó activa en segundo plano.",
         highlightElement: "#btnRun", waitForAction: "run"
       },
       {
+        titulo: "Envía tu primer mensaje",
+        desc: "Hacé clic en el monitor serial y escribí directamente <code>enviar('Hola')</code>, después presioná Enter. Eso <b>llama</b> a la función que armaste, con <b>'Hola'</b> como valor de <b>text</b>.",
+        highlightCat: null, bloque: null
+      },
+      {
         titulo: "Carga el MISMO programa en el segundo ESP32",
-        desc: "Sin cambiar nada del programa (opcionalmente podés cambiar el texto del mensaje a \"Hola desde el ESP32 2\" para distinguirlos en el monitor serial), conectá el <b>segundo</b> ESP32 con el botón <b>Conectar</b> y hacé clic en <b>Ejecutar</b> de nuevo.",
+        desc: "Sin cambiar nada del programa, conectá el <b>segundo</b> ESP32 con el botón <b>Conectar</b> y hacé clic en <b>Ejecutar</b> de nuevo.",
         highlightElement: "#btnConnection"
       },
       {
         titulo: "¡Mira el chat funcionando!",
-        desc: "Con los dos ESP32 corriendo, abrí el monitor serial de cualquiera de los dos: vas a ver <b>tu propio envío</b> cada 3 segundos y, apenas llega algo del otro, aparece <b>enseguida</b> -- sin esperar a que termine tu ciclo. Esa es la diferencia entre revisar \"¿llegó algo?\" a cada rato y que el ESP32 te avise solo cuando pasa algo. 🎉",
+        desc: "Con los dos ESP32 corriendo, escribí <code>enviar('...')</code> en el monitor serial de <b>cualquiera</b> de los dos: en el <b>otro</b> vas a ver aparecer el host y el mensaje <b>al instante</b>, sin que ese ESP32 tuviera que estar preguntando \"¿llegó algo?\" en ningún ciclo -- la función <em>on_recv</em> se disparó sola. Probá mandar mensajes desde los dos lados. 🎉",
         highlightCat: null, bloque: null
       }
     ]

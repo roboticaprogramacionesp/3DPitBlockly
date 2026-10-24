@@ -9,15 +9,22 @@
     <next>
       <block type="init_espnow_simple" id="|wR[XzOU,p/b:(Tr$WQy">
         <next>
-          <block type="espnow_add_peer" id="nA2DrzcG0TL=5tW4f,ne">
-            <value name="PEER">
-              <shadow type="peer" id="%bZ6-kVwL-a2S|Ylw|74">
-                <field name="PEER_BYTES">b'\xff\xff\xff\xff\xff\xff'</field>
-              </shadow>
-              <block type="peer" id="XVStc3(DhJu#eCRlAE*0">
-                <field name="PEER_BYTES">b'\xff\xff\xff\xff\xff\xff'</field>
+          <block type="controls_try_except" id="tryExceptAddPeerRecv1">
+            <statement name="TRY">
+              <block type="espnow_add_peer" id="nA2DrzcG0TL=5tW4f,ne">
+                <value name="PEER">
+                  <shadow type="peer" id="%bZ6-kVwL-a2S|Ylw|74">
+                    <field name="PEER_BYTES">b'\xff\xff\xff\xff\xff\xff'</field>
+                  </shadow>
+                  <block type="peer" id="XVStc3(DhJu#eCRlAE*0">
+                    <field name="PEER_BYTES">b'\xff\xff\xff\xff\xff\xff'</field>
+                  </block>
+                </value>
               </block>
-            </value>
+            </statement>
+            <statement name="EXCEPT">
+              <block type="pass" id="passAddPeerRecv1"></block>
+            </statement>
             <next>
               <block type="controls_whileUntil" id="%h|3:Txxe|$}hxWuXvPH">
                 <field name="MODE">WHILE</field>
@@ -77,7 +84,11 @@
                         </statement>
                         <next>
                           <block type="time_sleep" id="*6FB?|8*CqNw~c;/CzgH">
-                            <field name="VALUE">1</field>
+                            <value name="VALUE">
+                              <block type="math_number" id="numSleepRecv1">
+                                <field name="NUM">1</field>
+                              </block>
+                            </value>
                             <field name="UNIT">S</field>
                           </block>
                         </next>
