@@ -2205,16 +2205,23 @@ async function sendViaRawRepl(codeStr, chunkSz = 256) {
     await sleep(100 * _mul);
 
     // 2. Entrar en raw REPL
-    _localBuf = "";
+    // OJO con descartar _localBuf entre reintentos: en builds con Bluetooth
+    // Classic (ej. "BT-CLASSIC"), interrumpir un programa que tenía el radio
+    // activo puede tardar bastante en asentarse, y el ">" de respuesta llega
+    // tarde -- después de que ya dejamos de esperarlo. Si lo tiráramos sin
+    // mirar antes de cada reintento, perderíamos esa respuesta tardía y
+    // mandaríamos otro Ctrl+A innecesario (que el propio ESP32 interpreta
+    // bien -- solo reimprime el banner -- pero retrasa todo más). Por eso
+    // cada intento revisa primero si ya llegó, antes de reiniciar el buffer.
     await sendSerial("\x01");
-    let gotPrompt = await _waitLocal(">", 2000 * _mul);
-    if (!gotPrompt) {
+    let gotPrompt = await _waitLocal(">", 2500 * _mul);
+    if (!gotPrompt && !_localBuf.includes(">")) {
       await sendSerial("\r\n");
       await sleep(100 * _mul);
-      _localBuf = "";
+      if (!_localBuf.includes(">")) _localBuf = "";
       await sendSerial("\x01");
-      gotPrompt = await _waitLocal(">", 2500 * _mul);
-      if (!gotPrompt) {
+      gotPrompt = await _waitLocal(">", 3000 * _mul);
+      if (!gotPrompt && !_localBuf.includes(">")) {
         // Si lo que llegó es un banner de arranque (p.ej. el ESP32 se reseteó solo,
         // o justo se acaba de conectar y MicroPython todavía estaba terminando de
         // iniciar cuando mandamos el primer Ctrl+A), el chip NO está colgado -- solo
@@ -2222,14 +2229,22 @@ async function sendViaRawRepl(codeStr, chunkSz = 256) {
         // vez de rendirnos de una, que es lo que generaba el "No se pudo entrar en
         // raw REPL" intermitente incluso en un Wroom clásico recién conectado.
         const bootingDeNuevo = /MicroPython|rst:0x|ets Jun/.test(_localBuf);
-        if (bootingDeNuevo) {
-          await sleep(1500 * _mul);
+        await sleep((bootingDeNuevo ? 1500 : 500) * _mul);
+        if (!_localBuf.includes(">")) {
           _localBuf = "";
           await sendSerial("\x01");
           gotPrompt = await _waitLocal(">", 3000 * _mul);
         }
-        if (!gotPrompt) return false;
       }
+      gotPrompt = gotPrompt || _localBuf.includes(">");
+    }
+    if (!gotPrompt) {
+      // Dejamos el dispositivo en un estado conocido (REPL normal) antes de
+      // rendirnos, para que el fallback a Paste Mode no se tope con un raw
+      // REPL a medio entrar.
+      await sendSerial("\x02");
+      await sleep(150 * _mul);
+      return false;
     }
 
     // 3. Enviar código en bloques con progreso
@@ -2310,6 +2325,17 @@ async function sendViaPasteMode(codeStr) {
   }
 
   try {
+    // Si sendViaRawRepl() se rindió justo cuando el ESP32 recién terminaba
+    // de entrar en raw REPL (la respuesta ">" llegó tarde, después de que
+    // ya habíamos dejado de esperarla -- pasa seguido en builds con
+    // Bluetooth Classic, donde interrumpir un programa que tenía el radio
+    // activo tarda en asentarse), el dispositivo queda esperando ahí, y
+    // Ctrl+C/Ctrl+E no hacen lo esperado dentro de raw REPL. Ctrl+B fuerza
+    // la salida a REPL normal pase lo que pase; si ya estábamos en REPL
+    // normal no hace más que reimprimir el banner, así que es inofensivo.
+    await sendSerial("\x02");
+    await sleep(150 * d);
+
     await sendSerial("\x03");
     await sleep(100 * d);
     await sendSerial("\x03");
