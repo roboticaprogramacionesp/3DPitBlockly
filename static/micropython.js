@@ -627,6 +627,13 @@ Blockly.Python["list_empty"] = function () {
   return ["[]", Blockly.Python.ORDER_ATOMIC];
 };
 
+Blockly.Python["is_digit_string"] = function (block) {
+  const value =
+    Blockly.Python.valueToCode(block, "VALUE", Blockly.Python.ORDER_MEMBER) ||
+    "''";
+  return [`${value}.isdigit()`, Blockly.Python.ORDER_FUNCTION_CALL];
+};
+
 Blockly.Python["is_int"] = function (block) {
   const value =
     Blockly.Python.valueToCode(block, "VALUE", Blockly.Python.ORDER_NONE) ||

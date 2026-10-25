@@ -1100,6 +1100,15 @@ Blockly.defineBlocksWithJsonArray([
     helpUrl: "",
   },
   {
+    type: "is_digit_string",
+    message0: "es un dígito %1",
+    args0: [{ type: "input_value", name: "VALUE", check: "String" }],
+    output: "Boolean",
+    colour: 230,
+    tooltip: "Comprueba si un TEXTO tiene solo dígitos (ej. \"90\" -> True, \"abc\" o \"\" -> False) -- usalo para validar texto recibido por BLE/UART/Serial ANTES de convertirlo con 'a entero'. A diferencia de 'es entero' (que revisa el TIPO de dato), este revisa el CONTENIDO del texto.",
+    helpUrl: "",
+  },
+  {
     type: "is_int",
     message0: "es entero %1",
     args0: [{ type: "input_value", name: "VALUE" }],
