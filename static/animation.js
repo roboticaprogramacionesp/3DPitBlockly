@@ -2017,6 +2017,19 @@ Blockly.JavaScript["ky001_read_index"] = function (b) { return [`getSensorValue(
     if (!Blockly.JavaScript[n]) Blockly.JavaScript[n] = function () { return ""; };
   });
 Blockly.JavaScript["wifi_isconnected"] = function (b) { return [`false`, Blockly.JavaScript.ORDER_ATOMIC]; };
+// Sin internet en el simulador: respuesta vacía del tipo que se pidió.
+Blockly.JavaScript["http_get"] = function (b) {
+  const mode = b.getFieldValue("MODE");
+  return [mode === "LINES" ? "[]" : mode === "JSON" ? "({})" : `""`, Blockly.JavaScript.ORDER_ATOMIC];
+};
+Blockly.JavaScript["lists_contains"] = function (b) {
+  const list = Blockly.JavaScript.valueToCode(b, "LIST", Blockly.JavaScript.ORDER_MEMBER) || "[]";
+  const item = Blockly.JavaScript.valueToCode(b, "ITEM", Blockly.JavaScript.ORDER_NONE) || "null";
+  const code = `${list}.includes(${item})`;
+  return b.getFieldValue("MODE") === "NOT_IN"
+    ? [`!${code}`, Blockly.JavaScript.ORDER_LOGICAL_NOT]
+    : [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
+};
 Blockly.JavaScript["wifi_current_ip"] = function (b) { return [`"0.0.0.0"`, Blockly.JavaScript.ORDER_ATOMIC]; };
 Blockly.JavaScript["wifi_scan"] = function (b) { return [`[]`, Blockly.JavaScript.ORDER_ATOMIC]; };
 Blockly.JavaScript["socket_receive"] = function (b) { return [`""`, Blockly.JavaScript.ORDER_ATOMIC]; };

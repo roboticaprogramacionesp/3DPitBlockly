@@ -40,6 +40,15 @@ Blockly.Python["lists_append"] = function (block) {
   return `${listVar}.append(${item})\n`;
 };
 
+Blockly.Python["lists_contains"] = function (block) {
+  const list =
+    Blockly.Python.valueToCode(block, "LIST", Blockly.Python.ORDER_RELATIONAL) || "[]";
+  const item =
+    Blockly.Python.valueToCode(block, "ITEM", Blockly.Python.ORDER_RELATIONAL) || "None";
+  const op = block.getFieldValue("MODE") === "NOT_IN" ? "not in" : "in";
+  return [`${item} ${op} ${list}`, Blockly.Python.ORDER_RELATIONAL];
+};
+
 Blockly.Python["text_encode"] = function (block) {
   const value =
     Blockly.Python.valueToCode(block, "TEXT", Blockly.Python.ORDER_NONE) ||
@@ -2255,6 +2264,22 @@ Blockly.Python["wifi_connect"] = function (block) {
     `if not ${variable}.isconnected():\n` +
     `    print("Error: no se pudo conectar al WiFi '${ssid}'")\n`
   );
+};
+
+Blockly.Python["http_get"] = function (block) {
+  Blockly.Python.definitions_["import_requests"] = "import requests";
+  const url =
+    Blockly.Python.valueToCode(block, "URL", Blockly.Python.ORDER_NONE) || '""';
+  const res = `requests.get(${url})`;
+  const mode = block.getFieldValue("MODE");
+  if (mode === "LINES") {
+    // "\\n" -> el código Python lleva la secuencia de escape \n.
+    return [`${res}.text.strip().split("\\n")`, Blockly.Python.ORDER_FUNCTION_CALL];
+  }
+  if (mode === "JSON") {
+    return [`${res}.json()`, Blockly.Python.ORDER_FUNCTION_CALL];
+  }
+  return [`${res}.text`, Blockly.Python.ORDER_MEMBER];
 };
 
 Blockly.Python["wifi_ap"] = function (block) {

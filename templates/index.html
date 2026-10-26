@@ -1034,6 +1034,7 @@
         </optgroup>
         <optgroup label="📶 Comunicación Inalámbrica">
           <option value="wifi_basico">WiFi — Conectarse a una red</option>
+          <option value="wifi_ntfy_led">WiFi — Prender un LED desde internet</option>
           <option value="hc06_basico">Bluetooth HC-06 (Serial)</option>
           <option value="espnow_receptor">ESP-NOW — Receptor</option>
           <option value="espnow_emisor">ESP-NOW — Emisor</option>
@@ -1127,6 +1128,7 @@
 
           <div class="tut-group-label">📶 Comunicación Inalámbrica</div>
           <div class="tut-option" data-value="wifi_basico"><span class="tut-opt-icon">📶</span>WiFi — Conectarse a una red</div>
+          <div class="tut-option" data-value="wifi_ntfy_led"><span class="tut-opt-icon">🌐</span>WiFi — Prender un LED desde internet</div>
           <div class="tut-option" data-value="hc06_basico"><span class="tut-opt-icon">🔵</span>Bluetooth HC-06</div>
           <div class="tut-option" data-value="espnow_receptor"><span class="tut-opt-icon">📥</span>ESP-NOW Receptor
           </div>
@@ -2570,6 +2572,7 @@
         <block type="lists_sort"></block>
         <block type="lists_split"></block>
         <block type="lists_reverse"></block>
+        <block type="lists_contains"></block>
         <block type="is_list">
           <value name="VALUE">
             <shadow type="lists_create_with">
@@ -5145,6 +5148,13 @@
           <block type="wifi_read_ifconfig"></block>
           <block type="wifi_define_connect"></block>
           <block type="wifi_call_connect"></block>
+          <block type="http_get">
+            <value name="URL">
+              <shadow type="text">
+                <field name="TEXT">https://ntfy.sh/tu_canal/json?poll=1</field>
+              </shadow>
+            </value>
+          </block>
         </category>
 
         <category name="Socket">

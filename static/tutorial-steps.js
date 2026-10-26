@@ -2881,6 +2881,288 @@ var TUTORIALS = {
     ]
   },
 
+  wifi_ntfy_led: {
+    title: "WiFi — Prender un LED desde internet", icon: "🌐",
+    diagram: "img/espwifi.png",
+    steps: [
+      {
+        titulo: "¿Qué aprenderemos?",
+        desc: "Vas a prender y apagar un LED <b>desde tu celular o la computadora</b>, por internet. Usaremos <b>ntfy.sh</b>, un servicio gratis de mensajes: tú publicas <b>on</b> u <b>off</b> en un <b>canal</b> y el ESP32 lo lee cada 2 segundos. Aprenderás a pedir datos a internet (HTTP), a leer <b>JSON</b> y a usar una <b>lista</b> para no repetir mensajes.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Crea un proyecto nuevo",
+        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        highlightElement: "#btnArchivo"
+      },
+      {
+        titulo: "Conexión física",
+        desc: "Usaremos el LED integrado del ESP32 en el <b>pin 2</b>, así que no hay que conectar nada. Si tu placa no tiene LED en el pin 2 (por ejemplo, muchas ESP32-S3), conecta un LED con su resistencia de 220 Ω a otro pin y usa ese número. Necesitas también una red WiFi de <b>2.4 GHz</b> con internet.",
+        highlightCat: null, bloque: null
+      },
+      {
+        titulo: "Abre la categoría LEDs",
+        desc: "Haz clic en <b>LEDs</b> y luego en la subcategoría <b>LED</b>.",
+        highlightCat: "LED", expandCat: "LEDs", bloque: null
+      },
+      {
+        titulo: "Arrastra: Preparar LED",
+        desc: "Arrastra el bloque <em>Preparar LED</em> al área de trabajo. Deja el nombre <b>led</b> y el <b>pin 2</b>. Este es el primer bloque del programa.",
+        highlightCat: "LED", expandCat: "LEDs", bloque: "led_init", bloqueLabel: "Preparar LED"
+      },
+      {
+        titulo: "Abre la categoría WiFi",
+        desc: "Haz clic en <b>Comunicación Inalambrica</b> y luego en <b>WiFi</b>.",
+        highlightCat: "WiFi", expandCat: "Comunicación Inalambrica", bloque: null
+      },
+      {
+        titulo: "Arrastra: Conectar WiFi",
+        desc: "Arrastra el bloque <em>conectar SSID contraseña</em> debajo de <em>Preparar LED</em>. Escribe el nombre de tu red en <b>SSID</b> y su clave en <b>contraseña</b>. El bloque espera solo hasta que se conecte.",
+        highlightCat: "WiFi", expandCat: "Comunicación Inalambrica", bloque: "wifi_connect", bloqueLabel: "conectar SSID contraseña"
+      },
+      {
+        titulo: "Avisa que se conectó",
+        desc: "Ve a <b>Textos</b> y arrastra <em>imprimir</em> debajo. Escribe <b>Conectado!</b> en su texto: lo verás en el monitor serial.",
+        highlightCat: "Textos", expandCat: null, bloque: "text_print", bloqueLabel: "imprimir"
+      },
+      {
+        titulo: "Crea las variables",
+        desc: "Ve a <b>Variables</b> y crea cuatro variables, una por una con <em>Crear variable</em>: <b>canal</b> (el nombre de tu canal de ntfy), <b>visto</b> (los mensajes ya leídos), <b>linea</b> (cada mensaje que llega) y <b>msg</b> (el mensaje ya convertido). Escríbelas en minúsculas, como en Python.",
+        highlightCat: "Variables", highlightFlyoutButton: "create_variable", variable: ["canal", "visto", "linea", "msg"], expandCat: null, bloque: null
+      },
+      {
+        titulo: "Establece canal",
+        desc: "Arrastra <em>Establecer … a</em> debajo de <em>imprimir</em> y elige <b>canal</b> en el desplegable.",
+        highlightCat: "Variables", expandCat: null, bloque: { tipo: "variables_set", valor: "canal" }, bloqueLabel: "Establecer canal"
+      },
+      {
+        titulo: "Escribe el nombre del canal",
+        desc: "Ve a <b>Textos</b> y arrastra un bloque de texto <em>\" \"</em> al hueco. Escribe un nombre <b>difícil de adivinar</b>, por ejemplo <b>profe-garcia-4821</b>: los canales de ntfy.sh son públicos y cualquiera que sepa el nombre puede mandarle mensajes a tu LED.",
+        highlightCat: "Textos", expandCat: null, bloque: "text", bloqueLabel: "texto"
+      },
+      {
+        titulo: "Establece visto",
+        desc: "Arrastra otro <em>Establecer … a</em> y elige <b>visto</b>.",
+        highlightCat: "Variables", expandCat: null, bloque: { tipo: "variables_set", valor: "visto" }, bloqueLabel: "Establecer visto"
+      },
+      {
+        titulo: "Lista vacía",
+        desc: "Ve a <b>Listas</b> y arrastra el primer bloque, <em>crear lista vacía</em>, al hueco de <em>Establecer visto a</em>. Ahí guardaremos el <b>id</b> de cada mensaje que ya procesamos.",
+        highlightCat: "Listas", expandCat: null, bloque: "lists_create_with", bloqueLabel: "crear lista vacía"
+      },
+      {
+        titulo: "Agrega el ciclo principal",
+        desc: "Ve a <b>Ciclos</b> y arrastra <em>Repetir mientras Verdadero</em> debajo de lo anterior. El ESP32 va a revisar el canal una y otra vez.",
+        highlightCat: "Ciclos", expandCat: null, bloque: "controls_whileUntil", bloqueLabel: "Repetir mientras Verdadero"
+      },
+      {
+        titulo: "Recorre cada mensaje",
+        desc: "Ve a <b>Ciclos</b> y arrastra <em>para cada elemento … en lista</em> <b>dentro</b> del ciclo. En su desplegable elige la variable <b>linea</b>.",
+        highlightCat: "Ciclos", expandCat: null, bloque: { tipo: "controls_forEach", valor: "linea" }, bloqueLabel: "para cada elemento"
+      },
+      {
+        titulo: "Pide los mensajes a internet",
+        desc: "Ve a <b>Comunicación Inalambrica › WiFi</b> y arrastra <em>respuesta HTTP GET de … como</em> al hueco <b>en lista</b>. Cambia el desplegable a <b>líneas de texto</b>: ntfy responde un mensaje por línea. Saca el texto de ejemplo que trae el bloque (lo vamos a armar con tu canal).",
+        highlightCat: "WiFi", expandCat: "Comunicación Inalambrica", bloque: "http_get", bloqueLabel: "respuesta HTTP GET"
+      },
+      {
+        titulo: "Arma la dirección",
+        desc: "Ve a <b>Textos</b> y arrastra <em>crear texto con</em> al hueco de la dirección. Con el <b>⚙️</b> (engranaje) agrégale un tercer hueco.",
+        highlightCat: "Textos", expandCat: null, bloque: "text_join", bloqueLabel: "crear texto con"
+      },
+      {
+        titulo: "Parte 1: https://ntfy.sh/",
+        desc: "Arrastra un bloque de texto al primer hueco y escribe <b>https://ntfy.sh/</b>",
+        highlightCat: "Textos", expandCat: null, bloque: "text", bloqueLabel: "texto"
+      },
+      {
+        titulo: "Parte 2: tu canal",
+        desc: "Ve a <b>Variables</b> y arrastra <em>obtener canal</em> al segundo hueco.",
+        highlightCat: "Variables", expandCat: null, bloque: { tipo: "variables_get", valor: "canal" }, bloqueLabel: "obtener canal"
+      },
+      {
+        titulo: "Parte 3: /json?poll=1",
+        desc: "Arrastra otro bloque de texto al tercer hueco y escribe <b>/json?poll=1</b>. Así ntfy devuelve los mensajes guardados en formato JSON y no se queda esperando.",
+        highlightCat: "Textos", expandCat: null, bloque: "text", bloqueLabel: "texto"
+      },
+      {
+        titulo: "Si la línea está vacía…",
+        desc: "Ve a <b>Lógica</b> y arrastra <em>Si … hacer</em> <b>dentro</b> del <em>para cada</em>.",
+        highlightCat: "Lógica", expandCat: null, bloque: "controls_if", bloqueLabel: "Si … hacer"
+      },
+      {
+        titulo: "¿Está vacía?",
+        desc: "Ve a <b>Textos</b> y arrastra <em>está vacío</em> a la condición.",
+        highlightCat: "Textos", expandCat: null, bloque: "text_isEmpty", bloqueLabel: "está vacío"
+      },
+      {
+        titulo: "Obtén linea",
+        desc: "Arrastra <em>obtener linea</em> al hueco de <em>está vacío</em>.",
+        highlightCat: "Variables", expandCat: null, bloque: { tipo: "variables_get", valor: "linea" }, bloqueLabel: "obtener linea"
+      },
+      {
+        titulo: "…sáltala",
+        desc: "Ve a <b>Ciclos</b> y arrastra el bloque <em>romper el bucle</em> dentro del <b>hacer</b>. En su desplegable elige <b>continuar con la siguiente iteración</b>: pasa directo a la próxima línea.",
+        highlightCat: "Ciclos", expandCat: null, bloque: "controls_flow_statements", bloqueLabel: "continuar"
+      },
+      {
+        titulo: "Establece msg",
+        desc: "Arrastra <em>Establecer … a</em> debajo del <em>Si</em> (todavía dentro del <em>para cada</em>) y elige <b>msg</b>.",
+        highlightCat: "Variables", expandCat: null, bloque: { tipo: "variables_set", valor: "msg" }, bloqueLabel: "Establecer msg"
+      },
+      {
+        titulo: "Convierte el texto a JSON",
+        desc: "Ve a <b>Textos › JSON</b> y arrastra <em>texto a JSON</em> al hueco. Cada línea es un texto como <b>{\"id\": \"a1\", \"message\": \"on\"}</b>; al convertirla podemos pedirle cada dato por su nombre.",
+        highlightCat: "JSON", expandCat: "Textos", bloque: "json_loads", bloqueLabel: "texto a JSON"
+      },
+      {
+        titulo: "Obtén linea (para convertirla)",
+        desc: "Arrastra <em>obtener linea</em> al hueco de <em>texto a JSON</em>.",
+        highlightCat: "Variables", expandCat: null, bloque: { tipo: "variables_get", valor: "linea" }, bloqueLabel: "obtener linea"
+      },
+      {
+        titulo: "Si es un mensaje nuevo",
+        desc: "Ve a <b>Lógica</b> y arrastra otro <em>Si … hacer</em> debajo de <em>Establecer msg</em>. ntfy devuelve <b>todos</b> los mensajes guardados en cada consulta, así que solo procesamos los que no vimos antes.",
+        highlightCat: "Lógica", expandCat: null, bloque: "controls_if", bloqueLabel: "Si … hacer"
+      },
+      {
+        titulo: "¿La lista no lo contiene?",
+        desc: "Ve a <b>Listas</b> y arrastra <em>lista … contiene …</em> a la condición. Cambia el desplegable a <b>no contiene</b>.",
+        highlightCat: "Listas", expandCat: null, bloque: "lists_contains", bloqueLabel: "lista contiene"
+      },
+      {
+        titulo: "Obtén visto",
+        desc: "Arrastra <em>obtener visto</em> al primer hueco (la lista).",
+        highlightCat: "Variables", expandCat: null, bloque: { tipo: "variables_get", valor: "visto" }, bloqueLabel: "obtener visto"
+      },
+      {
+        titulo: "El id del mensaje",
+        desc: "Ve a <b>Textos › JSON</b> y arrastra <em>JSON obtener clave</em> al segundo hueco. Cambia la clave <b>temp</b> por <b>id</b>.",
+        highlightCat: "JSON", expandCat: "Textos", bloque: "json_get", bloqueLabel: "JSON obtener clave"
+      },
+      {
+        titulo: "Obtén msg",
+        desc: "Arrastra <em>obtener msg</em> al hueco de <em>JSON obtener clave id</em>.",
+        highlightCat: "Variables", expandCat: null, bloque: { tipo: "variables_get", valor: "msg" }, bloqueLabel: "obtener msg"
+      },
+      {
+        titulo: "Márcalo como visto",
+        desc: "Ve a <b>Listas</b> y arrastra <em>a lista … agregar</em> dentro del <b>hacer</b>. Elige <b>visto</b> en el desplegable.",
+        highlightCat: "Listas", expandCat: null, bloque: "lists_append", bloqueLabel: "a lista agregar"
+      },
+      {
+        titulo: "Agrega el id",
+        desc: "Arrastra otro <em>JSON obtener clave</em> al hueco y cambia la clave a <b>id</b>.",
+        highlightCat: "JSON", expandCat: "Textos", bloque: "json_get", bloqueLabel: "JSON obtener clave"
+      },
+      {
+        titulo: "Obtén msg (para el id)",
+        desc: "Arrastra <em>obtener msg</em> al hueco de <em>JSON obtener clave id</em>.",
+        highlightCat: "Variables", expandCat: null, bloque: { tipo: "variables_get", valor: "msg" }, bloqueLabel: "obtener msg"
+      },
+      {
+        titulo: "¿on u off?",
+        desc: "Ve a <b>Lógica</b> y arrastra otro <em>Si … hacer</em> debajo de <em>a lista visto agregar</em>. Con el <b>⚙️</b> (engranaje) agrégale un <b>si no, si</b>.",
+        highlightCat: "Lógica", expandCat: null, bloque: "controls_if", bloqueLabel: "Si … hacer"
+      },
+      {
+        titulo: "Compara con \"on\"",
+        desc: "Ve a <b>Lógica</b> y arrastra una comparación <em>=</em> a la primera condición.",
+        highlightCat: "Lógica", expandCat: null, bloque: "logic_compare", bloqueLabel: "= (comparar)"
+      },
+      {
+        titulo: "El texto del mensaje",
+        desc: "Arrastra <em>JSON obtener clave</em> al primer hueco de la comparación y cambia la clave a <b>message</b>.",
+        highlightCat: "JSON", expandCat: "Textos", bloque: "json_get", bloqueLabel: "JSON obtener clave"
+      },
+      {
+        titulo: "Obtén msg (para on)",
+        desc: "Arrastra <em>obtener msg</em> al hueco de <em>JSON obtener clave message</em>.",
+        highlightCat: "Variables", expandCat: null, bloque: { tipo: "variables_get", valor: "msg" }, bloqueLabel: "obtener msg"
+      },
+      {
+        titulo: "Escribe on",
+        desc: "Ve a <b>Textos</b> y arrastra un bloque de texto al segundo hueco. Escribe <b>on</b> (en minúsculas).",
+        highlightCat: "Textos", expandCat: null, bloque: "text", bloqueLabel: "texto"
+      },
+      {
+        titulo: "Prende el LED",
+        desc: "Ve a <b>LEDs › LED</b> y arrastra <em>Encender / Apagar LED</em> al primer <b>hacer</b>. Elige estado <b>on</b>.",
+        highlightCat: "LED", expandCat: "LEDs", bloque: "set_led", bloqueLabel: "Encender / Apagar LED"
+      },
+      {
+        titulo: "Compara con \"off\"",
+        desc: "Arrastra otra comparación <em>=</em> a la condición del <b>si no, si</b>.",
+        highlightCat: "Lógica", expandCat: null, bloque: "logic_compare", bloqueLabel: "= (comparar)"
+      },
+      {
+        titulo: "El texto del mensaje (off)",
+        desc: "Arrastra otro <em>JSON obtener clave</em> al primer hueco y cambia la clave a <b>message</b>.",
+        highlightCat: "JSON", expandCat: "Textos", bloque: "json_get", bloqueLabel: "JSON obtener clave"
+      },
+      {
+        titulo: "Obtén msg (para off)",
+        desc: "Arrastra <em>obtener msg</em> al hueco de <em>JSON obtener clave message</em>.",
+        highlightCat: "Variables", expandCat: null, bloque: { tipo: "variables_get", valor: "msg" }, bloqueLabel: "obtener msg"
+      },
+      {
+        titulo: "Escribe off",
+        desc: "Arrastra un bloque de texto al segundo hueco y escribe <b>off</b>.",
+        highlightCat: "Textos", expandCat: null, bloque: "text", bloqueLabel: "texto"
+      },
+      {
+        titulo: "Apaga el LED",
+        desc: "Arrastra otro <em>Encender / Apagar LED</em> al <b>hacer</b> del <b>si no, si</b>. Elige estado <b>off</b>.",
+        highlightCat: "LED", expandCat: "LEDs", bloque: "set_led", bloqueLabel: "Encender / Apagar LED"
+      },
+      {
+        titulo: "Muestra lo que llegó",
+        desc: "Ve a <b>Textos</b> y arrastra <em>imprimir</em> debajo del <em>Si</em> de on/off (todavía dentro del <em>Si</em> de mensaje nuevo).",
+        highlightCat: "Textos", expandCat: null, bloque: "text_print", bloqueLabel: "imprimir"
+      },
+      {
+        titulo: "Une texto y mensaje",
+        desc: "Arrastra <em>crear texto con</em> al hueco de <em>imprimir</em>.",
+        highlightCat: "Textos", expandCat: null, bloque: "text_join", bloqueLabel: "crear texto con"
+      },
+      {
+        titulo: "Escribe \"Recibido: \"",
+        desc: "Arrastra un bloque de texto al primer hueco y escribe <b>Recibido: </b> (con un espacio al final).",
+        highlightCat: "Textos", expandCat: null, bloque: "text", bloqueLabel: "texto"
+      },
+      {
+        titulo: "El mensaje",
+        desc: "Arrastra <em>JSON obtener clave</em> al segundo hueco y cambia la clave a <b>message</b>.",
+        highlightCat: "JSON", expandCat: "Textos", bloque: "json_get", bloqueLabel: "JSON obtener clave"
+      },
+      {
+        titulo: "Obtén msg (para imprimir)",
+        desc: "Arrastra <em>obtener msg</em> al hueco de <em>JSON obtener clave message</em>.",
+        highlightCat: "Variables", expandCat: null, bloque: { tipo: "variables_get", valor: "msg" }, bloqueLabel: "obtener msg"
+      },
+      {
+        titulo: "Espera 2 segundos",
+        desc: "Ve a <b>Tiempo</b> y arrastra <em>esperar</em> <b>debajo del para cada</b> (dentro del ciclo principal). Ponle <b>2</b> segundos: así no le pedimos a ntfy.sh más de una vez cada 2 segundos.",
+        highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep", bloqueLabel: "esperar"
+      },
+      {
+        titulo: "Guarda tu proyecto",
+        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        highlightElement: "#btnArchivo"
+      },
+      {
+        titulo: "Conecta tu ESP32 y Selecciona tu puerto",
+        desc: "Haz clic en el botón <b>Conectar</b> <span class='icon-btn icon-disconnect'></span>. El navegador mostrará una ventana con los puertos disponibles. Elige el de tu ESP32 y presiona <b>Conectar</b>.",
+        highlightElement: "#btnConnection"
+      },
+      {
+        titulo: "¡Ejecuta y prueba!",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span> y espera <b>Conectado!</b> en el monitor serial. Luego, en el celular o la computadora, abre <b>https://ntfy.sh/</b><i>tu-canal</i> (o la app <b>ntfy</b>, suscribiéndote a tu canal) y publica <b>on</b>: en unos 2 segundos el LED se prende. Publica <b>off</b> para apagarlo. 🌐",
+        highlightElement: "#btnRun", waitForAction: "run"
+      }
+    ]
+  },
+
   hc06_basico: {
     title: "Bluetooth HC-06 (Serial)", icon: "🔵",
     diagram: "img/conexiones/hc-06.svg",

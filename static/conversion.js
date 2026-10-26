@@ -184,6 +184,28 @@ window.makeI2CIdOptionsFn = function () {
 
 Blockly.defineBlocksWithJsonArray([
   {
+    // "x in lista": con lists_indexOf solo se podía comparar el índice
+    // contra 0, poco claro para armar en clase.
+    type: "lists_contains",
+    message0: "lista %1 %2 %3",
+    args0: [
+      { type: "input_value", name: "LIST" },
+      {
+        type: "field_dropdown",
+        name: "MODE",
+        options: [
+          ["contiene", "IN"],
+          ["no contiene", "NOT_IN"],
+        ],
+      },
+      { type: "input_value", name: "ITEM" },
+    ],
+    inputsInline: true,
+    output: "Boolean",
+    colour: 260,
+    tooltip: "Verdadero si el elemento está (o no está) en la lista.",
+  },
+  {
     type: "lists_append",
     message0: "a lista %1 agregar %2",
     args0: [
@@ -6562,6 +6584,32 @@ Blockly.defineBlocksWithJsonArray([
     nextStatement: null,
     colour: 210,
     tooltip: "Ejecuta la función do_connect()",
+  },
+  {
+    // Petición HTTP GET (requests). Sin este bloque no se podía armar con
+    // bloques un programa que lea de internet (ej. órdenes de ntfy.sh).
+    // "líneas de texto" existe porque un bloque de texto con \n genera la
+    // barra y la n literales, no un salto de línea: no había forma de
+    // separar la respuesta por líneas desde Blockly.
+    type: "http_get",
+    message0: "respuesta HTTP GET de %1 como %2",
+    args0: [
+      { type: "input_value", name: "URL", check: "String" },
+      {
+        type: "field_dropdown",
+        name: "MODE",
+        options: [
+          ["texto", "TEXT"],
+          ["líneas de texto", "LINES"],
+          ["JSON", "JSON"],
+        ],
+      },
+    ],
+    inputsInline: true,
+    output: null,
+    colour: 210,
+    tooltip:
+      "Pide la página por internet (necesita el WiFi conectado). 'texto' devuelve todo el texto, 'líneas de texto' una lista con cada línea y 'JSON' el diccionario/lista ya convertido.",
   },
   {
     type: "socket_create",

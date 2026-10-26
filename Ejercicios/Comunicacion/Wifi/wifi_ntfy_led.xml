@@ -1,0 +1,210 @@
+<xml xmlns="https://developers.google.com/blockly/xml">
+  <variables>
+    <variable id="v_canal">canal</variable>
+    <variable id="v_visto">visto</variable>
+    <variable id="v_linea">linea</variable>
+    <variable id="v_msg">msg</variable>
+  </variables>
+  <block type="led_init" x="40" y="30">
+    <field name="NAME">led</field>
+    <field name="PIN">2</field>
+    <next>
+      <block type="wifi_connect">
+        <field name="VAR">wlan</field>
+        <field name="SSID">CualquierNombre</field>
+        <field name="PASS">CualquierClave</field>
+        <next>
+          <block type="text_print">
+            <value name="TEXT">
+              <shadow type="text"><field name="TEXT">Conectado!</field></shadow>
+            </value>
+            <next>
+              <block type="variables_set">
+                <field name="VAR" id="v_canal">canal</field>
+                <value name="VALUE">
+                  <block type="text"><field name="TEXT">tuNombre-123</field></block>
+                </value>
+                <next>
+                  <block type="variables_set">
+                    <field name="VAR" id="v_visto">visto</field>
+                    <value name="VALUE">
+                      <block type="lists_create_with"><mutation items="0"></mutation></block>
+                    </value>
+                    <next>
+                      <block type="controls_whileUntil">
+                        <field name="MODE">WHILE</field>
+                        <value name="BOOL">
+                          <block type="logic_boolean"><field name="BOOL">TRUE</field></block>
+                        </value>
+                        <statement name="DO">
+                          <block type="controls_forEach">
+                            <field name="VAR" id="v_linea">linea</field>
+                            <value name="LIST">
+                              <block type="http_get">
+                                <field name="MODE">LINES</field>
+                                <value name="URL">
+                                  <block type="text_join">
+                                    <mutation items="3"></mutation>
+                                    <value name="ADD0">
+                                      <block type="text"><field name="TEXT">https://ntfy.sh/</field></block>
+                                    </value>
+                                    <value name="ADD1">
+                                      <block type="variables_get"><field name="VAR" id="v_canal">canal</field></block>
+                                    </value>
+                                    <value name="ADD2">
+                                      <block type="text"><field name="TEXT">/json?poll=1</field></block>
+                                    </value>
+                                  </block>
+                                </value>
+                              </block>
+                            </value>
+                            <statement name="DO">
+                              <block type="controls_if">
+                                <value name="IF0">
+                                  <block type="text_isEmpty">
+                                    <value name="VALUE">
+                                      <block type="variables_get"><field name="VAR" id="v_linea">linea</field></block>
+                                    </value>
+                                  </block>
+                                </value>
+                                <statement name="DO0">
+                                  <block type="controls_flow_statements"><field name="FLOW">CONTINUE</field></block>
+                                </statement>
+                                <next>
+                                  <block type="variables_set">
+                                    <field name="VAR" id="v_msg">msg</field>
+                                    <value name="VALUE">
+                                      <block type="json_loads">
+                                        <value name="TEXT">
+                                          <block type="variables_get"><field name="VAR" id="v_linea">linea</field></block>
+                                        </value>
+                                      </block>
+                                    </value>
+                                    <next>
+                                      <block type="controls_if">
+                                        <value name="IF0">
+                                          <block type="lists_contains">
+                                            <field name="MODE">NOT_IN</field>
+                                            <value name="LIST">
+                                              <block type="variables_get"><field name="VAR" id="v_visto">visto</field></block>
+                                            </value>
+                                            <value name="ITEM">
+                                              <block type="json_get">
+                                                <field name="KEY">id</field>
+                                                <value name="OBJ">
+                                                  <block type="variables_get"><field name="VAR" id="v_msg">msg</field></block>
+                                                </value>
+                                              </block>
+                                            </value>
+                                          </block>
+                                        </value>
+                                        <statement name="DO0">
+                                          <block type="lists_append">
+                                            <field name="LIST" id="v_visto">visto</field>
+                                            <value name="ITEM">
+                                              <block type="json_get">
+                                                <field name="KEY">id</field>
+                                                <value name="OBJ">
+                                                  <block type="variables_get"><field name="VAR" id="v_msg">msg</field></block>
+                                                </value>
+                                              </block>
+                                            </value>
+                                            <next>
+                                              <block type="controls_if">
+                                                <mutation elseif="1"></mutation>
+                                                <value name="IF0">
+                                                  <block type="logic_compare">
+                                                    <field name="OP">EQ</field>
+                                                    <value name="A">
+                                                      <block type="json_get">
+                                                        <field name="KEY">message</field>
+                                                        <value name="OBJ">
+                                                          <block type="variables_get"><field name="VAR" id="v_msg">msg</field></block>
+                                                        </value>
+                                                      </block>
+                                                    </value>
+                                                    <value name="B">
+                                                      <block type="text"><field name="TEXT">on</field></block>
+                                                    </value>
+                                                  </block>
+                                                </value>
+                                                <statement name="DO0">
+                                                  <block type="set_led">
+                                                    <field name="NAME">led</field>
+                                                    <field name="STATE">1</field>
+                                                  </block>
+                                                </statement>
+                                                <value name="IF1">
+                                                  <block type="logic_compare">
+                                                    <field name="OP">EQ</field>
+                                                    <value name="A">
+                                                      <block type="json_get">
+                                                        <field name="KEY">message</field>
+                                                        <value name="OBJ">
+                                                          <block type="variables_get"><field name="VAR" id="v_msg">msg</field></block>
+                                                        </value>
+                                                      </block>
+                                                    </value>
+                                                    <value name="B">
+                                                      <block type="text"><field name="TEXT">off</field></block>
+                                                    </value>
+                                                  </block>
+                                                </value>
+                                                <statement name="DO1">
+                                                  <block type="set_led">
+                                                    <field name="NAME">led</field>
+                                                    <field name="STATE">0</field>
+                                                  </block>
+                                                </statement>
+                                                <next>
+                                                  <block type="text_print">
+                                                    <value name="TEXT">
+                                                      <block type="text_join">
+                                                        <mutation items="2"></mutation>
+                                                        <value name="ADD0">
+                                                          <block type="text"><field name="TEXT">Recibido: </field></block>
+                                                        </value>
+                                                        <value name="ADD1">
+                                                          <block type="json_get">
+                                                            <field name="KEY">message</field>
+                                                            <value name="OBJ">
+                                                              <block type="variables_get"><field name="VAR" id="v_msg">msg</field></block>
+                                                            </value>
+                                                          </block>
+                                                        </value>
+                                                      </block>
+                                                    </value>
+                                                  </block>
+                                                </next>
+                                              </block>
+                                            </next>
+                                          </block>
+                                        </statement>
+                                      </block>
+                                    </next>
+                                  </block>
+                                </next>
+                              </block>
+                            </statement>
+                            <next>
+                              <block type="time_sleep">
+                                <field name="UNIT">S</field>
+                                <value name="VALUE">
+                                  <shadow type="math_number"><field name="NUM">2</field></shadow>
+                                </value>
+                              </block>
+                            </next>
+                          </block>
+                        </statement>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </next>
+  </block>
+</xml>
