@@ -2937,7 +2937,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Escribe el nombre del canal",
-        desc: "Ve a <b>Textos</b> y arrastra un bloque de texto <em>\" \"</em> al hueco. Escribe un nombre <b>difícil de adivinar</b>, por ejemplo <b>profe-garcia-4821</b>: los canales de ntfy.sh son públicos y cualquiera que sepa el nombre puede mandarle mensajes a tu LED.",
+        desc: "Ve a <b>Textos</b> y arrastra un bloque de texto <em>\" \"</em> al hueco. Escribe <b>tuNombre-123</b>, cambiando <b>tuNombre</b> por tu nombre y <b>123</b> por un número que solo tú sepas: los canales de ntfy.sh son públicos y cualquiera que sepa el nombre puede mandarle mensajes a tu LED.",
         highlightCat: "Textos", expandCat: null, bloque: "text", bloqueLabel: "texto"
       },
       {
@@ -5868,10 +5868,25 @@ var TutorialSteps = {
 
     var primerSvg = null;
 
+    // Un paso con { tipo, valor } (ej. "Establecer visto a", "para cada
+    // elemento linea") casi nunca encuentra ese valor exacto en el flyout:
+    // la categoría Variables muestra UN solo "Establecer … a" (con la
+    // primera variable) y "para cada elemento" trae su variable por
+    // defecto (j). Sin este respaldo el bloque no destellaba nunca. Si
+    // ningún bloque del flyout coincide con el valor, se resalta por tipo
+    // -- el ✓ del paso (_isPasoCompleto) sigue exigiendo el valor exacto.
+    var buscados = bloques.map(function (b) {
+      if (!b.valor) return b;
+      var hayExacto = allBlocks.some(function (block) {
+        return block && self._bloqueCoincide(block, b);
+      });
+      return hayExacto ? b : { tipo: b.tipo };
+    });
+
     allBlocks.forEach(function (block) {
       if (!block) return;
 
-      bloques.forEach(function (b) {
+      buscados.forEach(function (b) {
         if (!self._bloqueCoincide(block, b)) return;
 
         var svg = block.getSvgRoot ? block.getSvgRoot() : null;
