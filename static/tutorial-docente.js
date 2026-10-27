@@ -697,9 +697,9 @@
       return o;
     }
     var grupo = el('div', { id: 'tdoc-menu' }, [
-      el('div', { clase: 'tut-group-label', texto: '📚 Tutoriales de docentes' }),
-      opcion('📂', 'Abrir tutorial de mi docente (archivo)…', abrirArchivo),
-      opcion('✏️', 'Crear tutorial (docente)', abrirEditor)
+      el('div', { clase: 'tut-group-label', texto: '📚 Mis tutoriales' }),
+      opcion('📂', 'Abrir tutorial', abrirArchivo),
+      opcion('✏️', 'Crear tutorial', abrirEditor)
     ]);
     dd.insertBefore(grupo, dd.firstChild);
   }
