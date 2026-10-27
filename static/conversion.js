@@ -7459,6 +7459,26 @@ Blockly.defineBlocksWithJsonArray([
     colour: "#c6bcbc",
   },
   {
+    // Igual que seg7_number pero con hueco: acepta una variable u
+    // operación (ej. la "i" de un "para i en rango"), no solo el
+    // desplegable fijo 0-9.
+    type: "seg7_number_var",
+    message0: "%1 mostrar número %2",
+    args0: [
+      {
+        type: "field_input",
+        name: "NAME",
+        text: "display",
+      },
+      { type: "input_value", name: "NUM", check: "Number" },
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: "#c6bcbc",
+    tooltip: "Muestra un dígito del 0 al 9 (puede ser una variable). Otros valores apagan el display.",
+  },
+  {
     name: "lcd_init",
     type: "lcd_init",
     message0: "%1 %2 RS %3 EN %4 D4 %5 D5 %6 D6 %7 D7 %8",

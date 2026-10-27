@@ -1985,7 +1985,7 @@ Blockly.JavaScript["keypad_get_key"] = function (b) {
 Blockly.JavaScript["keypad_get_key_i2c"] = Blockly.JavaScript["keypad_get_key"];
 
 /* ── Seg7 / Matrix / TM1637 — stub ── */
-["seg7_init", "seg7_clear", "seg7_number",
+["seg7_init", "seg7_clear", "seg7_number", "seg7_number_var",
   "matrix8_init", "matrix8_clear", "matrix8_pixel", "matrix8_rect", "matrix8_line",
   "matrix8_text", "matrix8_scroll_text", "matrix8_brightness",
   "tm1637_init", "tm1637_clear", "tm1637_show", "tm1637_number", "tm1637_numbers",

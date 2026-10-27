@@ -2822,6 +2822,15 @@ Blockly.Python["seg7_number"] = function (block) {
   return `${name}.show(${num})\n`;
 };
 
+Blockly.Python["seg7_number_var"] = function (block) {
+  const name = block.getFieldValue("NAME");
+  const num =
+    Blockly.Python.valueToCode(block, "NUM", Blockly.Python.ORDER_NONE) || "0";
+  // int(): SEG7.digits usa claves enteras -- un 3.0 (ej. resultado de una
+  // división) no encontraría su dígito y el display quedaría apagado.
+  return `${name}.show(int(${num}))\n`;
+};
+
 Blockly.Python["lcd_init"] = function (block) {
   Blockly.Python.definitions_["lcd_import"] =
     "from machine import Pin\nfrom lcd import CharLCD";
