@@ -5549,7 +5549,14 @@ var TutorialSteps = {
 
     document.getElementById('ts-step-num').textContent = this.paso + 1;
     document.getElementById('ts-step-title').textContent = step.titulo;
-    document.getElementById('ts-step-desc').innerHTML = step.desc;
+    // Un tutorial compartido por un docente es contenido NO confiable:
+    // jamás como HTML (ver static/tutorial-docente.js). Los oficiales
+    // sí traen HTML propio (<b>, íconos).
+    if (tut.compartido) {
+      TutorialDocente.renderTexto(document.getElementById('ts-step-desc'), step.desc);
+    } else {
+      document.getElementById('ts-step-desc').innerHTML = step.desc;
+    }
 
     this._actualizarBotonWiring();
 
@@ -5564,22 +5571,29 @@ var TutorialSteps = {
       if (stepDesc) stepDesc.style.marginBottom = usaPanel ? '' : '0';
     }
 
-    // Ruta del toolbox
-    var html = '';
+    // Ruta del toolbox (con nodos de texto: los nombres pueden venir de
+    // un tutorial compartido)
+    var ruta = document.getElementById('ts-cat-ruta');
+    ruta.textContent = '';
+    function parteRuta(clase, texto) {
+      var span = document.createElement('span');
+      span.className = clase;
+      span.textContent = texto;
+      ruta.appendChild(span);
+    }
     var catsToExpand = step.expandCats
       ? step.expandCats
       : (step.expandCat ? [step.expandCat] : []);
 
     catsToExpand.forEach(function (cat) {
       if (cat !== step.highlightCat) {
-        html += '<span class="ts-cat-part">' + cat + '</span>' +
-          '<span class="ts-cat-sep">›</span>';
+        parteRuta('ts-cat-part', cat);
+        parteRuta('ts-cat-sep', '›');
       }
     });
     if (step.highlightCat) {
-      html += '<span class="ts-cat-part ts-cat-active">' + step.highlightCat + '</span>';
+      parteRuta('ts-cat-part ts-cat-active', step.highlightCat);
     }
-    document.getElementById('ts-cat-ruta').innerHTML = html;
 
     // Chip del bloque
     var chipRow = document.getElementById('ts-bloque-row');
@@ -6279,10 +6293,12 @@ var TutorialSteps = {
       '<div class="ts-fin">' +
       '  <div class="ts-fin-icon">🎉</div>' +
       '  <h3>¡Tutorial completado!</h3>' +
-      '  <p>Terminaste <strong>' + this.tutorial.title + '</strong>.<br>' +
+      '  <p>Terminaste <strong id="ts-fin-titulo"></strong>.<br>' +
       '     Prueba modificar valores o elige otro tutorial.</p>' +
       '  <button class="ts-btn ts-btn-primary" onclick="TutorialSteps._reiniciar()">Repetir</button>' +
       '</div>';
+    // El título puede venir de un tutorial compartido: como texto, no HTML.
+    document.getElementById('ts-fin-titulo').textContent = this.tutorial.title;
     document.getElementById('ts-btn-next').style.display = 'none';
     document.getElementById('ts-btn-prev').style.display = 'none';
     // Ya no hay un "paso de conexión" activo -- ocultar el botón de
