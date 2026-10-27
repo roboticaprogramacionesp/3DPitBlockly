@@ -2782,6 +2782,13 @@
           <block type="pin_off"></block>
           <block type="pin_value"></block>
           <block type="pin_set_value"></block>
+          <block type="pin_set_value_var">
+            <value name="VALUE">
+              <shadow type="math_number">
+                <field name="NUM">1</field>
+              </shadow>
+            </value>
+          </block>
         </category>
 
         <category name="ADC">
@@ -2800,8 +2807,22 @@
           <block type="pwm_freq">
             <field name="FREQ">5000</field>
           </block>
+          <block type="pwm_freq_var">
+            <value name="FREQ">
+              <shadow type="math_number">
+                <field name="NUM">1000</field>
+              </shadow>
+            </value>
+          </block>
           <block type="pwm_duty">
             <field name="DUTY">512</field>
+          </block>
+          <block type="pwm_duty_var">
+            <value name="DUTY">
+              <shadow type="math_number">
+                <field name="NUM">512</field>
+              </shadow>
+            </value>
           </block>
           <block type="read_pwm_freq"></block>
           <block type="read_pwm_duty"></block>
@@ -2810,6 +2831,13 @@
         <category name="DAC">
           <block type="dac_init"></block>
           <block type="dac_write"></block>
+          <block type="dac_write_var">
+            <value name="VALUE">
+              <shadow type="math_number">
+                <field name="NUM">128</field>
+              </shadow>
+            </value>
+          </block>
         </category>
 
         <category name="TouchPad">
@@ -2867,6 +2895,13 @@
           <block type="set_led">
             <field name="STATE">1</field>
           </block>
+          <block type="set_led_var">
+            <value name="STATE">
+              <shadow type="math_number">
+                <field name="NUM">1</field>
+              </shadow>
+            </value>
+          </block>
           <block type="toggle_led"></block>
         </category>
         <category name="LED RG">
@@ -2915,6 +2950,13 @@
         <category name="Relevador">
           <block type="actuador_init"></block>
           <block type="actuador_on_off"></block>
+          <block type="actuador_on_off_var">
+            <value name="STATE">
+              <shadow type="math_number">
+                <field name="NUM">1</field>
+              </shadow>
+            </value>
+          </block>
         </category>
         <category name="Motor DC">
           <block type="init_dc_motor">
@@ -3015,6 +3057,18 @@
 
           <category name="Buzzer (KY-006)">
             <block type="buzzer_tone"></block>
+            <block type="buzzer_tone_var">
+              <value name="FREQ">
+                <shadow type="math_number">
+                  <field name="NUM">440</field>
+                </shadow>
+              </value>
+              <value name="TIME">
+                <shadow type="math_number">
+                  <field name="NUM">0.5</field>
+                </shadow>
+              </value>
+            </block>
             <block type="buzzer_song"></block>
             <block type="buzzer_stop"></block>
           </category>
@@ -3556,6 +3610,13 @@
 
           <block type="lcd_line">
             <field name="LINE">0</field>
+          </block>
+          <block type="lcd_line_var">
+            <value name="LINE">
+              <shadow type="math_number">
+                <field name="NUM">0</field>
+              </shadow>
+            </value>
           </block>
 
           <block type="lcd_home"></block>

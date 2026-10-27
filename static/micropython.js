@@ -6298,3 +6298,59 @@ Blockly.Python["espcam_led_flash"] = function (block) {
     "from machine import Pin";
   return `Pin(${pin}, Pin.OUT).value(${state})\n`;
 };
+
+/* ── Versiones "_var" (con hueco) ───────────────────────────────────
+   Mismo código que el bloque original, pero el valor sale de un hueco
+   (variable, operación o número) en vez de un desplegable/campo fijo.
+   int(): duty/freq/write/set_cursor de MicroPython exigen enteros, y una
+   división o un slider pueden dar 3.0. "1 if x else 0": acepta tanto
+   verdadero/falso (ej. el valor de un botón) como 0/1. */
+function _pyVar(block, input, orden) {
+  return Blockly.Python.valueToCode(block, input, orden || Blockly.Python.ORDER_NONE) || "0";
+}
+
+Blockly.Python["pwm_duty_var"] = function (block) {
+  return `pwm${block.getFieldValue("PIN")}.duty(int(${_pyVar(block, "DUTY")}))\n`;
+};
+
+Blockly.Python["pwm_freq_var"] = function (block) {
+  return `pwm${block.getFieldValue("PIN")}.freq(int(${_pyVar(block, "FREQ")}))\n`;
+};
+
+Blockly.Python["dac_write_var"] = function (block) {
+  return `dac${block.getFieldValue("PIN")}.write(int(${_pyVar(block, "VALUE")}))\n`;
+};
+
+Blockly.Python["set_led_var"] = function (block) {
+  const v = _pyVar(block, "STATE", Blockly.Python.ORDER_CONDITIONAL);
+  return `${block.getFieldValue("NAME")}.value(1 if ${v} else 0)\n`;
+};
+
+Blockly.Python["pin_set_value_var"] = function (block) {
+  const v = _pyVar(block, "VALUE", Blockly.Python.ORDER_CONDITIONAL);
+  return `p${block.getFieldValue("PIN")}.value(1 if ${v} else 0)\n`;
+};
+
+Blockly.Python["actuador_on_off_var"] = function (block) {
+  Blockly.Python.definitions_["import_machine"] = "from machine import Pin";
+  const v = _pyVar(block, "STATE", Blockly.Python.ORDER_CONDITIONAL);
+  return `actuador${block.getFieldValue("PIN")}.value(1 if ${v} else 0)\n`;
+};
+
+Blockly.Python["buzzer_tone_var"] = function (block) {
+  const pin = block.getFieldValue("PIN");
+  const freq = _pyVar(block, "FREQ");
+  const time =
+    Blockly.Python.valueToCode(block, "TIME", Blockly.Python.ORDER_ATOMIC) || 1;
+  Blockly.Python.definitions_["import_machine_pwm"] = "from machine import Pin, PWM";
+  Blockly.Python.definitions_["import_sleep"] = "from time import sleep";
+  return (
+    `pwm${pin} = PWM(Pin(${pin}), freq=int(${freq}), duty=512)\n` +
+    `sleep(${time})\n` +
+    `pwm${pin}.deinit()\n`
+  );
+};
+
+Blockly.Python["lcd_line_var"] = function (block) {
+  return `${block.getFieldValue("NAME")}.set_cursor(0, int(${_pyVar(block, "LINE")}))\n`;
+};

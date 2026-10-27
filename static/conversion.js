@@ -1559,6 +1559,46 @@ Blockly.defineBlocksWithJsonArray([
     helpUrl: "",
   },
   {
+    // Versión con hueco de pin_set_value: acepta variables u operaciones.
+    type: "pin_set_value_var",
+    message0: "Pin %1.value( %2 )",
+    args0: [
+      {
+        type: "field_dropdown",
+        name: "PIN",
+        options: makePinOptionsFn([
+          ["0", "0"],
+          ["2", "2"],
+          ["4", "4"],
+          ["5", "5"],
+          ["12", "12"],
+          ["13", "13"],
+          ["14", "14"],
+          ["16", "16"],
+          ["17", "17"],
+          ["18", "18"],
+          ["19", "19"],
+          ["21", "21"],
+          ["22", "22"],
+          ["23", "23"],
+          ["25", "25"],
+          ["26", "26"],
+          ["27", "27"],
+          ["32", "32"],
+          ["33", "33"],
+          ["34", "34"],
+          ["35", "35"],
+        ]),
+      },
+      { type: "input_value", name: "VALUE" }
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: 160,
+    tooltip: "Pone el pin en 1 si el valor es verdadero o distinto de 0, en 0 si es falso o 0.",
+  },
+  {
     type: "adc_pin",
     message0: "ADC(Pin(%1))",
     args0: [
@@ -1888,6 +1928,48 @@ Blockly.defineBlocksWithJsonArray([
     colour: "#fcec27",
   },
   {
+    // Versión con hueco de pwm_freq: acepta variables u operaciones.
+    type: "pwm_freq_var",
+    message0: "pwm%1.freq( %2 )",
+    args0: [
+      {
+        type: "field_dropdown",
+        name: "PIN",
+        options: makePinOptionsFn([
+          ["0", "0"],
+          ["1", "1"],
+          ["2", "2"],
+          ["3", "3"],
+          ["4", "4"],
+          ["5", "5"],
+          ["12", "12"],
+          ["13", "13"],
+          ["14", "14"],
+          ["16", "16"],
+          ["17", "17"],
+          ["18", "18"],
+          ["19", "19"],
+          ["21", "21"],
+          ["22", "22"],
+          ["23", "23"],
+          ["25", "25"],
+          ["26", "26"],
+          ["27", "27"],
+          ["32", "32"],
+          ["33", "33"],
+          ["34", "34"],
+          ["35", "35"],
+        ]),
+      },
+      { type: "input_value", name: "FREQ", check: "Number" }
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: "#fcec27",
+    tooltip: "Frecuencia en Hz (puede ser una variable).",
+  },
+  {
     type: "pwm_duty",
     message0: "pwm%1.duty(%2)",
     args0: [
@@ -1931,6 +2013,48 @@ Blockly.defineBlocksWithJsonArray([
     previousStatement: null,
     nextStatement: null,
     colour: "#fcec27",
+  },
+  {
+    // Versión con hueco de pwm_duty: acepta variables u operaciones.
+    type: "pwm_duty_var",
+    message0: "pwm%1.duty( %2 )",
+    args0: [
+      {
+        type: "field_dropdown",
+        name: "PIN",
+        options: makePinOptionsFn([
+          ["0", "0"],
+          ["1", "1"],
+          ["2", "2"],
+          ["3", "3"],
+          ["4", "4"],
+          ["5", "5"],
+          ["12", "12"],
+          ["13", "13"],
+          ["14", "14"],
+          ["16", "16"],
+          ["17", "17"],
+          ["18", "18"],
+          ["19", "19"],
+          ["21", "21"],
+          ["22", "22"],
+          ["23", "23"],
+          ["25", "25"],
+          ["26", "26"],
+          ["27", "27"],
+          ["32", "32"],
+          ["33", "33"],
+          ["34", "34"],
+          ["35", "35"],
+        ]),
+      },
+      { type: "input_value", name: "DUTY", check: "Number" }
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: "#fcec27",
+    tooltip: "Ciclo de trabajo 0-1023 (puede ser una variable, ej. la de un ciclo para desvanecer un LED).",
   },
   {
     type: "read_pwm_freq",
@@ -2046,6 +2170,27 @@ Blockly.defineBlocksWithJsonArray([
     previousStatement: null,
     nextStatement: null,
     colour: "#0040db",
+  },
+  {
+    // Versión con hueco de dac_write: acepta variables u operaciones.
+    type: "dac_write_var",
+    message0: "DAC %1 escribir %2",
+    args0: [
+      {
+        type: "field_dropdown",
+        name: "PIN",
+        options: makePinOptionsFn([
+          ["25", "25"],
+          ["26", "26"],
+        ]),
+      },
+      { type: "input_value", name: "VALUE", check: "Number" }
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: "#0040db",
+    tooltip: "Valor 0-255 (puede ser una variable).",
   },
 
   {
@@ -2481,6 +2626,20 @@ Blockly.defineBlocksWithJsonArray([
     nextStatement: null,
     colour: "#2ECC71",
     tooltip: "Encender/Apagar LED",
+  },
+  {
+    // Versión con hueco de set_led: acepta variables u operaciones.
+    type: "set_led_var",
+    message0: "%1 encender/apagar según %2",
+    args0: [
+      { type: "field_input", name: "NAME", text: "led" },
+      { type: "input_value", name: "STATE" }
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: "#2ECC71",
+    tooltip: "Enciende el LED si el valor es verdadero o distinto de 0 (ej. el valor de un botón), lo apaga si es falso o 0.",
   },
   {
     type: "toggle_led",
@@ -3529,6 +3688,57 @@ Blockly.defineBlocksWithJsonArray([
     colour: 60,
     tooltip: "Reproduce un tono en un buzzer",
     helpUrl: "",
+  },
+  {
+    // Versión con hueco de buzzer_tone: acepta variables u operaciones.
+    type: "buzzer_tone_var",
+    message0: "Tono %1 Pin %2 frecuencia (Hz) %3 duración (s) %4",
+    args0: [
+      {
+        type: "field_image",
+        src: "./static/img/ky-006.svg",
+        width: 50,
+        height: 50,
+        alt: "Buzzer",
+      },
+      {
+        type: "field_dropdown",
+        name: "PIN",
+        options: makePinOptionsFn([
+          ["0", "0"],
+          ["2", "2"],
+          ["4", "4"],
+          ["5", "5"],
+          ["12", "12"],
+          ["13", "13"],
+          ["14", "14"],
+          ["15", "15"],
+          ["16", "16"],
+          ["17", "17"],
+          ["18", "18"],
+          ["19", "19"],
+          ["21 SDA", "21"],
+          ["22 SCL", "22"],
+          ["23", "23"],
+          ["25", "25"],
+          ["26", "26"],
+          ["27", "27"],
+          ["32", "32"],
+          ["33", "33"],
+          ["34", "34"],
+          ["35", "35"],
+          ["36", "36"],
+          ["39", "39"],
+        ]),
+      },
+      { type: "input_value", name: "FREQ", check: "Number" },
+      { type: "input_value", name: "TIME" }
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: 60,
+    tooltip: "Toca una frecuencia en Hz (puede salir de una variable o lista, ej. una melodía). 440 = La.",
   },
   {
     type: "buzzer_song",
@@ -4592,6 +4802,49 @@ Blockly.defineBlocksWithJsonArray([
     previousStatement: null,
     nextStatement: null,
     colour: 20,
+  },
+  {
+    // Versión con hueco de actuador_on_off: acepta variables u operaciones.
+    type: "actuador_on_off_var",
+    message0: "Actuador %1 encender/apagar según %2",
+    args0: [
+      {
+        type: "field_dropdown",
+        name: "PIN",
+        options: makePinOptionsFn([
+          ["0", "0"],
+          ["2", "2"],
+          ["4", "4"],
+          ["5", "5"],
+          ["12", "12"],
+          ["13", "13"],
+          ["14", "14"],
+          ["15", "15"],
+          ["16", "16"],
+          ["17", "17"],
+          ["18", "18"],
+          ["19", "19"],
+          ["21 SDA", "21"],
+          ["22 SCL", "22"],
+          ["23", "23"],
+          ["25", "25"],
+          ["26", "26"],
+          ["27", "27"],
+          ["32", "32"],
+          ["33", "33"],
+          ["34", "34"],
+          ["35", "35"],
+          ["36", "36"],
+          ["39", "39"],
+        ]),
+      },
+      { type: "input_value", name: "STATE" }
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: 20,
+    tooltip: "Enciende el actuador si el valor es verdadero o distinto de 0, lo apaga si es falso o 0.",
   },
   {
     type: "init_dc_motor",
@@ -7789,6 +8042,24 @@ Blockly.defineBlocksWithJsonArray([
     previousStatement: null,
     nextStatement: null,
     colour: "#26A69A",
+  },
+  {
+    // Versión con hueco de lcd_line: acepta variables u operaciones.
+    type: "lcd_line_var",
+    message0: "%1 ir a línea %2",
+    args0: [
+      {
+        type: "field_input",
+        name: "NAME",
+        text: "lcd",
+      },
+      { type: "input_value", name: "LINE", check: "Number" }
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: "#26A69A",
+    tooltip: "Línea 0 o 1 (puede ser una variable).",
   },
 
   {

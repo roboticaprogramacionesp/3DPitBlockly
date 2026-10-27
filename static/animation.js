@@ -3251,3 +3251,22 @@ Blockly.JavaScript['touching_edge_named'] = function (block) {
   var name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC) || "''";
   return ['GameEngine.touchingEdge(' + name + ')', Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
+/* ── Versiones "_var" (con hueco) de bloques de valor fijo ── */
+Blockly.JavaScript["set_led_var"] = function (block) {
+  const name = block.getFieldValue("NAME") || "led";
+  const v = Blockly.JavaScript.valueToCode(block, "STATE", Blockly.JavaScript.ORDER_NONE) || "0";
+  return "highlightBlock('" + block.id + "');\nGameEngine.setLed('" + name + "', !!(" + v + "));\n";
+};
+Blockly.JavaScript["pin_set_value_var"] = function (b) {
+  const v = Blockly.JavaScript.valueToCode(b, "VALUE", Blockly.JavaScript.ORDER_NONE) || "0";
+  return `simPin(${b.getFieldValue("PIN")}, (${v}) ? 1 : 0);\n`;
+};
+Blockly.JavaScript["buzzer_tone_var"] = function (b) {
+  const freq = Blockly.JavaScript.valueToCode(b, "FREQ", Blockly.JavaScript.ORDER_NONE) || "440";
+  const timeSec = Blockly.JavaScript.valueToCode(b, "TIME", Blockly.JavaScript.ORDER_ATOMIC) || "1";
+  return `simBuzzer(${freq}, (${timeSec}) * 1000);\n`;
+};
+// Sin efecto visible en el simulador, igual que sus bloques originales.
+["pwm_duty_var", "pwm_freq_var", "dac_write_var", "actuador_on_off_var", "lcd_line_var"].forEach(function (n) {
+  if (!Blockly.JavaScript[n]) Blockly.JavaScript[n] = function () { return ""; };
+});
