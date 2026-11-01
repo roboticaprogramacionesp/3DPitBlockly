@@ -69,7 +69,7 @@ h1 {
 
 .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 
-label.field { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--muted); }
+.field { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--muted); }
 
 input[type="text"], select {
   background: var(--panel-2);

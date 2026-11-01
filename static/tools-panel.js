@@ -18,6 +18,7 @@
   const EDIT_PAGES = {
     neopixel_image: "neopixel.html",
     oled_image: "oled.html",
+    buzzer_melody: "melodias.html",
   };
 
   function open(page) {
@@ -35,6 +36,8 @@
       h: block.imgH_,
       data: block.imgData_,
     };
+    // Bloques que guardan otra cosa que una imagen (p.ej. la melodía).
+    if (block.getToolPayload_) Object.assign(window.toolsEditPayload, block.getToolPayload_());
     open(page);
   }
 

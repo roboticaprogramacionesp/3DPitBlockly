@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Editor de melodías</title>
+  <link rel="stylesheet" href="tools.css">
+  <style>
+    .piano {
+      position: relative;
+      height: 150px;
+      display: flex;
+      width: 100%;
+      max-width: 640px;
+      user-select: none;
+      touch-action: manipulation;
+    }
+    .white {
+      flex: 1;
+      background: #f4f4f8;
+      border: 1px solid #555;
+      border-radius: 0 0 6px 6px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 6px;
+      color: #555;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .black {
+      position: absolute;
+      top: 0;
+      height: 60%;
+      background: #222;
+      border-radius: 0 0 4px 4px;
+      cursor: pointer;
+      z-index: 1;
+    }
+    .white.down { background: #c9c2ff; }
+    .black.down { background: var(--accent); }
+
+    .durations button { min-width: 48px; font-size: 18px; }
+    .notes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      min-height: 44px;
+      padding: 8px;
+      background: #0f1226;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      max-height: 170px;
+      overflow: auto;
+    }
+    .chip {
+      padding: 4px 8px;
+      min-height: 0;
+      font-size: 13px;
+      border-radius: 14px;
+      font-family: monospace;
+    }
+    .chip.sel { outline: 2px solid #fff; }
+    .chip.playing { background: var(--ok); color: #06210f; }
+    .chip.rest { color: var(--muted); }
+    textarea {
+      width: 100%;
+      min-height: 60px;
+      background: #0f1226;
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 8px;
+      font-family: monospace;
+      font-size: 12px;
+    }
+    input[type="range"] { width: 160px; }
+  </style>
+</head>
+<body>
+  <a class="back" href="index.html">← Herramientas</a>
+  <h1>🎵 Editor de melodías</h1>
+  <p class="subtitle">Elige la duración y toca las teclas para agregar notas. Escúchala aquí antes de pasarla al buzzer.</p>
+
+  <div class="panel" style="margin-bottom:12px">
+    <div class="row" style="margin-bottom:10px">
+      <label class="field">Octava
+        <select id="octave">
+          <option value="4">4 (grave)</option>
+          <option value="5" selected>5 (media)</option>
+          <option value="6">6 (aguda)</option>
+        </select>
+      </label>
+      <div class="field">Duración
+        <div class="row durations" id="durations">
+          <button data-d="1" title="Redonda">𝅝</button>
+          <button data-d="2" title="Blanca">𝅗𝅥</button>
+          <button data-d="4" title="Negra" class="active">♩</button>
+          <button data-d="8" title="Corchea">♪</button>
+          <button data-d="16" title="Semicorchea">𝅘𝅥𝅯</button>
+          <button id="dot" title="Con puntillo: dura la mitad más">•</button>
+        </div>
+      </div>
+      <button id="rest" style="align-self:flex-end">Silencio</button>
+    </div>
+    <div class="piano" id="piano"></div>
+  </div>
+
+  <div class="layout">
+    <div class="side" style="flex:2 1 360px">
+      <div class="panel">
+        <div class="row" style="justify-content:space-between;margin-bottom:6px">
+          <p class="section-title" style="margin:0">Notas (<span id="count">0</span>) — toca una para elegirla</p>
+          <div class="row">
+            <button id="del" title="Borrar la nota elegida (o la última)">⌫ Borrar</button>
+            <button id="clearAll">Limpiar</button>
+          </div>
+        </div>
+        <div class="notes" id="notes"></div>
+        <div class="row" style="margin-top:10px">
+          <button class="primary" id="play">▶ Escuchar</button>
+          <button id="stop">■ Parar</button>
+          <label class="field">Velocidad <span id="bpmVal">120</span> bpm
+            <input type="range" id="bpm" min="40" max="250" value="120">
+          </label>
+        </div>
+      </div>
+
+      <div class="panel">
+        <p class="section-title">Texto RTTTL (puedes pegar uno de internet)</p>
+        <textarea id="rtttl" spellcheck="false"></textarea>
+        <div class="row" style="margin-top:6px">
+          <button id="loadText">Cargar texto</button>
+          <span class="hint" id="textMsg"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="side">
+      <div class="panel">
+        <div class="row">
+          <label class="field">Nombre
+            <input type="text" id="title" size="14" value="Mi melodia">
+          </label>
+          <label class="field">Pin
+            <select id="pin"></select>
+          </label>
+        </div>
+      </div>
+
+      <div class="panel">
+        <p class="section-title">Canciones de ejemplo</p>
+        <div class="row" id="examples"></div>
+      </div>
+
+      <div class="panel">
+        <div class="row">
+          <button class="primary" id="insert" data-embedded-only>Insertar en mis bloques</button>
+          <button id="copy">Copiar código</button>
+        </div>
+        <p class="hint" style="margin-top:8px">Inserta el bloque <b>♪ tocar melodía</b> (categoría Buzzer). Toca su ícono ♪ para volver a editarla.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="tools.js"></script>
+  <script>
+    const NAMES = ["c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b"];
+    const LABEL = { c: "Do", d: "Re", e: "Mi", f: "Fa", g: "Sol", a: "La", b: "Si" };
+    const PINS = ["0", "2", "4", "5", "12", "13", "14", "15", "16", "17", "18", "19", "23", "25", "26", "27", "32", "33"];
+    const EXAMPLES = {
+      "Estrellita": "Estrellita:d=4,o=5,b=120:c,c,g,g,a,a,2g,f,f,e,e,d,d,2c,g,g,f,f,e,e,2d,g,g,f,f,e,e,2d,c,c,g,g,a,a,2g,f,f,e,e,d,d,2c",
+      "Himno de la alegría": "Himno alegria:d=4,o=5,b=120:e,e,f,g,g,f,e,d,c,c,d,e,e.,8d,2d,e,e,f,g,g,f,e,d,c,c,d,e,d.,8c,2c",
+      "Cumpleaños feliz": "Cumpleanos:d=4,o=5,b=120:8g.,16g,a,g,c6,2b,8g.,16g,a,g,d6,2c6,8g.,16g,g6,e6,c6,b,a,8f6.,16f6,e6,c6,d6,2c6",
+      "Jingle Bells": "Jingle Bells:d=4,o=5,b=160:e,e,2e,e,e,2e,e,g,c.,8d,1e,f,f,f.,8f,f,e,e,8e,8e,e,d,d,e,2d,2g",
+      "Fray Santiago": "Fray Santiago:d=4,o=5,b=120:c,d,e,c,c,d,e,c,e,f,2g,e,f,2g,8g,8a,8g,8f,e,c,8g,8a,8g,8f,e,c,c,g4,2c,c,g4,2c",
+      "Escala": "Escala:d=8,o=5,b=120:c,d,e,f,g,a,b,c6",
+      "Alarma": "Alarma:d=16,o=6,b=180:c,g,c,g,c,g,c,g,8p,c,g,c,g,c,g,c,g",
+    };
+
+    const edit = Tools.editPayload();
+    const titleEl = document.getElementById("title");
+    const pinEl = document.getElementById("pin");
+    const bpmEl = document.getElementById("bpm");
+    const octaveEl = document.getElementById("octave");
+    const rtttlEl = document.getElementById("rtttl");
+    PINS.forEach((p) => pinEl.add(new Option(p, p)));
+    pinEl.value = "4";
+
+    let notes = [];      // {n: "c#"|"p", o: 4..7, d: 1|2|4|8|16|32, dot: bool}
+    let duration = 4;
+    let dotted = false;
+    let selected = -1;
+
+    // ── Sonido (onda cuadrada, parecida al buzzer) ──
+    let audio = null;
+    function freq(n, o) {
+      const midi = 12 * (o + 1) + NAMES.indexOf(n);
+      return 440 * Math.pow(2, (midi - 69) / 12);
+    }
+    function ms(note) {
+      const whole = (60000 / Number(bpmEl.value)) * 4;
+      const t = whole / note.d;
+      return note.dot ? t * 1.5 : t;
+    }
+    function beep(note, when, length) {
+      audio = audio || new (window.AudioContext || window.webkitAudioContext)();
+      if (note.n === "p") return null;
+      const osc = audio.createOscillator();
+      const gain = audio.createGain();
+      osc.type = "square";
+      osc.frequency.value = freq(note.n, note.o);
+      gain.gain.value = 0.08;
+      osc.connect(gain).connect(audio.destination);
+      const t0 = audio.currentTime + when;
+      osc.start(t0);
+      osc.stop(t0 + length * 0.9);
+      return osc;
+    }
+
+    let playing = [];
+    let timers = [];
+    function stop() {
+      playing.forEach((o) => { try { o.stop(); } catch (_) {} });
+      timers.forEach(clearTimeout);
+      playing = []; timers = [];
+      document.querySelectorAll(".chip.playing").forEach((c) => c.classList.remove("playing"));
+    }
+    function play() {
+      stop();
+      let t = 0;
+      notes.forEach((note, i) => {
+        const len = ms(note) / 1000;
+        const osc = beep(note, t, len);
+        if (osc) playing.push(osc);
+        timers.push(setTimeout(() => {
+          document.querySelectorAll(".chip.playing").forEach((c) => c.classList.remove("playing"));
+          const chip = document.querySelector(`.chip[data-i="${i}"]`);
+          if (chip) { chip.classList.add("playing"); chip.scrollIntoView({ block: "nearest" }); }
+        }, t * 1000));
+        t += len;
+      });
+      timers.push(setTimeout(stop, t * 1000));
+    }
+
+    // ── Piano: dos octavas a partir de la elegida ──
+    const piano = document.getElementById("piano");
+    function buildPiano() {
+      piano.innerHTML = "";
+      const base = Number(octaveEl.value);
+      const whites = [];
+      for (let o = base; o <= base + 1; o++)
+        ["c", "d", "e", "f", "g", "a", "b"].forEach((n) => whites.push({ n, o }));
+      whites.push({ n: "c", o: base + 2 });
+      const wPct = 100 / whites.length;
+      whites.forEach((k, i) => {
+        const el = document.createElement("div");
+        el.className = "white";
+        el.textContent = LABEL[k.n] + (k.n === "c" ? k.o : "");
+        el.onpointerdown = (e) => { e.preventDefault(); press(k.n, k.o, el); };
+        piano.appendChild(el);
+        if (i < whites.length - 1 && !["e", "b"].includes(k.n)) {
+          const b = document.createElement("div");
+          b.className = "black";
+          b.style.left = `calc(${(i + 1) * wPct}% - ${wPct * 0.3}%)`;
+          b.style.width = `${wPct * 0.6}%`;
+          b.onpointerdown = (e) => { e.preventDefault(); press(k.n + "#", k.o, b); };
+          piano.appendChild(b);
+        }
+      });
+    }
+    function press(n, o, el) {
+      const note = { n, o, d: duration, dot: dotted };
+      beep(note, 0, Math.min(ms(note), 600) / 1000);
+      el.classList.add("down");
+      setTimeout(() => el.classList.remove("down"), 150);
+      add(note);
+    }
+    function add(note) {
+      // Con una nota elegida, la nueva la reemplaza; si no, va al final.
+      if (selected >= 0) {
+        notes[selected] = note;
+        selected = Math.min(selected + 1, notes.length) ;
+        if (selected >= notes.length) selected = -1;
+      } else {
+        notes.push(note);
+      }
+      render();
+    }
+    octaveEl.onchange = buildPiano;
+    buildPiano();
+
+    document.querySelectorAll("[data-d]").forEach((b) => {
+      b.onclick = () => {
+        duration = Number(b.dataset.d);
+        document.querySelectorAll("[data-d]").forEach((o) => o.classList.toggle("active", o === b));
+      };
+    });
+    document.getElementById("dot").onclick = (e) => {
+      dotted = !dotted;
+      e.currentTarget.classList.toggle("active", dotted);
+    };
+    document.getElementById("rest").onclick = () => add({ n: "p", o: 5, d: duration, dot: dotted });
+    document.getElementById("del").onclick = () => {
+      if (!notes.length) return;
+      const i = selected >= 0 ? selected : notes.length - 1;
+      notes.splice(i, 1);
+      selected = -1;
+      render();
+    };
+    document.getElementById("clearAll").onclick = () => { notes = []; selected = -1; render(); };
+    document.getElementById("play").onclick = play;
+    document.getElementById("stop").onclick = stop;
+    bpmEl.oninput = () => { document.getElementById("bpmVal").textContent = bpmEl.value; render(); };
+    titleEl.oninput = render;
+
+    // ── RTTTL ── (mismo formato que lee rtttl.py en el ESP32)
+    function title() {
+      return titleEl.value.replace(/[^A-Za-z0-9 _-]/g, "").trim() || "Melodia";
+    }
+    function toRtttl() {
+      const body = notes.map((x) =>
+        `${x.d !== 4 ? x.d : ""}${x.n}${x.n !== "p" && x.o !== 5 ? x.o : ""}${x.dot ? "." : ""}`,
+      ).join(",");
+      return `${title()}:d=4,o=5,b=${bpmEl.value}:${body}`;
+    }
+    function fromRtttl(text) {
+      const parts = text.trim().split(":");
+      if (parts.length !== 3) throw new Error("Debe tener 3 partes separadas por ':'");
+      const def = { d: 4, o: 5, b: 120 };
+      parts[1].split(",").forEach((kv) => {
+        const [k, v] = kv.trim().toLowerCase().split("=");
+        if (k in def && Number(v)) def[k] = Number(v);
+      });
+      const list = [];
+      parts[2].split(",").map((s) => s.trim().toLowerCase()).filter(Boolean).forEach((s) => {
+        const m = s.match(/^(\d+)?([a-gp])(#?)(\.?)(\d)?(\.?)$/);
+        if (!m) throw new Error(`No entiendo la nota "${s}"`);
+        list.push({
+          n: m[2] === "p" ? "p" : m[2] + m[3],
+          o: m[5] ? Number(m[5]) : def.o,
+          d: m[1] ? Number(m[1]) : def.d,
+          dot: !!(m[4] || m[6]),
+        });
+      });
+      notes = list;
+      titleEl.value = parts[0].trim() || "Melodia";
+      bpmEl.value = Math.max(40, Math.min(250, def.b));
+      document.getElementById("bpmVal").textContent = bpmEl.value;
+      selected = -1;
+      render();
+    }
+
+    const DUR_LABEL = { 1: "𝅝", 2: "𝅗𝅥", 4: "♩", 8: "♪", 16: "𝅘𝅥𝅯", 32: "32" };
+    function render() {
+      const box = document.getElementById("notes");
+      box.innerHTML = "";
+      notes.forEach((x, i) => {
+        const b = document.createElement("button");
+        b.className = "chip" + (x.n === "p" ? " rest" : "") + (i === selected ? " sel" : "");
+        b.dataset.i = i;
+        const name = x.n === "p" ? "silencio" : (LABEL[x.n[0]] + (x.n[1] ? "#" : "") + x.o);
+        b.textContent = `${DUR_LABEL[x.d] || x.d}${x.dot ? "." : ""} ${name}`;
+        b.onclick = () => {
+          selected = selected === i ? -1 : i;
+          if (selected >= 0) beep(x, 0, Math.min(ms(x), 600) / 1000);
+          render();
+        };
+        box.appendChild(b);
+      });
+      document.getElementById("count").textContent = notes.length;
+      rtttlEl.value = toRtttl();
+    }
+
+    document.getElementById("loadText").onclick = () => {
+      const msg = document.getElementById("textMsg");
+      try { fromRtttl(rtttlEl.value); msg.textContent = "Cargado ✓"; }
+      catch (e) { msg.textContent = e.message; }
+    };
+
+    Object.entries(EXAMPLES).forEach(([label, text]) => {
+      const b = document.createElement("button");
+      b.textContent = label;
+      b.onclick = () => { stop(); fromRtttl(text); };
+      document.getElementById("examples").appendChild(b);
+    });
+
+    function code() {
+      return `from machine import Pin\nimport rtttl\n\nrtttl.play(Pin(${pinEl.value}, Pin.OUT), '${toRtttl()}')\n`;
+    }
+    document.getElementById("copy").onclick = () => Tools.copy(code());
+    document.getElementById("insert").onclick = () => {
+      stop();
+      const xml =
+        `<xml><block type="buzzer_melody"><mutation rtttl="${Tools.escapeXml(toRtttl())}"></mutation>` +
+        `<field name="PIN">${pinEl.value}</field></block></xml>`;
+      Tools.insertBlocks(xml, edit ? edit.blockId : undefined);
+    };
+
+    // Borrar con la tecla ⌫ (fuera de los campos de texto).
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Backspace" && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) {
+        e.preventDefault();
+        document.getElementById("del").click();
+      }
+    });
+
+    // ── Arranque ──
+    if (edit && edit.rtttl) {
+      try { fromRtttl(edit.rtttl); } catch (_) { render(); }
+      if (edit.pin) pinEl.value = edit.pin;
+      document.getElementById("insert").textContent = "Guardar en el bloque";
+    } else {
+      fromRtttl(EXAMPLES["Escala"]);
+      titleEl.value = "Mi melodia";
+      render();
+    }
+  </script>
+</body>
+</html>

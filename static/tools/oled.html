@@ -66,11 +66,24 @@
           <button data-tool="eraser">🧽 Borrador</button>
           <button data-tool="line">／ Línea</button>
           <button data-tool="rect">▭ Rectángulo</button>
-          <button data-tool="fillrect">■ Relleno</button>
+          <button data-tool="fillrect">■ Rect. relleno</button>
+          <button data-tool="circle">◯ Círculo</button>
+          <button data-tool="fillcircle">● Círculo relleno</button>
+          <button data-tool="bucket">🪣 Cubeta</button>
         </div>
         <div class="row" style="margin-top:8px">
+          <button id="undo" title="Deshacer (Ctrl+Z)">↶ Deshacer</button>
+          <button id="redo" title="Rehacer (Ctrl+Y)">↷ Rehacer</button>
           <button id="invert">Invertir</button>
           <button id="clear">Limpiar</button>
+        </div>
+        <div class="row" style="margin-top:8px">
+          <button id="flipH" title="Voltear horizontal">⇋ Voltear</button>
+          <button id="flipV" title="Voltear vertical">⇵ Voltear</button>
+          <button data-shift="0,-1" title="Mover arriba">↑</button>
+          <button data-shift="0,1" title="Mover abajo">↓</button>
+          <button data-shift="-1,0" title="Mover a la izquierda">←</button>
+          <button data-shift="1,0" title="Mover a la derecha">→</button>
         </div>
       </div>
 
@@ -173,6 +186,68 @@
           if (filled || y === ay || y === by || x === ax || x === bx) plot(buf, x, y, v);
     }
 
+    // Círculo con centro (cx, cy) y radio r, como el ellipse() de framebuf.
+    function circle(buf, cx, cy, r, v, filled) {
+      let x = r, y = 0, err = 1 - r;
+      while (x >= y) {
+        if (filled) {
+          for (let i = cx - x; i <= cx + x; i++) { plot(buf, i, cy + y, v); plot(buf, i, cy - y, v); }
+          for (let i = cx - y; i <= cx + y; i++) { plot(buf, i, cy + x, v); plot(buf, i, cy - x, v); }
+        } else {
+          [[x, y], [y, x], [-y, x], [-x, y], [-x, -y], [-y, -x], [y, -x], [x, -y]].forEach(([dx, dy]) =>
+            plot(buf, cx + dx, cy + dy, v),
+          );
+        }
+        y++;
+        if (err < 0) err += 2 * y + 1;
+        else { x--; err += 2 * (y - x) + 1; }
+      }
+    }
+    function radius(a, b) {
+      return Math.round(Math.hypot(b.x - a.x, b.y - a.y));
+    }
+    // Cubeta: cambia de color toda la zona conectada (4 vecinos).
+    function bucket(x, y) {
+      if (x < 0 || x >= W || y < 0 || y >= H) return;
+      const from = bits[y * W + x], to = 1 - from;
+      const stack = [[x, y]];
+      while (stack.length) {
+        const [px, py] = stack.pop();
+        if (px < 0 || px >= W || py < 0 || py >= H || bits[py * W + px] !== from) continue;
+        bits[py * W + px] = to;
+        stack.push([px + 1, py], [px - 1, py], [px, py + 1], [px, py - 1]);
+      }
+    }
+    function shape(buf, a, b) {
+      if (tool === "line") line(buf, a.x, a.y, b.x, b.y, 1);
+      else if (tool === "rect" || tool === "fillrect") rect(buf, a.x, a.y, b.x, b.y, 1, tool === "fillrect");
+      else if (tool === "circle" || tool === "fillcircle") circle(buf, a.x, a.y, radius(a, b), 1, tool === "fillcircle");
+    }
+
+    // ── Deshacer / rehacer: una foto del dibujo antes de cada cambio ──
+    let past = [], future = [];
+    function snapshot() {
+      past.push({ w: W, h: H, bits: bits.slice() });
+      if (past.length > 60) past.shift();
+      future = [];
+    }
+    function restore(from, to) {
+      if (!from.length) return;
+      to.push({ w: W, h: H, bits: bits.slice() });
+      const st = from.pop();
+      if (st.w !== W || st.h !== H) build(st.w, st.h);
+      bits = st.bits;
+      render();
+    }
+    document.getElementById("undo").onclick = () => restore(past, future);
+    document.getElementById("redo").onclick = () => restore(future, past);
+    document.addEventListener("keydown", (e) => {
+      if (!(e.ctrlKey || e.metaKey) || /INPUT|SELECT/.test(document.activeElement.tagName)) return;
+      const k = e.key.toLowerCase();
+      if (k === "z" && !e.shiftKey) { e.preventDefault(); restore(past, future); }
+      else if (k === "y" || (k === "z" && e.shiftKey)) { e.preventDefault(); restore(future, past); }
+    });
+
     // ── Puntero ──
     let start = null, lastPt = null;
     function pt(e) {
@@ -184,6 +259,13 @@
     }
     screen.onpointerdown = (e) => {
       screen.setPointerCapture(e.pointerId);
+      snapshot();
+      if (tool === "bucket") {
+        const p = pt(e);
+        bucket(p.x, p.y);
+        render();
+        return;
+      }
       start = lastPt = pt(e);
       if (tool === "pen" || tool === "eraser") {
         plot(bits, start.x, start.y, tool === "pen" ? 1 : 0);
@@ -200,16 +282,13 @@
         render();
       } else {
         const preview = bits.slice();
-        if (tool === "line") line(preview, start.x, start.y, p.x, p.y, 1);
-        else rect(preview, start.x, start.y, p.x, p.y, 1, tool === "fillrect");
+        shape(preview, start, p);
         render(preview);
       }
     };
     screen.onpointerup = (e) => {
       if (!start) return;
-      const p = pt(e);
-      if (tool === "line") line(bits, start.x, start.y, p.x, p.y, 1);
-      else if (tool === "rect" || tool === "fillrect") rect(bits, start.x, start.y, p.x, p.y, 1, tool === "fillrect");
+      shape(bits, start, pt(e));
       start = null;
       render();
     };
@@ -221,8 +300,27 @@
         document.querySelectorAll("[data-tool]").forEach((o) => o.classList.toggle("active", o === b));
       };
     });
-    document.getElementById("invert").onclick = () => { bits = bits.map((v) => 1 - v); render(); };
-    document.getElementById("clear").onclick = () => { bits.fill(0); render(); };
+    document.getElementById("invert").onclick = () => { snapshot(); bits = bits.map((v) => 1 - v); render(); };
+    document.getElementById("clear").onclick = () => { snapshot(); bits.fill(0); render(); };
+
+    // Voltear y mover: se arma el dibujo nuevo leyendo cada píxel de origen.
+    function remap(fn) {
+      snapshot();
+      const next = new Uint8Array(W * H);
+      for (let y = 0; y < H; y++)
+        for (let x = 0; x < W; x++) {
+          const [sx, sy] = fn(x, y);
+          if (sx >= 0 && sx < W && sy >= 0 && sy < H) next[y * W + x] = bits[sy * W + sx];
+        }
+      bits = next;
+      render();
+    }
+    document.getElementById("flipH").onclick = () => remap((x, y) => [W - 1 - x, y]);
+    document.getElementById("flipV").onclick = () => remap((x, y) => [x, H - 1 - y]);
+    document.querySelectorAll("[data-shift]").forEach((b) => {
+      const [dx, dy] = b.dataset.shift.split(",").map(Number);
+      b.onclick = () => remap((x, y) => [x - dx, y - dy]);
+    });
 
     // ── Tamaño ──
     function showCustom(on) {
@@ -233,6 +331,7 @@
       showCustom(custom);
       if (custom) return;
       const [w, h] = presetEl.value.split("x").map(Number);
+      snapshot();
       build(w, h);
       if (loadedImage) applyImage();
     };
@@ -248,7 +347,7 @@
       const f = fileEl.files[0];
       if (!f) return;
       const img = new Image();
-      img.onload = () => { loadedImage = img; applyImage(); URL.revokeObjectURL(img.src); };
+      img.onload = () => { snapshot(); loadedImage = img; applyImage(); URL.revokeObjectURL(img.src); };
       img.src = URL.createObjectURL(f);
       fileEl.value = "";
     };
