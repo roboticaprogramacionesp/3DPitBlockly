@@ -14256,7 +14256,9 @@ Blockly.defineBlocksWithJsonArray([
       },
     ],
     colour: "#8e44ad",
-    nextStatement: null,
+    // Sin muescas arriba/abajo: es una definición de función (va a
+    // definitions_), así que lo que se enganchara debajo quedaría como
+    // código suelto fuera de la función. Los bloques van dentro de "DO".
     tooltip: "Define el cuerpo de la función async comandos(tipo, valor)",
   },
 
