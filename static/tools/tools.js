@@ -62,6 +62,40 @@ const Tools = (() => {
     return /^[A-Za-z_]\w*$/.test(clean) ? clean : fallback;
   }
 
+  // 1 bit por píxel, filas de ceil(w/8) bytes, bit alto = columna izquierda
+  // (framebuf.MONO_HLSB: lo que esperan OLED.icon y Max8x8.icon).
+  function monoHex(ed) {
+    const rowBytes = Math.ceil(ed.w / 8);
+    let hex = "";
+    for (let y = 0; y < ed.h; y++)
+      for (let b = 0; b < rowBytes; b++) {
+        let v = 0;
+        for (let i = 0; i < 8; i++) {
+          const x = b * 8 + i;
+          v = (v << 1) | (x < ed.w && ed.values[y * ed.w + x] ? 1 : 0);
+        }
+        hex += v.toString(16).padStart(2, "0");
+      }
+    return hex;
+  }
+
+  function monoFromHex(hex, w, h) {
+    const rowBytes = Math.ceil(w / 8);
+    const out = [];
+    for (let y = 0; y < h; y++)
+      for (let x = 0; x < w; x++) {
+        const byte = parseInt(hex.substr((y * rowBytes + (x >> 3)) * 2, 2), 16) || 0;
+        out.push(byte & (0x80 >> (x & 7)) ? 1 : 0);
+      }
+    return out;
+  }
+
+  // Entradas X e Y en 0 para los bloques de imagen.
+  function xy() {
+    const num = (f) => `<value name="${f}"><shadow type="math_number"><field name="NUM">0</field></shadow></value>`;
+    return num("X") + num("Y");
+  }
+
   // Cuadrícula que se pinta arrastrando. onPaint(index, isFirst) se llama
   // por cada celda que toca el puntero; isFirst marca el inicio del trazo
   // (para decidir si el trazo enciende o apaga).
@@ -111,5 +145,5 @@ const Tools = (() => {
     });
   });
 
-  return { embedded, toast, copy, editPayload, insertBlocks, escapeXml, pyName, paintGrid };
+  return { embedded, toast, copy, editPayload, insertBlocks, escapeXml, pyName, paintGrid, monoHex, monoFromHex, xy };
 })();

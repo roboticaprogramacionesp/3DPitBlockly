@@ -121,7 +121,7 @@
           <button class="primary" id="play">▶ Escuchar</button>
           <button id="stop">■ Parar</button>
           <label class="field">Velocidad <span id="bpmVal">120</span> bpm
-            <input type="range" id="bpm" min="40" max="250" value="120">
+            <input type="range" id="bpm" min="25" max="300" value="120">
           </label>
         </div>
       </div>
@@ -149,8 +149,12 @@
       </div>
 
       <div class="panel">
-        <p class="section-title">Canciones de ejemplo</p>
-        <div class="row" id="examples"></div>
+        <p class="section-title">Biblioteca de melodías</p>
+        <div class="row">
+          <select id="library" style="flex:1;min-width:0"></select>
+          <button id="loadSong">Cargar</button>
+        </div>
+        <p class="hint" style="margin-top:6px">Al cargarla puedes escucharla y cambiarla antes de insertarla.</p>
       </div>
 
       <div class="panel">
@@ -164,19 +168,11 @@
   </div>
 
   <script src="tools.js"></script>
+  <script src="songs.js"></script>
   <script>
     const NAMES = ["c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b"];
     const LABEL = { c: "Do", d: "Re", e: "Mi", f: "Fa", g: "Sol", a: "La", b: "Si" };
     const PINS = ["0", "2", "4", "5", "12", "13", "14", "15", "16", "17", "18", "19", "23", "25", "26", "27", "32", "33"];
-    const EXAMPLES = {
-      "Estrellita": "Estrellita:d=4,o=5,b=120:c,c,g,g,a,a,2g,f,f,e,e,d,d,2c,g,g,f,f,e,e,2d,g,g,f,f,e,e,2d,c,c,g,g,a,a,2g,f,f,e,e,d,d,2c",
-      "Himno de la alegría": "Himno alegria:d=4,o=5,b=120:e,e,f,g,g,f,e,d,c,c,d,e,e.,8d,2d,e,e,f,g,g,f,e,d,c,c,d,e,d.,8c,2c",
-      "Cumpleaños feliz": "Cumpleanos:d=4,o=5,b=120:8g.,16g,a,g,c6,2b,8g.,16g,a,g,d6,2c6,8g.,16g,g6,e6,c6,b,a,8f6.,16f6,e6,c6,d6,2c6",
-      "Jingle Bells": "Jingle Bells:d=4,o=5,b=160:e,e,2e,e,e,2e,e,g,c.,8d,1e,f,f,f.,8f,f,e,e,8e,8e,e,d,d,e,2d,2g",
-      "Fray Santiago": "Fray Santiago:d=4,o=5,b=120:c,d,e,c,c,d,e,c,e,f,2g,e,f,2g,8g,8a,8g,8f,e,c,8g,8a,8g,8f,e,c,c,g4,2c,c,g4,2c",
-      "Escala": "Escala:d=8,o=5,b=120:c,d,e,f,g,a,b,c6",
-      "Alarma": "Alarma:d=16,o=6,b=180:c,g,c,g,c,g,c,g,8p,c,g,c,g,c,g,c,g",
-    };
 
     const edit = Tools.editPayload();
     const titleEl = document.getElementById("title");
@@ -345,7 +341,7 @@
       });
       notes = list;
       titleEl.value = parts[0].trim() || "Melodia";
-      bpmEl.value = Math.max(40, Math.min(250, def.b));
+      bpmEl.value = Math.max(25, Math.min(300, def.b));
       document.getElementById("bpmVal").textContent = bpmEl.value;
       selected = -1;
       render();
@@ -378,12 +374,17 @@
       catch (e) { msg.textContent = e.message; }
     };
 
-    Object.entries(EXAMPLES).forEach(([label, text]) => {
-      const b = document.createElement("button");
-      b.textContent = label;
-      b.onclick = () => { stop(); fromRtttl(text); };
-      document.getElementById("examples").appendChild(b);
+    // Biblioteca (songs.js) agrupada; las del firmware son las de songs.py.
+    const libraryEl = document.getElementById("library");
+    Object.entries(SONG_LIBRARY).forEach(([group, songs]) => {
+      const og = document.createElement("optgroup");
+      og.label = group;
+      songs.forEach((text) => og.appendChild(new Option(text.split(":")[0], text)));
+      libraryEl.appendChild(og);
     });
+    function loadSong() { stop(); fromRtttl(libraryEl.value); }
+    document.getElementById("loadSong").onclick = loadSong;
+    libraryEl.ondblclick = loadSong;
 
     function code() {
       return `from machine import Pin\nimport rtttl\n\nrtttl.play(Pin(${pinEl.value}, Pin.OUT), '${toRtttl()}')\n`;
@@ -411,8 +412,7 @@
       if (edit.pin) pinEl.value = edit.pin;
       document.getElementById("insert").textContent = "Guardar en el bloque";
     } else {
-      fromRtttl(EXAMPLES["Escala"]);
-      titleEl.value = "Mi melodia";
+      fromRtttl("Mi melodia:d=8,o=5,b=120:c,d,e,f,g,a,b,c6");
       render();
     }
   </script>

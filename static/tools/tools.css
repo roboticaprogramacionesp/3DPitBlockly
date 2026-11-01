@@ -150,3 +150,25 @@ pre.code {
   background: #23264a;
   cursor: crosshair;
 }
+
+/* Lienzo del editor de píxeles (pixel-editor.js). */
+.canvas-wrap {
+  background: #0b0d1c;
+  border-radius: 10px;
+  padding: 10px;
+  max-width: 100%;
+  overflow: auto;
+}
+.canvas-wrap canvas { display: block; cursor: crosshair; }
+.coords { font-family: monospace; color: var(--muted); font-size: 13px; margin-top: 6px; }
+
+input[type="number"] {
+  width: 70px;
+  background: var(--panel-2);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 7px 9px;
+  font-size: 15px;
+}
+input[type="range"] { width: 150px; }

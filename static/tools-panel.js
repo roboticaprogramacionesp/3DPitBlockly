@@ -18,6 +18,7 @@
   const EDIT_PAGES = {
     neopixel_image: "neopixel.html",
     oled_image: "oled.html",
+    matrix8_image: "matriz8x8.html",
     buzzer_melody: "melodias.html",
   };
 

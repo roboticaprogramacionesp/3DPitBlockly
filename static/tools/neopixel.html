@@ -16,34 +16,30 @@
       width: 44px; height: 34px; padding: 0; border: 1px solid var(--line);
       border-radius: 6px; background: var(--panel-2);
     }
-    input[type="number"] {
-      width: 70px; background: var(--panel-2); color: var(--text);
-      border: 1px solid var(--line); border-radius: 6px; padding: 7px 9px; font-size: 15px;
-    }
-    .grid-wrap { max-width: 100%; overflow: auto; }
-    .grid { width: auto; }
-    .grid .cell { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06); }
   </style>
 </head>
 <body>
   <a class="back" href="index.html">← Herramientas</a>
   <h1>🌈 Matriz NeoPixel a colores</h1>
-  <p class="subtitle">Elige un color y pinta arrastrando sobre los LEDs. Para borrar, pinta con negro (apagado).</p>
+  <p class="subtitle">Elige un color y dibuja. El borrador apaga los LEDs (negro).</p>
 
   <div class="layout">
-    <div class="grid-wrap"><div class="grid" id="grid"></div></div>
+    <div>
+      <div class="canvas-wrap"><canvas id="screen"></canvas></div>
+      <div class="coords" id="coords">x: – y: –</div>
+    </div>
 
     <div class="side">
       <div class="panel">
-        <p class="section-title">Matriz</p>
         <div class="row">
           <label class="field">Tamaño
             <select id="preset">
               <option value="4x4">4 × 4</option>
               <option value="5x5">5 × 5</option>
               <option value="8x8" selected>8 × 8</option>
+              <option value="16x8">16 × 8</option>
+              <option value="32x8">32 × 8</option>
               <option value="16x16">16 × 16</option>
-              <option value="8x32">32 × 8 (tira ancha)</option>
               <option value="32x32">32 × 32</option>
               <option value="custom">Otro…</option>
             </select>
@@ -65,39 +61,32 @@
         </div>
       </div>
 
-      <div class="panel row">
-        <button id="fill">Rellenar todo</button>
-        <button id="clear">Limpiar</button>
-      </div>
+      <div class="panel" id="toolbar"></div>
 
       <div class="panel">
         <div class="row">
           <button class="primary" id="insert" data-embedded-only>Insertar en mis bloques</button>
           <button id="copy">Copiar código</button>
         </div>
-        <p class="hint" style="margin-top:8px">Necesitas antes el bloque <b>iniciar matriz NeoPixel</b> con el mismo nombre (sirven también los de 5x5 y 8x8). El orden en zigzag se configura en ese bloque.</p>
+        <p class="hint" style="margin-top:8px">Necesitas antes el bloque <b>iniciar matriz NeoPixel</b> con el mismo nombre y tamaño (sirven también los de 5x5 y 8x8). El orden en zigzag se configura en ese bloque.</p>
       </div>
     </div>
   </div>
 
   <script src="tools.js"></script>
+  <script src="pixel-editor.js"></script>
   <script>
     const PALETTE = [
-      ["Apagado", "#000000"], ["Rojo", "#ff0000"], ["Naranja", "#ff8000"],
-      ["Amarillo", "#ffff00"], ["Verde", "#00ff00"], ["Cian", "#00ffff"],
-      ["Azul", "#0000ff"], ["Morado", "#8000ff"], ["Rosa", "#ff0080"],
-      ["Blanco", "#ffffff"],
+      ["Rojo", "#ff0000"], ["Naranja", "#ff8000"], ["Amarillo", "#ffff00"],
+      ["Verde", "#00ff00"], ["Cian", "#00ffff"], ["Azul", "#0000ff"],
+      ["Morado", "#8000ff"], ["Rosa", "#ff0080"], ["Blanco", "#ffffff"],
     ];
-    const gridEl = document.getElementById("grid");
     const presetEl = document.getElementById("preset");
     const wEl = document.getElementById("w");
     const hEl = document.getElementById("h");
     const nameEl = document.getElementById("name");
     const customEl = document.getElementById("custom");
     const edit = Tools.editPayload();
-    let W = 0, H = 0;
-    let pixels = [];
-    let cells = [];
     let color = "#ff0000";
 
     const swatchEls = PALETTE.map(([label, hex]) => {
@@ -113,47 +102,34 @@
       color = hex;
       swatchEls.forEach((s) => s.classList.toggle("active", s === el));
     }
-    selectColor("#ff0000", swatchEls[1]);
+    selectColor("#ff0000", swatchEls[0]);
     customEl.oninput = () => selectColor(customEl.value, null);
 
-    function draw(i) {
-      cells[i].style.background = pixels[i] === "#000000" ? "" : pixels[i];
-    }
+    const ed = PixelEditor({
+      canvas: document.getElementById("screen"),
+      toolbar: document.getElementById("toolbar"),
+      coords: document.getElementById("coords"),
+      mode: "color",
+      shape: "round",
+      color: () => color,
+    });
 
     function build(w, h) {
-      w = Math.max(1, Math.min(64, w | 0));
-      h = Math.max(1, Math.min(64, h | 0));
-      const old = pixels, oldW = W, oldH = H;
-      W = w; H = h;
-      pixels = [];
-      // Al cambiar de tamaño se conserva la esquina superior izquierda.
-      for (let y = 0; y < H; y++)
-        for (let x = 0; x < W; x++)
-          pixels.push(x < oldW && y < oldH ? old[y * oldW + x] : "#000000");
-      const cell = Math.max(10, Math.min(48, Math.floor(480 / Math.max(W, H))));
-      gridEl.style.gap = cell < 16 ? "1px" : "3px";
-      gridEl.style.gridTemplateColumns = `repeat(${W}, ${cell}px)`;
-      cells = Tools.paintGrid(gridEl, W, H, (i) => { pixels[i] = color; draw(i); });
-      gridEl.style.gridTemplateColumns = `repeat(${W}, ${cell}px)`;
-      pixels.forEach((_, i) => draw(i));
-      wEl.value = W; hEl.value = H;
+      ed.resize(Math.max(1, Math.min(64, w | 0)), Math.max(1, Math.min(64, h | 0)));
+      wEl.value = ed.w; hEl.value = ed.h;
     }
-
     function showCustom(on) {
       document.querySelectorAll("[data-custom]").forEach((el) => (el.hidden = !on));
     }
-
     presetEl.onchange = () => {
       const custom = presetEl.value === "custom";
       showCustom(custom);
       if (custom) return;
-      const [h, w] = presetEl.value.split("x").map(Number);
+      const [w, h] = presetEl.value.split("x").map(Number);
+      ed.snapshot();
       build(w, h);
     };
-    wEl.onchange = hEl.onchange = () => build(Number(wEl.value), Number(hEl.value));
-
-    document.getElementById("fill").onclick = () => { pixels.fill(color); pixels.forEach((_, i) => draw(i)); };
-    document.getElementById("clear").onclick = () => { pixels.fill("#000000"); pixels.forEach((_, i) => draw(i)); };
+    wEl.onchange = hEl.onchange = () => { ed.snapshot(); build(Number(wEl.value), Number(hEl.value)); };
 
     // RGB565 little-endian: lo que guarda el bloque neopixel_image y lee
     // NeoMatrix.show() en el ESP32.
@@ -166,7 +142,7 @@
       return "#" + [r, g, b].map((v) => Math.round(v).toString(16).padStart(2, "0")).join("");
     }
     function dataHex() {
-      return pixels.map((p) => {
+      return ed.values.map((p) => {
         const c = to565(p);
         return (c & 0xff).toString(16).padStart(2, "0") + (c >> 8).toString(16).padStart(2, "0");
       }).join("");
@@ -176,25 +152,22 @@
     document.getElementById("copy").onclick = () => {
       Tools.copy(`import framebuf
 
-${name()}.blit(framebuf.FrameBuffer(bytearray(bytes.fromhex('${dataHex()}')), ${W}, ${H}, framebuf.RGB565), 0, 0)
+${name()}.blit(framebuf.FrameBuffer(bytearray(bytes.fromhex('${dataHex()}')), ${ed.w}, ${ed.h}, framebuf.RGB565), 0, 0)
 ${name()}.show()
 `);
     };
 
-    const num = (field, v) =>
-      `<value name="${field}"><shadow type="math_number"><field name="NUM">${v}</field></shadow></value>`;
-
     document.getElementById("insert").onclick = () => {
       const n = Tools.escapeXml(name());
       const image =
-        `<mutation w="${W}" h="${H}" data="${dataHex()}"></mutation>` +
+        `<mutation w="${ed.w}" h="${ed.h}" data="${dataHex()}"></mutation>` +
         `<field name="NAME">${n}</field>`;
       if (edit) {
         Tools.insertBlocks(`<xml><block type="neopixel_image">${image}</block></xml>`, edit.blockId);
         return;
       }
       Tools.insertBlocks(
-        `<xml><block type="neopixel_image">${image}${num("X", 0)}${num("Y", 0)}` +
+        `<xml><block type="neopixel_image">${image}${Tools.xy()}` +
         `<next><block type="neopixel_show"><field name="NAME">${n}</field><field name="BRIGHT">50</field></block></next>` +
         `</block></xml>`,
       );
@@ -203,17 +176,18 @@ ${name()}.show()
     // Arranque: con el dibujo del bloque que se está editando, o 8×8 vacío.
     if (edit) {
       nameEl.value = edit.name || "matriz";
-      const preset = `${edit.h}x${edit.w}`;
+      const preset = `${edit.w}x${edit.h}`;
       const known = Array.from(presetEl.options).some((o) => o.value === preset);
       presetEl.value = known ? preset : "custom";
       showCustom(!known);
       build(edit.w, edit.h);
-      for (let i = 0; i < W * H; i++) {
+      const values = [];
+      for (let i = 0; i < ed.w * ed.h; i++) {
         const lo = parseInt(edit.data.substr(i * 4, 2), 16) || 0;
         const hi = parseInt(edit.data.substr(i * 4 + 2, 2), 16) || 0;
-        pixels[i] = from565(lo | (hi << 8));
-        draw(i);
+        values.push(from565(lo | (hi << 8)));
       }
+      ed.setValues(values);
       document.getElementById("insert").textContent = "Guardar en el bloque";
     } else {
       showCustom(false);

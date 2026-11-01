@@ -1315,7 +1315,12 @@ pwm${pin}.deinit()
 
 Blockly.Python["buzzer_song"] = function (block) {
   const pin = block.getFieldValue("PIN");
-  const song = block.getFieldValue("SONG");
+  // En songs.py (firmware) estas dos se llaman distinto que en el menú; con
+  // el nombre del menú songs.find() devolvía None y no sonaba nada. Se
+  // traduce acá en vez de cambiar el valor del menú para no romper los
+  // proyectos ya guardados.
+  const SONGS_PY_NAME = { Simpsons: "The Simpsons", Flintstones: "Flinstones" };
+  const song = SONGS_PY_NAME[block.getFieldValue("SONG")] || block.getFieldValue("SONG");
 
   Blockly.Python.definitions_["import_rtttl"] = "import rtttl, songs";
 

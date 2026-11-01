@@ -6,6 +6,8 @@
      (NeoMatrix acepta cualquier ancho × alto).
    - neopixel_image: dibujo a colores de cualquier tamaño (RGB565).
    - oled_image: imagen en blanco y negro para OLED / SH1106 (MONO_HLSB).
+   - matrix8_image: dibujo para la matriz MAX7219 de 1 a 4 módulos
+     (MONO_HLSB, Max8x8.icon).
    - lcd_create_char / lcd_i2c_create_char + lcd_custom_char:
      caracteres propios 5×8 para las LCD.
 
@@ -24,7 +26,7 @@ function imageBytesLength(format, w, h) {
   return format === "mono" ? Math.ceil(w / 8) * h : w * h * 2;
 }
 
-function imageThumbUrl(format, w, h, hex) {
+function imageThumbUrl(format, w, h, hex, onColor) {
   const k = Math.max(1, Math.floor(96 / Math.max(w, h)));
   const canvas = document.createElement("canvas");
   canvas.width = w * k;
@@ -38,7 +40,7 @@ function imageThumbUrl(format, w, h, hex) {
     for (let x = 0; x < w; x++) {
       let color = null;
       if (format === "mono") {
-        if (byte(y * rowBytes + (x >> 3)) & (0x80 >> (x & 7))) color = "#7fdbff";
+        if (byte(y * rowBytes + (x >> 3)) & (0x80 >> (x & 7))) color = onColor || "#7fdbff";
       } else {
         const i = (y * w + x) * 2;
         const c = byte(i) | (byte(i + 1) << 8);
@@ -58,7 +60,7 @@ function imageThumbUrl(format, w, h, hex) {
   return canvas.toDataURL();
 }
 
-function makeImageBlockMixin(format, defaultW, defaultH) {
+function makeImageBlockMixin(format, defaultW, defaultH, onColor) {
   return {
     imgW_: defaultW,
     imgH_: defaultH,
@@ -93,7 +95,7 @@ function makeImageBlockMixin(format, defaultW, defaultH) {
       const scale = Math.min(96 / this.imgW_, 48 / this.imgH_);
       const block = this;
       const field = new Blockly.FieldImage(
-        imageThumbUrl(format, this.imgW_, this.imgH_, this.imgData_),
+        imageThumbUrl(format, this.imgW_, this.imgH_, this.imgData_, onColor),
         Math.max(8, Math.round(this.imgW_ * scale)),
         Math.max(8, Math.round(this.imgH_ * scale)),
         `dibujo ${this.imgW_}×${this.imgH_}`,
@@ -198,6 +200,23 @@ Blockly.defineBlocksWithJsonArray([
     mutator: "oled_image_ext",
   },
   {
+    type: "matrix8_image",
+    message0: "%1 mostrar dibujo x %2 y %3",
+    args0: [
+      { type: "field_input", name: "NAME", text: "matrix8x8" },
+      { type: "input_value", name: "X", check: "Number" },
+      { type: "input_value", name: "Y", check: "Number" },
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: "#26A69A",
+    tooltip:
+      "Muestra un dibujo en la matriz LED (1 a 4 módulos de 8×8). " +
+      "Toca la miniatura para dibujarlo.",
+    mutator: "matrix8_image_ext",
+  },
+  {
     type: "lcd_create_char",
     message0: "%1 crear carácter %2",
     args0: [
@@ -240,6 +259,9 @@ Blockly.defineBlocksWithJsonArray([
 ]);
 
 Blockly.Extensions.registerMutator("neopixel_image_ext", makeImageBlockMixin("rgb565", 8, 8), function () {
+  this.setImage_(8, 8, "");
+});
+Blockly.Extensions.registerMutator("matrix8_image_ext", makeImageBlockMixin("mono", 8, 8, "#ff3b30"), function () {
   this.setImage_(8, 8, "");
 });
 Blockly.Extensions.registerMutator("oled_image_ext", makeImageBlockMixin("mono", 32, 32), function () {
@@ -288,6 +310,13 @@ Blockly.Python["oled_image"] = function (block) {
   return `${name}.icon(bytes.fromhex('${block.imgData_}'), ${x}, ${y}, ${block.imgW_}, ${block.imgH_}, 1)\n`;
 };
 
+Blockly.Python["matrix8_image"] = function (block) {
+  const name = block.getFieldValue("NAME");
+  const x = Blockly.Python.valueToCode(block, "X", Blockly.Python.ORDER_NONE) || 0;
+  const y = Blockly.Python.valueToCode(block, "Y", Blockly.Python.ORDER_NONE) || 0;
+  return `${name}.icon(bytes.fromhex('${block.imgData_}'), ${x}, ${y}, ${block.imgW_}, ${block.imgH_}, 1)\n`;
+};
+
 // Una fila = un byte con los 5 bits de la derecha (formato HD44780).
 function lcdCharBytes(block) {
   const bytes = [];
@@ -315,7 +344,7 @@ Blockly.Python["lcd_custom_char"] = function (block) {
 
 // ── Simulador JS (vista Juego): estos bloques no hacen nada ahí ──
 if (Blockly.JavaScript) {
-  ["neopixel_matrix_init", "neopixel_image", "oled_image", "lcd_create_char", "lcd_i2c_create_char"].forEach((n) => {
+  ["neopixel_matrix_init", "neopixel_image", "oled_image", "matrix8_image", "lcd_create_char", "lcd_i2c_create_char"].forEach((n) => {
     if (!Blockly.JavaScript[n]) Blockly.JavaScript[n] = function () { return ""; };
   });
   Blockly.JavaScript["lcd_custom_char"] = function (block) {

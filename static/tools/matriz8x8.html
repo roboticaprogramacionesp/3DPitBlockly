@@ -3,114 +3,91 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Editor Matriz 8x8</title>
+  <title>Editor Matriz LED</title>
   <link rel="stylesheet" href="tools.css">
-  <style>
-    .grid .cell.on { background: #ff3b30; box-shadow: 0 0 10px #ff3b30; }
-  </style>
 </head>
 <body>
   <a class="back" href="index.html">← Herramientas</a>
-  <h1>🔴 Matriz LED 8×8 (MAX7219)</h1>
-  <p class="subtitle">Toca o arrastra para encender LEDs. Si empiezas sobre uno encendido, el trazo los apaga.</p>
+  <h1>🔴 Matriz LED MAX7219</h1>
+  <p class="subtitle">Dibuja en uno o varios módulos de 8×8 encadenados (8×8, 16×8, 24×8 o 32×8).</p>
 
   <div class="layout">
-    <div class="grid" id="grid"></div>
+    <div>
+      <div class="canvas-wrap"><canvas id="screen"></canvas></div>
+      <div class="coords" id="coords">x: – y: –</div>
+    </div>
 
     <div class="side">
       <div class="panel">
-        <label class="field">Nombre de la matriz
-          <input type="text" id="name" value="matrix8x8" size="14">
-        </label>
-      </div>
-
-      <div class="panel">
-        <p class="section-title">Mover el dibujo</p>
         <div class="row">
-          <button data-shift="0,-1" title="Arriba">↑</button>
-          <button data-shift="0,1" title="Abajo">↓</button>
-          <button data-shift="-1,0" title="Izquierda">←</button>
-          <button data-shift="1,0" title="Derecha">→</button>
+          <label class="field">Módulos
+            <select id="size">
+              <option value="8">1 módulo (8 × 8)</option>
+              <option value="16">2 módulos (16 × 8)</option>
+              <option value="24">3 módulos (24 × 8)</option>
+              <option value="32">4 módulos (32 × 8)</option>
+            </select>
+          </label>
+          <label class="field">Nombre de la matriz
+            <input type="text" id="name" value="matrix8x8" size="12">
+          </label>
         </div>
       </div>
 
-      <div class="panel row">
-        <button id="invert">Invertir</button>
-        <button id="fill">Encender todo</button>
-        <button id="clear">Limpiar</button>
-      </div>
+      <div class="panel" id="toolbar"></div>
 
       <div class="panel">
         <div class="row">
           <button class="primary" id="insert" data-embedded-only>Insertar en mis bloques</button>
           <button id="copy">Copiar código</button>
         </div>
-        <pre class="code" id="bytes" style="margin-top:10px"></pre>
-        <p class="hint" style="margin-top:8px">Inserta el bloque <b>Matriz 8x8</b> con tu dibujo. Necesitas antes el bloque <b>iniciar matriz</b> con el mismo nombre.</p>
+        <p class="hint" style="margin-top:8px">Inserta el bloque <b>mostrar dibujo</b>. Necesitas antes el bloque <b>iniciar matriz</b> con el mismo nombre y el mismo <b>Ancho</b>.</p>
       </div>
     </div>
   </div>
 
   <script src="tools.js"></script>
+  <script src="pixel-editor.js"></script>
   <script>
-    const N = 8;
+    const sizeEl = document.getElementById("size");
     const nameEl = document.getElementById("name");
-    let pixels = new Array(N * N).fill(0);
-    let strokeValue = 1;
+    const edit = Tools.editPayload();
 
-    const cells = Tools.paintGrid(document.getElementById("grid"), N, N, (i, first) => {
-      if (first) strokeValue = pixels[i] ? 0 : 1;
-      pixels[i] = strokeValue;
-      render();
+    const ed = PixelEditor({
+      canvas: document.getElementById("screen"),
+      toolbar: document.getElementById("toolbar"),
+      coords: document.getElementById("coords"),
+      mode: "mono",
+      shape: "round",
+      onColor: "#ff3b30",
     });
 
-    // Una fila = un byte, el bit más alto es la columna 0 (igual que el
-    // generador del bloque max_icon).
-    function rowBytes() {
-      const out = [];
-      for (let y = 0; y < N; y++) {
-        let v = 0;
-        for (let x = 0; x < N; x++) v = (v << 1) | pixels[y * N + x];
-        out.push("0x" + v.toString(16).padStart(2, "0"));
-      }
-      return out;
-    }
+    sizeEl.onchange = () => { ed.snapshot(); ed.resize(Number(sizeEl.value), 8); };
 
     function name() { return Tools.pyName(nameEl.value, "matrix8x8"); }
 
-    function render() {
-      cells.forEach((c, i) => c.classList.toggle("on", !!pixels[i]));
-      document.getElementById("bytes").textContent = `${name()}.icon([${rowBytes().join(", ")}])`;
-    }
-    render();
-    nameEl.oninput = render;
-
-    document.querySelectorAll("[data-shift]").forEach((b) => {
-      b.onclick = () => {
-        const [dx, dy] = b.dataset.shift.split(",").map(Number);
-        const next = new Array(N * N).fill(0);
-        for (let y = 0; y < N; y++)
-          for (let x = 0; x < N; x++) {
-            const nx = x + dx, ny = y + dy;
-            if (nx >= 0 && nx < N && ny >= 0 && ny < N) next[ny * N + nx] = pixels[y * N + x];
-          }
-        pixels = next;
-        render();
-      };
-    });
-    document.getElementById("invert").onclick = () => { pixels = pixels.map((p) => 1 - p); render(); };
-    document.getElementById("fill").onclick = () => { pixels.fill(1); render(); };
-    document.getElementById("clear").onclick = () => { pixels.fill(0); render(); };
-
-    document.getElementById("copy").onclick = () => Tools.copy(document.getElementById("bytes").textContent + "\n");
+    // Mismo código que genera el bloque matrix8_image (Max8x8.icon).
+    document.getElementById("copy").onclick = () =>
+      Tools.copy(`${name()}.icon(bytes.fromhex('${Tools.monoHex(ed)}'), 0, 0, ${ed.w}, ${ed.h}, 1)\n`);
 
     document.getElementById("insert").onclick = () => {
-      let fields = `<field name="NAME">${Tools.escapeXml(name())}</field><field name="EMOTE">vacio</field>`;
-      for (let y = 0; y < N; y++)
-        for (let x = 0; x < N; x++)
-          fields += `<field name="PIXEL_${y}_${x}">${pixels[y * N + x]}</field>`;
-      Tools.insertBlocks(`<xml><block type="max_icon">${fields}</block></xml>`);
+      const fields =
+        `<mutation w="${ed.w}" h="${ed.h}" data="${Tools.monoHex(ed)}"></mutation>` +
+        `<field name="NAME">${Tools.escapeXml(name())}</field>`;
+      if (edit) Tools.insertBlocks(`<xml><block type="matrix8_image">${fields}</block></xml>`, edit.blockId);
+      else Tools.insertBlocks(`<xml><block type="matrix8_image">${fields}${Tools.xy()}</block></xml>`);
     };
+
+    if (edit) {
+      nameEl.value = edit.name || "matrix8x8";
+      const w = [8, 16, 24, 32].includes(edit.w) ? edit.w : 8;
+      sizeEl.value = String(w);
+      ed.resize(w, 8);
+      ed.setValues(Tools.monoFromHex(edit.data, edit.w, edit.h).slice(0, w * 8));
+      document.getElementById("insert").textContent = "Guardar en el bloque";
+    } else {
+      ed.resize(8, 8);
+    }
   </script>
 </body>
 </html>
