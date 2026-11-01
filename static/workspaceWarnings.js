@@ -7,6 +7,8 @@
 // Advertencias:
 //   - bloque de valor (los que encajan en un hueco) suelto en el workspace:
 //     no está conectado a nada, así que no genera código útil.
+//   - pila de instrucciones suelta, aparte del programa principal (la pila
+//     de más arriba).
 //   - hueco de valor vacío: el generador pone un valor por defecto en su
 //     lugar, que casi nunca es lo que el alumno quería.
 // Errores:
@@ -167,7 +169,22 @@ function addWorkspaceWarnings(workspace) {
     return text ? `"${text}"` : "";
   }
 
-  function problemOf(block) {
+  // Pilas de instrucciones sueltas: la de más arriba es el programa
+  // principal; cualquier otra pila que empiece con un bloque enganchable
+  // (con muesca arriba) quedó sin unir. Las que empiezan con un bloque sin
+  // muesca (funciones, callbacks, "al iniciar") van sueltas a propósito.
+  function looseStackTops() {
+    const stacks = workspace
+      .getTopBlocks(true)
+      .filter((b) => isRealBlock(b) && isActive(b) && b.previousConnection);
+    return new Set(stacks.slice(1));
+  }
+
+  function problemOf(block, looseTops) {
+    if (looseTops.has(block)) {
+      return "Este bloque está suelto: no está unido al programa principal " +
+        "(el grupo de bloques de más arriba). Engánchalo debajo o dentro de otro bloque.";
+    }
     if (block.outputConnection && !block.getParent()) {
       return "Este bloque está suelto: no está encajado en ningún otro bloque, " +
         "así que no hace nada. Arrástralo al hueco donde se debe usar.";
@@ -207,6 +224,7 @@ function addWorkspaceWarnings(workspace) {
     const nextWarnings = [];
     const nextErrors = [];
     const nextMarked = new Set();
+    const looseTops = looseStackTops();
 
     // Orden de lectura (arriba→abajo) para que las flechas recorran los
     // bloques en el mismo orden en que el alumno los ve.
@@ -216,7 +234,7 @@ function addWorkspaceWarnings(workspace) {
       // desactivan solos cuando se ponen su propio aviso.
       if (hasNativeWarning(block)) nextErrors.push(block);
       if (!isActive(block)) return;
-      const problem = problemOf(block);
+      const problem = problemOf(block, looseTops);
       if (problem) {
         nextWarnings.push(block);
         if (showWarnings) {
