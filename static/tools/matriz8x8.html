@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Editor Matriz 8x8</title>
+  <link rel="stylesheet" href="tools.css">
+  <style>
+    .grid .cell.on { background: #ff3b30; box-shadow: 0 0 10px #ff3b30; }
+  </style>
+</head>
+<body>
+  <a class="back" href="index.html">← Herramientas</a>
+  <h1>🔴 Matriz LED 8×8 (MAX7219)</h1>
+  <p class="subtitle">Toca o arrastra para encender LEDs. Si empiezas sobre uno encendido, el trazo los apaga.</p>
+
+  <div class="layout">
+    <div class="grid" id="grid"></div>
+
+    <div class="side">
+      <div class="panel">
+        <label class="field">Nombre de la matriz
+          <input type="text" id="name" value="matrix8x8" size="14">
+        </label>
+      </div>
+
+      <div class="panel">
+        <p class="section-title">Mover el dibujo</p>
+        <div class="row">
+          <button data-shift="0,-1" title="Arriba">↑</button>
+          <button data-shift="0,1" title="Abajo">↓</button>
+          <button data-shift="-1,0" title="Izquierda">←</button>
+          <button data-shift="1,0" title="Derecha">→</button>
+        </div>
+      </div>
+
+      <div class="panel row">
+        <button id="invert">Invertir</button>
+        <button id="fill">Encender todo</button>
+        <button id="clear">Limpiar</button>
+      </div>
+
+      <div class="panel">
+        <div class="row">
+          <button class="primary" id="insert" data-embedded-only>Insertar en mis bloques</button>
+          <button id="copy">Copiar código</button>
+        </div>
+        <pre class="code" id="bytes" style="margin-top:10px"></pre>
+        <p class="hint" style="margin-top:8px">Inserta el bloque <b>Matriz 8x8</b> con tu dibujo. Necesitas antes el bloque <b>iniciar matriz</b> con el mismo nombre.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="tools.js"></script>
+  <script>
+    const N = 8;
+    const nameEl = document.getElementById("name");
+    let pixels = new Array(N * N).fill(0);
+    let strokeValue = 1;
+
+    const cells = Tools.paintGrid(document.getElementById("grid"), N, N, (i, first) => {
+      if (first) strokeValue = pixels[i] ? 0 : 1;
+      pixels[i] = strokeValue;
+      render();
+    });
+
+    // Una fila = un byte, el bit más alto es la columna 0 (igual que el
+    // generador del bloque max_icon).
+    function rowBytes() {
+      const out = [];
+      for (let y = 0; y < N; y++) {
+        let v = 0;
+        for (let x = 0; x < N; x++) v = (v << 1) | pixels[y * N + x];
+        out.push("0x" + v.toString(16).padStart(2, "0"));
+      }
+      return out;
+    }
+
+    function name() { return Tools.pyName(nameEl.value, "matrix8x8"); }
+
+    function render() {
+      cells.forEach((c, i) => c.classList.toggle("on", !!pixels[i]));
+      document.getElementById("bytes").textContent = `${name()}.icon([${rowBytes().join(", ")}])`;
+    }
+    render();
+    nameEl.oninput = render;
+
+    document.querySelectorAll("[data-shift]").forEach((b) => {
+      b.onclick = () => {
+        const [dx, dy] = b.dataset.shift.split(",").map(Number);
+        const next = new Array(N * N).fill(0);
+        for (let y = 0; y < N; y++)
+          for (let x = 0; x < N; x++) {
+            const nx = x + dx, ny = y + dy;
+            if (nx >= 0 && nx < N && ny >= 0 && ny < N) next[ny * N + nx] = pixels[y * N + x];
+          }
+        pixels = next;
+        render();
+      };
+    });
+    document.getElementById("invert").onclick = () => { pixels = pixels.map((p) => 1 - p); render(); };
+    document.getElementById("fill").onclick = () => { pixels.fill(1); render(); };
+    document.getElementById("clear").onclick = () => { pixels.fill(0); render(); };
+
+    document.getElementById("copy").onclick = () => Tools.copy(document.getElementById("bytes").textContent + "\n");
+
+    document.getElementById("insert").onclick = () => {
+      let fields = `<field name="NAME">${Tools.escapeXml(name())}</field><field name="EMOTE">vacio</field>`;
+      for (let y = 0; y < N; y++)
+        for (let x = 0; x < N; x++)
+          fields += `<field name="PIXEL_${y}_${x}">${pixels[y * N + x]}</field>`;
+      Tools.insertBlocks(`<xml><block type="max_icon">${fields}</block></xml>`);
+    };
+  </script>
+</body>
+</html>

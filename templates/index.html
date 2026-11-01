@@ -1161,6 +1161,7 @@
           <span class="icon-btn icon-conexiones"></span>
         </button>
         <button id="btnGame" title="Vista Juego"><span class="icon-btn icon-games"></span></button>
+        <button id="btnTools" title="Herramientas: editores de matrices y pantallas">🛠</button>
       </div>
 
     </div>
@@ -5496,7 +5497,16 @@
 
   <script src="static/animation.js"></script>
 
+  <!-- Ventana HERRAMIENTAS (static/tools/, ver static/tools-panel.js) -->
+  <div id="toolsOverlay" class="tools-overlay" hidden>
+    <div class="tools-box">
+      <button id="toolsClose" class="tools-close" title="Cerrar">✕</button>
+      <iframe id="toolsFrame" title="Herramientas"></iframe>
+    </div>
+  </div>
+
   <script src="static/main.js"></script>
+  <script src="static/tools-panel.js"></script>
   <script src="static/terminal-menu.js"></script>
   <script src="static/viewcode.js"></script>
 
