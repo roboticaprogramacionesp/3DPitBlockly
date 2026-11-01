@@ -160,7 +160,8 @@ const {
   undoBtn,
   redoBtn,
 } = addUndoRedoButtons(Code.workspace);
-window.FLOATING = [screenshotBtnEl, undoRedoContainer].filter(Boolean);
+const warningsPanel = addWorkspaceWarnings(Code.workspace);
+window.FLOATING = [screenshotBtnEl, undoRedoContainer, warningsPanel].filter(Boolean);
 
 Code.generateCode = function (generator = Blockly.Python) {
   if (Code.auto_mode || this.constructor.name !== "Window") {
