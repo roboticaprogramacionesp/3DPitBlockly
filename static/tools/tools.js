@@ -35,8 +35,19 @@ const Tools = (() => {
     toast("Código copiado");
   }
 
-  function insertBlocks(xml) {
-    window.parent.postMessage({ type: "3dpit-insert-blocks", xml }, location.origin);
+  // Dibujo del bloque que se está editando ({blockId, name, w, h, data}),
+  // o null si la herramienta se abrió para crear uno nuevo.
+  function editPayload() {
+    try {
+      return (embedded && window.parent.toolsEditPayload) || null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  // Con replaceId la app actualiza ese bloque en vez de insertar uno nuevo.
+  function insertBlocks(xml, replaceId) {
+    window.parent.postMessage({ type: "3dpit-insert-blocks", xml, replaceId }, location.origin);
   }
 
   function escapeXml(text) {
@@ -100,5 +111,5 @@ const Tools = (() => {
     });
   });
 
-  return { embedded, toast, copy, insertBlocks, escapeXml, pyName, paintGrid };
+  return { embedded, toast, copy, editPayload, insertBlocks, escapeXml, pyName, paintGrid };
 })();

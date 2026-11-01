@@ -17,6 +17,9 @@
 
 * { box-sizing: border-box; }
 
+/* Los display:flex de abajo le ganan al atributo hidden si no se fuerza. */
+[hidden] { display: none !important; }
+
 html, body {
   margin: 0;
   background: var(--bg);

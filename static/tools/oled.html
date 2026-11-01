@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Editor OLED</title>
+  <link rel="stylesheet" href="tools.css">
+  <style>
+    .canvas-wrap {
+      background: #0b0d1c;
+      border-radius: 10px;
+      padding: 10px;
+      max-width: 100%;
+      overflow: auto;
+    }
+    canvas#screen {
+      display: block;
+      touch-action: none;
+      cursor: crosshair;
+      image-rendering: pixelated;
+    }
+    input[type="number"] {
+      width: 70px; background: var(--panel-2); color: var(--text);
+      border: 1px solid var(--line); border-radius: 6px; padding: 7px 9px; font-size: 15px;
+    }
+    input[type="range"] { width: 140px; }
+    .coords { font-family: monospace; color: var(--muted); font-size: 13px; margin-top: 6px; }
+  </style>
+</head>
+<body>
+  <a class="back" href="index.html">← Herramientas</a>
+  <h1>🖥 Imagen para OLED</h1>
+  <p class="subtitle">Dibuja o carga una foto y conviértela a blanco y negro para la pantalla OLED (también SH1106).</p>
+
+  <div class="layout">
+    <div>
+      <div class="canvas-wrap"><canvas id="screen"></canvas></div>
+      <div class="coords" id="coords">x: – y: –</div>
+    </div>
+
+    <div class="side">
+      <div class="panel">
+        <div class="row">
+          <label class="field">Tamaño
+            <select id="preset">
+              <option value="128x64">128 × 64 (pantalla completa)</option>
+              <option value="128x32">128 × 32</option>
+              <option value="64x64">64 × 64</option>
+              <option value="32x32" selected>32 × 32</option>
+              <option value="16x16">16 × 16</option>
+              <option value="custom">Otro…</option>
+            </select>
+          </label>
+          <label class="field" data-custom>Ancho <input type="number" id="w" min="1" max="128" value="32"></label>
+          <label class="field" data-custom>Alto <input type="number" id="h" min="1" max="64" value="32"></label>
+          <label class="field">Nombre
+            <input type="text" id="name" size="10" value="oled">
+          </label>
+        </div>
+      </div>
+
+      <div class="panel">
+        <p class="section-title">Dibujar</p>
+        <div class="row" id="tools">
+          <button data-tool="pen" class="active">✏️ Lápiz</button>
+          <button data-tool="eraser">🧽 Borrador</button>
+          <button data-tool="line">／ Línea</button>
+          <button data-tool="rect">▭ Rectángulo</button>
+          <button data-tool="fillrect">■ Relleno</button>
+        </div>
+        <div class="row" style="margin-top:8px">
+          <button id="invert">Invertir</button>
+          <button id="clear">Limpiar</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <p class="section-title">Cargar una imagen</p>
+        <div class="row">
+          <button id="load">📁 Elegir imagen</button>
+          <input type="file" id="file" accept="image/*" hidden>
+        </div>
+        <div class="row" style="margin-top:8px">
+          <label class="field">Encender las partes
+            <select id="lit">
+              <option value="dark">oscuras</option>
+              <option value="light">claras</option>
+            </select>
+          </label>
+          <label class="field">Umbral <span id="thVal">128</span>
+            <input type="range" id="threshold" min="1" max="254" value="128">
+          </label>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="row">
+          <button class="primary" id="insert" data-embedded-only>Insertar en mis bloques</button>
+          <button id="copy">Copiar código</button>
+        </div>
+        <p class="hint" style="margin-top:8px">Necesitas antes el bloque <b>iniciar OLED</b> con el mismo nombre (en la SH1106 el nombre suele ser <b>oledsh</b>).</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="tools.js"></script>
+  <script>
+    const screen = document.getElementById("screen");
+    const ctx = screen.getContext("2d");
+    const presetEl = document.getElementById("preset");
+    const wEl = document.getElementById("w");
+    const hEl = document.getElementById("h");
+    const nameEl = document.getElementById("name");
+    const edit = Tools.editPayload();
+    let W = 0, H = 0, S = 1;
+    let bits = new Uint8Array(0);
+    let tool = "pen";
+    let loadedImage = null;
+
+    // ── Lienzo ──
+    function build(w, h) {
+      w = Math.max(1, Math.min(128, w | 0));
+      h = Math.max(1, Math.min(64, h | 0));
+      const old = bits, oldW = W, oldH = H;
+      W = w; H = h;
+      bits = new Uint8Array(W * H);
+      for (let y = 0; y < Math.min(H, oldH); y++)
+        for (let x = 0; x < Math.min(W, oldW); x++) bits[y * W + x] = old[y * oldW + x];
+      S = Math.max(2, Math.min(24, Math.floor(Math.min(560 / W, 340 / H))));
+      screen.width = W * S;
+      screen.height = H * S;
+      wEl.value = W; hEl.value = H;
+      render();
+    }
+
+    function render(preview) {
+      ctx.fillStyle = "#000";
+      ctx.fillRect(0, 0, screen.width, screen.height);
+      ctx.fillStyle = "#7fdbff";
+      const src = preview || bits;
+      for (let y = 0; y < H; y++)
+        for (let x = 0; x < W; x++)
+          if (src[y * W + x]) ctx.fillRect(x * S, y * S, S, S);
+      if (S >= 6) {
+        ctx.strokeStyle = "rgba(255,255,255,0.08)";
+        ctx.beginPath();
+        for (let x = 0; x <= W; x++) { ctx.moveTo(x * S + 0.5, 0); ctx.lineTo(x * S + 0.5, H * S); }
+        for (let y = 0; y <= H; y++) { ctx.moveTo(0, y * S + 0.5); ctx.lineTo(W * S, y * S + 0.5); }
+        ctx.stroke();
+      }
+    }
+
+    function plot(buf, x, y, v) {
+      if (x >= 0 && x < W && y >= 0 && y < H) buf[y * W + x] = v;
+    }
+    function line(buf, x0, y0, x1, y1, v) {
+      const dx = Math.abs(x1 - x0), dy = -Math.abs(y1 - y0);
+      const sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1;
+      let err = dx + dy;
+      for (;;) {
+        plot(buf, x0, y0, v);
+        if (x0 === x1 && y0 === y1) break;
+        const e2 = 2 * err;
+        if (e2 >= dy) { err += dy; x0 += sx; }
+        if (e2 <= dx) { err += dx; y0 += sy; }
+      }
+    }
+    function rect(buf, x0, y0, x1, y1, v, filled) {
+      const [ax, bx] = [Math.min(x0, x1), Math.max(x0, x1)];
+      const [ay, by] = [Math.min(y0, y1), Math.max(y0, y1)];
+      for (let y = ay; y <= by; y++)
+        for (let x = ax; x <= bx; x++)
+          if (filled || y === ay || y === by || x === ax || x === bx) plot(buf, x, y, v);
+    }
+
+    // ── Puntero ──
+    let start = null, lastPt = null;
+    function pt(e) {
+      const r = screen.getBoundingClientRect();
+      return {
+        x: Math.floor(((e.clientX - r.left) / r.width) * W),
+        y: Math.floor(((e.clientY - r.top) / r.height) * H),
+      };
+    }
+    screen.onpointerdown = (e) => {
+      screen.setPointerCapture(e.pointerId);
+      start = lastPt = pt(e);
+      if (tool === "pen" || tool === "eraser") {
+        plot(bits, start.x, start.y, tool === "pen" ? 1 : 0);
+        render();
+      }
+    };
+    screen.onpointermove = (e) => {
+      const p = pt(e);
+      document.getElementById("coords").textContent = `x: ${p.x} y: ${p.y}`;
+      if (!start) return;
+      if (tool === "pen" || tool === "eraser") {
+        line(bits, lastPt.x, lastPt.y, p.x, p.y, tool === "pen" ? 1 : 0);
+        lastPt = p;
+        render();
+      } else {
+        const preview = bits.slice();
+        if (tool === "line") line(preview, start.x, start.y, p.x, p.y, 1);
+        else rect(preview, start.x, start.y, p.x, p.y, 1, tool === "fillrect");
+        render(preview);
+      }
+    };
+    screen.onpointerup = (e) => {
+      if (!start) return;
+      const p = pt(e);
+      if (tool === "line") line(bits, start.x, start.y, p.x, p.y, 1);
+      else if (tool === "rect" || tool === "fillrect") rect(bits, start.x, start.y, p.x, p.y, 1, tool === "fillrect");
+      start = null;
+      render();
+    };
+    screen.onpointerleave = () => { document.getElementById("coords").textContent = "x: – y: –"; };
+
+    document.querySelectorAll("[data-tool]").forEach((b) => {
+      b.onclick = () => {
+        tool = b.dataset.tool;
+        document.querySelectorAll("[data-tool]").forEach((o) => o.classList.toggle("active", o === b));
+      };
+    });
+    document.getElementById("invert").onclick = () => { bits = bits.map((v) => 1 - v); render(); };
+    document.getElementById("clear").onclick = () => { bits.fill(0); render(); };
+
+    // ── Tamaño ──
+    function showCustom(on) {
+      document.querySelectorAll("[data-custom]").forEach((el) => (el.hidden = !on));
+    }
+    presetEl.onchange = () => {
+      const custom = presetEl.value === "custom";
+      showCustom(custom);
+      if (custom) return;
+      const [w, h] = presetEl.value.split("x").map(Number);
+      build(w, h);
+      if (loadedImage) applyImage();
+    };
+    wEl.onchange = hEl.onchange = () => build(Number(wEl.value), Number(hEl.value));
+
+    // ── Cargar imagen: se ajusta al lienzo sin deformarla y se pasa a
+    //    blanco y negro con el umbral. ──
+    const fileEl = document.getElementById("file");
+    const thEl = document.getElementById("threshold");
+    const litEl = document.getElementById("lit");
+    document.getElementById("load").onclick = () => fileEl.click();
+    fileEl.onchange = () => {
+      const f = fileEl.files[0];
+      if (!f) return;
+      const img = new Image();
+      img.onload = () => { loadedImage = img; applyImage(); URL.revokeObjectURL(img.src); };
+      img.src = URL.createObjectURL(f);
+      fileEl.value = "";
+    };
+    function applyImage() {
+      const c = document.createElement("canvas");
+      c.width = W; c.height = H;
+      const g = c.getContext("2d");
+      g.fillStyle = litEl.value === "dark" ? "#fff" : "#000";
+      g.fillRect(0, 0, W, H);
+      const k = Math.min(W / loadedImage.width, H / loadedImage.height);
+      const dw = loadedImage.width * k, dh = loadedImage.height * k;
+      g.drawImage(loadedImage, (W - dw) / 2, (H - dh) / 2, dw, dh);
+      const px = g.getImageData(0, 0, W, H).data;
+      const th = Number(thEl.value);
+      for (let i = 0; i < W * H; i++) {
+        const lum = 0.299 * px[i * 4] + 0.587 * px[i * 4 + 1] + 0.114 * px[i * 4 + 2];
+        bits[i] = litEl.value === "dark" ? (lum < th ? 1 : 0) : (lum >= th ? 1 : 0);
+      }
+      render();
+    }
+    thEl.oninput = () => {
+      document.getElementById("thVal").textContent = thEl.value;
+      if (loadedImage) applyImage();
+    };
+    litEl.onchange = () => { if (loadedImage) applyImage(); };
+
+    // ── Salida: MONO_HLSB (lo que espera OLED.icon) ──
+    function dataHex() {
+      const rowBytes = Math.ceil(W / 8);
+      let hex = "";
+      for (let y = 0; y < H; y++)
+        for (let b = 0; b < rowBytes; b++) {
+          let v = 0;
+          for (let i = 0; i < 8; i++) {
+            const x = b * 8 + i;
+            v = (v << 1) | (x < W ? bits[y * W + x] : 0);
+          }
+          hex += v.toString(16).padStart(2, "0");
+        }
+      return hex;
+    }
+    function name() { return Tools.pyName(nameEl.value, "oled"); }
+
+    document.getElementById("copy").onclick = () =>
+      Tools.copy(`${name()}.icon(bytes.fromhex('${dataHex()}'), 0, 0, ${W}, ${H}, 1)\n`);
+
+    const num = (field, v) =>
+      `<value name="${field}"><shadow type="math_number"><field name="NUM">${v}</field></shadow></value>`;
+    document.getElementById("insert").onclick = () => {
+      const fields =
+        `<mutation w="${W}" h="${H}" data="${dataHex()}"></mutation>` +
+        `<field name="NAME">${Tools.escapeXml(name())}</field>`;
+      if (edit) Tools.insertBlocks(`<xml><block type="oled_image">${fields}</block></xml>`, edit.blockId);
+      else Tools.insertBlocks(`<xml><block type="oled_image">${fields}${num("X", 0)}${num("Y", 0)}</block></xml>`);
+    };
+
+    // ── Arranque ──
+    if (edit) {
+      nameEl.value = edit.name || "oled";
+      const preset = `${edit.w}x${edit.h}`;
+      const known = Array.from(presetEl.options).some((o) => o.value === preset);
+      presetEl.value = known ? preset : "custom";
+      showCustom(!known);
+      build(edit.w, edit.h);
+      const rowBytes = Math.ceil(W / 8);
+      for (let y = 0; y < H; y++)
+        for (let x = 0; x < W; x++) {
+          const byte = parseInt(edit.data.substr((y * rowBytes + (x >> 3)) * 2, 2), 16) || 0;
+          bits[y * W + x] = byte & (0x80 >> (x & 7)) ? 1 : 0;
+        }
+      render();
+      document.getElementById("insert").textContent = "Guardar en el bloque";
+    } else {
+      showCustom(false);
+      build(32, 32);
+    }
+  </script>
+</body>
+</html>

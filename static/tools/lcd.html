@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Caracteres LCD</title>
+  <link rel="stylesheet" href="tools.css">
+  <style>
+    .grid { width: min(100%, 230px); background: #1c3d16; }
+    .grid .cell { border-radius: 2px; background: #2e5a24; }
+    .grid .cell.on { background: #0b1a08; }
+    .gallery { display: flex; flex-wrap: wrap; gap: 6px; }
+    .preset {
+      display: grid; grid-template-columns: repeat(5, 5px); gap: 1px;
+      padding: 6px; min-height: 0; background: #2e5a24; border-radius: 4px;
+    }
+    .preset i { width: 5px; height: 5px; background: #3c7330; }
+    .preset i.on { background: #0b1a08; }
+  </style>
+</head>
+<body>
+  <a class="back" href="index.html">← Herramientas</a>
+  <h1>🔤 Caracteres para LCD</h1>
+  <p class="subtitle">Dibuja tu propio símbolo de 5 × 8 puntos. La LCD guarda hasta 8 (del 0 al 7).</p>
+
+  <div class="layout">
+    <div class="grid" id="grid"></div>
+
+    <div class="side">
+      <div class="panel">
+        <div class="row">
+          <label class="field">Pantalla
+            <select id="kind">
+              <option value="i2c">LCD I2C</option>
+              <option value="lcd">LCD (pines)</option>
+            </select>
+          </label>
+          <label class="field">Nombre
+            <input type="text" id="name" size="10" value="lcd_i2c">
+          </label>
+          <label class="field">Lugar
+            <select id="slot"></select>
+          </label>
+        </div>
+      </div>
+
+      <div class="panel">
+        <p class="section-title">Símbolos listos</p>
+        <div class="gallery" id="gallery"></div>
+      </div>
+
+      <div class="panel row">
+        <button id="invert">Invertir</button>
+        <button id="clear">Limpiar</button>
+      </div>
+
+      <div class="panel">
+        <div class="row">
+          <button class="primary" id="insert" data-embedded-only>Insertar en mis bloques</button>
+          <button id="copy">Copiar código</button>
+        </div>
+        <pre class="code" id="code" style="margin-top:10px"></pre>
+        <p class="hint" style="margin-top:8px">Inserta <b>crear carácter</b> y debajo un <b>escribir</b> con el bloque <b>carácter propio</b>. Necesitas antes el bloque <b>iniciar LCD</b> con el mismo nombre.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="tools.js"></script>
+  <script>
+    const COLS = 5, ROWS = 8;
+    const PRESETS = {
+      "Corazón": "00000 01010 11111 11111 11111 01110 00100 00000",
+      "Carita": "00000 01010 01010 00000 10001 01110 00000 00000",
+      "Grados": "01100 10010 10010 01100 00000 00000 00000 00000",
+      "Campana": "00100 01110 01110 01110 11111 00000 00100 00000",
+      "Nota musical": "00010 00011 00010 00010 01110 11110 01100 00000",
+      "Flecha arriba": "00100 01110 10101 00100 00100 00100 00100 00000",
+      "Flecha abajo": "00100 00100 00100 00100 10101 01110 00100 00000",
+      "Batería llena": "01110 11111 11111 11111 11111 11111 11111 11111",
+      "Batería vacía": "01110 11011 10001 10001 10001 10001 10001 11111",
+      "Candado": "01110 10001 10001 11111 11011 11011 11111 00000",
+      "Termómetro": "00100 01010 01010 01010 01110 11111 11111 01110",
+      "Gota": "00100 00100 01010 01010 10001 10001 01110 00000",
+      "Muñeco": "01110 01110 00100 11111 00100 01010 10001 00000",
+    };
+    const kindEl = document.getElementById("kind");
+    const nameEl = document.getElementById("name");
+    const slotEl = document.getElementById("slot");
+    for (let i = 0; i < 8; i++) slotEl.add(new Option(String(i), String(i)));
+
+    let pixels = new Array(COLS * ROWS).fill(0);
+    let strokeValue = 1;
+    const cells = Tools.paintGrid(document.getElementById("grid"), COLS, ROWS, (i, first) => {
+      if (first) strokeValue = pixels[i] ? 0 : 1;
+      pixels[i] = strokeValue;
+      render();
+    });
+
+    Object.entries(PRESETS).forEach(([label, rows]) => {
+      const bitsList = rows.replace(/ /g, "").split("").map(Number);
+      const b = document.createElement("button");
+      b.className = "preset";
+      b.title = label;
+      bitsList.forEach((v) => {
+        const i = document.createElement("i");
+        if (v) i.className = "on";
+        b.appendChild(i);
+      });
+      b.onclick = () => { pixels = bitsList.slice(); render(); };
+      document.getElementById("gallery").appendChild(b);
+    });
+
+    function rowBytes() {
+      const out = [];
+      for (let y = 0; y < ROWS; y++) {
+        let v = 0;
+        for (let x = 0; x < COLS; x++) v = (v << 1) | pixels[y * COLS + x];
+        out.push("0x" + v.toString(16).padStart(2, "0"));
+      }
+      return out.join(", ");
+    }
+    function name() { return Tools.pyName(nameEl.value, kindEl.value === "i2c" ? "lcd_i2c" : "lcd"); }
+
+    // Mismo código que generan lcd_create_char / lcd_i2c_create_char.
+    function code() {
+      const n = name(), slot = slotEl.value;
+      return kindEl.value === "i2c"
+        ? `${n}.custom_char(${slot}, bytearray([${rowBytes()}]))\n${n}.putstr(chr(${slot}))`
+        : `${n}.create_char(${slot}, bytearray([${rowBytes()}]))\n${n}.message(chr(${slot}))`;
+    }
+
+    function render() {
+      cells.forEach((c, i) => c.classList.toggle("on", !!pixels[i]));
+      document.getElementById("code").textContent = code();
+    }
+    render();
+
+    kindEl.onchange = () => {
+      nameEl.value = kindEl.value === "i2c" ? "lcd_i2c" : "lcd";
+      render();
+    };
+    nameEl.oninput = slotEl.onchange = render;
+    document.getElementById("invert").onclick = () => { pixels = pixels.map((p) => 1 - p); render(); };
+    document.getElementById("clear").onclick = () => { pixels.fill(0); render(); };
+    document.getElementById("copy").onclick = () => Tools.copy(code() + "\n");
+
+    document.getElementById("insert").onclick = () => {
+      const i2c = kindEl.value === "i2c";
+      const n = Tools.escapeXml(name()), slot = slotEl.value;
+      let fields = `<field name="NAME">${n}</field><field name="N">${slot}</field>`;
+      for (let y = 0; y < ROWS; y++)
+        for (let x = 0; x < COLS; x++) fields += `<field name="PIXEL_${y}_${x}">${pixels[y * COLS + x]}</field>`;
+      const print =
+        `<block type="${i2c ? "lcd_i2c_print" : "lcd_print"}"><field name="NAME">${n}</field>` +
+        `<value name="TEXT"><block type="lcd_custom_char"><field name="N">${slot}</field></block></value></block>`;
+      Tools.insertBlocks(
+        `<xml><block type="${i2c ? "lcd_i2c_create_char" : "lcd_create_char"}">${fields}<next>${print}</next></block></xml>`,
+      );
+    };
+  </script>
+</body>
+</html>

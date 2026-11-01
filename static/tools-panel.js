@@ -3,24 +3,51 @@
 // también funcionan solas; dentro de la app, su botón "Insertar en mis
 // bloques" manda el XML del bloque por postMessage y acá se agrega al
 // workspace, a la vista del alumno.
+//
+// ToolsPanel.edit(block) abre la herramienta con el dibujo de un bloque de
+// imagen ya cargado (window.toolsEditPayload, que la herramienta lee de
+// window.parent); al guardar, se actualiza ese mismo bloque en vez de
+// insertar uno nuevo.
 (function () {
   const overlay = document.getElementById("toolsOverlay");
   const frame = document.getElementById("toolsFrame");
   const btn = document.getElementById("btnTools");
   if (!overlay || !frame || !btn) return;
 
-  function open() {
-    // Siempre se arranca desde el índice de herramientas.
-    frame.src = "static/tools/index.html";
+  // Herramienta que edita cada tipo de bloque de imagen.
+  const EDIT_PAGES = {
+    neopixel_image: "neopixel.html",
+    oled_image: "oled.html",
+  };
+
+  function open(page) {
+    frame.src = "static/tools/" + (page || "index.html");
     overlay.hidden = false;
   }
 
+  function edit(block) {
+    const page = EDIT_PAGES[block.type];
+    if (!page) return;
+    window.toolsEditPayload = {
+      blockId: block.id,
+      name: block.getFieldValue("NAME"),
+      w: block.imgW_,
+      h: block.imgH_,
+      data: block.imgData_,
+    };
+    open(page);
+  }
+
   function close() {
+    window.toolsEditPayload = null;
     overlay.hidden = true;
     frame.src = "about:blank";
   }
 
-  btn.addEventListener("click", open);
+  btn.addEventListener("click", () => {
+    window.toolsEditPayload = null;
+    open();
+  });
   document.getElementById("toolsClose").addEventListener("click", close);
   overlay.addEventListener("click", (e) => {
     if (e.target === overlay) close();
@@ -51,6 +78,30 @@
     if (block) block.select();
   }
 
+  // Pasa al bloque existente los campos y la mutación del bloque que mandó
+  // la herramienta, como un solo paso de deshacer.
+  function updateBlock(block, xmlText) {
+    const node = Blockly.Xml.textToDom(xmlText).querySelector("block");
+    if (!node) return;
+    Blockly.Events.setGroup(true);
+    try {
+      Array.from(node.children).forEach((child) => {
+        if (child.tagName === "field") {
+          const name = child.getAttribute("name");
+          if (block.getField(name)) block.setFieldValue(child.textContent, name);
+        } else if (child.tagName === "mutation" && block.domToMutation) {
+          const before = Blockly.Xml.domToText(block.mutationToDom());
+          block.domToMutation(child);
+          const after = Blockly.Xml.domToText(block.mutationToDom());
+          Blockly.Events.fire(new Blockly.Events.BlockChange(block, "mutation", null, before, after));
+        }
+      });
+    } finally {
+      Blockly.Events.setGroup(false);
+    }
+    block.select();
+  }
+
   window.addEventListener("message", (e) => {
     if (e.origin !== location.origin || e.source !== frame.contentWindow) return;
     const data = e.data || {};
@@ -59,10 +110,14 @@
       showView("viewBlocks");
     } catch (_) {}
     try {
-      insertBlocks(data.xml);
+      const target = data.replaceId ? Code.workspace.getBlockById(data.replaceId) : null;
+      if (target) updateBlock(target, data.xml);
+      else insertBlocks(data.xml);
       close();
     } catch (err) {
       console.error("No se pudo insertar el bloque de la herramienta:", err);
     }
   });
+
+  window.ToolsPanel = { open, edit };
 })();
