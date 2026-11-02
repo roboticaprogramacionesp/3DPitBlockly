@@ -1,0 +1,22 @@
+{
+    "type": "neopixel_matrix",
+    "name": "NeoPixel Matrix",
+
+    "width": 208,
+    "height": 208,
+
+    "pinShape": "square",
+    "pinSize": 6,
+
+    "properties": {
+        "cols": 8,
+        "rows": 8,
+        "shape": "square"
+    },
+
+    "pins": [
+        { "id": "vcc", "name": "VCC", "x": 84,  "y": 208, "type": "power",  "signal": "power", "voltage": 5 },
+        { "id": "din", "name": "DIN", "x": 104, "y": 208, "type": "signal", "signal": "digital" },
+        { "id": "gnd", "name": "GND", "x": 124, "y": 208, "type": "ground", "signal": "ground" }
+    ]
+}

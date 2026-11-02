@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+
+    <!-- Ícono simple para el Toolbox (Toolbox.js cae acá por
+         convención, components/<type>/<type>.svg, aunque el
+         gráfico real en el canvas se dibuje por código, ver
+         neopixel_ring.behavior.js/render.tag. No es el gráfico que
+         se usa al colocar el componente. -->
+
+    <circle cx="50" cy="45" r="42" fill="#1a5c2e" stroke="#0e3a1c" stroke-width="2" />
+
+    <g fill="#e6e6e6">
+        <rect x="45" y="7"  width="10" height="10" />
+        <rect x="45" y="73" width="10" height="10" />
+        <rect x="14" y="40" width="10" height="10" />
+        <rect x="76" y="40" width="10" height="10" />
+        <rect x="23" y="17" width="9" height="9" transform="rotate(45 27.5 21.5)" />
+        <rect x="68" y="17" width="9" height="9" transform="rotate(45 72.5 21.5)" />
+        <rect x="23" y="63" width="9" height="9" transform="rotate(45 27.5 67.5)" />
+        <rect x="68" y="63" width="9" height="9" transform="rotate(45 72.5 67.5)" />
+    </g>
+
+    <g stroke="#666666" stroke-width="3" stroke-linecap="round">
+        <line x1="35" y1="90" x2="35" y2="97" />
+        <line x1="50" y1="90" x2="50" y2="97" />
+        <line x1="65" y1="90" x2="65" y2="97" />
+    </g>
+
+</svg>

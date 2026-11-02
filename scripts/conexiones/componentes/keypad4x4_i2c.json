@@ -1,0 +1,26 @@
+{
+    "type": "keypad4x4_i2c",
+    "name": "Teclado matricial 4x4 (I2C, PCF8574)",
+    "category": "Sensores",
+
+    "width": 65,
+    "height": 79.4,
+
+    "svgPath": "components/keypad4x4_i2c/keypad4x4_i2c.svg",
+
+    "pinShape": "square",
+    "pinSize": 2.4,
+
+    "pins": [
+        { "id": "sda", "name": "SDA", "x": 12.5,  "y": 72.4, "type": "signal" },
+        { "id": "scl", "name": "SCL", "x": 25.83, "y": 72.4, "type": "signal" },
+        { "id": "vcc", "name": "VCC", "x": 39.17, "y": 72.4, "type": "power",  "signal": "power"  },
+        { "id": "gnd", "name": "GND", "x": 52.5,  "y": 72.4, "type": "ground", "signal": "ground" }
+    ],
+
+    "properties": {
+        "address": "0x20",
+        "modelo": "Teclado matricial 4x4 sobre expansor I2C (tipo PCF8574), 16 teclas",
+        "nota": "Usá keypad4_i2c.py tal cual (Keypad4x4_I2C(i2c, address=0x20)). La lectura/escritura I2C en sí se sigue resolviendo por DIRECCIÓN (este campo 'address'), no por topología de cables -- pero, a partir de la validación de PININFO, SDA y SCL SÍ tienen que estar cableados en el canvas exactamente a los mismos GPIO que declaraste en tu I2C(sda=.., scl=..) (o en I2cLcd/etc, si hay otro dispositivo I2C en el mismo circuito) -- si no, el teclado se trata como desconectado."
+    }
+}

@@ -1,0 +1,88 @@
+{
+    "type": "mpu6050",
+    "name": "MPU6050 Acelerómetro + Giroscopio",
+    "category": "Sensores",
+    "width": 56.694,
+    "height": 89.736,
+    "svgPath": "components/mpu6050/mpu6050.svg",
+    "pinShape": "square",
+    "pinSize": 4,
+    "pins": [
+        {
+            "id": "vcc",
+            "name": "VCC",
+            "x": 4.533,
+            "y": 5.391,
+            "type": "power",
+            "signal": "power",
+            "voltage": 3.3
+        },
+        {
+            "id": "gnd",
+            "name": "GND",
+            "x": 4.533,
+            "y": 16.618,
+            "type": "ground",
+            "signal": "ground"
+        },
+        {
+            "id": "scl",
+            "name": "SCL",
+            "x": 4.533,
+            "y": 27.508,
+            "type": "input",
+            "signal": "i2c"
+        },
+        {
+            "id": "sda",
+            "name": "SDA",
+            "x": 4.533,
+            "y": 39.05,
+            "type": "input",
+            "signal": "i2c"
+        },
+        {
+            "id": "xda",
+            "name": "XDA",
+            "x": 4.533,
+            "y": 50.217,
+            "type": "signal",
+            "optional": true
+        },
+        {
+            "id": "xcl",
+            "name": "XCL",
+            "x": 4.533,
+            "y": 61.457,
+            "type": "signal",
+            "optional": true
+        },
+        {
+            "id": "ad0",
+            "name": "AD0",
+            "x": 4.533,
+            "y": 72.491,
+            "type": "signal",
+            "optional": true
+        },
+        {
+            "id": "int",
+            "name": "INT",
+            "x": 4.533,
+            "y": 84.334,
+            "type": "signal",
+            "optional": true
+        }
+    ],
+    "properties": {
+        "modelo": "MPU6050 (GY-521): acelerómetro + giroscopio de 3 ejes + temperatura, I2C",
+        "i2cAddress": "0x68",
+        "accelX": 0,
+        "accelY": 0,
+        "accelZ": 1,
+        "gyroX": 0,
+        "gyroY": 0,
+        "gyroZ": 0,
+        "temperature": 24
+    }
+}

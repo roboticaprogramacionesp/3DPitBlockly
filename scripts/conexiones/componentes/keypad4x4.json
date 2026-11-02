@@ -1,0 +1,29 @@
+{
+    "type": "keypad4x4",
+    "name": "Teclado matricial 4x4",
+    "category": "Sensores",
+
+    "width": 65,
+    "height": 79.4,
+
+    "svgPath": "components/keypad4x4/keypad4x4.svg",
+
+    "pinShape": "square",
+    "pinSize": 2.4,
+
+    "pins": [
+        { "id": "r1", "name": "R1 (fila 1)",    "x": 9.5,  "y": 72.4, "type": "signal" },
+        { "id": "r2", "name": "R2 (fila 2)",    "x": 16.5, "y": 72.4, "type": "signal" },
+        { "id": "r3", "name": "R3 (fila 3)",    "x": 23.5, "y": 72.4, "type": "signal" },
+        { "id": "r4", "name": "R4 (fila 4)",    "x": 30.5, "y": 72.4, "type": "signal" },
+        { "id": "c1", "name": "C1 (columna 1)", "x": 37.5, "y": 72.4, "type": "signal" },
+        { "id": "c2", "name": "C2 (columna 2)", "x": 44.5, "y": 72.4, "type": "signal" },
+        { "id": "c3", "name": "C3 (columna 3)", "x": 51.5, "y": 72.4, "type": "signal" },
+        { "id": "c4", "name": "C4 (columna 4)", "x": 58.5, "y": 72.4, "type": "signal" }
+    ],
+
+    "properties": {
+        "modelo": "Teclado matricial 4x4 (16 teclas, filas activo-bajo con pull-up + columnas de salida)",
+        "nota": "No usa ningún HAL nuevo: son 8 pines digitales comunes, ya cubiertos por _base_hal.py. El escaneo (qué fila se pone en bajo según qué columna maneja el firmware y qué tecla está apretada) lo resuelve SignalEngine.evaluateKeypad4x4() en tiempo real."
+    }
+}

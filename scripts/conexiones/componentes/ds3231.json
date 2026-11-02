@@ -1,0 +1,26 @@
+{
+    "type": "ds3231",
+    "name": "DS3231 Reloj de Tiempo Real (RTC, I2C)",
+    "category": "Sensores",
+
+    "width": 107.72,
+    "height": 62.36,
+
+    "svgPath": "components/ds3231/ds3231.svg",
+
+    "pinShape": "square",
+    "pinSize": 3,
+
+    "pins": [
+        { "id": "gnd",    "name": "GND", "x": 4.29, "y": 50.51, "type": "ground", "signal": "ground" },
+        { "id": "vcc",    "name": "VCC", "x": 4.29, "y": 43.31, "type": "power",  "signal": "power"  },
+        { "id": "sda",    "name": "SDA", "x": 4.29, "y": 36.11, "type": "input",  "signal": "i2c" },
+        { "id": "scl",    "name": "SCL", "x": 4.29, "y": 28.91, "type": "input",  "signal": "i2c" },
+        { "id": "sqw",    "name": "SQW", "x": 4.29, "y": 21.71, "type": "signal", "optional": true },
+        { "id": "clk32k", "name": "32K", "x": 4.29, "y": 14.51, "type": "signal", "optional": true }
+    ],
+
+    "properties": {
+        "modelo": "DS3231 (módulo ZS-042): RTC I2C de alta precisión, dirección fija 0x68. La fecha/hora se ajusta desde el panel de propiedades (por defecto sigue la hora real de la computadora) y sigue corriendo sola mientras el circuito esté simulando"
+    }
+}

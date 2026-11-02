@@ -1,0 +1,23 @@
+{
+    "type": "ky-022",
+    "name": "KY-022 Receptor Infrarrojo",
+    "category": "Sensores",
+
+    "width": 32,
+    "height": 70,
+
+    "svg": "components/ky-022/ky-022.svg",
+
+    "pinShape": "square",
+    "pinSize": 4,
+
+    "pins": [
+        { "id": "s",   "name": "S",   "x": 8,  "y": 68, "type": "signal" },
+        { "id": "vcc", "name": "VCC", "x": 16, "y": 68, "type": "power",  "signal": "power", "voltage": 5 },
+        { "id": "gnd", "name": "GND", "x": 24, "y": 68, "type": "ground", "signal": "ground" }
+    ],
+
+    "properties": {
+        "modelo": "KY-022: receptor infrarrojo (compatible NEC) -- se maneja con machine.Pin + la librería ir_rx (NEC_8/NEC_16), igual que en hardware real. El protocolo IR de verdad no se simula a nivel de pulsos (no es viable con la latencia de este simulador) -- el 'control remoto virtual' (ver IrRemotePanel.js) le dispara el callback directo con el código del botón apretado."
+    }
+}

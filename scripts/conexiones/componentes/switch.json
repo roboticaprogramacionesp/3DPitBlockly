@@ -1,0 +1,24 @@
+{
+    "type": "switch",
+    "name": "Interruptor ON/OFF",
+    "category": "Alimentación",
+
+    "width": 40,
+    "height": 26,
+
+    "svgPath": "components/switch/switch.svg",
+
+    "pinShape": "square",
+    "pinSize": 3,
+
+    "pins": [
+        { "id": "term1", "name": "Terminal 1", "x": 1,  "y": 22, "type": "signal" },
+        { "id": "term2", "name": "Terminal 2", "x": 36, "y": 22, "type": "signal" }
+    ],
+
+    "pressPins": ["term1", "term2"],
+
+    "properties": {
+        "modelo": "Interruptor de palanca ON/OFF (clic para cambiar de estado; queda fijo, no es momentáneo)"
+    }
+}

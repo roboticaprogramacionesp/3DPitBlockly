@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 65 79.4"
+   version="1.1"
+   id="svg22"
+   sodipodi:docname="keypad4x4_i2c.svg"
+   inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs22" />
+  <sodipodi:namedview
+     id="namedview22"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:zoom="6.788413"
+     inkscape:cx="21.359926"
+     inkscape:cy="42.940817"
+     inkscape:window-width="1366"
+     inkscape:window-height="697"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg22" />
+  <!--
+    Mismo grid de teclas que keypad4x4.svg (16 teclas, mismos
+    colores/keymap: dígitos azules, A/B/C/D rojas: coincide con el
+    "keys" de keypad4_i2c.py). La diferencia está SOLO en el
+    conector de abajo: en vez de 8 pines digitales (R1-R4/C1-C4),
+    acá van 4 pines I2C (SDA, SCL, VCC, GND): el expansor I2C
+    (tipo PCF8574) que multiplexa las 8 líneas de la matriz vive
+    DENTRO del módulo, no se ve desde afuera.
+
+    Coordenadas en las mismas unidades que "width"/"height" del JSON
+    (65x79.4, mismo footprint que la versión ajustada del keypad4x4).
+  -->
+  <!-- Housing plastico negro -->
+  <rect
+     x="0.5"
+     y="0.5"
+     width="64"
+     height="64"
+     rx="4"
+     fill="#1a1a1a"
+     stroke="#000000"
+     stroke-width="1"
+     id="rect1" />
+  <!-- Borde blanco interior -->
+  <rect
+     x="4.5"
+     y="4.5"
+     width="56"
+     height="56"
+     rx="3"
+     fill="none"
+     stroke="#ffffff"
+     stroke-width="1.5"
+     id="rect2" />
+  <!-- Grid 4x4 de teclas -->
+  <rect
+     data-keypad-role="r0c0"
+     x="6"
+     y="6"
+     width="11"
+     height="11"
+     rx="1.6"
+     fill="#2a7fff"
+     stroke="#f8fffd"
+     stroke-width="0.7"
+     id="rect3" />
+  <text
+     x="11.5"
+     y="13.1"
+     text-anchor="middle"
+     fill="#ffffff"
+     font-family="DroidSans, sans-serif"
+     font-size="5.5"
+     pointer-events="none"
+     id="text3">1</text>
+  <rect
+     data-keypad-role="r0c1"
+     x="20"
+     y="6"
+     width="11"
+     height="11"
+     rx="1.6"
+     fill="#2a7fff"
+     stroke="#f8fffd"
+     stroke-width="0.7"
+     id="rect4" />
+  <text
+     x="25.5"
+     y="13.1"
+     text-anchor="middle"
+     fill="#ffffff"
+     font-family="DroidSans, sans-serif"
+     font-size="5.5"
+     pointer-events="none"
+     id="text4">2</text>
+  <rect
+     data-keypad-role="r0c2"
+     x="34"
+     y="6"
+     width="11"
+     height="11"
+     rx="1.6"
+     fill="#2a7fff"
+     stroke="#f8fffd"
+     stroke-width="0.7"
+     id="rect5" />
+  <text
+     x="39.5"
+     y="13.1"
+     text-anchor="middle"
+     fill="#ffffff"
+     font-family="DroidSans, sans-serif"
+     font-size="5.5"
+     pointer-events="none"
+     id="text5">3</text>
+  <rect
+     data-keypad-role="r0c3"
+     x="48"
+     y="6"
+     width="11"
+     height="11"
+     rx="1.6"
+     fill="#d40000"
+     stroke="#f8fffd"
+     stroke-width="0.7"
+     id="rect6" />
+  <text
+     x="53.5"
+     y="13.1"
+     text-anchor="middle"
+     fill="#ffffff"
+     font-family="DroidSans, sans-serif"
+     font-size="5.5"
+     pointer-events="none"
+     id="text6">A</text>
+  <rect
+     data-keypad-role="r1c0"
+     x="6"
+     y="20"
+     width="11"
+     height="11"
+     rx="1.6"
+     fill="#2a7fff"
+     stroke="#f8fffd"
+     stroke-width="0.7"
+     id="rect7" />
+  <text
+     x="11.5"
+     y="27.1"
+     text-anchor="middle"
+     fill="#ffffff"
+     font-family="DroidSans, sans-serif"
+     font-size="5.5"
+     pointer-events="none"
+     id="text7">4</text>
+  <rect
+     data-keypad-role="r1c1"
+     x="20"
+     y="20"
+     width="11"
+     height="11"
+     rx="1.6"
+     fill="#2a7fff"
+     stroke="#f8fffd"
+     stroke-width="0.7"
+     id="rect8" />
+  <text
+     x="25.5"
+     y="27.1"
+     text-anchor="middle"
+     fill="#ffffff"
+     font-family="DroidSans, sans-serif"
+     font-size="5.5"
+     pointer-events="none"
+     id="text8">5</text>
+  <rect
+     data-keypad-role="r1c2"
+     x="34"
+     y="20"
+     width="11"
+     height="11"
+     rx="1.6"
+     fill="#2a7fff"
+     stroke="#f8fffd"
+     stroke-width="0.7"
+     id="rect9" />
+  <text
+     x="39.5"
+     y="27.1"
+     text-anchor="middle"
+     fill="#ffffff"
+     font-family="DroidSans, sans-serif"
+     font-size="5.5"
+     pointer-events="none"
+     id="text9">6</text>
+  <rect
+     data-keypad-role="r1c3"
+     x="48"
+     y="20"
+     width="11"
+     height="11"
+     rx="1.6"
+     fill="#d40000"
+     stroke="#f8fffd"
+     stroke-width="0.7"
+     id="rect10" />
+  <text
+     x="53.5"
+     y="27.1"
+     text-anchor="middle"
+     fill="#ffffff"
+     font-family="DroidSans, sans-serif"
+     font-size="5.5"
+     pointer-events="none"
+     id="text10">B</text>
+  <rect
+     data-keypad-role="r2c0"
+     x="6"
+     y="34"
+     width="11"
+     height="11"
+     rx="1.6"
+     fill="#2a7fff"
+     stroke="#f8fffd"
+     stroke-width="0.7"
+     id="rect11" />
+  <text
+     x="11.5"
+     y="41.1"
+     text-anchor="middle"
+     fill="#ffffff"
+     font-family="DroidSans, sans-serif"
+     font-size="5.5"
+     pointer-events="none"
+     id="text11">7</text>
+  <rect
+     data-keypad-role="r2c1"
+     x="20"
+     y="34"
+     width="11"
+     height="11"
+     rx="1.6"
+     fill="#2a7fff"
+     stroke="#f8fffd"
+     stroke-width="0.7"
+     id="rect12" />
+  <text
+     x="25.5"
+     y="41.1"
+     text-anchor="middle"
+     fill="#ffffff"
+     font-family="DroidSans, sans-serif"
+     font-size="5.5"
+     pointer-events="none"
+     id="text12">8</text>
+  <rect
+     data-keypad-role="r2c2"
+     x="34"
+     y="34"
+     width="11"
+     height="11"
+     rx="1.6"
+     fill="#2a7fff"
+     stroke="#f8fffd"
+     stroke-width="0.7"
+     id="rect13" />
+  <text
+     x="39.5"
+     y="41.1"
+     text-anchor="middle"
+     fill="#ffffff"
+     font-family="DroidSans, sans-serif"
+     font-size="5.5"
+     pointer-events="none"
+     id="text13">9</text>
+  <rect
+     data-keypad-role="r2c3"
+     x="48"
+     y="34"
+     width="11"
+     height="11"
+     rx="1.6"
+     fill="#d40000"
+     stroke="#f8fffd"
+     stroke-width="0.7"
+     id="rect14" />
+  <text
+     x="53.5"
+     y="41.1"
+     text-anchor="middle"
+     fill="#ffffff"
+     font-family="DroidSans, sans-serif"
+     font-size="5.5"
+     pointer-events="none"
+     id="text14">C</text>
+  <rect
+     data-keypad-role="r3c0"
+     x="6"
+     y="48"
+     width="11"
+     height="11"
+     rx="1.6"
+     fill="#d40000"
+     stroke="#f8fffd"
+     stroke-width="0.7"
+     id="rect15" />
+  <text
+     x="11.5"
+     y="55.1"
+     text-anchor="middle"
+     fill="#ffffff"
+     font-family="DroidSans, sans-serif"
+     font-size="5.5"
+     pointer-events="none"
+     id="text15">*</text>
+  <rect
+     data-keypad-role="r3c1"
+     x="20"
+     y="48"
+     width="11"
+     height="11"
+     rx="1.6"
+     fill="#2a7fff"
+     stroke="#f8fffd"
+     stroke-width="0.7"
+     id="rect16" />
+  <text
+     x="25.5"
+     y="55.1"
+     text-anchor="middle"
+     fill="#ffffff"
+     font-family="DroidSans, sans-serif"
+     font-size="5.5"
+     pointer-events="none"
+     id="text16">0</text>
+  <rect
+     data-keypad-role="r3c2"
+     x="34"
+     y="48"
+     width="11"
+     height="11"
+     rx="1.6"
+     fill="#d40000"
+     stroke="#f8fffd"
+     stroke-width="0.7"
+     id="rect17" />
+  <text
+     x="39.5"
+     y="55.1"
+     text-anchor="middle"
+     fill="#ffffff"
+     font-family="DroidSans, sans-serif"
+     font-size="5.5"
+     pointer-events="none"
+     id="text17">#</text>
+  <rect
+     data-keypad-role="r3c3"
+     x="48"
+     y="48"
+     width="11"
+     height="11"
+     rx="1.6"
+     fill="#d40000"
+     stroke="#f8fffd"
+     stroke-width="0.7"
+     id="rect18" />
+  <text
+     x="53.5"
+     y="55.1"
+     text-anchor="middle"
+     fill="#ffffff"
+     font-family="DroidSans, sans-serif"
+     font-size="5.5"
+     pointer-events="none"
+     id="text18">D</text>
+  <!-- Franja del conector, donde van los 4 pines I2C -->
+  <rect
+     x="2.5"
+     y="65.4"
+     width="60"
+     height="14"
+     rx="3"
+     fill="#0c1730"
+     id="rect19" />
+  <!-- Anillos de pad de cada pin, puramente cosmeticos: el cuadrado
+       clickeable real lo dibuja Renderer.renderPins() encima, en las
+       mismas coordenadas que vienen del JSON. Orden: SDA, SCL, VCC,
+       GND. -->
+  <circle
+     cx="12.5"
+     cy="72.4"
+     r="2.4"
+     fill="none"
+     stroke="#c9a227"
+     stroke-width="0.8"
+     id="circle19" />
+  <circle
+     cx="25.83"
+     cy="72.4"
+     r="2.4"
+     fill="none"
+     stroke="#c9a227"
+     stroke-width="0.8"
+     id="circle20" />
+  <circle
+     cx="39.17"
+     cy="72.4"
+     r="2.4"
+     fill="none"
+     stroke="#c9a227"
+     stroke-width="0.8"
+     id="circle21" />
+  <circle
+     cx="52.5"
+     cy="72.4"
+     r="2.4"
+     fill="none"
+     stroke="#c9a227"
+     stroke-width="0.8"
+     id="circle22" />
+  <!-- Serigrafia -->
+  <text
+     x="32.5"
+     y="64.100204"
+     text-anchor="middle"
+     fill="#8899cc"
+     font-family="DroidSans, sans-serif"
+     font-size="3.4px"
+     id="text22"
+     style="fill:#ffffff">I2C (PCF8574)</text>
+  <!-- Etiquetas de pin, debajo de cada anillo (mismo criterio que
+       qmc5883l.svg/gps.svg: texto real horneado en el propio SVG) -->
+  <g fill="#ffffff" font-family="DroidSans, sans-serif" font-size="3" text-anchor="middle" id="pinLabels">
+    <text x="12.5" y="78">SDA</text>
+    <text x="25.83" y="78">SCL</text>
+    <text x="39.17" y="78">VCC</text>
+    <text x="52.5" y="78">GND</text>
+  </g>
+</svg>

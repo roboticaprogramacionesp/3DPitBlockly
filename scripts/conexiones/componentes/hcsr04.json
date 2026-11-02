@@ -1,0 +1,45 @@
+{
+  "type": "hcsr04",
+  "name": "HC-SR04 Ultrasónico",
+  "category": "Sensores",
+  "width": 127.56,
+  "height": 56.69,
+  "svgPath": "components/hcsr04/hcsr04.svg",
+  "pinShape": "square",
+  "pinSize": 6,
+  "pins": [
+    {
+      "id": "vcc",
+      "name": "VCC (+)",
+      "type": "power",
+      "voltage": 5,
+      "x": 52.087,
+      "y": 52.875
+    },
+    {
+      "id": "trig",
+      "name": "TRIG",
+      "type": "signal",
+      "x": 59.287,
+      "y": 52.875
+    },
+    {
+      "id": "echo",
+      "name": "ECHO",
+      "type": "signal",
+      "x": 66.487,
+      "y": 52.875
+    },
+    {
+      "id": "gnd",
+      "name": "GND (-)",
+      "type": "ground",
+      "signal": "ground",
+      "x": 73.686,
+      "y": 52.875
+    }
+  ],
+  "properties": {
+    "distance": 100.0
+  }
+}

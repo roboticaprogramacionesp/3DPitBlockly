@@ -1,0 +1,24 @@
+{
+    "type": "pot_rotary",
+    "name": "Potenciómetro Rotativo 10K",
+    "category": "Sensores",
+
+    "width": 50,
+    "height": 58,
+
+    "svgPath": "components/pot_rotary/pot_rotary.svg",
+
+    "pinShape": "square",
+    "pinSize": 2.5,
+
+    "pins": [
+        { "id": "gnd", "name": "GND",        "x": 18, "y": 48.25, "type": "ground", "signal": "ground" },
+        { "id": "sig", "name": "SIG (ADC)",  "x": 25, "y": 48.25, "type": "signal" },
+        { "id": "vcc", "name": "VCC",        "x": 32, "y": 48.25, "type": "power",  "signal": "power"  }
+    ],
+
+    "properties": {
+        "modelo": "Potenciómetro rotativo 10KΩ (un solo eje, salida analógica por SIG)",
+        "nota": "Arrastrá la perilla en círculo para simular la posición -- no vuelve sola al centro al soltar, igual que el potenciómetro real. La carrera mecánica es de ~300° (como el real, con un tope), no una vuelta completa."
+    }
+}

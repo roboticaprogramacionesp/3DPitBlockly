@@ -1,0 +1,27 @@
+{
+  "type": "motor",
+  "name": "Motor DC (reductora)",
+  "category": "Actuadores",
+  "width": 193.465,
+  "height": 93.215,
+  "svgPath": "components/motor/motor.svg",
+  "pinShape": "circle",
+  "pinSize": 6,
+  "pins": [
+    {
+      "id": "pin1",
+      "name": "Terminal 1",
+      "type": "signal",
+      "x": 8.616,
+      "y": 22.937
+    },
+    {
+      "id": "pin2",
+      "name": "Terminal 2",
+      "type": "signal",
+      "x": 8.616,
+      "y": 70.38
+    }
+  ],
+  "properties": {}
+}

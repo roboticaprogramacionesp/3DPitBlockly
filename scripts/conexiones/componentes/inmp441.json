@@ -1,0 +1,25 @@
+{
+    "type": "inmp441",
+    "name": "INMP441 Micrófono I2S",
+
+    "width": 42.51961,
+    "height": 42.51959,
+
+    "svg": "components/inmp441/inmp441.svg",
+
+    "pinShape": "square",
+    "pinSize": 4,
+
+    "pins": [
+        { "id": "sck", "name": "SCK",  "x": 13.86, "y": 10.96, "type": "gpio",   "signal": "digital" },
+        { "id": "ws",  "name": "WS",   "x": 21.05, "y": 10.96, "type": "gpio",   "signal": "digital" },
+        { "id": "lr",  "name": "L/R",  "x": 28.23, "y": 10.96, "type": "gpio",   "signal": "digital" },
+        { "id": "sd",  "name": "SD",   "x": 13.86, "y": 32.41, "type": "gpio",   "signal": "digital" },
+        { "id": "vdd", "name": "VDD",  "x": 21.05, "y": 32.41, "type": "power",  "signal": "power", "voltage": 3.3 },
+        { "id": "gnd", "name": "GND",  "x": 28.23, "y": 32.41, "type": "ground", "signal": "ground" }
+    ],
+
+    "properties": {
+        "info": "Micrófono digital I2S (machine.I2S, modo RX) -- usa el micrófono REAL de tu PC (con tu permiso) para alimentar I2S.readinto() en modo navegador. Ver inmp441.hal.py."
+    }
+}

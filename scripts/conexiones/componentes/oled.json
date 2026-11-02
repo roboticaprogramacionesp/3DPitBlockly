@@ -1,0 +1,45 @@
+{
+  "type": "oled",
+  "name": "OLED 128x64 I2C",
+  "category": "Pantallas",
+  "width": 76.535,
+  "height": 76.917,
+  "svgPath": "components/oled/oled.svg",
+  "pinShape": "square",
+  "pinSize": 6,
+  "pins": [
+    {
+      "id": "gnd",
+      "name": "GND (-)",
+      "type": "ground",
+      "signal": "ground",
+      "x": 27.469,
+      "y": 5.668
+    },
+    {
+      "id": "vdd",
+      "name": "VDD (+)",
+      "type": "power",
+      "x": 34.669,
+      "y": 5.669
+    },
+    {
+      "id": "sck",
+      "name": "SCK (I2C Clock)",
+      "type": "signal",
+      "x": 41.869,
+      "y": 5.669
+    },
+    {
+      "id": "sda",
+      "name": "SDA (I2C Data)",
+      "type": "signal",
+      "x": 49.066,
+      "y": 5.669
+    }
+  ],
+  "properties": {
+    "screenWidth": 128,
+    "screenHeight": 64
+  }
+}

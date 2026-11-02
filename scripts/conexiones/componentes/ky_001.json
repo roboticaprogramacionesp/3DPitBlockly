@@ -1,0 +1,38 @@
+{
+  "type": "ky_001",
+  "name": "KY-001 Temp Sensor",
+  "category": "Sensores",
+  "width": 56.694,
+  "height": 89.736,
+  "svgPath": "components/ky_001/ky_001.svg",
+  "pinShape": "square",
+  "pinSize": 6,
+  "pins": [
+    {
+      "id": "gnd",
+      "name": "GND (-)",
+      "x": 19,
+      "y": 87,
+      "type": "ground", "signal": "ground"
+    },
+    {
+      "id": "vcc",
+      "name": "VCC (+)",
+      "x": 28.5,
+      "y": 87,
+      "type": "power", "signal": "power"
+    },
+    {
+      "id": "signal",
+      "name": "S (Señal)",
+      "x": 38,
+      "y": 87,
+      "type": "gpio", 
+      "signal": "digital"
+    }
+  ],
+  "properties": {
+    "temperature": 25.0,
+    "address": "28 01 02 03 04 05 06"
+  }
+}

@@ -1,0 +1,27 @@
+{
+    "type": "ky-019",
+    "name": "KY-019 Módulo Relevador 5V",
+
+    "width": 62.66,
+    "height": 90,
+
+    "svgPath": "components/ky-019/ky-019.svg",
+
+    "pinShape": "square",
+    "pinSize": 4,
+
+    "pins": [
+        { "id": "s",   "name": "S (Señal)", "x": 33, "y": 87.76, "type": "input",  "signal": "digital" },
+        { "id": "vcc", "name": "+ (VCC)",   "x": 39, "y": 87.76, "type": "power",  "signal": "power", "voltage": 5 },
+        { "id": "gnd", "name": "- (GND)",   "x": 45, "y": 87.76, "type": "ground", "signal": "ground" },
+
+        { "id": "nc",  "name": "NC",  "x": 21.8, "y": 10.5, "type": "output", "optional": true },
+        { "id": "com", "name": "COM", "x": 33.9, "y": 10.5, "type": "output", "optional": true },
+        { "id": "no",  "name": "NO",  "x": 45.2, "y": 10.5, "type": "output", "optional": true }
+    ],
+
+    "properties": {
+        "modelo": "Keyes KY-019 (relevador 5V, 1 canal)",
+        "activeLow": true
+    }
+}

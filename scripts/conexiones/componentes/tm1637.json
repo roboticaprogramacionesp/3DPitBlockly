@@ -1,0 +1,21 @@
+{
+    "type": "tm1637",
+    "name": "TM1637 4 Dígitos",
+
+    "width": 148,
+    "height": 81,
+
+    "svgPath": "components/tm1637/tm1637.svg",
+
+    "pinShape": "square",
+    "pinSize": 6,
+
+    "properties": {},
+
+    "pins": [
+        { "id": "vcc", "name": "VCC", "x": 11.631,  "y": 50.838, "type": "power",  "signal": "power" },
+        { "id": "gnd", "name": "GND", "x": 11.631,  "y": 43.740, "type": "ground", "signal": "ground" },
+        { "id": "dio", "name": "DIO", "x": 11.631,  "y": 36.584, "type": "signal", "signal": "digital" },
+        { "id": "clk", "name": "CLK", "x": 11.631,  "y": 29.544,  "type": "signal", "signal": "digital" }
+    ]
+}

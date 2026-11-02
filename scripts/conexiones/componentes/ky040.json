@@ -1,0 +1,58 @@
+{
+    "type": "ky_040",
+    "name": "KY-040 Encoder Rotativo",
+    "category": "Sensores",
+    "width": 56.694,
+    "height": 89.736,
+    "svgPath": "components/ky040/ky040.svg",
+    "pinShape": "square",
+    "pinSize": 3.067,
+    "pins": [
+        {
+            "id": "gnd",
+            "name": "GND",
+            "x": 20.201,
+            "y": 87.051,
+            "type": "ground",
+            "signal": "ground"
+        },
+        {
+            "id": "vcc",
+            "name": "VCC (+5V)",
+            "x": 27.72,
+            "y": 87.051,
+            "type": "power",
+            "signal": "power"
+        },
+        {
+            "id": "sw",
+            "name": "SW (botón)",
+            "x": 35.3,
+            "y": 87.051,
+            "type": "signal",
+            "optional": true
+        },
+        {
+            "id": "dt",
+            "name": "DT",
+            "x": 42.878,
+            "y": 87.051,
+            "type": "signal"
+        },
+        {
+            "id": "clk",
+            "name": "CLK",
+            "x": 50.458,
+            "y": 87.051,
+            "type": "signal"
+        }
+    ],
+    "pressPins": [
+        "sw",
+        "gnd"
+    ],
+    "properties": {
+        "modelo": "Encoder rotativo KY-040 (cuadratura CLK/DT + botón SW)",
+        "stepsPerRev": 20
+    }
+}

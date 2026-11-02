@@ -1,0 +1,25 @@
+{
+    "type": "battery_18650",
+    "name": "Batería 18650 (portapilas x2)",
+    "category": "Alimentación",
+
+    "width": 217.1906,
+    "height": 113.38971,
+
+    "svgPath": "components/battery_18650/battery_18650.svg",
+
+    "pinShape": "square",
+    "pinSize": 4,
+
+    "pins": [
+        { "id": "gnd", "name": "- (negativo)", "x": 222.4286, "y": 60.795258, "type": "ground", "signal": "ground" },
+        { "id": "vcc", "name": "+ (positivo)", "x": 222.4286, "y": 43.904144, "type": "power",  "signal": "power" }
+    ],
+
+    "properties": {
+        "modelo": "2x pilas 18650 en serie (~7.4V nominal)",
+        "voltaje": 7.4,
+        "celdas": 2,
+        "isPowerSource": true
+    }
+}

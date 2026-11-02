@@ -68,7 +68,7 @@ var TUTORIALS = {
 
   led_infinito: {
     title: "LED Infinito (parpadeo)", icon: "🔁",
-    diagram: "img/conexiones/led_infinito.svg",
+    diagram: "img/conexiones/led.svg",
     steps: [
       {
         titulo: "¿Qué aprenderemos?",
@@ -642,7 +642,7 @@ var TUTORIALS = {
 
   medidor_estatura: {
     title: "Medidor de Estatura (HC-SR04 + Touch)", icon: "📏",
-    diagram: "img/conexiones/ultrasonico.svg",
+    diagram: "img/conexiones/medidor_estatura.svg",
     steps: [
       {
         titulo: "¿Qué vamos a construir?",
@@ -802,7 +802,7 @@ var TUTORIALS = {
 
   carrito_esquiva_obstaculos: {
     title: "Carrito Esquiva Obstáculos", icon: "🚙",
-    diagram: "img/conexiones/puente_h.svg",
+    diagram: "img/conexiones/carrito.svg",
     steps: [
       {
         titulo: "¿Qué aprenderemos?",
@@ -1065,7 +1065,7 @@ var TUTORIALS = {
 
   stepper_motor: {
     title: "Motor Paso a Paso (Stepper)", icon: "🌀",
-    diagram: "img/28byj.svg",
+    diagram: "img/conexiones/stepper.svg",
     steps: [
       {
         titulo: "¿Qué aprenderemos?",
@@ -1247,7 +1247,7 @@ var TUTORIALS = {
 
   relevador: {
     title: "Relevador (Relay)", icon: "🔌",
-    diagram: "img/ky-019.svg",
+    diagram: "img/conexiones/relevador.svg",
     steps: [
       {
         titulo: "¿Qué aprenderemos?",
@@ -1856,7 +1856,7 @@ var TUTORIALS = {
   ══════════════════════════════════════════════════════════════ */
   servidor_socket: {
     title: "Servidor Socket (TCP)", icon: "🖥️",
-    diagram: "img/conexiones/servidor.svg",
+    diagram: "img/conexiones/solo_placa.svg",
     steps: [
       {
         titulo: "¿Qué aprenderemos?",
@@ -2003,7 +2003,7 @@ var TUTORIALS = {
   ══════════════════════════════════════════════════════════════ */
   cliente_socket: {
     title: "Cliente Socket (TCP)", icon: "📱",
-    diagram: "img/conexiones/cliente.svg",
+    diagram: "img/conexiones/solo_placa.svg",
     steps: [
       {
         titulo: "¿Qué aprenderemos?",
@@ -2115,7 +2115,7 @@ var TUTORIALS = {
   ══════════════════════════════════════════════════════════════ */
   portal_cautivo: {
     title: "Portal Cautivo (Captive Portal)", icon: "🌐",
-    diagram: "img/conexiones/cautivo.svg",
+    diagram: "img/conexiones/solo_placa.svg",
     steps: [
       {
         titulo: "¿Qué es un Portal Cautivo?",
@@ -2319,7 +2319,7 @@ var TUTORIALS = {
 
   ir_tx_ky005: {
     title: "Emisor Infrarrojo (KY-005)", icon: "📡",
-    diagram: "img/ky-005.svg",
+    diagram: "img/conexiones/ky-005.svg",
     steps: [
       {
         titulo: "¿Qué aprenderemos?",
@@ -2819,7 +2819,7 @@ var TUTORIALS = {
 
   wifi_basico: {
     title: "WiFi — Conectarse a una red", icon: "📶",
-    diagram: "img/espwifi.png",
+    diagram: "img/conexiones/solo_placa.svg",
     steps: [
       {
         titulo: "¿Qué aprenderemos?",
@@ -2883,7 +2883,7 @@ var TUTORIALS = {
 
   wifi_ntfy_led: {
     title: "WiFi — Prender un LED desde internet", icon: "🌐",
-    diagram: "img/espwifi.png",
+    diagram: "img/conexiones/led.svg",
     steps: [
       {
         titulo: "¿Qué aprenderemos?",
@@ -3267,7 +3267,7 @@ var TUTORIALS = {
 
   bluetooth_le: {
     title: "Bluetooth LE (BLE) — UART Serial", icon: "📡",
-    diagram: "img/conexiones/ble.svg",
+    diagram: "img/conexiones/solo_placa.svg",
     steps: [
       {
         titulo: "¿Qué es Bluetooth LE?",
@@ -3648,7 +3648,7 @@ var TUTORIALS = {
 
   sh1106_display: {
     title: "Display OLED (SH1106)", icon: "🖥️",
-    diagram: "img/oled.svg",
+    diagram: "img/conexiones/oled.svg",
     steps: [
       {
         titulo: "¿Qué aprenderemos?",
@@ -4352,7 +4352,7 @@ var TUTORIALS = {
 
   teclado_4x3: {
     title: "Teclado Matricial 4x3", icon: "🔢",
-    diagram: "img/keypad3x4.svg",
+    diagram: "img/conexiones/teclado_4x3.svg",
     steps: [
       {
         titulo: "¿Qué aprenderemos?",
@@ -4422,7 +4422,7 @@ var TUTORIALS = {
 
   teclado_4x4_i2c: {
     title: "Teclado Matricial 4x4 I2C", icon: "🔢",
-    diagram: "img/keypad4x4.svg",
+    diagram: "img/conexiones/teclado_4x4_i2c.svg",
     steps: [
       {
         titulo: "¿Qué aprenderemos?",
@@ -4956,7 +4956,7 @@ var TUTORIALS = {
 
   neopixel_matriz_8x8: {
     title: "Matriz NeoPixel 8x8", icon: "🌈",
-    diagram: "img/neopixel8x8.svg",
+    diagram: "img/conexiones/neopixel_matriz_8x8.svg",
     steps: [
       {
         titulo: "¿Qué aprenderemos?",

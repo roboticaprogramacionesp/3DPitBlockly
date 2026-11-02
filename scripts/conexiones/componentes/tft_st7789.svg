@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 90 100"
+   version="1.1"
+   id="svg10"
+   sodipodi:docname="tft_st7789.svg"
+   inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs10" />
+  <sodipodi:namedview
+     id="namedview10"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:zoom="3.8113056"
+     inkscape:cx="40.930856"
+     inkscape:cy="42.636309"
+     inkscape:window-width="1366"
+     inkscape:window-height="697"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg10" />
+  <!--
+    Icono plano (no es la vista de breadboard de Fritzing), mismo
+    criterio que oled.svg / lcd_16x2_i2c.svg: un cuerpo de PCB simple
+    mas el area de pantalla, para que Renderer.tagTftElements() le
+    superponga un canvas real via foreignObject (ver Renderer.js).
+
+    El rectangulo de pantalla se identifica por data-role="screen"
+    (no por color, a diferencia del truco que usa el OLED) para que
+    la busqueda no dependa de que nadie cambie el fill mas adelante.
+
+    Coordenadas en las mismas unidades que "width"/"height" del JSON
+    (90x100), asi los pines del JSON (x/y) caen exactamente donde
+    corresponde sin tener que calcular ningun factor de escala extra.
+
+    IMPORTANTE: los comentarios XML no pueden contener dos guiones
+    consecutivos en ningun lugar del texto (unicamente estan
+    permitidos justo antes del cierre del comentario). Usar guion
+    guion como separador es un habito comun en comentarios de JS,
+    pero rompe el parseo XML estricto que usa DOMParser con mime
+    image svg mas xml. Por eso este archivo evita esa secuencia en
+    todos los comentarios de aca abajo.
+  -->
+  <!-- Cuerpo del PCB -->
+  <rect
+     x="0"
+     y="0"
+     width="90"
+     height="100"
+     rx="6"
+     fill="#132042"
+     stroke="#05070f"
+     stroke-width="1"
+     id="rect1" />
+  <!-- Franja superior donde van los 8 pines del header -->
+  <rect
+     x="3"
+     y="0"
+     width="84"
+     height="14"
+     rx="3"
+     fill="#0c1730"
+     id="rect2" />
+  <!-- Anillos de pad de cada pin, puramente cosmeticos. El cuadrado
+       clickeable real lo dibuja Renderer.renderPins() encima, en las
+       mismas coordenadas que vienen del JSON. -->
+  <circle
+     cx="7.0"
+     cy="4.55"
+     r="4"
+     fill="none"
+     stroke="#c9a227"
+     stroke-width="1.1"
+     id="circle2" />
+  <circle
+     cx="17.9"
+     cy="4.55"
+     r="4"
+     fill="none"
+     stroke="#c9a227"
+     stroke-width="1.1"
+     id="circle3" />
+  <circle
+     cx="28.7"
+     cy="4.55"
+     r="4"
+     fill="none"
+     stroke="#c9a227"
+     stroke-width="1.1"
+     id="circle4" />
+  <circle
+     cx="39.6"
+     cy="4.55"
+     r="4"
+     fill="none"
+     stroke="#c9a227"
+     stroke-width="1.1"
+     id="circle5" />
+  <circle
+     cx="50.4"
+     cy="4.55"
+     r="4"
+     fill="none"
+     stroke="#c9a227"
+     stroke-width="1.1"
+     id="circle6" />
+  <circle
+     cx="61.3"
+     cy="4.55"
+     r="4"
+     fill="none"
+     stroke="#c9a227"
+     stroke-width="1.1"
+     id="circle7" />
+  <circle
+     cx="72.1"
+     cy="4.55"
+     r="4"
+     fill="none"
+     stroke="#c9a227"
+     stroke-width="1.1"
+     id="circle8" />
+  <circle
+     cx="83.0"
+     cy="4.55"
+     r="4"
+     fill="none"
+     stroke="#c9a227"
+     stroke-width="1.1"
+     id="circle9" />
+  <!-- Etiquetas de pin, debajo de cada anillo del header (mismo
+       criterio que qmc5883l.svg/gps.svg: texto real horneado en el
+       propio SVG, no un overlay generado aparte) -->
+  <g fill="#ffffff" font-family="DroidSans, sans-serif" font-size="3.2" text-anchor="middle" id="pinLabels">
+    <text x="7.0" y="12">GND</text>
+    <text x="17.9" y="12">VCC</text>
+    <text x="28.7" y="12">SCL</text>
+    <text x="39.6" y="12">SDA</text>
+    <text x="50.4" y="12">RES</text>
+    <text x="61.3" y="12">DC</text>
+    <text x="72.1" y="12">CS</text>
+    <text x="83.0" y="12">BLK</text>
+  </g>
+  <!-- Bisel negro de la pantalla -->
+  <rect
+     x="7"
+     y="20"
+     width="76"
+     height="76"
+     rx="3"
+     fill="#000000"
+     id="rect9" />
+  <!-- Area de pantalla real: aca se monta el canvas del framebuffer -->
+  <rect
+     x="10"
+     y="23"
+     width="70"
+     height="70"
+     fill="#050505"
+     data-role="screen"
+     id="rect10" />
+  <!-- Serigrafia -->
+  <text
+     x="45"
+     y="19"
+     text-anchor="middle"
+     fill="#ffffff"
+     font-family="DroidSans, sans-serif"
+     font-size="6px"
+     id="text10">ST7789 240x240</text>
+</svg>

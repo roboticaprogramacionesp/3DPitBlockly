@@ -1,0 +1,26 @@
+{
+    "type": "28byj",
+    "name": "28BYJ-48 Motor Paso a Paso + Driver ULN2003",
+    "category": "Actuadores",
+
+    "width": 300,
+    "height": 175.0,
+
+    "svgPath": "components/28byj/28byj.svg",
+
+    "pinShape": "square",
+    "pinSize": 3.5,
+
+    "pins": [
+        { "id": "in1", "name": "IN1", "type": "input", "signal": "digital", "x": 23.19, "y": 73.56 },
+        { "id": "in2", "name": "IN2", "type": "input", "signal": "digital", "x": 23.19, "y": 83.62 },
+        { "id": "in3", "name": "IN3", "type": "input", "signal": "digital", "x": 23.19, "y": 93.67 },
+        { "id": "in4", "name": "IN4", "type": "input", "signal": "digital", "x": 23.19, "y": 103.73 },
+        { "id": "gnd", "name": "GND (-)", "type": "ground", "signal": "ground", "x": 43.23, "y": 154.07 },
+        { "id": "vcc", "name": "VCC (+)", "type": "power", "signal": "power", "x": 53.28, "y": 154.07 }
+    ],
+
+    "properties": {
+        "modelo": "28BYJ-48 (motor paso a paso unipolar de 5 hilos) + driver ULN2003, entrada 5-12V. El motor viene pre-cableado de fábrica al driver (conector JST de 5 hilos) -- solo se cablean IN1-IN4 (a GPIOs digitales) y VCC/GND (5-12V)."
+    }
+}

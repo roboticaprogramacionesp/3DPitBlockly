@@ -1,0 +1,30 @@
+{
+    "type": "tft_st7789",
+    "name": "TFT 1.54\" 240x240 (ST7789)",
+    "category": "Pantallas",
+
+    "width": 90,
+    "height": 100,
+
+    "svgPath": "components/tft_st7789/tft_st7789.svg",
+
+    "pinShape": "square",
+    "pinSize": 4,
+
+    "pins": [
+        { "id": "gnd", "name": "GND",           "x": 7.0,  "y": 4.5, "type": "ground", "signal": "ground" },
+        { "id": "vcc", "name": "VCC",           "x": 17.9, "y": 4.5, "type": "power",  "signal": "power", "voltage": 3.3 },
+        { "id": "scl", "name": "SCL (SPI CLK)", "x": 28.7, "y": 4.5, "type": "signal" },
+        { "id": "sda", "name": "SDA (SPI MOSI)","x": 39.6, "y": 4.5, "type": "signal" },
+        { "id": "res", "name": "RES (Reset)",   "x": 50.4, "y": 4.5, "type": "signal" },
+        { "id": "dc",  "name": "DC (Data/Cmd)", "x": 61.3, "y": 4.5, "type": "signal" },
+        { "id": "cs",  "name": "CS (Chip Sel.)","x": 72.1, "y": 4.5, "type": "signal", "optional": true },
+        { "id": "blk", "name": "BLK (Backlight)","x": 83.0,"y": 4.5, "type": "signal", "optional": true }
+    ],
+
+    "properties": {
+        "modelo": "ST7789 IPS 1.54\" 240x240 SPI",
+        "screenWidth": 240,
+        "screenHeight": 240
+    }
+}

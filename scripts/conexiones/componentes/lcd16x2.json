@@ -1,0 +1,37 @@
+{
+    "type": "lcd16x2",
+    "name": "LCD 16x2 (paralelo)",
+    "category": "Pantallas",
+
+    "width": 226.771,
+    "height": 102.047,
+
+    "svg": "components/lcd16x2/lcd16x2.svg",
+
+    "pinShape": "square",
+    "pinSize": 5,
+
+    "pins": [
+        { "id": "vss", "name": "VSS",  "x": 19.43,              "y": 3.8, "type": "ground", "signal": "ground" },
+        { "id": "vdd", "name": "VDD",  "x": 26.629,             "y": 3.8, "type": "power",  "signal": "power", "voltage": 5 },
+        { "id": "v0",  "name": "V0 (Contraste)", "x": 33.829,   "y": 3.8, "type": "input", "signal": "analog", "optional": true },
+        { "id": "rs",  "name": "RS",   "x": 41.029,             "y": 3.8, "type": "input", "signal": "digital" },
+        { "id": "rw",  "name": "R/W",  "x": 48.229,             "y": 3.8, "type": "input", "signal": "digital", "optional": true },
+        { "id": "e",   "name": "E",    "x": 55.43,              "y": 3.8, "type": "input", "signal": "digital" },
+        { "id": "d0",  "name": "D0",   "x": 62.629,             "y": 3.8, "type": "input", "signal": "digital", "optional": true },
+        { "id": "d1",  "name": "D1",   "x": 69.829,             "y": 3.8, "type": "input", "signal": "digital", "optional": true },
+        { "id": "d2",  "name": "D2",   "x": 77.029,             "y": 3.8, "type": "input", "signal": "digital", "optional": true },
+        { "id": "d3",  "name": "D3",   "x": 84.229,             "y": 3.8, "type": "input", "signal": "digital", "optional": true },
+        { "id": "d4",  "name": "D4",   "x": 91.43,              "y": 3.8, "type": "input", "signal": "digital" },
+        { "id": "d5",  "name": "D5",   "x": 98.629,             "y": 3.8, "type": "input", "signal": "digital" },
+        { "id": "d6",  "name": "D6",   "x": 105.829,            "y": 3.8, "type": "input", "signal": "digital" },
+        { "id": "d7",  "name": "D7",   "x": 113.029,            "y": 3.8, "type": "input", "signal": "digital" },
+        { "id": "a",   "name": "A (Backlight +)", "x": 120.229, "y": 3.8, "type": "power",  "signal": "power", "voltage": 5 },
+        { "id": "k",   "name": "K (Backlight -)", "x": 127.43,  "y": 3.8, "type": "ground", "signal": "ground" }
+    ],
+
+    "properties": {
+        "modelo": "HD44780 16x2",
+        "colorScheme": "yellow_green"
+    }
+}

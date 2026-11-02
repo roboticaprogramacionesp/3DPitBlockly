@@ -1,0 +1,39 @@
+{
+    "type": "buzzer",
+    "name": "Buzzer Piezo Pasivo (KY-006)",
+    "category": "Actuadores",
+    "width": 56.694,
+    "height": 65,
+    "svgPath": "components/buzzer/buzzer.svg",
+    "pinShape": "square",
+    "pinSize": 2.6,
+    "pins": [
+        {
+            "id": "s",
+            "name": "S (señal / PWM)",
+            "x": 14.74,
+            "y": 54.787,
+            "type": "signal"
+        },
+        {
+            "id": "vcc",
+            "name": "+",
+            "x": 28.347,
+            "y": 54.787,
+            "type": "power",
+            "signal": "power"
+        },
+        {
+            "id": "gnd",
+            "name": "-",
+            "x": 41.954,
+            "y": 54.787,
+            "type": "ground",
+            "signal": "ground"
+        }
+    ],
+    "properties": {
+        "modelo": "Buzzer piezo PASIVO (necesita PWM -- freq()/duty() -- para sonar, a diferencia de uno activo)",
+        "nota": "Suena de verdad en el navegador (Web Audio API) mientras el firmware mantenga el PWM activo en el pin S. Compatible con rtttl.py/songs.py tal cual: from machine import Pin, PWM; PWM(pin, freq=440, duty=512)."
+    }
+}

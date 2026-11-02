@@ -1,0 +1,39 @@
+{
+  "type": "sg90",
+  "name": "Servo SG90",
+  "category": "Actuadores",
+  "width": 157.04755,
+  "height": 46.062609,
+  "svgPath": "components/sg90/sg90.svg",
+  "pinShape": "square",
+  "pinSize": 3,
+  "pins": [
+    {
+      "id": "signal",
+      "name": "SIGNAL (naranja)",
+      "type": "signal",
+      "x": 1.797,
+      "y": 15.029
+    },
+    {
+      "id": "vcc",
+      "name": "VCC (+) rojo",
+      "type": "power",
+      "voltage": 5,
+      "x": 1.707,
+      "y": 21.412
+    },
+    {
+      "id": "gnd",
+      "name": "GND (-) café",
+      "type": "ground",
+      "signal": "ground",
+      "x": 1.617,
+      "y": 27.795
+    }
+  ],
+  "properties": {
+    "angle": 90,
+    "shaftPivot": { "x": 58.5, "y": -49.5 }
+  }
+}

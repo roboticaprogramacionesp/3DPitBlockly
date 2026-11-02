@@ -1,0 +1,31 @@
+{
+    "type": "gps",
+    "name": "Módulo GPS NEO-6M (UART)",
+    "category": "Sensores",
+
+    "width": 62.5,
+    "height": 88.75,
+
+    "svgPath": "components/gps/gps.svg",
+
+    "pinShape": "square",
+    "pinSize": 4,
+
+    "pins": [
+        { "id": "vcc", "name": "VCC", "x": 11.25, "y": 85, "type": "power",  "signal": "power" },
+        { "id": "gnd", "name": "GND", "x": 22.5,  "y": 85, "type": "ground", "signal": "ground" },
+        { "id": "tx",  "name": "TX",  "x": 33.75, "y": 85, "type": "signal" },
+        { "id": "rx",  "name": "RX",  "x": 45,    "y": 85, "type": "signal", "optional": true }
+    ],
+
+    "properties": {
+        "modelo": "GPS NEO-6M: recibe por UART (TX del módulo -> RX del ESP32) oraciones NMEA reales (GPRMC+GGA con checksum) generadas a partir de la posición elegida en el panel. RX (configuración del módulo) no está implementado",
+        "lat": 19.4326,
+        "lon": -99.1332,
+        "altitude": 2240,
+        "speedKnots": 0,
+        "course": 0,
+        "satellites": 8,
+        "fixValid": true
+    }
+}

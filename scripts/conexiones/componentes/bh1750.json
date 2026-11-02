@@ -1,0 +1,27 @@
+{
+    "type": "bh1750",
+    "name": "BH1750 Sensor de Luz Ambiental (I2C)",
+    "category": "Sensores",
+
+    "width": 60.312,
+    "height": 39.565,
+
+    "svgPath": "components/bh1750/bh1750.svg",
+
+    "pinShape": "square",
+    "pinSize": 4,
+
+    "pins": [
+        { "id": "vcc",  "name": "VCC",  "x": 55.452, "y": 4.949,  "type": "power",  "signal": "power", "voltage": 3.3 },
+        { "id": "gnd",  "name": "GND",  "x": 55.452, "y": 12.083, "type": "ground", "signal": "ground" },
+        { "id": "scl",  "name": "SCL",  "x": 55.452, "y": 19.236, "type": "input",  "signal": "i2c" },
+        { "id": "sda",  "name": "SDA",  "x": 55.452, "y": 26.432, "type": "input",  "signal": "i2c" },
+        { "id": "addr", "name": "ADDR", "x": 55.452, "y": 33.633, "type": "signal", "optional": true }
+    ],
+
+    "properties": {
+        "modelo": "BH1750: sensor de luz ambiental digital, I2C",
+        "i2cAddress": "0x23",
+        "lux": 200.0
+    }
+}

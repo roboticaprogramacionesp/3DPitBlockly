@@ -1,0 +1,38 @@
+{
+  "type": "dht11",
+  "name": "DHT11 Sensor",
+  "category": "Sensores",
+  "width": 50,
+  "height": 90,
+  "svgPath": "components/dht11/dht11.svg",
+  "pinShape": "square",
+  "pinSize": 6,
+  "pins": [
+    {
+      "id": "signal",
+      "name": "DATA",
+      "type": "signal",
+      "x": 17.2,
+      "y": 90
+    },
+    {
+      "id": "vcc",
+      "name": "VCC (+)",
+      "type": "power",
+      "x": 25,
+      "y": 90
+    },
+    {
+      "id": "gnd",
+      "name": "GND (-)",
+      "type": "ground",
+      "signal": "ground",
+      "x": 32.5,
+      "y": 90
+    }
+  ],
+  "properties": {
+    "temperature": 25.0,
+    "humidity": 50.0
+  }
+}

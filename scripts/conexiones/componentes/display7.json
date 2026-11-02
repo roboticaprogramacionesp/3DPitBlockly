@@ -1,0 +1,85 @@
+{
+    "type": "display7",
+    "name": "Display 7 Segmentos",
+    "category": "LEDs",
+    "width": 61.309,
+    "height": 61.3,
+    "svgPath": "components/display7/display7.svg",
+    "pinShape": "square",
+    "pinSize": 6,
+    "pins": [
+        {
+            "id": "g",
+            "name": "Segmento G",
+            "type": "signal",
+            "x": 4.54,
+            "y": 0
+        },
+        {
+            "id": "f",
+            "name": "Segmento F",
+            "type": "signal",
+            "x": 18.71,
+            "y": 0
+        },
+        {
+            "id": "com1",
+            "name": "Común 1 (GND o VCC según tipo)",
+            "type": "power",
+            "x": 29.96,
+            "y": 0
+        },
+        {
+            "id": "a",
+            "name": "Segmento A",
+            "type": "signal",
+            "x": 44.13,
+            "y": 0
+        },
+        {
+            "id": "b",
+            "name": "Segmento B",
+            "type": "signal",
+            "x": 56.04,
+            "y": 0
+        },
+        {
+            "id": "dp",
+            "name": "Punto decimal (DP)",
+            "type": "signal",
+            "x": 56.04,
+            "y": 61.3
+        },
+        {
+            "id": "c",
+            "name": "Segmento C",
+            "type": "signal",
+            "x": 44.13,
+            "y": 61.3
+        },
+        {
+            "id": "d",
+            "name": "Segmento D",
+            "type": "signal",
+            "x": 18.71,
+            "y": 61.3
+        },
+        {
+            "id": "e",
+            "name": "Segmento E",
+            "type": "signal",
+            "x": 4.54,
+            "y": 61.3
+        },
+        {
+            "id": "com2",
+            "name": "Común 2 (GND o VCC según tipo)",
+            "type": "power",
+            "x": 29.96,
+            "y": 61.3
+        }
+    ],
+    "properties": {
+        "commonType": "cathode"
+    }
+}

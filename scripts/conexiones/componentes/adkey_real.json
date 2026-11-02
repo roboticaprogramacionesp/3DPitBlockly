@@ -1,0 +1,24 @@
+{
+    "type": "adkey_real",
+    "name": "Teclado analógico ADKEY (5 botones)",
+    "category": "Sensores",
+
+    "width": 167.5,
+    "height": 80,
+
+    "svgPath": "components/adkey_real/adkey_real.svg",
+
+    "pinShape": "square",
+    "pinSize": 4,
+
+    "pins": [
+        { "id": "out", "name": "OUT (ADC)", "x": 128, "y": 8, "type": "signal" },
+        { "id": "vcc", "name": "VCC",       "x": 134, "y": 8, "type": "power",  "signal": "power"  },
+        { "id": "gnd", "name": "GND",       "x": 140, "y": 8, "type": "ground", "signal": "ground" }
+    ],
+
+    "properties": {
+        "modelo": "Teclado analógico de 5 botones (D-pad + SEL) sobre un único pin ADC -- mismo circuito que 'adkey' (dibujo simple, ahora oculto), con el asset Fritzing real del módulo AD Keyboard",
+        "nota": "Los niveles de voltaje por tecla son valores de ejemplo (espaciados uniformemente), no están verificados contra un datasheet real -- si tenés los valores de tu módulo, se pueden ajustar en SignalEngine.ADKEY_LEVELS."
+    }
+}

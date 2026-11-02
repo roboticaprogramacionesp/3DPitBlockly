@@ -1,0 +1,25 @@
+{
+    "type": "hc-06",
+    "name": "HC-06 Módulo Bluetooth",
+
+    "width": 148.97397,
+    "height": 56.700003,
+
+    "svg": "components/hc-06/hc-06.svg",
+
+    "pinShape": "square",
+    "pinSize": 5,
+
+    "pins": [
+        { "id": "key",   "name": "KEY",   "x": 148.05, "y": 5.77,  "type": "input",  "signal": "digital", "optional": true },
+        { "id": "vcc",   "name": "VCC",   "x": 148.05, "y": 14.79, "type": "power",  "signal": "power", "voltage": 3.3 },
+        { "id": "gnd",   "name": "GND",   "x": 148.05, "y": 23.79, "type": "ground", "signal": "ground" },
+        { "id": "txd",   "name": "TXD",   "x": 148.05, "y": 32.79, "type": "gpio",   "signal": "uart" },
+        { "id": "rxd",   "name": "RXD",   "x": 148.05, "y": 41.79, "type": "gpio",   "signal": "uart" },
+        { "id": "state", "name": "State", "x": 148.05, "y": 50.79, "type": "gpio",   "signal": "digital", "optional": true }
+    ],
+
+    "properties": {
+        "info": "Módulo Bluetooth clásico (SPP) -- se maneja como un UART más desde el código (machine.UART), igual que en una placa real."
+    }
+}

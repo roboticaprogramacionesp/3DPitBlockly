@@ -1,0 +1,66 @@
+{
+    "type": "esp32_wroom",
+    "name": "ESP32 WeMos D1 R32",
+
+    "width": 276.28,
+    "height": 210,
+
+    "svg": "components/esp32_wroom/esp32_wroom.svg",
+
+    "pinShape": "square",
+    "pinSize": 6,
+
+    "pins": [
+        { "id": "io22", "name": "GPIO22", "x": 80.28,  "y": 10, "type": "gpio", "signal": "digital" },
+        { "id": "io21", "name": "GPIO21", "x": 90.28,  "y": 10, "type": "gpio", "signal": "digital" },
+        { "id": "rst_0", "name": "RST (EN)", "x": 100.28, "y": 10, "type": "input", "signal": "reset" },
+        { "id": "gnd_0", "name": "GND", "x": 110.28, "y": 10, "type": "ground", "signal": "ground" },
+        { "id": "io18", "name": "GPIO18", "x": 120.28, "y": 10, "type": "gpio", "signal": "spi" },
+        { "id": "io19", "name": "GPIO19", "x": 130.28, "y": 10, "type": "gpio", "signal": "spi" },
+        { "id": "io23", "name": "GPIO23", "x": 140.28, "y": 10, "type": "gpio", "signal": "spi" },
+        { "id": "io5",  "name": "GPIO5",  "x": 150.28, "y": 10, "type": "gpio", "signal": "spi" },
+        { "id": "io13", "name": "GPIO13", "x": 160.28, "y": 10, "type": "gpio", "signal": "analog" },
+        { "id": "io12", "name": "GPIO12", "x": 170.28, "y": 10, "type": "gpio", "signal": "analog" },
+        { "id": "io14", "name": "GPIO14", "x": 186.28, "y": 10, "type": "gpio", "signal": "analog" },
+        { "id": "io27", "name": "GPIO27", "x": 196.28, "y": 10, "type": "gpio", "signal": "analog" },
+        { "id": "io16", "name": "GPIO16", "x": 206.28, "y": 10, "type": "gpio", "signal": "digital" },
+        { "id": "io17", "name": "GPIO17", "x": 216.28, "y": 10, "type": "gpio", "signal": "digital" },
+        { "id": "io25", "name": "GPIO25", "x": 226.28, "y": 10, "type": "gpio", "signal": "analog" },
+        { "id": "io26", "name": "GPIO26", "x": 236.28, "y": 10, "type": "gpio", "signal": "analog" },
+        { "id": "tx0",  "name": "TX0",    "x": 246.28, "y": 10, "type": "gpio", "signal": "uart" },
+        { "id": "rx0",  "name": "RX0",    "x": 256.28, "y": 10, "type": "gpio", "signal": "uart" },
+
+        { "id": "sd2",  "name": "SD2",  "x": 150.00, "y": 42.00, "type": "gpio", "signal": "spi" },
+        { "id": "sd3",  "name": "SD3",  "x": 160.00, "y": 42.00, "type": "gpio", "signal": "spi" },
+        { "id": "cmd",  "name": "CMD",  "x": 170.00, "y": 42.00, "type": "gpio", "signal": "spi" },
+        { "id": "sck",  "name": "SCK",  "x": 180.00, "y": 42.00, "type": "gpio", "signal": "spi" },
+        { "id": "sd0",  "name": "SD0",  "x": 190.00, "y": 42.00, "type": "gpio", "signal": "spi" },
+        { "id": "sd1",  "name": "SD1",  "x": 200.00, "y": 42.00, "type": "gpio", "signal": "spi" },
+
+        { "id": "io0",   "name": "GPIO0 (BOOT)", "x": 116.28, "y": 200, "type": "gpio",   "signal": "analog" },
+        { "id": "5v_1",  "name": "5V",           "x": 126.28, "y": 200, "type": "power",  "signal": "power", "voltage": 5 },
+        { "id": "rst_1", "name": "RST (EN)",     "x": 136.28, "y": 200, "type": "input",  "signal": "reset" },
+        { "id": "3v3",   "name": "3V3",          "x": 146.28, "y": 200, "type": "power",  "signal": "power", "voltage": 3.3 },
+        { "id": "5v_2",  "name": "5V",           "x": 156.28, "y": 200, "type": "power",  "signal": "power", "voltage": 5 },
+        { "id": "gnd_1", "name": "GND",          "x": 166.28, "y": 200, "type": "ground", "signal": "ground" },
+        { "id": "gnd_2", "name": "GND",          "x": 176.28, "y": 200, "type": "ground", "signal": "ground" },
+        { "id": "vn",    "name": "VN (GPIO39)",  "x": 186.28, "y": 200, "type": "gpio",   "signal": "analog", "inputOnly": true },
+        { "id": "io2",   "name": "GPIO2",        "x": 206.28, "y": 200, "type": "gpio",   "signal": "analog" },
+        { "id": "io4",   "name": "GPIO4",        "x": 216.28, "y": 200, "type": "gpio",   "signal": "analog" },
+        { "id": "io35",  "name": "GPIO35",       "x": 226.28, "y": 200, "type": "gpio",   "signal": "analog", "inputOnly": true },
+        { "id": "io34",  "name": "GPIO34",       "x": 236.28, "y": 200, "type": "gpio",   "signal": "analog", "inputOnly": true },
+        { "id": "io36",  "name": "GPIO36 (VP)",  "x": 246.28, "y": 200, "type": "gpio",   "signal": "analog", "inputOnly": true },
+        { "id": "io39",  "name": "GPIO39 (VN)",  "x": 256.28, "y": 200, "type": "gpio",   "signal": "analog", "inputOnly": true },
+
+        { "id": "io15",  "name": "GPIO15",  "x":144.60, "y": 172, "type": "gpio",   "signal": "analog" },
+        { "id": "io33",  "name": "GPIO33",  "x":154.60, "y": 172, "type": "gpio",   "signal": "analog" },
+        { "id": "io32",  "name": "GPIO32",  "x":164.60, "y": 172, "type": "gpio",   "signal": "analog" }
+    ],
+
+    "properties": {
+        "mcu": "ESP32-WROOM-32",
+        "voltaje_operacion": 3.3,
+        "flash_mb": 4,
+        "isPowerSource": true
+    }
+}

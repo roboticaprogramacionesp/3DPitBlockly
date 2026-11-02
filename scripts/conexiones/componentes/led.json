@@ -1,0 +1,23 @@
+{
+    "type": "led",
+    "name": "LED",
+
+    "width": 20.60,
+    "height": 39.490,
+
+    "svg": "components/led/led.svg",
+
+    "pinShape": "square",
+    "pinSize": 6,
+
+    "pins": [
+        { "id": "anodo",  "name": "Ánodo (+)",  "x": 14.71, "y": 39.490, "type": "input",  "signal": "digital" },
+        { "id": "catodo", "name": "Cátodo (-)", "x": 4.71,  "y": 39.490, "type": "ground", "signal": "digital" }
+    ],
+
+    "properties": {
+        "voltaje_directo": 2.0,
+        "corriente_ma": 20,
+        "color": "#e60000"
+    }
+}

@@ -1,0 +1,21 @@
+{
+    "type": "neopixel_ring",
+    "name": "Anillo de NeoPixel",
+    "category": "LEDs",
+
+    "width": 124.72,
+    "height": 124.72,
+
+    "pinShape": "square",
+    "pinSize": 6,
+
+    "properties": {
+        "count": 8
+    },
+
+    "pins": [
+        { "id": "vcc", "name": "VCC", "x": 78.15, "y": 116.4,  "type": "power",  "signal": "power", "voltage": 5 },
+        { "id": "din", "name": "DIN", "x": 62.36, "y": 118.72, "type": "signal", "signal": "digital" },
+        { "id": "gnd", "name": "GND", "x": 46.57, "y": 116.4,  "type": "ground", "signal": "ground" }
+    ]
+}

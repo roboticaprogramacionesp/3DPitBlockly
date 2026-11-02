@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 26" width="40mm" height="26mm">
+
+    <!-- Interruptor de palanca ON/OFF. data-role="switch-lever" es el
+         rectángulo que switch.behavior.js corre a la izquierda (abierto)
+         o derecha (cerrado); data-role="switch-indicator" es el punto
+         que cambia de rojo a verde para que el estado se note de un
+         vistazo incluso a tamaño chico en el canvas. El estado en sí
+         (component.pressed) reutiliza el mismo mecanismo de puente que
+         ya usan los botones momentáneos (pressPins en el .json), solo
+         que acá queda fijo entre un clic y el siguiente en vez de
+         soltarse solo. -->
+
+    <rect x="3" y="4" width="34" height="14" rx="3" fill="#333333" stroke="#555555" stroke-width="0.5" />
+    <rect x="7" y="7" width="26" height="8" rx="4" fill="#111111" />
+
+    <rect data-role="switch-lever" x="7" y="7" width="12" height="8" rx="4" fill="#cccccc" />
+
+    <circle data-role="switch-indicator" cx="36" cy="6" r="2.2" fill="#cc3333" />
+
+    <!-- Cables de salida hacia los pines term1/term2 -->
+    <path d="M 8,18 L 5,20" fill="none" stroke="#666666" stroke-width="1.6" stroke-linecap="round" />
+    <path d="M 32,18 L 35,20" fill="none" stroke="#666666" stroke-width="1.6" stroke-linecap="round" />
+    <rect x="0.5" y="20.5" width="3" height="3" fill="#e0c040" />
+    <rect x="35.5" y="20.5" width="3" height="3" fill="#e0c040" />
+
+    <!-- Zona de click generosa sobre todo el cuerpo -->
+    <rect data-role="switch-hitzone" x="2" y="2" width="36" height="20" fill="transparent" style="cursor:pointer" />
+
+</svg>

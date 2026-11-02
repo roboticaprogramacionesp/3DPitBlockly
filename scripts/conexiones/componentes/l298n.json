@@ -1,0 +1,43 @@
+{
+    "type": "l298n",
+    "name": "L298N Puente H",
+
+    "width": 169.29,
+    "height": 169.29,
+
+    "svg": "components/l298n/l298n.svg",
+
+    "pinShape": "square",
+    "pinSize": 6,
+
+    "pins": [
+        { "id": "out1", "name": "OUT1 (Motor A)", "x": 1.95,   "y": 104.95, "type": "output", "signal": "motor", "optional": true },
+        { "id": "out2", "name": "OUT2 (Motor A)", "x": 1.95,   "y": 123.64, "type": "output", "signal": "motor", "optional": true },
+
+        { "id": "power_12v", "name": "+12V",  "x": 35.43, "y": 167.50, "type": "power",  "signal": "power" },
+        { "id": "power_gnd", "name": "GND",   "x": 54.12, "y": 167.50, "type": "ground", "signal": "ground" },
+        { "id": "power_5v",  "name": "+5V",   "x": 72.81, "y": 167.50, "type": "power",  "signal": "power" },
+
+        { "id": "out4", "name": "OUT4 (Motor B)", "x": 167.64, "y": 101.28, "type": "output", "signal": "motor", "optional": true },
+        { "id": "out3", "name": "OUT3 (Motor B)", "x": 167.64, "y": 119.97, "type": "output", "signal": "motor", "optional": true },
+
+        { "id": "jumper_5v", "name": "Jumper 5V", "x": 50.09, "y": 121.34, "type": "power", "signal": "power" },
+        { "id": "jumper_enb", "name": "Jumper EN", "x": 60.09, "y": 121.34, "type": "power", "signal": "power" },
+
+        { "id": "vcc5v_a", "name": "+5V", "x": 93.62,  "y": 147.27, "type": "power", "signal": "power" },
+        { "id": "vcc5v_b", "name": "+5V", "x": 143.62, "y": 147.27, "type": "power", "signal": "power" },
+
+        { "id": "ena", "name": "ENA", "x": 93.62,  "y": 157.27, "type": "input", "signal": "pwm", "optional": true },
+        { "id": "in1", "name": "IN1", "x": 103.62, "y": 157.27, "type": "input", "signal": "digital", "optional": true },
+        { "id": "in2", "name": "IN2", "x": 113.62, "y": 157.27, "type": "input", "signal": "digital", "optional": true },
+        { "id": "in3", "name": "IN3", "x": 123.62, "y": 157.27, "type": "input", "signal": "digital", "optional": true },
+        { "id": "in4", "name": "IN4", "x": 133.62, "y": 157.27, "type": "input", "signal": "digital", "optional": true },
+        { "id": "enb", "name": "ENB", "x": 143.62, "y": 157.27, "type": "input", "signal": "pwm", "optional": true }
+    ],
+
+    "properties": {
+        "modelo": "L298N",
+        "jumperEnaInstalled": true,
+        "jumperEnbInstalled": true
+    }
+}

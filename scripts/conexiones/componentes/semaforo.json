@@ -1,0 +1,24 @@
+{
+    "type": "semaforo",
+    "name": "Semáforo (3 LEDs)",
+    "category": "LEDs",
+
+    "width": 40,
+    "height": 100,
+
+    "svgPath": "components/semaforo/semaforo.svg",
+
+    "pinShape": "square",
+    "pinSize": 3,
+
+    "pins": [
+        { "id": "r",   "name": "R (Rojo)",     "x": 9,  "y": 81, "type": "signal" },
+        { "id": "y",   "name": "Y (Amarillo)", "x": 17, "y": 81, "type": "signal" },
+        { "id": "g",   "name": "G (Verde)",    "x": 25, "y": 81, "type": "signal" },
+        { "id": "gnd", "name": "GND",          "x": 33, "y": 81, "type": "ground", "signal": "ground" }
+    ],
+
+    "properties": {
+        "modelo": "Semáforo 3 LEDs (R/Y/G, cátodo común)"
+    }
+}

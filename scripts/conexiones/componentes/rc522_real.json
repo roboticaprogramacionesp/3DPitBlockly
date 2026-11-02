@@ -1,0 +1,30 @@
+{
+    "type": "rc522_real",
+    "name": "Lector RFID RC522",
+    "category": "RFID",
+
+    "width": 113.924,
+    "height": 86.4,
+
+    "svgPath": "components/rc522_real/rc522_real.svg",
+
+    "pinShape": "square",
+    "pinSize": 3.2,
+
+    "pins": [
+        { "id": "sda",  "name": "SDA/SS",  "x": 110.324, "y": 18,   "type": "signal" },
+        { "id": "sck",  "name": "SCK",     "x": 110.324, "y": 25.2, "type": "signal" },
+        { "id": "mosi", "name": "MOSI",    "x": 110.324, "y": 32.4, "type": "signal" },
+        { "id": "miso", "name": "MISO",    "x": 110.324, "y": 39.6, "type": "signal" },
+        { "id": "irq",  "name": "IRQ",     "x": 110.324, "y": 46.8, "type": "signal", "optional": true },
+        { "id": "gnd",  "name": "GND",     "x": 110.324, "y": 54,   "type": "ground", "signal": "ground" },
+        { "id": "rst",  "name": "RST",     "x": 110.324, "y": 61.2, "type": "signal" },
+        { "id": "vcc",  "name": "3.3V",    "x": 110.324, "y": 68.4, "type": "power",  "signal": "power" }
+    ],
+
+    "properties": {
+        "modelo": "RC522 (13.56MHz, SPI) -- mfrc522.py real. Visual: PCB real de un lector distinto (125kHz/UART, ver comentario en el .svg) reusado como piel -- el header SPI de abajo es propio, la electrónica es idéntica al 'rc522' original (ahora oculto)",
+        "cardIndex": 0,
+        "holding": false
+    }
+}

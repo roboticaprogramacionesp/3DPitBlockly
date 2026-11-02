@@ -1,0 +1,28 @@
+{
+    "type": "tcs34725",
+    "name": "TCS34725 Sensor de Color (I2C)",
+    "category": "Sensores",
+
+    "width": 72,
+    "height": 72,
+
+    "svgPath": "components/tcs34725/tcs34725.svg",
+
+    "pinShape": "square",
+    "pinSize": 3,
+
+    "pins": [
+        { "id": "led", "name": "LED",  "x": 9,  "y": 66.15, "type": "signal", "optional": true },
+        { "id": "int", "name": "INT",  "x": 18, "y": 66.15, "type": "signal", "optional": true },
+        { "id": "sda", "name": "SDA",  "x": 27, "y": 66.15, "type": "input",  "signal": "i2c" },
+        { "id": "scl", "name": "SCL",  "x": 36, "y": 66.15, "type": "input",  "signal": "i2c" },
+        { "id": "v3",  "name": "3V3",  "x": 45, "y": 66.15, "type": "signal", "optional": true },
+        { "id": "gnd", "name": "GND",  "x": 54, "y": 66.15, "type": "ground", "signal": "ground" },
+        { "id": "vdd", "name": "VDD",  "x": 63, "y": 66.15, "type": "power",  "signal": "power" }
+    ],
+
+    "properties": {
+        "modelo": "TCS34725 (módulo GY-33): sensor de color RGB + luz clara (I2C, dirección fija 0x29). VDD = entrada de alimentación real (3-5V); 3V3 es la SALIDA del regulador interno, NO una entrada de poder -- no cuenta para el chequeo de encendido del propio módulo. El color reportado se elige desde el panel de propiedades",
+        "color": "#ff8000"
+    }
+}

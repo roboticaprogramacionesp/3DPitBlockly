@@ -1,0 +1,25 @@
+{
+    "type": "tcrt5000",
+    "name": "TCRT5000 Sensor Infrarrojo (Línea/Obstáculo)",
+    "category": "Sensores",
+
+    "width": 99.212598,
+    "height": 42.519685,
+
+    "svgPath": "components/tcrt5000/tcrt5000.svg",
+
+    "pinShape": "square",
+    "pinSize": 3,
+
+    "pins": [
+        { "id": "vcc", "name": "Vcc", "x": 2, "y": 9.22,  "type": "power",  "signal": "power" },
+        { "id": "gnd", "name": "Gnd", "x": 2, "y": 18.14, "type": "ground", "signal": "ground" },
+        { "id": "do",  "name": "Do",  "x": 2, "y": 27.07, "type": "signal" },
+        { "id": "ao",  "name": "Ao",  "x": 2, "y": 36.54, "type": "signal", "optional": true }
+    ],
+
+    "properties": {
+        "modelo": "TCRT5000: sensor infrarrojo reflectivo (línea/obstáculo), salida digital 'Do' activa en BAJO al detectar. 'Ao' (salida analógica cruda del comparador) no está implementado -- se puede cablear pero no reporta un valor variable",
+        "detectado": false
+    }
+}
