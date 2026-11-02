@@ -128,11 +128,13 @@
       // el PWM del pin en una variable propia (_sv) para no pisar otras.
       Tools.repl("\x03");
       Tools.repl(`from machine import Pin, PWM; _sv = PWM(Pin(${pinEl.value}), freq=50)\r`);
+      Tools.replCleanup("_sv.deinit()\r");
       ready = true;
       sendAngle();
     }
     function stopLive() {
       if (ready) Tools.repl("_sv.deinit()\r");
+      Tools.replCleanup(null);
       ready = false;
     }
     function sendAngle() {

@@ -46,6 +46,12 @@
   }
 
   function close() {
+    listen(false);
+    if (cleanupCode) {
+      const st = replState();
+      if (st.connected && !st.busy) sendSerial(cleanupCode).catch(() => {});
+      cleanupCode = null;
+    }
     window.toolsEditPayload = null;
     overlay.hidden = true;
     frame.src = "about:blank";
@@ -122,7 +128,35 @@
     return { connected, busy };
   }
 
+  // Lo que responde la placa se reenvía a la herramienta mientras esté
+  // suscrita (3dpit-repl-listen) y la ventana abierta.
+  let forwardData = null;
+  function listen(on) {
+    if (forwardData) window.serialDataListeners.delete(forwardData);
+    forwardData = null;
+    if (on && window.serialDataListeners) {
+      forwardData = (chunk) => {
+        if (!overlay.hidden) frame.contentWindow.postMessage({ type: "3dpit-repl-data", chunk }, location.origin);
+      };
+      window.serialDataListeners.add(forwardData);
+    }
+  }
+
+  // Orden que la herramienta deja para limpiar si se cierra la ventana
+  // mientras algo sigue corriendo en la placa (detener un ciclo, soltar
+  // el PWM de un servo). Se manda acá porque el aviso de la propia
+  // herramienta al descargarse no siempre llega.
+  let cleanupCode = null;
+
   async function handleRepl(data) {
+    if (data.type === "3dpit-repl-listen") {
+      listen(!!data.on);
+      return;
+    }
+    if (data.type === "3dpit-repl-cleanup") {
+      cleanupCode = typeof data.code === "string" && data.code ? data.code : null;
+      return;
+    }
     const st = replState();
     if (data.type === "3dpit-repl" && typeof data.code === "string" && st.connected && !st.busy) {
       try {
@@ -137,7 +171,7 @@
   window.addEventListener("message", (e) => {
     if (e.origin !== location.origin || e.source !== frame.contentWindow) return;
     const data = e.data || {};
-    if (data.type === "3dpit-repl" || data.type === "3dpit-repl-status") {
+    if (typeof data.type === "string" && data.type.startsWith("3dpit-repl")) {
       handleRepl(data);
       return;
     }

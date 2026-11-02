@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Escáner I2C</title>
+  <link rel="stylesheet" href="tools.css">
+  <style>
+    .status { font-size: 14px; padding: 8px 10px; border-radius: 6px; background: var(--panel-2); }
+    .status.on { background: #1d4d2e; }
+    .device { display: flex; gap: 12px; align-items: flex-start; padding: 10px; border-radius: 8px; background: var(--panel-2); margin-top: 8px; }
+    .addr { font-family: monospace; font-size: 20px; font-weight: 700; min-width: 64px; }
+    .device p { margin: 2px 0 0; font-size: 13px; color: var(--muted); }
+    ul { margin: 6px 0 0; padding-left: 20px; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <a class="back" href="index.html">← Herramientas</a>
+  <h1>🔍 Escáner I2C</h1>
+  <p class="subtitle">Con la placa conectada, busca qué dispositivos I2C (pantallas, sensores) responden y en qué dirección.</p>
+
+  <div class="layout">
+    <div class="side" style="flex:1 1 280px">
+      <div class="panel">
+        <div class="row">
+          <label class="field">SDA <select id="sda"></select></label>
+          <label class="field">SCL <select id="scl"></select></label>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <button class="primary" id="scan">🔍 Buscar dispositivos</button>
+        </div>
+        <div class="status" id="status" style="margin-top:10px"></div>
+        <p class="hint" style="margin-top:6px">Al buscar se detiene el programa que esté corriendo en el ESP32.</p>
+      </div>
+    </div>
+    <div class="side" style="flex:2 1 360px">
+      <div class="panel" id="results"><p class="hint">Aquí aparecerán los dispositivos encontrados.</p></div>
+    </div>
+  </div>
+
+  <script src="tools.js"></script>
+  <script src="pins.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    // Direcciones de los módulos más comunes en clase.
+    const KNOWN = {
+      0x3c: ["Pantalla OLED (SSD1306 / SH1106)", "Pantallas → OLED"],
+      0x3d: ["Pantalla OLED (dirección alternativa)", "Pantallas → OLED"],
+      0x27: ["LCD I2C (adaptador PCF8574)", "Pantallas → LCD I2C, dirección 0x27"],
+      0x3f: ["LCD I2C (adaptador PCF8574A)", "Pantallas → LCD I2C, dirección 0x3F"],
+      0x68: ["MPU6050 (acelerómetro) o DS3231 (reloj)", "Periféricos → MPU6050 o DS3231"],
+      0x69: ["MPU6050 (con AD0 en 1)", "Periféricos → MPU6050"],
+      0x57: ["Memoria del módulo DS3231 o MAX30102 (pulso)", "Si tienes un DS3231, es su memoria: no hace falta usarla"],
+      0x76: ["BMP280 / BME280 (presión y temperatura)", "Periféricos → BMP280"],
+      0x77: ["BMP180 / BMP280 / BME280 (dirección alternativa)", "Periféricos → BMP280"],
+      0x23: ["BH1750 (luz)", "Periféricos → BH1750"],
+      0x5c: ["BH1750 (luz, ADDR en 1)", "Periféricos → BH1750"],
+      0x29: ["TCS34725 (color) o VL53L0X (distancia láser)", "Periféricos → TCS34725"],
+      0x1e: ["HMC5883L (brújula)", "Periféricos → HMC5883L"],
+      0x0d: ["QMC5883L (brújula, la que viene en muchos GY-271)", "Periféricos → brújula"],
+      0x40: ["INA219, PCA9685 (servos) o HTU21D", ""],
+      0x44: ["SHT3x (temperatura y humedad)", ""],
+      0x48: ["ADS1115 (convertidor analógico)", ""],
+      0x50: ["Memoria EEPROM (AT24C32...)", ""],
+      0x5a: ["MLX90614 (temperatura infrarroja)", ""],
+      0x38: ["AHT10 / AHT20 (temperatura y humedad)", ""],
+      0x28: ["Lector RFID MFRC522 (versión I2C)", ""],
+      0x70: ["Multiplexor TCA9548A", ""],
+    };
+    // Pines por defecto de cada placa (los mismos que usan los ejemplos).
+    const DEFAULTS = { esp32_wroom: [21, 22], esp32_s3: [8, 9], esp32_c3: [8, 9] };
+
+    const boardKey = BOARD_PINS[Tools.currentBoard()] ? Tools.currentBoard() : "esp32_wroom";
+    const usable = BOARD_PINS[boardKey].pins.filter((p) => p.level !== "no" && p.tags.includes("io"));
+    [["sda", 0], ["scl", 1]].forEach(([id, i]) => {
+      usable.forEach((p) => $(id).add(new Option(String(p.gpio), String(p.gpio))));
+      $(id).value = String(DEFAULTS[boardKey][i]);
+    });
+
+    let connected = false, busy = false, buffer = "", timer = null;
+    function setStatus(st, msg) {
+      connected = st.connected; busy = st.busy;
+      const el = $("status");
+      if (msg) el.textContent = msg;
+      else if (!Tools.embedded) el.textContent = "Abre esta herramienta desde 3DPit Blocks para usar la placa.";
+      else if (!connected) el.textContent = "🔌 Conecta la placa (botón de conexión de la app).";
+      else if (busy) el.textContent = "⏳ La app está subiendo código; espera un momento.";
+      else el.textContent = "✅ Placa conectada";
+      el.classList.toggle("on", connected && !busy);
+    }
+    Tools.replStatus((st) => setStatus(st));
+    setInterval(() => Tools.replStatus((st) => setStatus(st)), 2000);
+
+    function show(addrs) {
+      const box = $("results");
+      if (!addrs.length) {
+        box.innerHTML = "<p><b>No se encontró ningún dispositivo.</b></p><p class='hint'>Revisa:</p><ul>" +
+          "<li>Que SDA y SCL no estén invertidos.</li><li>Que el módulo tenga VCC (3.3 V o 5 V) y GND.</li>" +
+          "<li>Que los pines elegidos arriba sean los que conectaste.</li><li>Que los cables hagan buen contacto.</li></ul>";
+        return;
+      }
+      box.innerHTML = `<p><b>${addrs.length} dispositivo${addrs.length > 1 ? "s" : ""} encontrado${addrs.length > 1 ? "s" : ""}</b> en SDA ${$("sda").value} / SCL ${$("scl").value}</p>`;
+      addrs.forEach((a) => {
+        const k = KNOWN[a];
+        const d = document.createElement("div");
+        d.className = "device";
+        d.innerHTML = `<span class="addr">0x${a.toString(16).toUpperCase().padStart(2, "0")}</span><div><b>${k ? k[0] : "Dispositivo desconocido"}</b>` +
+          `<p>Decimal ${a}${k && k[1] ? " · Bloques: " + k[1] : ""}</p></div>`;
+        box.appendChild(d);
+      });
+    }
+
+    // Respuesta de la placa: "@@I2C [60, 39]" o "@@ERR mensaje". La marca se
+    // arma al correr ('@@'+'I2C') para no confundirla con el eco del comando.
+    function onData(chunk) {
+      buffer += chunk;
+      const ok = buffer.match(/@@I2C (\[[^\]]*\])/);
+      const err = buffer.match(/@@ERR ([^\r\n]*)/);
+      if (!ok && !err) return;
+      clearTimeout(timer);
+      Tools.replListen(null);
+      $("scan").disabled = false;
+      if (ok) {
+        show(JSON.parse(ok[1]));
+        setStatus({ connected, busy }, "✅ Búsqueda terminada");
+      } else {
+        setStatus({ connected, busy }, "⚠️ Error en la placa: " + err[1]);
+      }
+    }
+
+    $("scan").onclick = () => {
+      Tools.replOnce((st) => {
+        setStatus(st);
+        if (!st.connected || st.busy) return;
+        buffer = "";
+        $("scan").disabled = true;
+        $("results").innerHTML = "<p class='hint'>Buscando…</p>";
+        Tools.replListen(onData);
+        const py = [
+          "try:",
+          ` _i = __import__('machine').I2C(0, sda=__import__('machine').Pin(${$("sda").value}), scl=__import__('machine').Pin(${$("scl").value}))`,
+          " print('@@'+'I2C', _i.scan())",
+          "except Exception as _e:",
+          " print('@@'+'ERR', _e)",
+        ].join("\n");
+        Tools.repl("\x03");
+        Tools.repl(`exec(${JSON.stringify(py)})\r`);
+        timer = setTimeout(() => {
+          Tools.replListen(null);
+          $("scan").disabled = false;
+          setStatus(st, "⚠️ La placa no respondió. Revisa la conexión y vuelve a intentar.");
+        }, 4000);
+      });
+    };
+  </script>
+</body>
+</html>

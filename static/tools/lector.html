@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lector de pines</title>
+  <link rel="stylesheet" href="tools.css">
+  <style>
+    .status { font-size: 14px; padding: 8px 10px; border-radius: 6px; background: var(--panel-2); }
+    .status.on { background: #1d4d2e; }
+    .big { font-size: 42px; font-weight: 800; font-family: monospace; }
+    .stats { display: flex; gap: 18px; flex-wrap: wrap; font-size: 14px; color: var(--muted); }
+    .stats b { color: var(--text); font-family: monospace; }
+    canvas#chart { width: 100%; height: 220px; background: #0f1226; border-radius: 8px; display: block; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <a class="back" href="index.html">← Herramientas</a>
+  <h1>📈 Lector de pines en vivo</h1>
+  <p class="subtitle">Lee un pin de la placa conectada y grafica su valor: prueba un botón, un potenciómetro o una LDR antes de programar.</p>
+
+  <div class="layout">
+    <div class="side" style="flex:1 1 260px">
+      <div class="panel">
+        <div class="row">
+          <label class="field">Qué leer
+            <select id="mode">
+              <option value="analog">Analógico (potenciómetro, LDR)</option>
+              <option value="pullup">Digital con pull-up (botón a GND)</option>
+              <option value="digital">Digital (sensor con salida 0/1)</option>
+            </select>
+          </label>
+          <label class="field">Pin <select id="pin"></select></label>
+          <label class="field">Cada
+            <select id="every">
+              <option value="50">50 ms</option>
+              <option value="100" selected>100 ms</option>
+              <option value="250">250 ms</option>
+              <option value="500">500 ms</option>
+            </select>
+          </label>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <button class="primary" id="start">▶ Empezar</button>
+          <button id="stop" disabled>■ Parar</button>
+        </div>
+        <div class="status" id="status" style="margin-top:10px"></div>
+        <p class="hint" style="margin-top:6px">Al empezar se detiene el programa que esté corriendo en el ESP32.</p>
+      </div>
+    </div>
+
+    <div class="side" style="flex:2 1 380px">
+      <div class="panel">
+        <div class="big" id="value">–</div>
+        <div class="stats">
+          <span>Mínimo <b id="min">–</b></span>
+          <span>Máximo <b id="max">–</b></span>
+          <span id="voltWrap">Voltaje <b id="volt">–</b></span>
+        </div>
+        <canvas id="chart" width="700" height="220"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <script src="tools.js"></script>
+  <script src="pins.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const board = BOARD_PINS[Tools.currentBoard()] || BOARD_PINS.esp32_wroom;
+    const DEFAULT_PIN = { analog: [34, 1, 0], pullup: [4, 4, 4], digital: [4, 4, 4] };
+
+    function fillPins() {
+      const analog = $("mode").value === "analog";
+      const prev = $("pin").value;
+      $("pin").innerHTML = "";
+      board.pins
+        // Con pull-up solo sirven pines de entrada/salida: los "solo entrada"
+        // (34–39 en el ESP32) no tienen resistencia pull-up interna.
+        .filter((p) => p.level !== "no" && (analog ? p.tags.includes("adc1") || p.tags.includes("adc2")
+          : $("mode").value === "pullup" ? p.tags.includes("io") : p.tags.includes("io") || p.tags.includes("in")))
+        .forEach((p) => $("pin").add(new Option(String(p.gpio) + (p.tags.includes("adc2") && analog ? " (ADC2: no con WiFi)" : ""), String(p.gpio))));
+      const want = [prev, ...DEFAULT_PIN[$("mode").value].map(String)].find((v) => $("pin").querySelector(`option[value="${v}"]`));
+      $("pin").value = want || $("pin").options[0].value;
+      $("voltWrap").hidden = !analog;
+    }
+    $("mode").onchange = fillPins;
+    fillPins();
+
+    let running = false, buffer = "", samples = [], min = null, max = null;
+    function setStatus(st, msg) {
+      const el = $("status");
+      if (msg) el.textContent = msg;
+      else if (!Tools.embedded) el.textContent = "Abre esta herramienta desde 3DPit Blocks para usar la placa.";
+      else if (!st.connected) el.textContent = "🔌 Conecta la placa (botón de conexión de la app).";
+      else if (st.busy) el.textContent = "⏳ La app está subiendo código; espera un momento.";
+      else el.textContent = running ? `✅ Leyendo el pin ${$("pin").value}` : "✅ Placa conectada";
+      el.classList.toggle("on", !!st.connected && !st.busy);
+      if (running && !st.connected) stop();
+    }
+    Tools.replStatus((st) => setStatus(st));
+    setInterval(() => Tools.replStatus((st) => setStatus(st)), 2000);
+
+    // Cada lectura llega como "@@V <número>"; la marca se arma al correr
+    // ('@@'+'V') para no confundirla con el eco del comando.
+    function onData(chunk) {
+      buffer += chunk;
+      const lines = buffer.split(/\r?\n/);
+      buffer = lines.pop();
+      lines.forEach((line) => {
+        const m = line.match(/@@V (-?\d+)/);
+        if (m) add(Number(m[1]));
+      });
+    }
+
+    function add(v) {
+      samples.push(v);
+      if (samples.length > 200) samples.shift();
+      min = min === null ? v : Math.min(min, v);
+      max = max === null ? v : Math.max(max, v);
+      const analog = $("mode").value === "analog";
+      $("value").textContent = analog ? v : v ? "1 (alto)" : "0 (bajo)";
+      $("min").textContent = min;
+      $("max").textContent = max;
+      if (analog) $("volt").textContent = (v / 4095 * 3.3).toFixed(2) + " V";
+      draw(analog ? 4095 : 1);
+    }
+
+    function draw(top) {
+      const c = $("chart"), g = c.getContext("2d");
+      g.clearRect(0, 0, c.width, c.height);
+      g.strokeStyle = "rgba(255,255,255,0.08)";
+      for (let i = 0; i <= 4; i++) {
+        const y = 10 + (i * (c.height - 20)) / 4;
+        g.beginPath(); g.moveTo(0, y); g.lineTo(c.width, y); g.stroke();
+      }
+      g.strokeStyle = "#7b6cf6";
+      g.lineWidth = 3;
+      g.beginPath();
+      samples.forEach((v, i) => {
+        const x = (i / 199) * c.width;
+        const y = c.height - 10 - (v / top) * (c.height - 20);
+        i ? g.lineTo(x, y) : g.moveTo(x, y);
+      });
+      g.stroke();
+    }
+
+    function start() {
+      Tools.replOnce((st) => {
+        setStatus(st);
+        if (!st.connected || st.busy) return;
+        running = true; buffer = ""; samples = []; min = max = null;
+        $("start").disabled = true; $("stop").disabled = false;
+        const pin = $("pin").value, mode = $("mode").value, every = $("every").value;
+        const setup = mode === "analog"
+          ? `_p = ADC(Pin(${pin}))\n_p.atten(ADC.ATTN_11DB)\n_r = lambda: _p.read_u16() >> 4`
+          : `_p = Pin(${pin}, Pin.IN${mode === "pullup" ? ", Pin.PULL_UP" : ""})\n_r = _p.value`;
+        const py = `from machine import Pin, ADC\nimport time\n${setup}\nwhile True:\n print('@@'+'V', _r())\n time.sleep_ms(${every})`;
+        Tools.replListen(onData);
+        Tools.repl("\x03");
+        Tools.repl(`exec(${JSON.stringify(py)})\r`);
+        Tools.replCleanup("\x03");
+        setStatus(st);
+      });
+    }
+    function stop() {
+      if (!running) return;
+      running = false;
+      Tools.repl("\x03");
+      Tools.replCleanup(null);
+      Tools.replListen(null);
+      $("start").disabled = false; $("stop").disabled = true;
+      Tools.replStatus((st) => setStatus(st));
+    }
+    $("start").onclick = start;
+    $("stop").onclick = stop;
+    ["mode", "pin", "every"].forEach((id) => $(id).addEventListener("change", () => { if (running) { stop(); start(); } }));
+    window.addEventListener("pagehide", stop);
+  </script>
+</body>
+</html>

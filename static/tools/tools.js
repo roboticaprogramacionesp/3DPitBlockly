@@ -50,14 +50,37 @@ const Tools = (() => {
     window.parent.postMessage({ type: "3dpit-insert-blocks", xml, replaceId }, location.origin);
   }
 
-  // REPL del ESP32 a través de la app (solo dentro de ella). onStatus
-  // recibe {connected, busy} cada vez que la app responde.
+  // REPL del ESP32 a través de la app (solo dentro de ella). La app
+  // responde {connected, busy} a cada pedido y también después de cada
+  // orden mandada con repl(): por eso replStatus() es solo para mostrar el
+  // estado, y para arrancar algo se usa replOnce(), que avisa una sola vez
+  // (si arrancara con replStatus, cada orden volvería a arrancarlo).
   let replListener = null;
+  let replOnceQueue = [];
   window.addEventListener("message", (e) => {
-    if (e.origin === location.origin && e.data && e.data.type === "3dpit-repl-status" && replListener) {
-      replListener(e.data);
+    if (e.origin !== location.origin || !e.data || e.data.type !== "3dpit-repl-status") return;
+    if (replListener) replListener(e.data);
+    const once = replOnceQueue;
+    replOnceQueue = [];
+    once.forEach((fn) => fn(e.data));
+  });
+  // Recibe el texto que responde la placa (onData(chunk)); null deja de escuchar.
+  let dataListener = null;
+  window.addEventListener("message", (e) => {
+    if (e.origin === location.origin && e.data && e.data.type === "3dpit-repl-data" && dataListener) {
+      dataListener(e.data.chunk);
     }
   });
+  function replListen(onData) {
+    dataListener = onData;
+    if (embedded) window.parent.postMessage({ type: "3dpit-repl-listen", on: !!onData }, location.origin);
+  }
+
+  // Orden a mandar si se cierra la ventana con algo corriendo (null = nada).
+  function replCleanup(code) {
+    if (embedded) window.parent.postMessage({ type: "3dpit-repl-cleanup", code: code || "" }, location.origin);
+  }
+
   function repl(code) {
     if (embedded) window.parent.postMessage({ type: "3dpit-repl", code }, location.origin);
   }
@@ -65,6 +88,11 @@ const Tools = (() => {
     replListener = onStatus;
     if (embedded) window.parent.postMessage({ type: "3dpit-repl-status" }, location.origin);
     else onStatus({ connected: false, busy: false });
+  }
+  function replOnce(cb) {
+    if (!embedded) { cb({ connected: false, busy: false }); return; }
+    replOnceQueue.push(cb);
+    window.parent.postMessage({ type: "3dpit-repl-status" }, location.origin);
   }
 
   // Placa elegida en la app (ESP32_BOARDS de conversion.js), si la hay.
@@ -203,5 +231,5 @@ const Tools = (() => {
     });
   });
 
-  return { embedded, toast, copy, editPayload, insertBlocks, escapeXml, pyName, paintGrid, monoHex, monoFromHex, xy, palette, repl, replStatus, currentBoard };
+  return { embedded, toast, copy, editPayload, insertBlocks, escapeXml, pyName, paintGrid, monoHex, monoFromHex, xy, palette, repl, replStatus, replOnce, replListen, replCleanup, currentBoard };
 })();

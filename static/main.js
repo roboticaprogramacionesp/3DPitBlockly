@@ -287,6 +287,21 @@ function _smCall(method, ...args) {
   }
 }
 
+// Herramientas que necesitan leer lo que responde la placa (escáner I2C,
+// lector de pines; ver static/tools-panel.js) se suscriben acá. Mismo
+// cuidado que _smCall(): un error de un oyente nunca debe llegar a
+// readSerialLoop, que lo tomaría como "Conexión perdida".
+window.serialDataListeners = new Set();
+function _notifySerialListeners(chunk) {
+  window.serialDataListeners.forEach((fn) => {
+    try {
+      fn(chunk);
+    } catch (err) {
+      console.warn("[serialDataListeners] Error:", err);
+    }
+  });
+}
+
 // ─────────────────────────────────────────────────────────────
 // DETECCIÓN DE VELOCIDAD DEL DISPOSITIVO (ESP32 Wroom vs C3/C6/S2/S3)
 // ─────────────────────────────────────────────────────────────
@@ -1918,6 +1933,7 @@ function connectWifiSerial(host, password) {
         if (window._wifiDebug) console.log("📥 WIFI RX:", JSON.stringify(chunk));
         term.write(chunk);
         _smCall("feed", chunk);
+        _notifySerialListeners(chunk);
         if (typeof window._rawReplHook === "function") window._rawReplHook(chunk);
         if (waitingResponse) serialBuffer += chunk;
       };
@@ -1971,6 +1987,7 @@ async function readSerialLoop() {
 
         // Alimentar monitor serial
         _smCall("feed", chunk);
+        _notifySerialListeners(chunk);
 
         // Hook para raw REPL (buffer local aislado)
         if (typeof window._rawReplHook === "function")
