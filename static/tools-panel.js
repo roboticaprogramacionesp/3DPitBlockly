@@ -19,6 +19,8 @@
     neopixel_image: "neopixel.html",
     oled_image: "oled.html",
     matrix8_image: "matriz8x8.html",
+    tft_image: "tft.html",
+    tm1637_segments: "tm1637.html",
     buzzer_melody: "melodias.html",
   };
 
@@ -36,6 +38,7 @@
       w: block.imgW_,
       h: block.imgH_,
       data: block.imgData_,
+      scale: block.getField("SCALE") ? block.getFieldValue("SCALE") : undefined,
     };
     // Bloques que guardan otra cosa que una imagen (p.ej. la melodía).
     if (block.getToolPayload_) Object.assign(window.toolsEditPayload, block.getToolPayload_());

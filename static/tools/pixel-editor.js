@@ -11,7 +11,9 @@
 //   });
 //   ed.resize(w, h)  ed.values  ed.setValues(arr)  ed.w  ed.h
 //
-// El toolbar se arma solo dentro del elemento `toolbar`.
+// El toolbar se arma solo dentro del elemento `toolbar`, y el panel de
+// "Cargar una imagen" dentro de `imagePanel` (si se pasa): en blanco y negro
+// con umbral, o a colores achicando la foto al tamaño del dibujo.
 function PixelEditor(opts) {
   const color = opts.mode === "color";
   const OFF = color ? "#000000" : 0;
@@ -70,6 +72,75 @@ function PixelEditor(opts) {
     });
   }
 
+  // ── Cargar imagen ──
+  let image = null;
+  let lit = null, threshold = null;
+  if (opts.imagePanel) {
+    opts.imagePanel.innerHTML =
+      '<p class="section-title">Cargar una imagen</p>' +
+      '<div class="row"><button data-load>📁 Elegir imagen</button>' +
+      '<input type="file" accept="image/*" hidden></div>' +
+      (color
+        ? '<p class="hint" style="margin-top:6px">Se achica al tamaño del dibujo. Las fotos con mucho detalle se ven mejor en tamaños grandes.</p>'
+        : '<div class="row" style="margin-top:8px">' +
+          '<label class="field">Encender las partes <select data-lit><option value="dark">oscuras</option>' +
+          '<option value="light">claras</option></select></label>' +
+          '<label class="field">Umbral <span data-th-val>128</span>' +
+          '<input type="range" data-th min="1" max="254" value="128"></label></div>');
+    const file = opts.imagePanel.querySelector('input[type="file"]');
+    opts.imagePanel.querySelector("[data-load]").onclick = () => file.click();
+    file.onchange = () => {
+      const f = file.files[0];
+      if (!f) return;
+      const img = new Image();
+      img.onload = () => {
+        ed.snapshot();
+        image = img;
+        applyImage();
+        URL.revokeObjectURL(img.src);
+      };
+      img.src = URL.createObjectURL(f);
+      file.value = "";
+    };
+    lit = opts.imagePanel.querySelector("[data-lit]");
+    threshold = opts.imagePanel.querySelector("[data-th]");
+    if (lit) lit.onchange = () => image && applyImage();
+    if (threshold) threshold.oninput = () => {
+      opts.imagePanel.querySelector("[data-th-val]").textContent = threshold.value;
+      if (image) applyImage();
+    };
+  }
+
+  // La imagen se ajusta al dibujo sin deformarse, centrada.
+  function applyImage() {
+    const W = ed.w, H = ed.h;
+    const c = document.createElement("canvas");
+    c.width = W; c.height = H;
+    const g = c.getContext("2d");
+    g.imageSmoothingQuality = "high";
+    // Fondo = "apagado": negro, salvo en blanco y negro encendiendo lo oscuro.
+    g.fillStyle = (color || lit.value === "light") ? "#000" : "#fff";
+    g.fillRect(0, 0, W, H);
+    const k = Math.min(W / image.width, H / image.height);
+    const dw = image.width * k, dh = image.height * k;
+    g.drawImage(image, (W - dw) / 2, (H - dh) / 2, dw, dh);
+    const px = g.getImageData(0, 0, W, H).data;
+    const out = [];
+    for (let i = 0; i < W * H; i++) {
+      const r = px[i * 4], gr = px[i * 4 + 1], b = px[i * 4 + 2];
+      if (color) {
+        out.push("#" + [r, gr, b].map((v) => v.toString(16).padStart(2, "0")).join(""));
+      } else {
+        const lum = 0.299 * r + 0.587 * gr + 0.114 * b;
+        const th = Number(threshold.value);
+        out.push(lit.value === "dark" ? (lum < th ? 1 : 0) : (lum >= th ? 1 : 0));
+      }
+    }
+    ed.values = out;
+    ed.render();
+    onChange();
+  }
+
   // ── Tamaño y dibujo ──
   ed.resize = function (w, h) {
     const old = ed.values, oldW = ed.w, oldH = ed.h;
@@ -82,7 +153,12 @@ function PixelEditor(opts) {
     canvas.width = w * S;
     canvas.height = h * S;
     ed.render();
+    // Al cambiar el tamaño con una foto cargada, se vuelve a convertir.
+    if (image && (w !== oldW || h !== oldH)) applyImage();
   };
+
+  // Olvida la foto cargada (p.ej. al abrir un dibujo para editarlo).
+  ed.forgetImage = () => { image = null; };
 
   ed.setValues = function (arr) {
     ed.values = arr.slice(0, ed.w * ed.h);

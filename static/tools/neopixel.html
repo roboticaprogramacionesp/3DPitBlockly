@@ -5,18 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Editor NeoPixel</title>
   <link rel="stylesheet" href="tools.css">
-  <style>
-    .swatches { display: flex; flex-wrap: wrap; gap: 6px; }
-    .swatch {
-      width: 34px; height: 34px; min-height: 0; padding: 0;
-      border-radius: 50%; border: 2px solid var(--line);
-    }
-    .swatch.active { border-color: #fff; box-shadow: 0 0 0 2px var(--accent); }
-    input[type="color"] {
-      width: 44px; height: 34px; padding: 0; border: 1px solid var(--line);
-      border-radius: 6px; background: var(--panel-2);
-    }
-  </style>
 </head>
 <body>
   <a class="back" href="index.html">← Herramientas</a>
@@ -52,16 +40,11 @@
         </div>
       </div>
 
-      <div class="panel">
-        <p class="section-title">Color</p>
-        <div class="swatches" id="swatches"></div>
-        <div class="row" style="margin-top:8px">
-          <input type="color" id="custom" value="#ff00ff" title="Otro color">
-          <span class="hint">Otro color</span>
-        </div>
-      </div>
+      <div class="panel" id="palette"></div>
 
       <div class="panel" id="toolbar"></div>
+
+      <div class="panel" id="imagePanel"></div>
 
       <div class="panel">
         <div class="row">
@@ -76,42 +59,21 @@
   <script src="tools.js"></script>
   <script src="pixel-editor.js"></script>
   <script>
-    const PALETTE = [
-      ["Rojo", "#ff0000"], ["Naranja", "#ff8000"], ["Amarillo", "#ffff00"],
-      ["Verde", "#00ff00"], ["Cian", "#00ffff"], ["Azul", "#0000ff"],
-      ["Morado", "#8000ff"], ["Rosa", "#ff0080"], ["Blanco", "#ffffff"],
-    ];
     const presetEl = document.getElementById("preset");
     const wEl = document.getElementById("w");
     const hEl = document.getElementById("h");
     const nameEl = document.getElementById("name");
-    const customEl = document.getElementById("custom");
     const edit = Tools.editPayload();
-    let color = "#ff0000";
-
-    const swatchEls = PALETTE.map(([label, hex]) => {
-      const b = document.createElement("button");
-      b.className = "swatch";
-      b.title = label;
-      b.style.background = hex;
-      b.onclick = () => selectColor(hex, b);
-      document.getElementById("swatches").appendChild(b);
-      return b;
-    });
-    function selectColor(hex, el) {
-      color = hex;
-      swatchEls.forEach((s) => s.classList.toggle("active", s === el));
-    }
-    selectColor("#ff0000", swatchEls[0]);
-    customEl.oninput = () => selectColor(customEl.value, null);
+    const color = Tools.palette(document.getElementById("palette"));
 
     const ed = PixelEditor({
       canvas: document.getElementById("screen"),
       toolbar: document.getElementById("toolbar"),
+      imagePanel: document.getElementById("imagePanel"),
       coords: document.getElementById("coords"),
       mode: "color",
       shape: "round",
-      color: () => color,
+      color,
     });
 
     function build(w, h) {

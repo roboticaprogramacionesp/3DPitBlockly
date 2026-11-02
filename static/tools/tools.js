@@ -90,6 +90,38 @@ const Tools = (() => {
     return out;
   }
 
+  // Paleta de colores con "Otro color". Devuelve () => color elegido.
+  const PALETTE = [
+    ["Rojo", "#ff0000"], ["Naranja", "#ff8000"], ["Amarillo", "#ffff00"],
+    ["Verde", "#00ff00"], ["Cian", "#00ffff"], ["Azul", "#0000ff"],
+    ["Morado", "#8000ff"], ["Rosa", "#ff0080"], ["Blanco", "#ffffff"],
+  ];
+  function palette(container, extra) {
+    let color = PALETTE[0][1];
+    container.innerHTML =
+      '<p class="section-title">Color</p><div class="swatches"></div>' +
+      '<div class="row" style="margin-top:8px"><input type="color" value="#ff00ff" title="Otro color">' +
+      '<span class="hint">Otro color</span></div>';
+    const box = container.querySelector(".swatches");
+    const all = PALETTE.concat(extra || []).map(([label, hex]) => {
+      const b = document.createElement("button");
+      b.className = "swatch";
+      b.title = label;
+      b.style.background = hex;
+      b.onclick = () => select(hex, b);
+      box.appendChild(b);
+      return b;
+    });
+    function select(hex, el) {
+      color = hex;
+      all.forEach((s) => s.classList.toggle("active", s === el));
+    }
+    const custom = container.querySelector('input[type="color"]');
+    custom.oninput = () => select(custom.value, null);
+    select(color, all[0]);
+    return () => color;
+  }
+
   // Entradas X e Y en 0 para los bloques de imagen.
   function xy() {
     const num = (f) => `<value name="${f}"><shadow type="math_number"><field name="NUM">0</field></shadow></value>`;
@@ -145,5 +177,5 @@ const Tools = (() => {
     });
   });
 
-  return { embedded, toast, copy, editPayload, insertBlocks, escapeXml, pyName, paintGrid, monoHex, monoFromHex, xy };
+  return { embedded, toast, copy, editPayload, insertBlocks, escapeXml, pyName, paintGrid, monoHex, monoFromHex, xy, palette };
 })();

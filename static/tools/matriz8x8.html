@@ -36,6 +36,8 @@
 
       <div class="panel" id="toolbar"></div>
 
+      <div class="panel" id="imagePanel"></div>
+
       <div class="panel">
         <div class="row">
           <button class="primary" id="insert" data-embedded-only>Insertar en mis bloques</button>
@@ -56,6 +58,7 @@
     const ed = PixelEditor({
       canvas: document.getElementById("screen"),
       toolbar: document.getElementById("toolbar"),
+      imagePanel: document.getElementById("imagePanel"),
       coords: document.getElementById("coords"),
       mode: "mono",
       shape: "round",

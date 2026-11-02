@@ -40,24 +40,7 @@
 
       <div class="panel" id="toolbar"></div>
 
-      <div class="panel">
-        <p class="section-title">Cargar una imagen</p>
-        <div class="row">
-          <button id="load">📁 Elegir imagen</button>
-          <input type="file" id="file" accept="image/*" hidden>
-        </div>
-        <div class="row" style="margin-top:8px">
-          <label class="field">Encender las partes
-            <select id="lit">
-              <option value="dark">oscuras</option>
-              <option value="light">claras</option>
-            </select>
-          </label>
-          <label class="field">Umbral <span id="thVal">128</span>
-            <input type="range" id="threshold" min="1" max="254" value="128">
-          </label>
-        </div>
-      </div>
+      <div class="panel" id="imagePanel"></div>
 
       <div class="panel">
         <div class="row">
@@ -77,11 +60,11 @@
     const hEl = document.getElementById("h");
     const nameEl = document.getElementById("name");
     const edit = Tools.editPayload();
-    let loadedImage = null;
 
     const ed = PixelEditor({
       canvas: document.getElementById("screen"),
       toolbar: document.getElementById("toolbar"),
+      imagePanel: document.getElementById("imagePanel"),
       coords: document.getElementById("coords"),
       mode: "mono",
       shape: "square",
@@ -104,48 +87,9 @@
       const [w, h] = presetEl.value.split("x").map(Number);
       ed.snapshot();
       build(w, h);
-      if (loadedImage) applyImage();
     };
     wEl.onchange = hEl.onchange = () => { ed.snapshot(); build(Number(wEl.value), Number(hEl.value)); };
 
-    // ── Cargar imagen: se ajusta al lienzo sin deformarla y se pasa a
-    //    blanco y negro con el umbral. ──
-    const fileEl = document.getElementById("file");
-    const thEl = document.getElementById("threshold");
-    const litEl = document.getElementById("lit");
-    document.getElementById("load").onclick = () => fileEl.click();
-    fileEl.onchange = () => {
-      const f = fileEl.files[0];
-      if (!f) return;
-      const img = new Image();
-      img.onload = () => { ed.snapshot(); loadedImage = img; applyImage(); URL.revokeObjectURL(img.src); };
-      img.src = URL.createObjectURL(f);
-      fileEl.value = "";
-    };
-    function applyImage() {
-      const W = ed.w, H = ed.h;
-      const c = document.createElement("canvas");
-      c.width = W; c.height = H;
-      const g = c.getContext("2d");
-      g.fillStyle = litEl.value === "dark" ? "#fff" : "#000";
-      g.fillRect(0, 0, W, H);
-      const k = Math.min(W / loadedImage.width, H / loadedImage.height);
-      const dw = loadedImage.width * k, dh = loadedImage.height * k;
-      g.drawImage(loadedImage, (W - dw) / 2, (H - dh) / 2, dw, dh);
-      const px = g.getImageData(0, 0, W, H).data;
-      const th = Number(thEl.value);
-      const out = [];
-      for (let i = 0; i < W * H; i++) {
-        const lum = 0.299 * px[i * 4] + 0.587 * px[i * 4 + 1] + 0.114 * px[i * 4 + 2];
-        out.push(litEl.value === "dark" ? (lum < th ? 1 : 0) : (lum >= th ? 1 : 0));
-      }
-      ed.setValues(out);
-    }
-    thEl.oninput = () => {
-      document.getElementById("thVal").textContent = thEl.value;
-      if (loadedImage) applyImage();
-    };
-    litEl.onchange = () => { if (loadedImage) applyImage(); };
 
     // ── Salida: MONO_HLSB (lo que espera OLED.icon) ──
     function name() { return Tools.pyName(nameEl.value, "oled"); }

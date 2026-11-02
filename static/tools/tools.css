@@ -172,3 +172,15 @@ input[type="number"] {
   font-size: 15px;
 }
 input[type="range"] { width: 150px; }
+
+/* Paleta de colores (Tools.palette). */
+.swatches { display: flex; flex-wrap: wrap; gap: 6px; }
+.swatch {
+  width: 34px; height: 34px; min-height: 0; padding: 0;
+  border-radius: 50%; border: 2px solid var(--line);
+}
+.swatch.active { border-color: #fff; box-shadow: 0 0 0 2px var(--accent); }
+input[type="color"] {
+  width: 44px; height: 34px; padding: 0; border: 1px solid var(--line);
+  border-radius: 6px; background: var(--panel-2);
+}
