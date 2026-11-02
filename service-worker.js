@@ -2,7 +2,7 @@
    Service Worker — 3DPit Blocks PWA
    ============================================================ */
 
-const CACHE_NAME = '3dpit-blocks-v75';
+const CACHE_NAME = '3dpit-blocks-v76';
 
 /* ── INSTALL ── */
 self.addEventListener('install', event => {
@@ -141,6 +141,17 @@ self.addEventListener('fetch', event => {
       if (cached) return cached;
 
       return fetch(event.request)
+        .then(response => {
+          /* GitHub Pages manda los 404 con Cache-Control: max-age=600, y el
+             navegador los reusa 10 minutos: si una imagen se pidió justo
+             mientras se publicaba un cambio (archivo nuevo o renombrado),
+             seguía "rota" aunque ya existiera. Se vuelve a pedir una vez
+             saltando la caché HTTP. */
+          if (response && response.status === 404 && event.request.destination === 'image') {
+            return fetch(event.request, { cache: 'reload' });
+          }
+          return response;
+        })
         .then(response => {
           if (!response || response.status !== 200 || response.type === 'opaque') {
             return response;
