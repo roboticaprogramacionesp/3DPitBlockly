@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Calculadoras</title>
+  <link rel="stylesheet" href="tools.css">
+  <style>
+    .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+    .result { font-size: 24px; font-weight: 700; margin: 4px 0; }
+    .formula { font-family: monospace; color: var(--muted); font-size: 14px; }
+    table { border-collapse: collapse; font-size: 14px; margin-top: 8px; }
+    td, th { padding: 4px 12px 4px 0; text-align: left; }
+    th { color: var(--muted); font-weight: 600; }
+    .bar { height: 14px; border-radius: 7px; background: var(--panel-2); overflow: hidden; margin-top: 8px; }
+    .bar > div { height: 100%; background: var(--accent); }
+    svg.diagram { width: min(100%, 300px); display: block; }
+  </style>
+</head>
+<body>
+  <a class="back" href="index.html">← Herramientas</a>
+  <h1>🧮 Calculadoras de electrónica</h1>
+  <p class="subtitle">Las cuentas que más se usan al armar circuitos con el ESP32.</p>
+
+  <div class="tabs">
+    <button data-tab="ohm" class="active">Ω Ley de Ohm</button>
+    <button data-tab="div">⚡ Divisor de voltaje</button>
+    <button data-tab="adc">📈 Lectura analógica (ADC)</button>
+    <button data-tab="pwm">〰️ PWM</button>
+  </div>
+
+  <!-- ── Ley de Ohm ── -->
+  <div class="panel" data-pane="ohm">
+    <p class="hint">Escribe dos valores y elige cuál calcular. V = I × R</p>
+    <div class="row" style="margin-top:8px">
+      <label class="field">Calcular
+        <select id="ohmTarget">
+          <option value="R">Resistencia (R)</option>
+          <option value="I">Corriente (I)</option>
+          <option value="V">Voltaje (V)</option>
+        </select>
+      </label>
+      <label class="field" data-ohm="V">Voltaje (V) <input type="number" id="ohmV" value="3.3" step="any"></label>
+      <label class="field" data-ohm="I">Corriente (mA) <input type="number" id="ohmI" value="10" step="any"></label>
+      <label class="field" data-ohm="R">Resistencia (Ω) <input type="number" id="ohmR" value="330" step="any"></label>
+    </div>
+    <div class="result" id="ohmResult"></div>
+    <div class="formula" id="ohmFormula"></div>
+  </div>
+
+  <!-- ── Divisor de voltaje ── -->
+  <div class="panel" data-pane="div" hidden>
+    <div class="layout">
+      <div style="flex:1 1 300px">
+        <p class="hint">Baja un voltaje con dos resistencias. Sirve para leer un sensor de 5 V con un pin de 3.3 V. Vsal = Vent × R2 ÷ (R1 + R2)</p>
+        <div class="row" style="margin-top:8px">
+          <label class="field">Voltaje de entrada (V) <input type="number" id="divVin" value="5" step="any"></label>
+          <label class="field">R1 (Ω) <input type="number" id="divR1" value="1000" step="any"></label>
+          <label class="field">R2 (Ω) <input type="number" id="divR2" value="2000" step="any"></label>
+        </div>
+        <div class="result" id="divResult"></div>
+        <div class="formula" id="divFormula"></div>
+        <p class="hint" id="divWarn" style="margin-top:6px"></p>
+      </div>
+      <svg class="diagram" viewBox="0 0 200 220">
+        <text x="70" y="16" fill="#eef0ff" font-size="12">Vent</text>
+        <line x1="60" y1="22" x2="60" y2="40" stroke="#a9afd9" stroke-width="2"/>
+        <rect x="48" y="40" width="24" height="50" rx="3" fill="#e8d3a8"/><text x="80" y="70" fill="#eef0ff" font-size="12">R1</text>
+        <line x1="60" y1="90" x2="60" y2="130" stroke="#a9afd9" stroke-width="2"/>
+        <line x1="60" y1="110" x2="130" y2="110" stroke="#a9afd9" stroke-width="2"/>
+        <circle cx="134" cy="110" r="4" fill="#7b6cf6"/><text x="142" y="114" fill="#eef0ff" font-size="12">Vsal → pin</text>
+        <rect x="48" y="130" width="24" height="50" rx="3" fill="#e8d3a8"/><text x="80" y="160" fill="#eef0ff" font-size="12">R2</text>
+        <line x1="60" y1="180" x2="60" y2="200" stroke="#a9afd9" stroke-width="2"/>
+        <line x1="45" y1="200" x2="75" y2="200" stroke="#a9afd9" stroke-width="2"/>
+        <text x="80" y="204" fill="#eef0ff" font-size="12">GND</text>
+      </svg>
+    </div>
+    <div style="margin-top:12px">
+      <p class="section-title">Buscar resistencias comerciales para un voltaje</p>
+      <div class="row">
+        <label class="field">Quiero obtener (V) <input type="number" id="divTarget" value="3.3" step="any"></label>
+        <button id="divFind" style="align-self:flex-end">Buscar</button>
+      </div>
+      <table id="divTable"></table>
+    </div>
+  </div>
+
+  <!-- ── ADC ── -->
+  <div class="panel" data-pane="adc" hidden>
+    <p class="hint">Convierte el número que devuelve el bloque de lectura analógica en voltaje, y al revés.</p>
+    <div class="row" style="margin-top:8px">
+      <label class="field">Tipo de lectura
+        <select id="adcMode">
+          <option value="4095">read() → 0 a 4095</option>
+          <option value="65535">read_u16() → 0 a 65535</option>
+        </select>
+      </label>
+      <label class="field">Voltaje máximo (V) <input type="number" id="adcVmax" value="3.3" step="any"></label>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <label class="field">Lectura <input type="number" id="adcRaw" value="2048" step="1"></label>
+      <span style="align-self:flex-end;padding-bottom:8px">⇄</span>
+      <label class="field">Voltaje (V) <input type="number" id="adcVolt" step="any"></label>
+      <label class="field">Porcentaje <input type="number" id="adcPct" step="any"></label>
+    </div>
+    <div class="bar"><div id="adcBar"></div></div>
+    <p class="hint" style="margin-top:8px">El ADC del ESP32 no es perfecto: cerca de 0 V y del máximo se aleja un poco de la línea recta. Para medir con precisión, calibra con un multímetro.</p>
+  </div>
+
+  <!-- ── PWM ── -->
+  <div class="panel" data-pane="pwm" hidden>
+    <p class="hint">Relaciona el valor de PWM con el porcentaje de tiempo encendido (brillo de un LED, velocidad de un motor).</p>
+    <div class="row" style="margin-top:8px">
+      <label class="field">Tipo
+        <select id="pwmMode">
+          <option value="1023">duty() → 0 a 1023</option>
+          <option value="65535">duty_u16() → 0 a 65535</option>
+        </select>
+      </label>
+      <label class="field">Frecuencia (Hz) <input type="number" id="pwmFreq" value="1000" step="any"></label>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <label class="field">Valor <input type="number" id="pwmRaw" value="512" step="1"></label>
+      <span style="align-self:flex-end;padding-bottom:8px">⇄</span>
+      <label class="field">Porcentaje <input type="number" id="pwmPct" step="any"></label>
+    </div>
+    <svg viewBox="0 0 300 70" style="width:min(100%,460px);margin-top:10px;display:block">
+      <polyline id="pwmWave" fill="none" stroke="#7b6cf6" stroke-width="3"/>
+    </svg>
+    <table id="pwmTable"></table>
+  </div>
+
+  <script src="tools.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const num = (id) => Number($(id).value);
+    function fmtOhm(v) {
+      if (!isFinite(v)) return "—";
+      if (v >= 1e6) return +(v / 1e6).toFixed(2) + " MΩ";
+      if (v >= 1e3) return +(v / 1e3).toFixed(2) + " kΩ";
+      return +v.toFixed(2) + " Ω";
+    }
+
+    // ── Ley de Ohm ──
+    function ohm() {
+      const t = $("ohmTarget").value;
+      document.querySelectorAll("[data-ohm]").forEach((el) => (el.hidden = el.dataset.ohm === t));
+      let V = num("ohmV"), I = num("ohmI") / 1000, R = num("ohmR");
+      if (t === "R") R = V / I;
+      if (t === "I") I = V / R;
+      if (t === "V") V = I * R;
+      const P = V * I;
+      const main = { R: fmtOhm(R), I: `${+(I * 1000).toFixed(2)} mA`, V: `${+V.toFixed(3)} V` }[t];
+      $("ohmResult").textContent = isFinite(V * I * R) ? `${t} = ${main}` : "Falta un valor";
+      $("ohmFormula").textContent = isFinite(P)
+        ? `V = ${+V.toFixed(3)} V · I = ${+(I * 1000).toFixed(2)} mA · R = ${fmtOhm(R)} · Potencia = ${+(P * 1000).toFixed(1)} mW`
+        : "";
+    }
+    ["ohmTarget", "ohmV", "ohmI", "ohmR"].forEach((id) => ($(id).oninput = ohm));
+
+    // ── Divisor ──
+    function divider() {
+      const vin = num("divVin"), r1 = num("divR1"), r2 = num("divR2");
+      const vout = (vin * r2) / (r1 + r2);
+      $("divResult").textContent = isFinite(vout) ? `Vsal = ${vout.toFixed(2)} V` : "—";
+      $("divFormula").textContent = `${vin} V × ${fmtOhm(r2)} ÷ (${fmtOhm(r1)} + ${fmtOhm(r2)}) · corriente ${((vin / (r1 + r2)) * 1000).toFixed(2)} mA`;
+      $("divWarn").textContent = vout > 3.3 ? "⚠️ Más de 3.3 V puede dañar un pin del ESP32." : "";
+    }
+    ["divVin", "divR1", "divR2"].forEach((id) => ($(id).oninput = divider));
+    // Pares de la serie E12 (1 kΩ a 100 kΩ) que dan el voltaje pedido sin pasarse.
+    $("divFind").onclick = () => {
+      const E12 = [10, 12, 15, 18, 22, 27, 33, 39, 47, 56, 68, 82];
+      const vals = [];
+      [100, 1000, 10000].forEach((m) => E12.forEach((e) => vals.push((e * m) / 10)));
+      const vin = num("divVin"), want = num("divTarget");
+      const pairs = [];
+      vals.forEach((r1) => vals.forEach((r2) => {
+        const v = (vin * r2) / (r1 + r2);
+        if (v <= want + 1e-9 && r1 + r2 >= 1000 && r1 + r2 <= 200000) pairs.push({ r1, r2, v });
+      }));
+      pairs.sort((a, b) => (want - a.v) - (want - b.v) || (a.r1 + a.r2) - (b.r1 + b.r2));
+      const seen = new Set();
+      const best = pairs.filter((p) => { const k = p.v.toFixed(3); if (seen.has(k)) return false; seen.add(k); return true; }).slice(0, 5);
+      $("divTable").innerHTML = "<tr><th>R1</th><th>R2</th><th>Vsal</th><th></th></tr>" + best.map((p, i) =>
+        `<tr><td>${fmtOhm(p.r1)}</td><td>${fmtOhm(p.r2)}</td><td>${p.v.toFixed(2)} V</td><td><button data-use="${i}">Usar</button></td></tr>`).join("");
+      $("divTable").querySelectorAll("[data-use]").forEach((b) => (b.onclick = () => {
+        const p = best[b.dataset.use];
+        $("divR1").value = p.r1; $("divR2").value = p.r2; divider();
+      }));
+    };
+
+    // ── ADC ──
+    function adc(from) {
+      const max = num("adcMode"), vmax = num("adcVmax");
+      let raw = num("adcRaw");
+      if (from === "volt") raw = Math.round((num("adcVolt") / vmax) * max);
+      if (from === "pct") raw = Math.round((num("adcPct") / 100) * max);
+      raw = Math.max(0, Math.min(max, raw || 0));
+      if (from !== "raw") $("adcRaw").value = raw;
+      if (from !== "volt") $("adcVolt").value = ((raw / max) * vmax).toFixed(3);
+      if (from !== "pct") $("adcPct").value = ((raw / max) * 100).toFixed(1);
+      $("adcBar").style.width = `${(raw / max) * 100}%`;
+    }
+    $("adcRaw").oninput = () => adc("raw");
+    $("adcVolt").oninput = () => adc("volt");
+    $("adcPct").oninput = () => adc("pct");
+    $("adcMode").onchange = () => { $("adcPct").oninput(); };
+    $("adcVmax").oninput = () => adc("raw");
+
+    // ── PWM ──
+    function pwm(from) {
+      const max = num("pwmMode");
+      let raw = num("pwmRaw");
+      if (from === "pct") raw = Math.round((num("pwmPct") / 100) * max);
+      raw = Math.max(0, Math.min(max, raw || 0));
+      if (from !== "raw") $("pwmRaw").value = raw;
+      const pct = (raw / max) * 100;
+      if (from !== "pct") $("pwmPct").value = pct.toFixed(1);
+      // Tres periodos de la onda.
+      const pts = [];
+      for (let k = 0; k < 3; k++) {
+        const x0 = 10 + k * 93, hi = (93 * pct) / 100;
+        pts.push(`${x0},60`, `${x0},${pct > 0 ? 10 : 60}`, `${x0 + hi},${pct > 0 ? 10 : 60}`, `${x0 + hi},60`, `${x0 + 93},60`);
+      }
+      $("pwmWave").setAttribute("points", pts.join(" "));
+      const f = num("pwmFreq"), period = 1000 / f;
+      $("pwmTable").innerHTML =
+        `<tr><td>Periodo</td><td><b>${+period.toFixed(3)} ms</b></td></tr>` +
+        `<tr><td>Tiempo encendido</td><td><b>${+(period * pct / 100).toFixed(3)} ms</b> de cada periodo</td></tr>` +
+        `<tr><td>En el código</td><td><code>${max === 1023 ? `pwm.duty(${raw})` : `pwm.duty_u16(${raw})`}</code></td></tr>`;
+    }
+    $("pwmRaw").oninput = () => pwm("raw");
+    $("pwmPct").oninput = () => pwm("pct");
+    $("pwmMode").onchange = () => pwm("pct");
+    $("pwmFreq").oninput = () => pwm("raw");
+
+    // ── Pestañas ──
+    document.querySelectorAll("[data-tab]").forEach((b) => {
+      b.onclick = () => {
+        document.querySelectorAll("[data-tab]").forEach((o) => o.classList.toggle("active", o === b));
+        document.querySelectorAll("[data-pane]").forEach((p) => (p.hidden = p.dataset.pane !== b.dataset.tab));
+      };
+    });
+
+    ohm(); divider(); adc("raw"); pwm("raw");
+  </script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tablas de verdad</title>
+  <link rel="stylesheet" href="tools.css">
+  <style>
+    .switches { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+    .switch {
+      display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 110px;
+    }
+    .switch button {
+      width: 96px; height: 56px; border-radius: 28px; font-size: 16px; font-weight: 700;
+    }
+    .switch button.on { background: #2ecc71; border-color: #2ecc71; color: #06210f; }
+    .ops { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; margin-top: 12px; }
+    .op h2 { font-size: 16px; margin: 0 0 4px; display: flex; justify-content: space-between; align-items: center; }
+    .led { width: 26px; height: 26px; border-radius: 50%; background: #3a1512; border: 2px solid #222; }
+    .led.on { background: #ff3b30; box-shadow: 0 0 14px #ff3b30; }
+    table { border-collapse: collapse; width: 100%; font-size: 14px; margin-top: 6px; }
+    td, th { text-align: center; padding: 4px; border-bottom: 1px solid var(--line); }
+    th { color: var(--muted); font-weight: 600; }
+    tr.now td { background: rgba(123, 108, 246, 0.3); font-weight: 700; }
+    .t { color: #2ecc71; } .f { color: #e74c3c; }
+    .example { font-size: 13px; color: var(--muted); margin-top: 6px; }
+  </style>
+</head>
+<body>
+  <a class="back" href="index.html">← Herramientas</a>
+  <h1>🔀 Tablas de verdad</h1>
+  <p class="subtitle">Cambia A y B y mira qué responde cada bloque de <b>Lógica</b>. La fila resaltada es la de ahora.</p>
+
+  <div class="panel">
+    <div class="switches">
+      <div class="switch"><span>A (botón 1)</span><button id="a">falso</button></div>
+      <div class="switch"><span>B (botón 2)</span><button id="b">falso</button></div>
+    </div>
+  </div>
+
+  <div class="ops" id="ops"></div>
+
+  <script src="tools.js"></script>
+  <script>
+    let A = false, B = false;
+    const OPS = [
+      { name: "A y B", py: "A and B", fn: (a, b) => a && b, ex: "El LED prende solo si se presionan los DOS botones (como una alarma que pide dos llaves)." },
+      { name: "A o B", py: "A or B", fn: (a, b) => a || b, ex: "El LED prende si se presiona CUALQUIERA de los dos botones (como un timbre con dos pulsadores)." },
+      { name: "no A", py: "not A", fn: (a) => !a, one: true, ex: "El LED prende cuando el botón NO está presionado (lo contrario)." },
+      { name: "A = B", py: "A == B", fn: (a, b) => a === b, ex: "El LED prende si los dos botones están igual (los dos presionados o los dos sueltos)." },
+      { name: "A ≠ B", py: "A != B", fn: (a, b) => a !== b, ex: "El LED prende si los botones están distintos: uno presionado y el otro no (como la luz de una escalera con dos interruptores)." },
+    ];
+    const word = (v) => `<span class="${v ? "t" : "f"}">${v ? "verdadero" : "falso"}</span>`;
+
+    function render() {
+      ["a", "b"].forEach((id) => {
+        const v = id === "a" ? A : B;
+        const el = document.getElementById(id);
+        el.textContent = v ? "verdadero" : "falso";
+        el.classList.toggle("on", v);
+      });
+      const box = document.getElementById("ops");
+      box.innerHTML = "";
+      OPS.forEach((op) => {
+        const res = op.fn(A, B);
+        const rows = op.one ? [[false], [true]] : [[false, false], [false, true], [true, false], [true, true]];
+        const card = document.createElement("div");
+        card.className = "panel op";
+        card.innerHTML =
+          `<h2><span>${op.name}</span><span class="led${res ? " on" : ""}"></span></h2>` +
+          `<code style="font-size:13px">${op.py}</code>` +
+          `<table><tr><th>A</th>${op.one ? "" : "<th>B</th>"}<th>resultado</th></tr>` +
+          rows.map((r) => {
+            const now = r[0] === A && (op.one || r[1] === B);
+            return `<tr class="${now ? "now" : ""}"><td>${word(r[0])}</td>${op.one ? "" : `<td>${word(r[1])}</td>`}<td>${word(op.fn(r[0], r[1]))}</td></tr>`;
+          }).join("") +
+          `</table><p class="example">💡 ${op.ex}</p>`;
+        box.appendChild(card);
+      });
+    }
+    document.getElementById("a").onclick = () => { A = !A; render(); };
+    document.getElementById("b").onclick = () => { B = !B; render(); };
+    render();
+  </script>
+</body>
+</html>

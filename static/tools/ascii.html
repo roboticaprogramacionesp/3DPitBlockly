@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tabla ASCII</title>
+  <link rel="stylesheet" href="tools.css">
+  <style>
+    .grid-ascii {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(74px, 1fr));
+      gap: 6px;
+    }
+    .ch {
+      min-height: 0; padding: 6px 4px; display: flex; flex-direction: column; align-items: center; gap: 2px;
+    }
+    .ch b { font-size: 20px; font-family: monospace; }
+    .ch span { font-size: 11px; color: var(--muted); font-family: monospace; }
+    .ch.ctrl b { font-size: 13px; color: #f5c518; }
+    .ch.hide { display: none; }
+    .ch.sel { box-shadow: 0 0 0 3px var(--accent); }
+    textarea {
+      width: 100%; min-height: 50px; background: #0f1226; color: var(--text);
+      border: 1px solid var(--line); border-radius: 6px; padding: 8px; font-size: 15px;
+    }
+  </style>
+</head>
+<body>
+  <a class="back" href="index.html">← Herramientas</a>
+  <h1>🔤 Tabla ASCII y texto a bytes</h1>
+  <p class="subtitle">Cada letra se guarda como un número. Así viajan los textos por UART, BLE y WiFi.</p>
+
+  <div class="layout">
+    <div style="flex:3 1 420px">
+      <div class="panel" style="margin-bottom:12px">
+        <div class="row">
+          <label class="field">Buscar (letra o número) <input type="text" id="search" size="10"></label>
+          <label class="row" style="align-self:flex-end"><input type="checkbox" id="showCtrl"> Mostrar caracteres de control</label>
+        </div>
+      </div>
+      <div class="grid-ascii" id="table"></div>
+    </div>
+
+    <div class="side">
+      <div class="panel" id="detail"><p class="hint">Toca un carácter para ver sus códigos.</p></div>
+
+      <div class="panel">
+        <p class="section-title">Texto a bytes</p>
+        <textarea id="text">Hola ñ</textarea>
+        <pre class="code" id="bytes" style="margin-top:8px"></pre>
+        <p class="hint" style="margin-top:6px">Las letras con acento y la ñ ocupan <b>2 bytes</b> (UTF-8). Por eso una LCD no las muestra bien.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="tools.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    // Los de control que importan en la práctica.
+    const CTRL = { 0: "NUL", 7: "BEL", 8: "BS", 9: "TAB \\t", 10: "LF \\n", 13: "CR \\r", 27: "ESC", 127: "DEL" };
+    const CTRL_NOTE = {
+      10: "Salto de línea: lo que agrega print() al final. Con \\r forma el \\r\\n de los mensajes por serial.",
+      13: "Retorno de carro. Muchos módulos (HC-05, BLE) terminan cada mensaje con \\r\\n.",
+      9: "Tabulador.",
+      0: "Carácter nulo: un byte en 0.",
+      27: "Escape: inicia los códigos de color de las terminales.",
+    };
+
+    let selected = 65;
+    function build() {
+      const box = $("table");
+      box.innerHTML = "";
+      for (let c = 0; c < 128; c++) {
+        const ctrl = c < 32 || c === 127;
+        if (ctrl && !(c in CTRL)) continue;
+        const b = document.createElement("button");
+        b.className = "ch" + (ctrl ? " ctrl" : "");
+        b.dataset.code = c;
+        b.innerHTML = `<b>${ctrl ? CTRL[c] : c === 32 ? "␣" : String.fromCharCode(c).replace("<", "&lt;").replace("&", "&amp;")}</b><span>${c} · 0x${c.toString(16).padStart(2, "0")}</span>`;
+        b.onclick = () => { selected = c; detail(); filter(); };
+        box.appendChild(b);
+      }
+      filter();
+    }
+    function filter() {
+      const q = $("search").value.trim();
+      const showCtrl = $("showCtrl").checked;
+      document.querySelectorAll(".ch").forEach((b) => {
+        const c = Number(b.dataset.code);
+        const ctrl = b.classList.contains("ctrl");
+        let match = !q || String.fromCharCode(c) === q || String(c) === q || ("0x" + c.toString(16)) === q.toLowerCase();
+        if (q.length === 1) match = String.fromCharCode(c).toLowerCase() === q.toLowerCase();
+        b.classList.toggle("hide", (ctrl && !showCtrl && !q) || !match);
+        b.classList.toggle("sel", c === selected);
+      });
+    }
+    function detail() {
+      const c = selected;
+      const ch = String.fromCharCode(c);
+      const ctrl = c < 32 || c === 127;
+      const py = ctrl ? (CTRL[c].split(" ")[1] || `\\x${c.toString(16).padStart(2, "0")}`) : ch === "'" ? "\\'" : ch === "\\" ? "\\\\" : ch;
+      $("detail").innerHTML =
+        `<p class="section-title">Carácter</p><div style="font-size:40px;font-family:monospace">${ctrl ? CTRL[c] : c === 32 ? "␣ (espacio)" : ch.replace("<", "&lt;")}</div>` +
+        `<pre class="code">ord('${py}') == ${c}\nchr(${c}) == '${py}'\nDecimal ${c} · Hex 0x${c.toString(16).padStart(2, "0")} · Binario 0b${c.toString(2).padStart(8, "0")}</pre>` +
+        (CTRL_NOTE[c] ? `<p class="hint" style="margin-top:6px">${CTRL_NOTE[c]}</p>` : "");
+    }
+    function toBytes() {
+      const bytes = Array.from(new TextEncoder().encode($("text").value));
+      $("bytes").textContent =
+        `${bytes.length} bytes\n[${bytes.join(", ")}]\n` +
+        `b'${bytes.map((b) => (b >= 32 && b < 127 && b !== 39 && b !== 92 ? String.fromCharCode(b) : "\\x" + b.toString(16).padStart(2, "0"))).join("")}'`;
+    }
+    $("search").oninput = filter;
+    $("showCtrl").onchange = filter;
+    $("text").oninput = toBytes;
+    build(); detail(); toBytes();
+  </script>
+</body>
+</html>

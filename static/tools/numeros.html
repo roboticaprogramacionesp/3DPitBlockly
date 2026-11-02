@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Binario y hexadecimal</title>
+  <link rel="stylesheet" href="tools.css">
+  <style>
+    .bits { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .bit {
+      width: 52px; display: flex; flex-direction: column; align-items: center; gap: 4px;
+      font-size: 11px; color: var(--muted);
+    }
+    .bit button {
+      width: 48px; height: 48px; min-height: 0; padding: 0; border-radius: 8px;
+      font-size: 22px; font-weight: 700; font-family: monospace;
+    }
+    .bit button.on { background: #ff3b30; border-color: #ff3b30; box-shadow: 0 0 12px #ff3b30; }
+    .gap { width: 10px; }
+    .fields input[type="text"] { font-family: monospace; width: 170px; }
+    .explain { font-family: monospace; font-size: 14px; margin-top: 10px; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <a class="back" href="index.html">← Herramientas</a>
+  <h1>🔢 Binario, decimal y hexadecimal</h1>
+  <p class="subtitle">Toca los bits para encenderlos, o escribe un número en cualquier formato.</p>
+
+  <div class="panel">
+    <div class="row fields">
+      <label class="field">Decimal <input type="text" id="dec"></label>
+      <label class="field">Binario (0b) <input type="text" id="bin"></label>
+      <label class="field">Hexadecimal (0x) <input type="text" id="hex"></label>
+      <label class="field">Carácter <input type="text" id="chr" maxlength="1" style="width:60px"></label>
+      <label class="field">Bits
+        <select id="nbits">
+          <option value="8">8 bits (un byte)</option>
+          <option value="16">16 bits</option>
+        </select>
+      </label>
+    </div>
+    <div class="bits" id="bits"></div>
+    <div class="explain" id="explain"></div>
+  </div>
+
+  <div class="panel" style="margin-top:12px">
+    <p class="section-title">En Python</p>
+    <pre class="code" id="py"></pre>
+    <p class="hint" style="margin-top:8px">Los <b>0x3f</b> del código de los segmentos o las imágenes son bytes en hexadecimal: cada bit es un LED o un segmento encendido (1) o apagado (0).</p>
+  </div>
+
+  <script src="tools.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    let value = 65;
+
+    function bitsCount() { return Number($("nbits").value); }
+    function clamp(v) { return Math.max(0, Math.min((1 << bitsCount()) - 1, v | 0)); }
+
+    function render(from) {
+      const n = bitsCount();
+      if (from !== "dec") $("dec").value = value;
+      if (from !== "bin") $("bin").value = value.toString(2).padStart(n, "0");
+      if (from !== "hex") $("hex").value = value.toString(16).toUpperCase().padStart(n / 4, "0");
+      if (from !== "chr") $("chr").value = value >= 32 && value < 127 ? String.fromCharCode(value) : "";
+      const box = $("bits");
+      box.innerHTML = "";
+      for (let i = n - 1; i >= 0; i--) {
+        const wrap = document.createElement("div");
+        wrap.className = "bit";
+        const b = document.createElement("button");
+        const on = (value >> i) & 1;
+        b.className = on ? "on" : "";
+        b.textContent = on;
+        b.onclick = () => { value ^= 1 << i; render(); };
+        wrap.append(b, document.createTextNode(String(1 << i)));
+        box.appendChild(wrap);
+        if (i % 4 === 0 && i) { const g = document.createElement("div"); g.className = "gap"; box.appendChild(g); }
+      }
+      const parts = [];
+      for (let i = n - 1; i >= 0; i--) if ((value >> i) & 1) parts.push(1 << i);
+      $("explain").textContent = parts.length ? `${parts.join(" + ")} = ${value}` : "0 = todos los bits apagados";
+      $("py").textContent =
+        `${value}  ==  0b${value.toString(2)}  ==  0x${value.toString(16)}` +
+        (value >= 32 && value < 127 ? `\nchr(${value}) == '${String.fromCharCode(value).replace("'", "\\'")}'    ord('${String.fromCharCode(value).replace("'", "\\'")}') == ${value}` : "");
+    }
+
+    $("dec").oninput = () => { value = clamp(parseInt($("dec").value, 10) || 0); render("dec"); };
+    $("bin").oninput = () => { value = clamp(parseInt($("bin").value.replace(/^0b/i, "").replace(/[^01]/g, "") || "0", 2)); render("bin"); };
+    $("hex").oninput = () => { value = clamp(parseInt($("hex").value.replace(/^0x/i, "").replace(/[^0-9a-f]/gi, "") || "0", 16)); render("hex"); };
+    $("chr").oninput = () => { if ($("chr").value) { value = clamp($("chr").value.charCodeAt(0)); render("chr"); } };
+    $("nbits").onchange = () => { value = clamp(value); render(); };
+    render();
+  </script>
+</body>
+</html>
