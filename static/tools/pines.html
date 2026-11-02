@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mapa de pines</title>
+  <link rel="stylesheet" href="tools.css">
+  <style>
+    .pins {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 8px;
+    }
+    .pin {
+      text-align: left;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 2px solid var(--line);
+      background: var(--panel);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-height: 0;
+    }
+    .pin .num { font-size: 16px; font-weight: 700; display: flex; justify-content: space-between; }
+    .pin .tags { display: flex; flex-wrap: wrap; gap: 3px; }
+    .tag {
+      font-size: 10.5px;
+      padding: 1px 6px;
+      border-radius: 10px;
+      background: var(--panel-2);
+      color: var(--muted);
+    }
+    .pin.ok { border-color: #2ecc71; }
+    .pin.warn { border-color: #f5c518; }
+    .pin.no { border-color: #e74c3c; opacity: 0.65; }
+    .pin.dim { opacity: 0.25; }
+    .pin.sel { box-shadow: 0 0 0 3px var(--accent); }
+    .legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 13px; color: var(--muted); }
+    .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; }
+    #detail h2 { margin: 0 0 6px; font-size: 17px; }
+    #detail p { margin: 6px 0 0; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <a class="back" href="index.html">← Herramientas</a>
+  <h1>📍 Mapa de pines</h1>
+  <p class="subtitle">Qué puede hacer cada pin de tu placa y cuáles conviene usar para lo que vas a conectar.</p>
+
+  <div class="panel" style="margin-bottom:12px">
+    <div class="row">
+      <label class="field">Placa
+        <select id="board"></select>
+      </label>
+      <label class="field">¿Qué vas a conectar?
+        <select id="use">
+          <option value="">Mostrar todos</option>
+          <option value="out">LED, relé o buzzer (salida)</option>
+          <option value="in">Botón o sensor digital (entrada)</option>
+          <option value="analog">Potenciómetro, LDR o sensor analógico</option>
+          <option value="pwm">Servo, motor o brillo de LED (PWM)</option>
+          <option value="touch">Sensor táctil (tocar un cable)</option>
+          <option value="dac">Salida de voltaje analógico (DAC)</option>
+          <option value="i2c">Pantalla OLED, LCD I2C o sensor I2C</option>
+        </select>
+      </label>
+    </div>
+    <div class="legend" style="margin-top:10px">
+      <span><span class="dot" style="background:#2ecc71"></span>Recomendado</span>
+      <span><span class="dot" style="background:#f5c518"></span>Se puede, con cuidado</span>
+      <span><span class="dot" style="background:#e74c3c"></span>No usar</span>
+    </div>
+    <p class="hint" id="useHint" style="margin-top:8px"></p>
+  </div>
+
+  <div class="layout">
+    <div class="pins" id="pins" style="flex:3 1 420px"></div>
+    <div class="side">
+      <div class="panel" id="detail"><p class="hint">Toca un pin para ver más detalles.</p></div>
+    </div>
+  </div>
+
+  <script src="tools.js"></script>
+  <script src="pins.js"></script>
+  <script>
+    const boardEl = document.getElementById("board");
+    const useEl = document.getElementById("use");
+    Object.entries(BOARD_PINS).forEach(([key, b]) => boardEl.add(new Option(b.label, key)));
+    boardEl.value = BOARD_PINS[Tools.currentBoard()] ? Tools.currentBoard() : "esp32_wroom";
+
+    // Para cada uso: si el pin sirve y si conviene (ok) o con cuidado (warn).
+    const USES = {
+      out: { fits: (p) => p.tags.includes("io"), hint: "Cualquier pin de entrada/salida. Evita los de arranque si el LED o relé queda encendido al prender la placa." },
+      in: { fits: (p) => p.tags.includes("io") || p.tags.includes("in"), hint: "Los de 'Solo entrada' no tienen resistencia pull-up interna: un botón necesita una resistencia externa." },
+      analog: {
+        fits: (p) => p.tags.includes("adc1") || p.tags.includes("adc2"),
+        caution: (p) => !p.tags.includes("adc1"),
+        hint: ADC2_NOTE,
+      },
+      pwm: { fits: (p) => p.tags.includes("pwm"), hint: "Todos los pines de salida pueden hacer PWM. Un servo necesita además alimentación aparte si es grande." },
+      touch: { fits: (p) => p.tags.includes("touch"), hint: "Conecta un cable o una lámina de metal al pin y tócalo con el dedo." },
+      dac: { fits: (p) => p.tags.includes("dac"), hint: "Solo el ESP32 clásico tiene DAC (pines 25 y 26). El S3 y el C3 no tienen." },
+      i2c: {
+        fits: (p) => p.tags.includes("io"),
+        best: (p) => p.tags.includes("i2c"),
+        hint: "I2C funciona en cualquier par de pines, pero los marcados 'I2C típico' son los que usan los ejemplos y las placas de expansión.",
+      },
+    };
+
+    let selected = null;
+    function render() {
+      const board = BOARD_PINS[boardEl.value];
+      const use = USES[useEl.value];
+      document.getElementById("useHint").textContent = use ? use.hint : "";
+      const box = document.getElementById("pins");
+      box.innerHTML = "";
+      board.pins.forEach((p) => {
+        let level = p.level;
+        if (use) {
+          if (level === "no" || !use.fits(p)) level = "dim";
+          else if (use.best && !use.best(p)) level = level === "ok" ? "warn" : level;
+          else if (use.caution && use.caution(p)) level = "warn";
+        }
+        const el = document.createElement("button");
+        el.className = `pin ${level}${selected === p.gpio ? " sel" : ""}`;
+        const icon = { ok: "✅", warn: "⚠️", no: "⛔", dim: "" }[level];
+        el.innerHTML = `<span class="num"><span>GPIO ${p.gpio}</span><span>${icon}</span></span>` +
+          `<span class="tags">${p.tags.map((t) => `<span class="tag">${PIN_TAGS[t]}</span>`).join("")}</span>`;
+        el.onclick = () => { selected = p.gpio; showDetail(p); render(); };
+        box.appendChild(el);
+      });
+      if (selected !== null) {
+        const p = board.pins.find((x) => x.gpio === selected);
+        if (p) showDetail(p); else document.getElementById("detail").innerHTML = '<p class="hint">Toca un pin para ver más detalles.</p>';
+      }
+    }
+
+    function showDetail(p) {
+      const d = document.getElementById("detail");
+      const levelText = { ok: "✅ Libre para usar", warn: "⚠️ Se puede, con cuidado", no: "⛔ No usar" }[p.level];
+      const extras = [];
+      if (p.tags.includes("adc2")) extras.push(ADC2_NOTE);
+      d.innerHTML = `<h2>GPIO ${p.gpio}</h2><p><b>${levelText}</b></p>` +
+        (p.tags.length ? `<p>${p.tags.map((t) => PIN_TAGS[t]).join(" · ")}</p>` : "") +
+        (p.note ? `<p>${p.note}</p>` : "") +
+        extras.map((t) => `<p class="hint">${t}</p>`).join("");
+    }
+
+    boardEl.onchange = () => { selected = null; render(); };
+    useEl.onchange = render;
+    render();
+  </script>
+</body>
+</html>

@@ -50,6 +50,32 @@ const Tools = (() => {
     window.parent.postMessage({ type: "3dpit-insert-blocks", xml, replaceId }, location.origin);
   }
 
+  // REPL del ESP32 a través de la app (solo dentro de ella). onStatus
+  // recibe {connected, busy} cada vez que la app responde.
+  let replListener = null;
+  window.addEventListener("message", (e) => {
+    if (e.origin === location.origin && e.data && e.data.type === "3dpit-repl-status" && replListener) {
+      replListener(e.data);
+    }
+  });
+  function repl(code) {
+    if (embedded) window.parent.postMessage({ type: "3dpit-repl", code }, location.origin);
+  }
+  function replStatus(onStatus) {
+    replListener = onStatus;
+    if (embedded) window.parent.postMessage({ type: "3dpit-repl-status" }, location.origin);
+    else onStatus({ connected: false, busy: false });
+  }
+
+  // Placa elegida en la app (ESP32_BOARDS de conversion.js), si la hay.
+  function currentBoard() {
+    try {
+      return (embedded && window.parent.getCurrentBoard && window.parent.getCurrentBoard()) || null;
+    } catch (_) {
+      return null;
+    }
+  }
+
   function escapeXml(text) {
     return String(text).replace(/[<>&"']/g, (c) => ({
       "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;", "'": "&apos;",
@@ -177,5 +203,5 @@ const Tools = (() => {
     });
   });
 
-  return { embedded, toast, copy, editPayload, insertBlocks, escapeXml, pyName, paintGrid, monoHex, monoFromHex, xy, palette };
+  return { embedded, toast, copy, editPayload, insertBlocks, escapeXml, pyName, paintGrid, monoHex, monoFromHex, xy, palette, repl, replStatus, currentBoard };
 })();

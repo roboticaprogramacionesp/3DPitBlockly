@@ -6,6 +6,7 @@
   <title>Herramientas 3DPit</title>
   <link rel="stylesheet" href="tools.css">
   <style>
+    h2.group { font-size: 15px; color: var(--muted); margin: 18px 0 8px; font-weight: 600; }
     .cards {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -22,49 +23,78 @@
     }
     .card:hover { border-color: var(--accent-2); background: var(--panel-2); }
     .card .icon { font-size: 28px; }
-    .card h2 { font-size: 16px; margin: 6px 0 4px; }
+    .card h3 { font-size: 16px; margin: 6px 0 4px; }
     .card p { margin: 0; font-size: 13px; color: var(--muted); }
   </style>
 </head>
 <body>
   <h1>🛠 Herramientas</h1>
-  <p class="subtitle">Editores para crear dibujos y datos para tus pantallas, y luego ponerlos en tus bloques.</p>
+  <p class="subtitle">Editores y ayudas para crear dibujos, melodías y circuitos, y luego ponerlos en tus bloques.</p>
 
+  <h2 class="group">Pantallas</h2>
   <div class="cards">
     <a class="card" href="neopixel.html">
       <div class="icon">🌈</div>
-      <h2>Matriz NeoPixel a colores</h2>
+      <h3>Matriz NeoPixel a colores</h3>
       <p>Pinta matrices de LEDs de colores de cualquier tamaño (4×4, 8×8, 16×16, 32×32...).</p>
     </a>
     <a class="card" href="matriz8x8.html">
       <div class="icon">🔴</div>
-      <h2>Matriz LED MAX7219</h2>
+      <h3>Matriz LED MAX7219</h3>
       <p>Dibuja en 1 a 4 módulos de 8×8 (8×8, 16×8, 24×8, 32×8).</p>
     </a>
     <a class="card" href="oled.html">
       <div class="icon">🖥</div>
-      <h2>Imagen para OLED</h2>
+      <h3>Imagen para OLED</h3>
       <p>Dibuja o carga una foto en blanco y negro para la OLED y SH1106.</p>
     </a>
     <a class="card" href="tft.html">
       <div class="icon">🖼</div>
-      <h2>Imagen para TFT 240×240</h2>
+      <h3>Imagen para TFT 240×240</h3>
       <p>Dibuja o carga una foto a colores, con escala para verla grande.</p>
     </a>
     <a class="card" href="lcd.html">
       <div class="icon">🔤</div>
-      <h2>Caracteres para LCD</h2>
+      <h3>Caracteres para LCD</h3>
       <p>Crea símbolos propios de 5×8 para la LCD y la LCD I2C.</p>
     </a>
     <a class="card" href="tm1637.html">
       <div class="icon">🔢</div>
-      <h2>Segmentos TM1637</h2>
+      <h3>Segmentos TM1637</h3>
       <p>Forma letras y símbolos segmento por segmento en el display de 4 dígitos.</p>
     </a>
+  </div>
+
+  <h2 class="group">Sonido</h2>
+  <div class="cards">
     <a class="card" href="melodias.html">
       <div class="icon">🎵</div>
-      <h2>Editor de melodías</h2>
+      <h3>Editor de melodías</h3>
       <p>Compón con un piano o elige entre 53 melodías y efectos, y pásala al buzzer.</p>
+    </a>
+  </div>
+
+  <h2 class="group">Electrónica</h2>
+  <div class="cards">
+    <a class="card" href="pines.html">
+      <div class="icon">📍</div>
+      <h3>Mapa de pines</h3>
+      <p>Qué pines de tu placa sirven para LED, botón, analógico, servo, táctil o I2C.</p>
+    </a>
+    <a class="card" href="servo.html">
+      <div class="icon">⚙️</div>
+      <h3>Probar servo</h3>
+      <p>Mueve un servo real con un deslizador y calibra su pulso mínimo y máximo.</p>
+    </a>
+    <a class="card" href="colores.html">
+      <div class="icon">🎨</div>
+      <h3>Mezclador de colores RGB</h3>
+      <p>Mezcla rojo, verde y azul como un LED RGB y lleva el color a tus bloques.</p>
+    </a>
+    <a class="card" href="resistencias.html">
+      <div class="icon">🟫</div>
+      <h3>Resistencias</h3>
+      <p>Código de colores y qué resistencia ponerle a un LED.</p>
     </a>
   </div>
 </body>

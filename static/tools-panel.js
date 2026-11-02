@@ -109,9 +109,38 @@
     block.select();
   }
 
+  // Puente al REPL para herramientas que prueban hardware en vivo (p.ej.
+  // mover un servo con un deslizador). isConnected, isSendingCode y
+  // sendSerial son de main.js. Nunca se manda nada mientras se sube
+  // código o hay una sesión raw/paste REPL en curso: corrompería esa
+  // transferencia.
+  function replState() {
+    const connected = typeof isConnected !== "undefined" && !!isConnected;
+    const busy =
+      (typeof isSendingCode !== "undefined" && !!isSendingCode) ||
+      (typeof window._rawReplHook === "function" && !!window._rawReplHook._isRawReplHook);
+    return { connected, busy };
+  }
+
+  async function handleRepl(data) {
+    const st = replState();
+    if (data.type === "3dpit-repl" && typeof data.code === "string" && st.connected && !st.busy) {
+      try {
+        await sendSerial(data.code);
+      } catch (err) {
+        console.error("No se pudo mandar al ESP32 desde la herramienta:", err);
+      }
+    }
+    frame.contentWindow.postMessage({ type: "3dpit-repl-status", ...replState() }, location.origin);
+  }
+
   window.addEventListener("message", (e) => {
     if (e.origin !== location.origin || e.source !== frame.contentWindow) return;
     const data = e.data || {};
+    if (data.type === "3dpit-repl" || data.type === "3dpit-repl-status") {
+      handleRepl(data);
+      return;
+    }
     if (data.type !== "3dpit-insert-blocks" || typeof data.xml !== "string") return;
     try {
       showView("viewBlocks");

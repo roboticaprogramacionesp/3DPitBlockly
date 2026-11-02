@@ -2,7 +2,7 @@
    Service Worker — 3DPit Blocks PWA
    ============================================================ */
 
-const CACHE_NAME = '3dpit-blocks-v71';
+const CACHE_NAME = '3dpit-blocks-v72';
 
 /* ── INSTALL ── */
 self.addEventListener('install', event => {
@@ -53,6 +53,12 @@ self.addEventListener('install', event => {
           './static/tools/pixel-editor.js',
           './static/tools/tft.html',
           './static/tools/tm1637.html',
+          './static/tools/pins.js',
+          './static/tools/pines.html',
+          './static/tools/servo.html',
+          './static/tools/colores.html',
+          './static/tools/resistencias.html',
+          './static/servo_blocks.js',
           './static/svgToPng.js',
           './static/code-tutor.js',
           './static/js-tutorial.js',

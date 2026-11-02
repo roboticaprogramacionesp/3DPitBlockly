@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Resistencias</title>
+  <link rel="stylesheet" href="tools.css">
+  <style>
+    .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+    #resistor { width: min(100%, 460px); display: block; margin: 0 auto 10px; }
+    .bands { display: flex; flex-wrap: wrap; gap: 10px; }
+    .band-pick { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--muted); }
+    .chips { display: grid; grid-template-columns: repeat(4, 26px); gap: 4px; }
+    .chip {
+      width: 26px; height: 26px; min-height: 0; padding: 0; border-radius: 4px;
+      border: 2px solid transparent;
+    }
+    .chip.sel { border-color: #fff; box-shadow: 0 0 0 2px var(--accent); }
+    .result { font-size: 26px; font-weight: 700; margin: 6px 0; }
+    .big { font-size: 15px; }
+    table { border-collapse: collapse; font-size: 14px; }
+    td { padding: 4px 10px 4px 0; }
+  </style>
+</head>
+<body>
+  <a class="back" href="index.html">← Herramientas</a>
+  <h1>🟫 Resistencias</h1>
+  <p class="subtitle">Lee el código de colores, encuentra los colores de un valor o calcula la resistencia que necesita un LED.</p>
+
+  <div class="tabs">
+    <button data-tab="read" class="active">🎨 Leer bandas</button>
+    <button data-tab="value">🔢 Valor → colores</button>
+    <button data-tab="led">💡 Resistencia para un LED</button>
+  </div>
+
+  <div class="panel" style="margin-bottom:12px">
+    <svg id="resistor" viewBox="0 0 300 80"></svg>
+    <div style="text-align:center">
+      <div class="result" id="result"></div>
+      <div class="hint" id="resultHint"></div>
+    </div>
+  </div>
+
+  <div class="panel" data-pane="read">
+    <div class="row" style="margin-bottom:10px">
+      <label class="field">Cantidad de bandas
+        <select id="nBands">
+          <option value="4">4 bandas (la más común)</option>
+          <option value="5">5 bandas (precisión)</option>
+        </select>
+      </label>
+    </div>
+    <div class="bands" id="bands"></div>
+    <p class="hint" style="margin-top:10px">Lee de izquierda a derecha, empezando por el lado más alejado de la banda dorada o plateada.</p>
+  </div>
+
+  <div class="panel" data-pane="value" hidden>
+    <div class="row">
+      <label class="field">Valor
+        <input type="number" id="ohms" value="220" min="0.1" step="any" style="width:110px">
+      </label>
+      <label class="field">Unidad
+        <select id="unit">
+          <option value="1">Ω</option>
+          <option value="1000">kΩ</option>
+          <option value="1000000">MΩ</option>
+        </select>
+      </label>
+    </div>
+    <p class="hint" id="valueHint" style="margin-top:8px"></p>
+  </div>
+
+  <div class="panel" data-pane="led" hidden>
+    <div class="row">
+      <label class="field">Voltaje de la fuente
+        <select id="supply">
+          <option value="3.3">3.3 V (pin del ESP32)</option>
+          <option value="5">5 V</option>
+          <option value="9">9 V (batería)</option>
+          <option value="12">12 V</option>
+        </select>
+      </label>
+      <label class="field">Color del LED
+        <select id="ledColor">
+          <option value="2.0">Rojo (≈2.0 V)</option>
+          <option value="2.1">Amarillo / naranja (≈2.1 V)</option>
+          <option value="2.2">Verde clásico (≈2.2 V)</option>
+          <option value="3.0">Verde brillante (≈3.0 V)</option>
+          <option value="3.0">Azul (≈3.0 V)</option>
+          <option value="3.0">Blanco (≈3.0 V)</option>
+          <option value="1.5">Infrarrojo (≈1.5 V)</option>
+        </select>
+      </label>
+      <label class="field">Corriente (mA)
+        <input type="number" id="current" value="10" min="1" max="30" step="1">
+      </label>
+    </div>
+    <table style="margin-top:10px" id="ledTable"></table>
+    <p class="hint" style="margin-top:8px">Un pin del ESP32 da hasta unos 20 mA, pero conviene quedarse en 10 mA o menos. Si la cuenta da muy poco o nada (por ejemplo, un LED azul con 3.3 V), el LED casi no prende: usa 5 V con un transistor.</p>
+  </div>
+
+  <script src="tools.js"></script>
+  <script>
+    // Color, dígito, multiplicador (potencia de 10), tolerancia (%)
+    const COLORS = [
+      { name: "Negro", css: "#111", digit: 0, mult: 0 },
+      { name: "Marrón", css: "#7b3f00", digit: 1, mult: 1, tol: 1 },
+      { name: "Rojo", css: "#d32f2f", digit: 2, mult: 2, tol: 2 },
+      { name: "Naranja", css: "#f57c00", digit: 3, mult: 3 },
+      { name: "Amarillo", css: "#fbc02d", digit: 4, mult: 4 },
+      { name: "Verde", css: "#388e3c", digit: 5, mult: 5, tol: 0.5 },
+      { name: "Azul", css: "#1976d2", digit: 6, mult: 6, tol: 0.25 },
+      { name: "Violeta", css: "#7b1fa2", digit: 7, mult: 7, tol: 0.1 },
+      { name: "Gris", css: "#9e9e9e", digit: 8, mult: 8, tol: 0.05 },
+      { name: "Blanco", css: "#fafafa", digit: 9, mult: 9 },
+      { name: "Dorado", css: "#c9a227", mult: -1, tol: 5 },
+      { name: "Plateado", css: "#c0c0c0", mult: -2, tol: 10 },
+    ];
+    const byName = Object.fromEntries(COLORS.map((c) => [c.name, c]));
+    const E12 = [10, 12, 15, 18, 22, 27, 33, 39, 47, 56, 68, 82];
+    const E24 = [10, 11, 12, 13, 15, 16, 18, 20, 22, 24, 27, 30, 33, 36, 39, 43, 47, 51, 56, 62, 68, 75, 82, 91];
+
+    function fmt(ohms) {
+      const r = (v) => String(Math.round(v * 100) / 100);
+      if (ohms >= 1e6) return r(ohms / 1e6) + " MΩ";
+      if (ohms >= 1e3) return r(ohms / 1e3) + " kΩ";
+      return r(ohms) + " Ω";
+    }
+
+    // ── Dibujo de la resistencia ──
+    function drawResistor(colors) {
+      const svg = document.getElementById("resistor");
+      let s = '<line x1="0" y1="40" x2="300" y2="40" stroke="#b0b0b0" stroke-width="4"/>' +
+        '<rect x="60" y="14" width="180" height="52" rx="22" fill="#e8d3a8"/>';
+      const n = colors.length;
+      colors.forEach((c, i) => {
+        // La última banda (tolerancia) va separada a la derecha.
+        const x = i === n - 1 ? 212 : 84 + i * 24;
+        s += `<rect x="${x}" y="14" width="12" height="52" fill="${byName[c].css}" stroke="rgba(0,0,0,.25)"/>`;
+      });
+      svg.innerHTML = s;
+    }
+
+    // ── Leer bandas ──
+    let bands = ["Rojo", "Rojo", "Marrón", "Dorado"];
+    function bandRoles(n) {
+      return n === 4 ? ["1.ª cifra", "2.ª cifra", "Multiplicador", "Tolerancia"]
+        : ["1.ª cifra", "2.ª cifra", "3.ª cifra", "Multiplicador", "Tolerancia"];
+    }
+    function allowed(role) {
+      if (role.includes("cifra")) return COLORS.filter((c) => c.digit !== undefined);
+      if (role === "Multiplicador") return COLORS.filter((c) => c.mult !== undefined);
+      return COLORS.filter((c) => c.tol !== undefined);
+    }
+    function buildBands() {
+      const box = document.getElementById("bands");
+      box.innerHTML = "";
+      bandRoles(bands.length).forEach((role, i) => {
+        const wrap = document.createElement("div");
+        wrap.className = "band-pick";
+        wrap.innerHTML = `<span>${role}: <b>${bands[i]}</b></span>`;
+        const chips = document.createElement("div");
+        chips.className = "chips";
+        allowed(role).forEach((c) => {
+          const b = document.createElement("button");
+          b.className = "chip" + (bands[i] === c.name ? " sel" : "");
+          b.title = c.name;
+          b.style.background = c.css;
+          b.onclick = () => { bands[i] = c.name; buildBands(); showRead(); };
+          chips.appendChild(b);
+        });
+        wrap.appendChild(chips);
+        box.appendChild(wrap);
+      });
+    }
+    function showRead() {
+      const digits = bands.slice(0, -2).map((n) => byName[n].digit).join("");
+      const mult = byName[bands[bands.length - 2]].mult;
+      const tol = byName[bands[bands.length - 1]].tol;
+      const ohms = Number(digits) * Math.pow(10, mult);
+      drawResistor(bands);
+      document.getElementById("result").textContent = fmt(ohms);
+      document.getElementById("resultHint").textContent =
+        `± ${tol} % → entre ${fmt(ohms * (1 - tol / 100))} y ${fmt(ohms * (1 + tol / 100))}`;
+    }
+    document.getElementById("nBands").onchange = (e) => {
+      bands = e.target.value === "5" ? ["Marrón", "Negro", "Negro", "Marrón", "Marrón"] : ["Rojo", "Rojo", "Marrón", "Dorado"];
+      buildBands();
+      showRead();
+    };
+
+    // ── Valor → colores ──
+    // 4 bandas: 2 cifras + multiplicador + dorado (5 %).
+    function toBands(ohms) {
+      let mult = Math.floor(Math.log10(ohms)) - 1;
+      let digits = Math.round(ohms / Math.pow(10, mult));
+      if (digits >= 100) { digits = Math.round(digits / 10); mult++; }
+      mult = Math.max(-2, Math.min(9, mult));
+      const d = String(digits).padStart(2, "0");
+      const colorOf = (digit) => COLORS.find((c) => c.digit === digit).name;
+      const multColor = COLORS.find((c) => c.mult === mult).name;
+      return { colors: [colorOf(+d[0]), colorOf(+d[1]), multColor, "Dorado"], value: digits * Math.pow(10, mult) };
+    }
+    function nearestStandard(ohms, series, up) {
+      let best = null;
+      for (let e = -1; e <= 7; e++)
+        series.forEach((m) => {
+          const v = m * Math.pow(10, e);
+          if (up && v < ohms - 1e-9) return;
+          if (!best || Math.abs(v - ohms) < Math.abs(best - ohms)) best = v;
+        });
+      return best;
+    }
+    function showValue() {
+      const ohms = Number(document.getElementById("ohms").value) * Number(document.getElementById("unit").value);
+      if (!(ohms > 0)) return;
+      const { colors, value } = toBands(ohms);
+      drawResistor(colors);
+      document.getElementById("result").textContent = colors.slice(0, 3).join(" · ");
+      document.getElementById("resultHint").textContent = `${fmt(value)} ± 5 % (la 4.ª banda dorada)`;
+      const std = nearestStandard(ohms, E12, false);
+      const isStd = Math.abs(std - ohms) < ohms * 0.001;
+      document.getElementById("valueHint").textContent = isStd
+        ? `${fmt(ohms)} es un valor comercial (serie E12): se consigue fácil.`
+        : `${fmt(ohms)} no es un valor comercial común; el más cercano de la serie E12 es ${fmt(std)} (E24: ${fmt(nearestStandard(ohms, E24, false))}).`;
+    }
+    document.getElementById("ohms").oninput = document.getElementById("unit").onchange = showValue;
+
+    // ── Resistencia para un LED: R = (V fuente − V LED) / I ──
+    function showLed() {
+      const vs = Number(document.getElementById("supply").value);
+      const vf = Number(document.getElementById("ledColor").value);
+      const ma = Math.max(1, Number(document.getElementById("current").value) || 10);
+      const table = document.getElementById("ledTable");
+      if (vs - vf <= 0.2) {
+        drawResistor(["Negro", "Negro", "Negro", "Dorado"]);
+        document.getElementById("result").textContent = "No alcanza el voltaje";
+        document.getElementById("resultHint").textContent = `El LED necesita ≈${vf} V y la fuente da ${vs} V.`;
+        table.innerHTML = "";
+        return;
+      }
+      const exact = (vs - vf) / (ma / 1000);
+      const std = nearestStandard(exact, E12, true);
+      const realMa = ((vs - vf) / std) * 1000;
+      const watts = Math.pow(realMa / 1000, 2) * std;
+      const { colors } = toBands(std);
+      drawResistor(colors);
+      document.getElementById("result").textContent = fmt(std);
+      document.getElementById("resultHint").textContent = colors.slice(0, 3).join(" · ") + " · Dorado" +
+        (vs - vf < 0.5 ? " — ⚠️ el voltaje apenas alcanza: el LED prenderá débil." : "");
+      table.innerHTML =
+        `<tr><td>Cuenta exacta</td><td><b>${fmt(exact)}</b> = (${vs} V − ${vf} V) ÷ ${ma} mA</td></tr>` +
+        `<tr><td>Valor comercial (el siguiente mayor)</td><td><b>${fmt(std)}</b></td></tr>` +
+        `<tr><td>Corriente real</td><td>${realMa.toFixed(1)} mA</td></tr>` +
+        `<tr><td>Potencia</td><td>${(watts * 1000).toFixed(1)} mW — ${watts < 0.125 ? "sirve una de 1/4 W" : watts < 0.5 ? "usa una de 1/2 W" : "usa una de 1 W o más"}</td></tr>`;
+    }
+    ["supply", "ledColor", "current"].forEach((id) => {
+      document.getElementById(id).oninput = document.getElementById(id).onchange = showLed;
+    });
+
+    // ── Pestañas ──
+    const SHOW = { read: showRead, value: showValue, led: showLed };
+    document.querySelectorAll("[data-tab]").forEach((b) => {
+      b.onclick = () => {
+        document.querySelectorAll("[data-tab]").forEach((o) => o.classList.toggle("active", o === b));
+        document.querySelectorAll("[data-pane]").forEach((p) => (p.hidden = p.dataset.pane !== b.dataset.tab));
+        SHOW[b.dataset.tab]();
+      };
+    });
+
+    buildBands();
+    showRead();
+  </script>
+</body>
+</html>

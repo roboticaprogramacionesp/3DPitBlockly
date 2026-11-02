@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Probar servo</title>
+  <link rel="stylesheet" href="tools.css">
+  <style>
+    #servo { width: min(100%, 320px); display: block; margin: 0 auto; }
+    .slider-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+    .slider-row input[type="range"] { flex: 1; width: auto; }
+    .slider-row .val { font-family: monospace; min-width: 72px; text-align: right; }
+    .status { font-size: 14px; padding: 8px 10px; border-radius: 6px; background: var(--panel-2); }
+    .status.on { background: #1d4d2e; }
+  </style>
+</head>
+<body>
+  <a class="back" href="index.html">← Herramientas</a>
+  <h1>⚙️ Probar servo</h1>
+  <p class="subtitle">Mueve el servo con el deslizador y encuentra el pulso exacto con el que tu servo llega a 0° y a 180°.</p>
+
+  <div class="layout">
+    <div class="panel" style="flex:1 1 320px">
+      <svg id="servo" viewBox="0 0 200 170">
+        <path d="M30 150 A70 70 0 0 1 170 150" fill="none" stroke="#3a4180" stroke-width="2" stroke-dasharray="3 4"/>
+        <text x="22" y="165" fill="#a9afd9" font-size="10">0°</text>
+        <text x="94" y="72" fill="#a9afd9" font-size="10">90°</text>
+        <text x="166" y="165" fill="#a9afd9" font-size="10">180°</text>
+        <rect x="70" y="125" width="60" height="40" rx="4" fill="#2b6cb0"/>
+        <g id="horn">
+          <rect x="96" y="80" width="8" height="70" rx="4" fill="#f4f4f8"/>
+          <circle cx="100" cy="85" r="3" fill="#2b6cb0"/>
+        </g>
+        <circle cx="100" cy="145" r="9" fill="#f4f4f8"/>
+      </svg>
+      <div class="slider-row">
+        <span>Ángulo</span>
+        <input type="range" id="angle" min="0" max="180" value="90">
+        <span class="val" id="angleVal">90°</span>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <button data-a="0">0°</button>
+        <button data-a="45">45°</button>
+        <button data-a="90">90°</button>
+        <button data-a="135">135°</button>
+        <button data-a="180">180°</button>
+        <button id="sweep">↔ Barrido</button>
+      </div>
+      <p class="hint" style="margin-top:8px" id="pulseInfo"></p>
+    </div>
+
+    <div class="side">
+      <div class="panel">
+        <p class="section-title">Calibración (pulso en microsegundos)</p>
+        <div class="slider-row">
+          <span>Mín (0°)</span>
+          <input type="range" id="min" min="300" max="1500" step="10" value="500">
+          <span class="val" id="minVal">500 µs</span>
+        </div>
+        <div class="slider-row">
+          <span>Máx (180°)</span>
+          <input type="range" id="max" min="1500" max="3000" step="10" value="2400">
+          <span class="val" id="maxVal">2400 µs</span>
+        </div>
+        <p class="hint" style="margin-top:8px">Pon el servo en 0° y baja <b>Mín</b> hasta que llegue al tope sin zumbar. Haz lo mismo en 180° con <b>Máx</b>. Si zumba o se calienta, te pasaste: vuelve un poco.</p>
+      </div>
+
+      <div class="panel">
+        <div class="row">
+          <label class="field">Pin
+            <select id="pin"></select>
+          </label>
+          <label class="row" style="align-self:flex-end">
+            <input type="checkbox" id="live"> Mover el servo real
+          </label>
+        </div>
+        <div class="status" id="status" style="margin-top:8px"></div>
+        <p class="hint" style="margin-top:6px">Al activarlo se detiene el programa que esté corriendo en el ESP32.</p>
+      </div>
+
+      <div class="panel">
+        <div class="row">
+          <button class="primary" id="insert" data-embedded-only>Insertar en mis bloques</button>
+          <button id="copy">Copiar código</button>
+        </div>
+        <p class="hint" style="margin-top:8px">Inserta <b>servo Pin</b> y <b>mover a … pulso mín/máx</b> con tu calibración.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="tools.js"></script>
+  <script src="pins.js"></script>
+  <script>
+    const angleEl = document.getElementById("angle");
+    const minEl = document.getElementById("min");
+    const maxEl = document.getElementById("max");
+    const pinEl = document.getElementById("pin");
+    const liveEl = document.getElementById("live");
+    const statusEl = document.getElementById("status");
+
+    // Pines que pueden sacar PWM en la placa elegida en la app.
+    const board = BOARD_PINS[Tools.currentBoard()] || BOARD_PINS.esp32_wroom;
+    board.pins.filter((p) => p.level !== "no" && p.tags.includes("pwm"))
+      .forEach((p) => pinEl.add(new Option(String(p.gpio), String(p.gpio))));
+    pinEl.value = pinEl.querySelector('option[value="26"]') ? "26" : pinEl.options[0].value;
+
+    function pulseUs() {
+      const a = Number(angleEl.value), lo = Number(minEl.value), hi = Number(maxEl.value);
+      return Math.round(lo + (hi - lo) * a / 180);
+    }
+
+    // ── En vivo: se manda la orden al REPL, como mucho cada 80 ms ──
+    let connected = false, busy = false, ready = false, pending = false, timer = null;
+    function setStatus(st) {
+      connected = st.connected; busy = st.busy;
+      if (!Tools.embedded) statusEl.textContent = "Abre esta herramienta desde 3DPit Blocks para mover un servo real.";
+      else if (!connected) statusEl.textContent = "🔌 Conecta la placa (botón de conexión de la app) para mover el servo real.";
+      else if (busy) statusEl.textContent = "⏳ La app está subiendo código; espera un momento.";
+      else statusEl.textContent = liveEl.checked ? `✅ Moviendo el servo del pin ${pinEl.value}` : "✅ Placa conectada";
+      statusEl.classList.toggle("on", connected && !busy);
+      if (!connected && liveEl.checked) { liveEl.checked = false; ready = false; }
+    }
+    Tools.replStatus(setStatus);
+    setInterval(() => Tools.replStatus(setStatus), 2000);
+
+    function startLive() {
+      // Ctrl+C detiene el programa que esté corriendo; después se prepara
+      // el PWM del pin en una variable propia (_sv) para no pisar otras.
+      Tools.repl("\x03");
+      Tools.repl(`from machine import Pin, PWM; _sv = PWM(Pin(${pinEl.value}), freq=50)\r`);
+      ready = true;
+      sendAngle();
+    }
+    function stopLive() {
+      if (ready) Tools.repl("_sv.deinit()\r");
+      ready = false;
+    }
+    function sendAngle() {
+      if (!liveEl.checked || !ready) return;
+      if (timer) { pending = true; return; }
+      Tools.repl(`_sv.duty_ns(${pulseUs() * 1000})\r`);
+      timer = setTimeout(() => { timer = null; if (pending) { pending = false; sendAngle(); } }, 80);
+    }
+    liveEl.onchange = () => {
+      if (liveEl.checked && (!connected || busy)) { liveEl.checked = false; Tools.replStatus(setStatus); return; }
+      if (liveEl.checked) startLive(); else stopLive();
+      Tools.replStatus(setStatus);
+    };
+    pinEl.onchange = () => { if (liveEl.checked) { stopLive(); startLive(); } };
+    window.addEventListener("pagehide", stopLive);
+
+    // ── Dibujo y valores ──
+    function update() {
+      const a = Number(angleEl.value);
+      document.getElementById("horn").setAttribute("transform", `rotate(${a - 90} 100 145)`);
+      document.getElementById("angleVal").textContent = `${a}°`;
+      document.getElementById("minVal").textContent = `${minEl.value} µs`;
+      document.getElementById("maxVal").textContent = `${maxEl.value} µs`;
+      const us = pulseUs();
+      document.getElementById("pulseInfo").textContent =
+        `Pulso: ${us} µs cada 20 ms (50 Hz) — duty ${(us / 200).toFixed(1)} %`;
+      sendAngle();
+    }
+    angleEl.oninput = minEl.oninput = maxEl.oninput = update;
+    document.querySelectorAll("[data-a]").forEach((b) => {
+      b.onclick = () => { angleEl.value = b.dataset.a; update(); };
+    });
+    let sweepTimer = null;
+    document.getElementById("sweep").onclick = (e) => {
+      if (sweepTimer) { clearInterval(sweepTimer); sweepTimer = null; e.currentTarget.classList.remove("active"); return; }
+      e.currentTarget.classList.add("active");
+      let dir = 5;
+      sweepTimer = setInterval(() => {
+        let a = Number(angleEl.value) + dir;
+        if (a >= 180 || a <= 0) dir = -dir;
+        angleEl.value = Math.max(0, Math.min(180, a));
+        update();
+      }, 60);
+    };
+    update();
+
+    // ── Salida: mismo código que el bloque servo_move_pulse ──
+    document.getElementById("copy").onclick = () => Tools.copy(`from machine import Pin, PWM
+
+def servo_pulse(servo, angle, min_us, max_us):
+    angle = min(max(angle, 0), 180)
+    servo.duty_ns(int((min_us + (max_us - min_us) * angle / 180) * 1000))
+
+servo_${pinEl.value} = PWM(Pin(${pinEl.value}), freq=50)
+servo_pulse(servo_${pinEl.value}, ${angleEl.value}, ${minEl.value}, ${maxEl.value})
+`);
+    document.getElementById("insert").onclick = () => {
+      stopLive();
+      liveEl.checked = false;
+      const pin = pinEl.value;
+      Tools.insertBlocks(
+        `<xml><block type="init_servo"><field name="PIN">${pin}</field><next>` +
+        `<block type="servo_move_pulse"><field name="PIN">${pin}</field>` +
+        `<field name="MIN">${minEl.value}</field><field name="MAX">${maxEl.value}</field>` +
+        `<value name="ANGLE"><shadow type="math_number"><field name="NUM">${angleEl.value}</field></shadow></value>` +
+        `</block></next></block></xml>`,
+      );
+    };
+  </script>
+</body>
+</html>
