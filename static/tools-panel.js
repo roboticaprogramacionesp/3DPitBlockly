@@ -194,5 +194,20 @@
     }
   });
 
+  // Enlace de quiz (#quiz=...): se abre el quiz en la ventana, listo para
+  // responder. El dato pasa al iframe en su propio fragmento (#), que
+  // nunca se manda a un servidor, y se quita de la barra de direcciones.
+  function abrirQuizDesdeEnlace() {
+    const h = location.hash || "";
+    if (!h.startsWith("#quiz=")) return;
+    try {
+      history.replaceState(null, "", location.pathname + location.search);
+    } catch (_) {}
+    window.toolsEditPayload = null;
+    open("quiz.html" + h);
+  }
+  abrirQuizDesdeEnlace();
+  window.addEventListener("hashchange", abrirQuizDesdeEnlace);
+
   window.ToolsPanel = { open, edit };
 })();

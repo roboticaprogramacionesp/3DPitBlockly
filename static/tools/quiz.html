@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quiz</title>
+  <link rel="stylesheet" href="tools.css">
+  <style>
+    textarea, input[type="text"].wide {
+      width: 100%; background: var(--panel-2); color: var(--text); border: 1px solid var(--line);
+      border-radius: 6px; padding: 8px; font-size: 14px; font-family: inherit;
+    }
+    textarea.code, pre.qcode { font-family: monospace; font-size: 13px; }
+    pre.qcode { background: #0f1226; border: 1px solid var(--line); border-radius: 6px; padding: 10px; white-space: pre-wrap; margin: 8px 0; }
+    .q-edit { margin-top: 12px; }
+    .q-edit .head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .q-edit .head b { font-size: 15px; }
+    .opt { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
+    .opt input[type="text"] { flex: 1; }
+    .answers { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+    .answers button { text-align: left; padding: 12px; font-size: 15px; }
+    .answers button.right { background: #1d4d2e; border-color: #2ecc71; }
+    .answers button.wrong { background: #4d1d1d; border-color: #e74c3c; }
+    .answers button.chosen { border-color: var(--accent-2); box-shadow: 0 0 0 2px var(--accent); }
+    .feedback { margin-top: 10px; padding: 10px; border-radius: 8px; background: var(--panel-2); }
+    .bar { height: 8px; border-radius: 4px; background: var(--panel-2); overflow: hidden; margin: 8px 0 14px; }
+    .bar > div { height: 100%; background: var(--accent); }
+    .score { font-size: 40px; font-weight: 800; }
+    .review li { margin-top: 8px; }
+    .muted { color: var(--muted); font-size: 13px; }
+    .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+  </style>
+</head>
+<body>
+  <a class="back" href="index.html" id="backLink">← Herramientas</a>
+  <h1>📝 Quiz</h1>
+  <div id="app"></div>
+
+  <script src="tools.js"></script>
+  <script>
+    /* ════════════════════════════════════════════════════════════════
+       Quiz para docentes: el docente crea preguntas y las comparte como
+       enlace (#quiz=...) o archivo (.quiz.json); el alumno responde y al
+       final recibe un código de resultado para mandárselo al docente.
+
+       SEGURIDAD: un quiz compartido (y un código de resultado) es
+       contenido NO confiable. Todo se muestra con textContent; sanitizar()
+       reconstruye el quiz copiando solo los campos conocidos, con su tipo
+       y largo máximo. El enlace va en el fragmento (#): no se manda a
+       ningún servidor.
+       ════════════════════════════════════════════════════════════════ */
+    const LIM = { titulo: 120, texto: 600, codigo: 1500, opcion: 200, explicacion: 400, respuesta: 100,
+      preguntas: 50, opciones: 6, bytes: 200 * 1024, enlace: 120 * 1024, nombre: 60 };
+    const BORRADOR = "3dpit-quiz-borrador";
+    const app = document.getElementById("app");
+
+    // ── Utilidades ──
+    function el(tag, attrs, ...children) {
+      const n = document.createElement(tag);
+      Object.entries(attrs || {}).forEach(([k, v]) => {
+        if (k === "class") n.className = v;
+        else if (k.startsWith("on")) n[k] = v;
+        else if (k === "text") n.textContent = v;
+        else n.setAttribute(k, v);
+      });
+      children.flat().forEach((c) => c != null && n.append(c));
+      return n;
+    }
+    // Texto seguro: **negrita**, *cursiva* y saltos de línea, nodo por nodo.
+    function rich(texto) {
+      const span = document.createElement("span");
+      String(texto || "").split("\n").forEach((linea, i) => {
+        if (i) span.appendChild(document.createElement("br"));
+        const re = /\*\*([^*]+)\*\*|\*([^*]+)\*/g;
+        let ultimo = 0, m;
+        while ((m = re.exec(linea))) {
+          if (m.index > ultimo) span.appendChild(document.createTextNode(linea.slice(ultimo, m.index)));
+          span.appendChild(el(m[1] !== undefined ? "b" : "em", { text: m[1] !== undefined ? m[1] : m[2] }));
+          ultimo = re.lastIndex;
+        }
+        if (ultimo < linea.length) span.appendChild(document.createTextNode(linea.slice(ultimo)));
+      });
+      return span;
+    }
+    // append() del navegador escribe "null" como texto: se saltan los vacíos.
+    const add = (parent, ...children) => children.forEach((c) => c != null && parent.append(c));
+    const str = (v, max) => (typeof v === "string" ? v.slice(0, max) : "");
+    const norm = (s) => String(s).trim().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/\s+/g, " ");
+
+    function sanitizar(obj) {
+      if (!obj || typeof obj !== "object" || obj.formato !== "3dpit-quiz") throw new Error("No es un quiz de 3DPit");
+      const preguntas = (Array.isArray(obj.preguntas) ? obj.preguntas : []).slice(0, LIM.preguntas).map((p) => {
+        const q = { tipo: ["opcion", "vf", "corta"].includes(p && p.tipo) ? p.tipo : "opcion",
+          texto: str(p && p.texto, LIM.texto), codigo: str(p && p.codigo, LIM.codigo), explicacion: str(p && p.explicacion, LIM.explicacion) };
+        if (q.tipo === "opcion") {
+          q.opciones = (Array.isArray(p.opciones) ? p.opciones : []).slice(0, LIM.opciones).map((o) => str(o, LIM.opcion));
+          while (q.opciones.length < 2) q.opciones.push("");
+          q.correcta = Number.isInteger(p.correcta) && p.correcta >= 0 && p.correcta < q.opciones.length ? p.correcta : 0;
+        } else if (q.tipo === "vf") {
+          q.correcta = p.correcta === true;
+        } else {
+          q.correcta = str(p.correcta, LIM.respuesta * 4);
+        }
+        return q;
+      });
+      return { formato: "3dpit-quiz", version: 1, titulo: str(obj.titulo, LIM.titulo) || "Quiz",
+        descripcion: str(obj.descripcion, LIM.texto), mostrarRespuestas: obj.mostrarRespuestas !== false, preguntas };
+    }
+
+    // ── Compresión para el enlace y el código de resultado ──
+    function b64url(bytes) {
+      let s = "";
+      bytes.forEach((b) => (s += String.fromCharCode(b)));
+      return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+    }
+    function desdeB64url(txt) {
+      const s = atob(txt.replace(/-/g, "+").replace(/_/g, "/"));
+      return Uint8Array.from(s, (c) => c.charCodeAt(0));
+    }
+    async function comprimir(texto) {
+      const stream = new Blob([new TextEncoder().encode(texto)]).stream().pipeThrough(new CompressionStream("deflate-raw"));
+      return b64url(new Uint8Array(await new Response(stream).arrayBuffer()));
+    }
+    // Corta apenas se pasa del límite (evita "bombas" de compresión).
+    async function descomprimir(txt) {
+      if (txt.length > LIM.enlace || !/^[A-Za-z0-9_-]+$/.test(txt)) throw new Error("dato inválido");
+      const reader = new Blob([desdeB64url(txt)]).stream().pipeThrough(new DecompressionStream("deflate-raw")).getReader();
+      const parts = [];
+      let total = 0;
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        total += value.length;
+        if (total > LIM.bytes) { reader.cancel(); throw new Error("demasiado grande"); }
+        parts.push(value);
+      }
+      const out = new Uint8Array(total);
+      let o = 0;
+      parts.forEach((p) => { out.set(p, o); o += p.length; });
+      return new TextDecoder().decode(out);
+    }
+
+    // URL de la app (para que el enlace abra 3DPit Blocks con el quiz).
+    function appUrl() {
+      try {
+        if (Tools.embedded) return window.parent.location.origin + window.parent.location.pathname;
+      } catch (_) {}
+      return new URL("../../", location.href).href;
+    }
+
+    // ════════════════════════ INICIO ════════════════════════
+    function inicio() {
+      app.innerHTML = "";
+      app.append(
+        el("p", { class: "subtitle", text: "Los docentes crean preguntas y las comparten con un enlace o un archivo; los alumnos responden y mandan su código de resultado." }),
+        el("div", { class: "cards", style: "display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px" },
+          tarjeta("✏️", "Crear o editar un quiz", "Para docentes: arma las preguntas y compártelas.", () => editor(cargarBorrador())),
+          tarjeta("📂", "Abrir un archivo de quiz", "Abre un .quiz.json que te mandaron.", abrirArchivo),
+          tarjeta("📊", "Ver un resultado", "Para docentes: pega el código que te mandó un alumno.", verResultado)),
+      );
+    }
+    function tarjeta(icon, titulo, texto, onclick) {
+      return el("button", { class: "panel", style: "text-align:left;display:flex;flex-direction:column;gap:6px;padding:14px", onclick },
+        el("span", { style: "font-size:28px", text: icon }), el("b", { text: titulo }), el("span", { class: "muted", text: texto }));
+    }
+
+    function abrirArchivo() {
+      const input = el("input", { type: "file", accept: ".json,application/json" });
+      input.onchange = async () => {
+        const f = input.files[0];
+        if (!f) return;
+        if (f.size > LIM.bytes) return Tools.toast("El archivo es demasiado grande");
+        try {
+          const quiz = sanitizar(JSON.parse(await f.text()));
+          elegirModo(quiz);
+        } catch (e) {
+          Tools.toast("El archivo no es un quiz válido");
+        }
+      };
+      input.click();
+    }
+    function elegirModo(quiz) {
+      app.innerHTML = "";
+      app.append(el("div", { class: "panel" },
+        el("h2", { style: "margin:0 0 6px", text: quiz.titulo }),
+        el("p", { class: "muted", text: `${quiz.preguntas.length} preguntas` }),
+        el("div", { class: "row", style: "margin-top:10px" },
+          el("button", { class: "primary", text: "▶ Responder", onclick: () => responder(quiz) }),
+          el("button", { text: "✏️ Editar (docente)", onclick: () => editor(quiz) }))));
+    }
+
+    // ════════════════════════ EDITOR ════════════════════════
+    function cargarBorrador() {
+      try {
+        const b = localStorage.getItem(BORRADOR);
+        if (b) return sanitizar(JSON.parse(b));
+      } catch (_) {}
+      return { formato: "3dpit-quiz", version: 1, titulo: "Mi quiz", descripcion: "", mostrarRespuestas: true, preguntas: [] };
+    }
+    function guardarBorrador(quiz) {
+      try { localStorage.setItem(BORRADOR, JSON.stringify(quiz)); } catch (_) {}
+    }
+
+    const NUEVA = {
+      opcion: () => ({ tipo: "opcion", texto: "", codigo: "", explicacion: "", opciones: ["", "", ""], correcta: 0 }),
+      vf: () => ({ tipo: "vf", texto: "", codigo: "", explicacion: "", correcta: true }),
+      corta: () => ({ tipo: "corta", texto: "", codigo: "", explicacion: "", correcta: "" }),
+    };
+    const NOMBRE_TIPO = { opcion: "Opción múltiple", vf: "Verdadero o falso", corta: "Respuesta corta" };
+
+    function editor(quiz) {
+      const save = () => guardarBorrador(quiz);
+      app.innerHTML = "";
+      const head = el("div", { class: "panel" },
+        el("label", { class: "field" }, "Título", el("input", { type: "text", class: "wide", value: quiz.titulo, maxlength: LIM.titulo,
+          oninput: (e) => { quiz.titulo = e.target.value; save(); } })),
+        el("label", { class: "field", style: "margin-top:8px" }, "Indicaciones para los alumnos (opcional)",
+          el("textarea", { rows: 2, maxlength: LIM.texto, oninput: (e) => { quiz.descripcion = e.target.value; save(); } }, quiz.descripcion)),
+        el("label", { class: "row", style: "margin-top:8px" },
+          el("input", Object.assign({ type: "checkbox", onchange: (e) => { quiz.mostrarRespuestas = e.target.checked; save(); } }, quiz.mostrarRespuestas ? { checked: "" } : {})),
+          "Mostrar la respuesta correcta después de cada pregunta"));
+      const list = el("div", {});
+      const actions = el("div", { class: "panel", style: "margin-top:12px" },
+        el("div", { class: "row" },
+          el("span", { class: "muted", text: "Agregar pregunta:" }),
+          ...Object.keys(NUEVA).map((t) => el("button", { text: "+ " + NOMBRE_TIPO[t], onclick: () => {
+            if (quiz.preguntas.length >= LIM.preguntas) return Tools.toast(`Máximo ${LIM.preguntas} preguntas`);
+            quiz.preguntas.push(NUEVA[t]()); save(); dibujar(); } }))),
+        el("div", { class: "row", style: "margin-top:10px" },
+          el("button", { class: "primary", text: "▶ Probar", onclick: () => responder(sanitizar(quiz), () => editor(quiz)) }),
+          el("button", { text: "🔗 Copiar enlace", onclick: () => copiarEnlace(quiz) }),
+          el("button", { text: "💾 Descargar archivo", onclick: () => descargar(quiz) }),
+          el("button", { text: "📂 Abrir archivo", onclick: abrirArchivo }),
+          el("button", { text: "🗑 Empezar de cero", onclick: () => {
+            if (!confirm("¿Borrar todas las preguntas de este quiz?")) return;
+            try { localStorage.removeItem(BORRADOR); } catch (_) {}
+            editor(cargarBorrador()); } })),
+        el("p", { class: "hint", style: "margin-top:8px", text: "Se guarda solo en este navegador mientras lo editas. En los textos puedes usar **negrita** y *cursiva*." }));
+
+      function dibujar() {
+        list.innerHTML = "";
+        quiz.preguntas.forEach((q, i) => list.appendChild(editorPregunta(quiz, q, i, save, dibujar)));
+        if (!quiz.preguntas.length) list.appendChild(el("p", { class: "hint", style: "margin-top:12px", text: "Todavía no hay preguntas: agrega la primera abajo." }));
+      }
+      dibujar();
+      app.append(head, list, actions);
+    }
+
+    function editorPregunta(quiz, q, i, save, redraw) {
+      const box = el("div", { class: "panel q-edit" });
+      const move = (d) => { const j = i + d; if (j < 0 || j >= quiz.preguntas.length) return;
+        [quiz.preguntas[i], quiz.preguntas[j]] = [quiz.preguntas[j], quiz.preguntas[i]]; save(); redraw(); };
+      box.append(
+        el("div", { class: "head" }, el("b", { text: `${i + 1}. ${NOMBRE_TIPO[q.tipo]}` }),
+          el("span", { class: "row" },
+            el("button", { text: "↑", title: "Subir", onclick: () => move(-1) }),
+            el("button", { text: "↓", title: "Bajar", onclick: () => move(1) }),
+            el("button", { text: "🗑", title: "Borrar", onclick: () => { quiz.preguntas.splice(i, 1); save(); redraw(); } }))),
+        el("textarea", { rows: 2, placeholder: "Pregunta", maxlength: LIM.texto, oninput: (e) => { q.texto = e.target.value; save(); } }, q.texto),
+        el("details", Object.assign({ style: "margin-top:6px" }, q.codigo ? { open: "" } : {}),
+          el("summary", { class: "muted", text: "Agregar código (para \"¿qué hace este código?\")" }),
+          el("textarea", { class: "code", rows: 4, placeholder: "for i in range(3):\n    led.value(1)", maxlength: LIM.codigo,
+            oninput: (e) => { q.codigo = e.target.value; save(); } }, q.codigo)));
+
+      if (q.tipo === "opcion") {
+        const name = "c" + i + "_" + Math.random().toString(36).slice(2);
+        q.opciones.forEach((o, k) => box.appendChild(el("div", { class: "opt" },
+          el("input", Object.assign({ type: "radio", name, title: "Respuesta correcta", onchange: () => { q.correcta = k; save(); } }, q.correcta === k ? { checked: "" } : {})),
+          el("input", { type: "text", value: o, placeholder: `Opción ${k + 1}`, maxlength: LIM.opcion, oninput: (e) => { q.opciones[k] = e.target.value; save(); } }),
+          q.opciones.length > 2 ? el("button", { text: "✕", title: "Quitar opción", onclick: () => {
+            q.opciones.splice(k, 1); if (q.correcta >= q.opciones.length) q.correcta = 0; save(); redraw(); } }) : null)));
+        if (q.opciones.length < LIM.opciones) box.appendChild(el("button", { style: "margin-top:6px", text: "+ Opción", onclick: () => { q.opciones.push(""); save(); redraw(); } }));
+        box.appendChild(el("p", { class: "hint", style: "margin-top:4px", text: "Marca con el círculo la opción correcta." }));
+      } else if (q.tipo === "vf") {
+        const name = "vf" + i + "_" + Math.random().toString(36).slice(2);
+        box.appendChild(el("div", { class: "row", style: "margin-top:8px" }, "Respuesta correcta:",
+          ...[true, false].map((v) => el("label", { class: "row" },
+            el("input", Object.assign({ type: "radio", name, onchange: () => { q.correcta = v; save(); } }, q.correcta === v ? { checked: "" } : {})),
+            v ? "Verdadero" : "Falso"))));
+      } else {
+        box.appendChild(el("label", { class: "field", style: "margin-top:8px" },
+          "Respuestas aceptadas (separa varias con | , no importan mayúsculas ni acentos)",
+          el("input", { type: "text", class: "wide", value: q.correcta, placeholder: "3 | tres", maxlength: LIM.respuesta * 4,
+            oninput: (e) => { q.correcta = e.target.value; save(); } })));
+      }
+      box.appendChild(el("label", { class: "field", style: "margin-top:8px" }, "Explicación (se muestra al responder, opcional)",
+        el("textarea", { rows: 2, maxlength: LIM.explicacion, oninput: (e) => { q.explicacion = e.target.value; save(); } }, q.explicacion)));
+      return box;
+    }
+
+    function problemas(quiz) {
+      if (!quiz.preguntas.length) return "Agrega al menos una pregunta.";
+      for (let i = 0; i < quiz.preguntas.length; i++) {
+        const q = quiz.preguntas[i];
+        if (!q.texto.trim() && !q.codigo.trim()) return `La pregunta ${i + 1} no tiene texto.`;
+        if (q.tipo === "opcion" && q.opciones.some((o) => !o.trim())) return `La pregunta ${i + 1} tiene una opción vacía.`;
+        if (q.tipo === "corta" && !q.correcta.trim()) return `La pregunta ${i + 1} no tiene respuesta aceptada.`;
+      }
+      return null;
+    }
+    async function copiarEnlace(quiz) {
+      const p = problemas(quiz);
+      if (p) return Tools.toast(p);
+      if (typeof CompressionStream === "undefined") return Tools.toast("Este navegador no puede crear enlaces: usa el archivo");
+      const datos = await comprimir(JSON.stringify(sanitizar(quiz)));
+      if (datos.length > LIM.enlace) return Tools.toast("El quiz es demasiado grande para un enlace: usa el archivo");
+      await Tools.copy(appUrl() + "#quiz=" + datos);
+      Tools.toast("Enlace copiado: compártelo con tus alumnos");
+    }
+    function descargar(quiz) {
+      const p = problemas(quiz);
+      if (p) return Tools.toast(p);
+      const blob = new Blob([JSON.stringify(sanitizar(quiz), null, 1)], { type: "application/json" });
+      const a = el("a", { href: URL.createObjectURL(blob), download: (quiz.titulo || "quiz").replace(/[^\w\- áéíóúñÁÉÍÓÚÑ]/g, "").trim() + ".quiz.json" });
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    }
+
+    // ════════════════════════ RESPONDER ════════════════════════
+    function esCorrecta(q, r) {
+      if (r === null || r === undefined) return false;
+      if (q.tipo === "corta") return q.correcta.split("|").map(norm).filter(Boolean).includes(norm(r));
+      return r === q.correcta;
+    }
+
+    function responder(quiz, alVolver) {
+      const respuestas = new Array(quiz.preguntas.length).fill(null);
+      let nombre = "";
+      app.innerHTML = "";
+      const nameInput = el("input", { type: "text", class: "wide", maxlength: LIM.nombre, placeholder: "Tu nombre" });
+      app.append(el("div", { class: "panel" },
+        el("h2", { style: "margin:0 0 6px", text: quiz.titulo }),
+        quiz.descripcion ? el("p", {}, rich(quiz.descripcion)) : null,
+        el("p", { class: "muted", text: `${quiz.preguntas.length} preguntas` }),
+        el("label", { class: "field", style: "margin-top:8px" }, "Escribe tu nombre", nameInput),
+        el("div", { class: "row", style: "margin-top:10px" },
+          el("button", { class: "primary", text: "Empezar", onclick: () => {
+            nombre = nameInput.value.trim().slice(0, LIM.nombre);
+            if (!nombre) return Tools.toast("Escribe tu nombre para empezar");
+            pregunta(0);
+          } }),
+          alVolver ? el("button", { text: "← Volver a editar", onclick: alVolver }) : null)));
+
+      function pregunta(i) {
+        if (i >= quiz.preguntas.length) return final();
+        const q = quiz.preguntas[i];
+        let elegida = null;
+        app.innerHTML = "";
+        const box = el("div", { class: "panel" });
+        const bar = el("div", { class: "bar" }, el("div", { style: `width:${(i / quiz.preguntas.length) * 100}%` }));
+        add(box, el("p", { class: "muted", text: `Pregunta ${i + 1} de ${quiz.preguntas.length}` }), bar,
+          el("p", { style: "font-size:17px;margin:0" }, rich(q.texto)),
+          q.codigo ? el("pre", { class: "qcode", text: q.codigo }) : null);
+        const answers = el("div", { class: "answers" });
+        const next = el("button", { class: "primary", style: "margin-top:12px", text: i + 1 < quiz.preguntas.length ? "Siguiente →" : "Terminar" });
+        next.disabled = true;
+        const fb = el("div", {});
+
+        function confirmar() {
+          respuestas[i] = elegida;
+          if (!quiz.mostrarRespuestas) return pregunta(i + 1);
+          const ok = esCorrecta(q, elegida);
+          answers.querySelectorAll("button").forEach((b) => {
+            b.disabled = true;
+            const v = JSON.parse(b.dataset.v);
+            if (esCorrecta(q, v)) b.classList.add("right");
+            else if (v === elegida) b.classList.add("wrong");
+          });
+          const input = answers.querySelector("input");
+          if (input) input.disabled = true;
+          fb.className = "feedback";
+          fb.innerHTML = "";
+          add(fb, el("b", { text: ok ? "✅ ¡Correcto!" : "❌ No es correcto." }),
+            q.tipo === "corta" && !ok ? el("div", { text: "Respuesta esperada: " + q.correcta.split("|")[0].trim() }) : null,
+            q.explicacion ? el("div", { style: "margin-top:4px" }, rich(q.explicacion)) : null);
+          next.textContent = i + 1 < quiz.preguntas.length ? "Siguiente →" : "Ver resultado";
+          next.onclick = () => pregunta(i + 1);
+        }
+
+        if (q.tipo === "corta") {
+          const input = el("input", { type: "text", class: "wide", maxlength: LIM.respuesta, placeholder: "Tu respuesta",
+            oninput: (e) => { elegida = e.target.value; next.disabled = !elegida.trim(); } });
+          answers.appendChild(input);
+        } else {
+          const opciones = q.tipo === "vf" ? [[true, "Verdadero"], [false, "Falso"]] : q.opciones.map((o, k) => [k, o]);
+          opciones.forEach(([v, label]) => answers.appendChild(el("button", { "data-v": JSON.stringify(v), onclick: (e) => {
+            elegida = v;
+            answers.querySelectorAll("button").forEach((b) => b.classList.toggle("chosen", b === e.currentTarget));
+            next.disabled = false;
+          } }, rich(label))));
+        }
+        next.onclick = confirmar;
+        box.append(answers, fb, next);
+        app.appendChild(box);
+      }
+
+      async function final() {
+        const ok = quiz.preguntas.map((q, i) => esCorrecta(q, respuestas[i]));
+        const puntos = ok.filter(Boolean).length;
+        app.innerHTML = "";
+        const review = el("ol", { class: "review" });
+        quiz.preguntas.forEach((q, i) => {
+          const r = respuestas[i];
+          const texto = q.tipo === "vf" ? (r ? "Verdadero" : "Falso") : q.tipo === "opcion" ? q.opciones[r] : r;
+          review.appendChild(el("li", {}, el("span", { text: ok[i] ? "✅ " : "❌ " }), rich(q.texto || "(código)"),
+            el("div", { class: "muted", text: "Tu respuesta: " + (texto == null ? "—" : texto) })));
+        });
+        const codigoBox = el("pre", { class: "code", text: "Generando…" });
+        app.append(el("div", { class: "panel" },
+          el("p", { class: "muted", text: `${nombre} · ${quiz.titulo}` }),
+          el("div", { class: "score", text: `${puntos} / ${quiz.preguntas.length}` }),
+          el("p", { text: `${Math.round((puntos / quiz.preguntas.length) * 100)} % de respuestas correctas` }),
+          review),
+          el("div", { class: "panel", style: "margin-top:12px" },
+            el("p", { class: "section-title", text: "Código de resultado para tu docente" }), codigoBox,
+            el("div", { class: "row", style: "margin-top:8px" },
+              el("button", { class: "primary", text: "📋 Copiar código", onclick: () => Tools.copy(codigoBox.textContent) }),
+              el("button", { text: "↻ Volver a intentar", onclick: () => responder(quiz, alVolver) }),
+              alVolver ? el("button", { text: "← Volver a editar", onclick: alVolver }) : null),
+            el("p", { class: "hint", style: "margin-top:6px", text: "Copia el código y mándaselo a tu docente (por chat, correo o en un documento)." })));
+        if (typeof CompressionStream === "undefined") { codigoBox.textContent = `${nombre}: ${puntos}/${quiz.preguntas.length}`; return; }
+        const resultado = { formato: "3dpit-quiz-resultado", version: 1, nombre, titulo: quiz.titulo, fecha: new Date().toISOString().slice(0, 16),
+          puntos, total: quiz.preguntas.length,
+          respuestas: quiz.preguntas.map((q, i) => ({ p: (q.texto || "(código)").slice(0, 120), r: respuestas[i] == null ? "" :
+            String(q.tipo === "vf" ? (respuestas[i] ? "Verdadero" : "Falso") : q.tipo === "opcion" ? q.opciones[respuestas[i]] : respuestas[i]).slice(0, LIM.respuesta), ok: ok[i] })) };
+        codigoBox.textContent = "3DPIT-" + (await comprimir(JSON.stringify(resultado)));
+      }
+    }
+
+    // ════════════════════════ VER RESULTADO (docente) ════════════════════════
+    function verResultado() {
+      app.innerHTML = "";
+      const input = el("textarea", { rows: 3, placeholder: "3DPIT-..." });
+      const out = el("div", { style: "margin-top:12px" });
+      app.append(el("div", { class: "panel" },
+        el("label", { class: "field" }, "Pega el código de resultado que te mandó el alumno", input),
+        el("div", { class: "row", style: "margin-top:8px" }, el("button", { class: "primary", text: "Ver", onclick: async () => {
+          out.innerHTML = "";
+          try {
+            const raw = input.value.trim().replace(/^3DPIT-/, "").replace(/\s+/g, "");
+            const r = JSON.parse(await descomprimir(raw));
+            if (!r || r.formato !== "3dpit-quiz-resultado") throw new Error();
+            const lista = el("ol", { class: "review" });
+            (Array.isArray(r.respuestas) ? r.respuestas : []).slice(0, LIM.preguntas).forEach((a) =>
+              lista.appendChild(el("li", {}, el("span", { text: a && a.ok === true ? "✅ " : "❌ " }), el("span", { text: str(a && a.p, 200) }),
+                el("div", { class: "muted", text: "Respondió: " + (str(a && a.r, LIM.respuesta) || "—") }))));
+            out.append(el("div", { class: "panel" },
+              el("p", { class: "muted", text: `${str(r.titulo, LIM.titulo)} · ${str(r.fecha, 20).replace("T", " ")}` }),
+              el("h2", { style: "margin:0", text: str(r.nombre, LIM.nombre) || "(sin nombre)" }),
+              el("div", { class: "score", text: `${Number(r.puntos) | 0} / ${Number(r.total) | 0}` }), lista,
+              el("p", { class: "hint", text: "El código lo genera el navegador del alumno: sirve para revisar, pero no es a prueba de trampas." })));
+          } catch (_) {
+            out.append(el("p", { text: "⚠️ El código no es válido o está incompleto." }));
+          }
+        } }))), out);
+    }
+
+    // ════════════════════════ ARRANQUE ════════════════════════
+    (async () => {
+      const h = location.hash || "";
+      if (h.startsWith("#quiz=")) {
+        try { history.replaceState(null, "", location.pathname + location.search); } catch (_) {}
+        try {
+          const quiz = sanitizar(JSON.parse(await descomprimir(h.slice(6))));
+          document.getElementById("backLink").hidden = true;
+          return responder(quiz);
+        } catch (_) {
+          app.append(el("p", { text: "⚠️ El enlace del quiz no es válido o está dañado." }));
+        }
+      }
+      inicio();
+    })();
+  </script>
+</body>
+</html>
