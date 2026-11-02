@@ -11,7 +11,7 @@
      guardan en "📌 Para repasar" hasta acertarlas.
    - Ver las cartas una por una (de la 1 a la 68 o ir a un número).
 
-   También da las funciones que usan los bloques 🃏 de la vista Juego
+   También da las funciones que usan los bloques 📇 de la vista Juego
    (game_blocks.js / animation.js): Cartas.sacar(nivel), Cartas.correcta()
    y Cartas.opciones().
    Agregar DESPUÉS de tutorial-steps.js, coco.js y cartas-data.js.
@@ -21,7 +21,7 @@ const Cartas = (() => {
   const REPASO = "3dpit-cartas-repaso2"; // (la 1ª usaba los números viejos de archivo)
   const LETRAS = ["a", "b", "c", "d"];
   const NIVELES = [
-    ["facil", "🟢 Fácil"], ["intermedio", "🔵 Intermedio"], ["dificil", "🟣 Difícil"], ["todas", "🃏 Mezcladas"],
+    ["facil", "🟢 Fácil"], ["intermedio", "🔵 Intermedio"], ["dificil", "🟣 Difícil"], ["todas", "🔀 Mezcladas"],
   ];
   const NOMBRE_NIVEL = { facil: "🟢 Fácil", intermedio: "🔵 Intermedio", dificil: "🟣 Difícil" };
   let panel = null;
@@ -96,7 +96,7 @@ const Cartas = (() => {
     panel = el("div", { id: "cartas-panel", style: "display:none" });
     panel.innerHTML =
       '<div class="ts-header">' +
-      '  <span class="ts-icon">🃏</span>' +
+      '  <span class="ts-icon">📇</span>' +
       '  <div class="ts-title-group">' +
       '    <p class="ts-label">Cartas &nbsp;·&nbsp; <span class="ts-drag-hint">✥ arrastrar</span></p>' +
       '    <h2 class="ts-title" id="cartas-title"></h2>' +
@@ -269,7 +269,7 @@ const Cartas = (() => {
       const [emoji, frase] = pct === 100 ? ["🏆", "¡Perfecto! Todas correctas."]
         : pct >= 70 ? ["🎉", "¡Muy bien!"]
         : pct >= 40 ? ["💪", "Vas bien: repasa las que fallaste."]
-        : ["🃏", "¡Échale ganas! Vuelve a intentarlo."];
+        : ["💪", "¡Échale ganas! Vuelve a intentarlo."];
       limpiar();
       body.append(el("div", { class: "ts-fin" },
         el("div", { class: "ts-fin-icon", text: emoji }),
@@ -339,7 +339,7 @@ const Cartas = (() => {
     const c = porArchivo(n);
     title.textContent = "Ver las cartas";
     fill.style.width = `${(n / total) * 100}%`;
-    progressTxt.textContent = `Carta ${n} de ${total} · ${NOMBRE_NIVEL[c.nivel]} · ${c.tema}`;
+    progressTxt.textContent = `Carta ${n} de ${total} · nivel ${NOMBRE_NIVEL[c.nivel].slice(3)} · ${c.tema}`;
     limpiar();
 
     const ir = el("input", { type: "number", min: "1", max: String(total), value: String(n), class: "cartas-ir", title: "Número de carta" });
@@ -387,7 +387,7 @@ const Cartas = (() => {
         ? boton("▶ Jugar esta carta", "ts-btn-primary", () => jugar("todas", 0, [c], `Carta ${n}`)) : null);
   }
 
-  // ── Para los bloques 🃏 de la vista Juego ──
+  // ── Para los bloques 📇 de la vista Juego ──
   // sacar() da una carta al azar del nivel sin repetir hasta agotarlas, y
   // devuelve su imagen relativa a static/img/ (lo que usa GameEngine).
   const pendientes = {};

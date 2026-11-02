@@ -2787,7 +2787,7 @@ function initInterpreter(code) {
       }),
     );
 
-    /* Cartas de preguntas (static/cartas.js, bloques 🃏 de game_blocks.js) */
+    /* Cartas de preguntas (static/cartas.js, bloques 📇 de game_blocks.js) */
     interpreter.setProperty(
       geObj,
       "cartaSacar",

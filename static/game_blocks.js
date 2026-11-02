@@ -1112,7 +1112,7 @@ GAME_SPRITE_GROUPS.forEach((group) => {
   };
 });
 
-/* ── Cartas de preguntas 🃏 (las tarjetas y la hoja de respuestas están en
+/* ── Cartas de preguntas 📇 (las tarjetas y la hoja de respuestas están en
    cartas-data.js; las funciones, en cartas.js). Para programar tu propio
    juego de preguntas: sacar una carta y ver si la respuesta es la correcta
    (con las teclas A/B/C/D, o con 4 botones del ESP32 usando "leer Pin"). ── */
@@ -1120,7 +1120,7 @@ const GAME_CARD_LEVELS = [["Fácil", "facil"], ["Intermedio", "intermedio"], ["D
 Blockly.defineBlocksWithJsonArray([
   {
     type: "game_card_draw",
-    message0: "🃏 sacar carta nivel %1",
+    message0: "📇 sacar carta nivel %1",
     args0: [{ type: "field_dropdown", name: "LEVEL", options: GAME_CARD_LEVELS }],
     previousStatement: null,
     nextStatement: null,
@@ -1129,14 +1129,14 @@ Blockly.defineBlocksWithJsonArray([
   },
   {
     type: "game_card_answer",
-    message0: "🃏 respuesta correcta de la carta",
+    message0: "📇 respuesta correcta de la carta",
     output: "String",
     colour: 20,
     tooltip: "La letra de la respuesta correcta de la carta que se sacó: a, b, c o d.",
   },
   {
     type: "game_card_is",
-    message0: "🃏 ¿la respuesta es %1 ?",
+    message0: "📇 ¿la respuesta es %1 ?",
     args0: [{ type: "field_dropdown", name: "LETTER", options: [["a", "a"], ["b", "b"], ["c", "c"], ["d", "d"]] }],
     output: "Boolean",
     colour: 20,
@@ -1144,7 +1144,7 @@ Blockly.defineBlocksWithJsonArray([
   },
   {
     type: "game_card_options",
-    message0: "🃏 número de opciones de la carta",
+    message0: "📇 número de opciones de la carta",
     output: "Number",
     colour: 20,
     tooltip: "Cuántas opciones trae la carta que se sacó (3 o 4).",

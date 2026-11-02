@@ -1,7 +1,7 @@
 /* ══════════════════════════════════════════════════════════════
    cartas-data.js — Tarjetas de preguntas (static/img/cartas/N.jpg: copia
    liviana de static/img/preguntas/, 2.6 MB en vez de 10 MB).
-   Las usan el juego de cartas (static/cartas.js) y los bloques 🃏 de la
+   Las usan el juego de cartas (static/cartas.js) y los bloques 📇 de la
    vista Juego.
 
    [número, nivel, opciones, correcta, tema]
