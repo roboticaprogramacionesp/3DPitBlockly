@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Retos</title>
+  <link rel="stylesheet" href="tools.css">
+  <style>
+    h2.level { font-size: 15px; color: var(--muted); margin: 18px 0 8px; font-weight: 600; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+    .reto { text-align: left; display: flex; flex-direction: column; gap: 6px; padding: 14px; min-height: 0; }
+    .reto .top { display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: 700; }
+    .reto p { margin: 0; font-size: 13px; color: var(--muted); }
+    .reto.done { border-color: #2ecc71; }
+    .badge { font-size: 12px; color: #2ecc71; }
+    .progress { font-size: 14px; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <a class="back" href="index.html">← Herramientas</a>
+  <h1>🏆 Retos</h1>
+  <p class="subtitle">Elige un reto, ármalo con bloques y presiona <b>Comprobar</b>: la app revisa tu programa y te da pistas.</p>
+  <p class="progress" id="progress"></p>
+  <div id="levels"></div>
+
+  <script src="tools.js"></script>
+  <script src="../retos-data.js"></script>
+  <script>
+    const LEVELS = { 1: "Nivel 1 · Primeros pasos", 2: "Nivel 2 · Entradas y lógica", 3: "Nivel 3 · Proyectos" };
+    let done = [];
+    try { done = JSON.parse(localStorage.getItem("3dpit-retos-ok") || "[]"); } catch (_) {}
+    document.getElementById("progress").textContent = `Superados: ${RETOS.filter((r) => done.includes(r.id)).length} de ${RETOS.length}`;
+
+    const box = document.getElementById("levels");
+    Object.entries(LEVELS).forEach(([lvl, label]) => {
+      const h = document.createElement("h2");
+      h.className = "level";
+      h.textContent = label;
+      const cards = document.createElement("div");
+      cards.className = "cards";
+      RETOS.filter((r) => r.level === Number(lvl)).forEach((r) => {
+        const b = document.createElement("button");
+        b.className = "panel reto" + (done.includes(r.id) ? " done" : "");
+        b.innerHTML = `<span class="top"><span></span><span class="badge">${done.includes(r.id) ? "✅ superado" : ""}</span></span><p></p>`;
+        b.querySelector(".top span").textContent = `${r.icon} ${r.title}`;
+        b.querySelector("p").textContent = r.desc;
+        b.onclick = () => {
+          if (Tools.embedded) window.parent.postMessage({ type: "3dpit-start-reto", id: r.id }, location.origin);
+          else Tools.toast("Abre los retos desde 3DPit Blocks para comprobarlos");
+        };
+        cards.appendChild(b);
+      });
+      box.append(h, cards);
+    });
+  </script>
+</body>
+</html>

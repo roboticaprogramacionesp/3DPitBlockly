@@ -171,6 +171,11 @@
   window.addEventListener("message", (e) => {
     if (e.origin !== location.origin || e.source !== frame.contentWindow) return;
     const data = e.data || {};
+    if (data.type === "3dpit-start-reto" && typeof data.id === "string") {
+      close();
+      if (window.Retos) window.Retos.start(data.id);
+      return;
+    }
     if (typeof data.type === "string" && data.type.startsWith("3dpit-repl")) {
       handleRepl(data);
       return;
