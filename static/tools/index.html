@@ -48,6 +48,16 @@
       <h3>Crear un ¡Échale coco!</h3>
       <p>Arma tus propias preguntas, compártelas por enlace o archivo y revisa los resultados.</p>
     </a>
+    <a class="card" href="#" id="cartasCard">
+      <div class="icon">🃏</div>
+      <h3>Cartas de preguntas</h3>
+      <p>Cartas de matemáticas por nivel: fácil, intermedio y difícil. Repasa las que fallaste.</p>
+    </a>
+    <a class="card" href="#" id="cartasVerCard">
+      <div class="icon">🔍</div>
+      <h3>Ver las cartas</h3>
+      <p>Mira las 68 cartas una por una o ve directo a la que quieras, con su respuesta.</p>
+    </a>
   </div>
 
   <h2 class="group">Pantallas</h2>
@@ -163,6 +173,14 @@
       if (Tools.embedded) window.parent.postMessage({ type: "3dpit-coco-open" }, location.origin);
       else location.href = "../../";
     };
+    // Las cartas de preguntas también se abren en la ventana flotante de la app.
+    [["cartasCard", false], ["cartasVerCard", true]].forEach(([id, ver]) => {
+      document.getElementById(id).onclick = (e) => {
+        e.preventDefault();
+        if (Tools.embedded) window.parent.postMessage({ type: "3dpit-cartas-open", ver }, location.origin);
+        else location.href = "../../";
+      };
+    });
   </script>
 </body>
 </html>

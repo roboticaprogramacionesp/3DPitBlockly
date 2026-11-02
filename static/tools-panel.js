@@ -185,6 +185,12 @@
       } catch (_) {}
       return;
     }
+    if (data.type === "3dpit-cartas-open" && window.Cartas) {
+      close();
+      if (data.ver) window.Cartas.ver(1);
+      else window.Cartas.abrir();
+      return;
+    }
     if (data.type === "3dpit-start-reto" && typeof data.id === "string") {
       close();
       if (window.Retos) window.Retos.start(data.id);

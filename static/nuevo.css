@@ -249,4 +249,41 @@
 .cartas-cuantas { display: flex; align-items: center; gap: 8px; }
 .cartas-cuantas .coco-opt { width: auto; padding: 6px 14px; }
 .cartas-repaso { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-.cartas-repaso img { width: 100%; border-radius: 4px; border: 1px solid #2a3560; }
+.cartas-repaso img { width: 100%; display: block; border-radius: 4px; }
+.cartas-sel { display: flex; flex-direction: column; gap: 6px; }
+.cartas-marcar { display: flex; gap: 6px; }
+.cartas-marcar .coco-opt { width: auto; padding: 4px 10px; font-size: 12px; }
+.cartas-mini {
+  position: relative; padding: 0; border: 2px solid #2a3560; border-radius: 6px;
+  background: none; cursor: pointer; opacity: 0.45; transition: opacity 0.15s, border-color 0.15s;
+}
+.cartas-mini.sel { opacity: 1; border-color: #00e676; }
+.cartas-mini-num {
+  position: absolute; left: 3px; top: 3px; font-size: 10px; font-weight: 700;
+  background: rgba(10, 16, 40, 0.8); color: #e8eeff; border-radius: 3px; padding: 0 4px;
+}
+.cartas-mini-check {
+  position: absolute; right: 3px; top: 3px; width: 16px; height: 16px; line-height: 16px;
+  text-align: center; font-size: 11px; border-radius: 50%; background: #00e676; color: #08311a; display: none;
+}
+.cartas-mini.sel .cartas-mini-check { display: block; }
+.cartas-item-repaso { border-color: #b8860b; }
+.cartas-nav { display: flex; align-items: center; gap: 6px; }
+.cartas-nav .coco-opt { width: auto; padding: 5px 12px; justify-content: center; }
+.cartas-nav .ts-step-desc { margin: 0 0 0 auto; white-space: nowrap; }
+.cartas-nav .coco-opt:last-child { margin-left: auto; }
+.cartas-ir {
+  width: 56px; padding: 5px 6px; border-radius: 6px; border: 1px solid #2a3560;
+  background: #10183a; color: #e8eeff; font-size: 13px;
+}
+.cartas-rejilla { display: grid; grid-template-columns: repeat(12, 1fr); gap: 3px; }
+.cartas-num {
+  padding: 3px 0; font-size: 11px; border-radius: 4px; cursor: pointer;
+  border: 1px solid transparent; color: #e8eeff; background: #1a2350;
+}
+.cartas-num.nivel-facil { background: #14412a; }
+.cartas-num.nivel-intermedio { background: #16306b; }
+.cartas-num.nivel-dificil { background: #3d1f5e; }
+.cartas-num.con-error { text-decoration: line-through; opacity: 0.6; }
+.cartas-num.actual { border-color: #ffd43b; font-weight: 700; }
+.cartas-num:hover { border-color: #4466e8; }
