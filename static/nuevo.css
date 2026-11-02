@@ -228,7 +228,7 @@
 #practica-menu .tut-option-docente:hover { background: rgba(124, 106, 247, .15); color: #fff; }
 
 /* ── Cartas de preguntas (static/cartas.js): comparte las reglas de #coco-panel ── */
-#cartas-panel { width: 520px; }
+#cartas-panel { width: 560px; }
 /* El encabezado se queda arriba aunque la ventana tenga scroll (el visor de cartas es alto). */
 #coco-panel > .ts-header, #reto-panel > .ts-header, #cartas-panel > .ts-header { position: sticky; top: 0; z-index: 2; }
 .cartas-body { display: flex; flex-direction: column; gap: 10px; }
@@ -278,9 +278,9 @@
   width: 56px; padding: 5px 6px; border-radius: 6px; border: 1px solid #2a3560;
   background: #10183a; color: #e8eeff; font-size: 13px;
 }
-.cartas-rejilla { display: grid; grid-template-columns: repeat(17, 1fr); gap: 3px; }
+.cartas-rejilla { display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px; }
 .cartas-num {
-  padding: 2px 0; font-size: 10px; border-radius: 3px; cursor: pointer;
+  padding: 5px 0; font-size: 12px; border-radius: 4px; cursor: pointer;
   border: 1px solid transparent; color: #e8eeff; background: #1a2350;
 }
 .cartas-num.nivel-facil { background: #14412a; }
