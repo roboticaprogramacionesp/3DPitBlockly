@@ -75,6 +75,7 @@
           </label>
         </div>
         <div class="status" id="status" style="margin-top:8px"></div>
+        <div id="notice" style="margin-top:8px"></div>
         <p class="hint" style="margin-top:6px">Al activarlo se detiene el programa que esté corriendo en el ESP32.</p>
       </div>
 
@@ -144,8 +145,13 @@
       timer = setTimeout(() => { timer = null; if (pending) { pending = false; sendAngle(); } }, 80);
     }
     liveEl.onchange = () => {
-      if (liveEl.checked && (!connected || busy)) { liveEl.checked = false; Tools.replStatus(setStatus); return; }
-      if (liveEl.checked) startLive(); else stopLive();
+      if (liveEl.checked && !Tools.needBoard({ connected, busy }, document.getElementById("notice"))) { liveEl.checked = false; return; }
+      if (liveEl.checked) {
+        document.getElementById("notice").innerHTML = "";
+        startLive();
+      } else {
+        stopLive();
+      }
       Tools.replStatus(setStatus);
     };
     pinEl.onchange = () => { if (liveEl.checked) { stopLive(); startLive(); } };

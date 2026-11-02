@@ -45,6 +45,7 @@
           <button id="stop" disabled>■ Parar</button>
         </div>
         <div class="status" id="status" style="margin-top:10px"></div>
+        <div id="notice" style="margin-top:8px"></div>
         <p class="hint" style="margin-top:6px">Al empezar se detiene el programa que esté corriendo en el ESP32.</p>
       </div>
     </div>
@@ -147,7 +148,8 @@
     function start() {
       Tools.replOnce((st) => {
         setStatus(st);
-        if (!st.connected || st.busy) return;
+        if (!Tools.needBoard(st, $("notice"))) return;
+        $("notice").innerHTML = "";
         running = true; buffer = ""; samples = []; min = max = null;
         $("start").disabled = true; $("stop").disabled = false;
         const pin = $("pin").value, mode = $("mode").value, every = $("every").value;

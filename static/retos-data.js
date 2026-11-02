@@ -17,10 +17,20 @@
      inCond   — bloques de esos tipos dentro de la CONDICIÓN de un "si".
      distinct — al menos `min` bloques `type` con distinto campo `name`.
      anyOf    — se cumple si se cumple cualquiera de los checks de la lista.
+     allOf    — se cumple si se cumplen todos los checks de la lista.
+     inLoopField / inIfField — bloque `type` con el campo `name` = `value`
+                dentro de un ciclo / dentro de un "si" (o su "si no").
 ══════════════════════════════════════════════════════════════ */
 
 const RETO_LOOPS = ["controls_whileUntil", "controls_repeat_ext", "controls_for", "controls_forEach", "time_every"];
-const RETO_LED_SET = ["set_led", "set_led_var", "toggle_led"];
+// Encender y apagar un LED dentro de un ciclo: con "estado on/off" o con
+// "alternar" (que hace las dos cosas). Usados por los retos de parpadeo.
+const RETO_LED_ON_LOOP = { anyOf: [{ inLoopField: { type: "set_led", name: "STATE", value: "1" } }, { inLoop: ["toggle_led", "set_led_var"] }] };
+const RETO_LED_OFF_LOOP = { anyOf: [{ inLoopField: { type: "set_led", name: "STATE", value: "0" } }, { inLoop: ["toggle_led", "set_led_var"] }] };
+// Con "alternar" basta una espera; con on/off hacen falta dos (si no, se
+// apaga y se vuelve a prender al instante y parece siempre encendido).
+const RETO_BLINK_WAITS = { anyOf: [{ allOf: [{ inLoop: ["toggle_led"] }, { inLoop: ["time_sleep"] }] }, { inLoop: ["time_sleep"], min: 2 }] };
+
 const RETO_SERVO_MOVE = ["move_servo", "move_servo_var", "servo_move_pulse"];
 
 const RETOS = [
@@ -38,8 +48,9 @@ const RETOS = [
     checks: [
       { has: ["led_init"], text: "Iniciar un LED", hint: "Ve a LEDs y arrastra el bloque que crea el LED." },
       { forever: true, text: "Un ciclo que se repite para siempre", hint: "En Ciclos, usa 'repetir mientras' con 'verdadero'." },
-      { inLoop: RETO_LED_SET, min: 1, text: "Cambiar el LED dentro del ciclo", hint: "Pon los bloques de encender/apagar (o alternar) DENTRO del ciclo." },
-      { inLoop: ["time_sleep"], min: 1, text: "Esperar dentro del ciclo", hint: "Sin una espera el LED cambia tan rápido que no se ve: usa 'esperar' de Tiempo dentro del ciclo." },
+      { ...RETO_LED_ON_LOOP, text: "Encender el LED dentro del ciclo", hint: "Dentro del ciclo pon el estado del LED en 'on' (o usa 'alternar')." },
+      { ...RETO_LED_OFF_LOOP, text: "Apagar el LED dentro del ciclo", hint: "Para que parpadee también hay que apagarlo: agrega el estado 'off' dentro del ciclo." },
+      { ...RETO_BLINK_WAITS, text: "Esperar después de encender y después de apagar", hint: "Pon un 'esperar' después de encender y otro después de apagar; si no, el LED parece siempre prendido." },
     ],
   },
   {
@@ -48,8 +59,9 @@ const RETOS = [
     checks: [
       { has: ["led_init"], text: "Iniciar un LED", hint: "Ve a LEDs y arrastra el bloque que crea el LED." },
       { repeat: 3, text: "Repetir exactamente 3 veces", hint: "En Ciclos, usa 'repetir N veces' y cambia el número a 3." },
-      { inLoop: RETO_LED_SET, min: 1, text: "Cambiar el LED dentro del ciclo", hint: "El encender/apagar va DENTRO del 'repetir'." },
-      { inLoop: ["time_sleep"], min: 1, text: "Esperar dentro del ciclo", hint: "Agrega 'esperar' dentro del 'repetir' para que se vea el parpadeo." },
+      { ...RETO_LED_ON_LOOP, text: "Encender el LED dentro del 'repetir'", hint: "Dentro del 'repetir' pon el estado del LED en 'on' (o usa 'alternar')." },
+      { ...RETO_LED_OFF_LOOP, text: "Apagar el LED dentro del 'repetir'", hint: "Un parpadeo es prender Y apagar: agrega el estado 'off' dentro del 'repetir'." },
+      { ...RETO_BLINK_WAITS, text: "Esperar después de encender y después de apagar", hint: "Pon un 'esperar' después de encender y otro después de apagar." },
     ],
   },
   {
@@ -58,7 +70,8 @@ const RETOS = [
     checks: [
       { distinct: { type: "led_init", name: "NAME" }, min: 3, text: "Tres LEDs con nombres distintos", hint: "Crea 3 LEDs y ponle a cada uno un nombre diferente (rojo, amarillo, verde)." },
       { forever: true, text: "Un ciclo que se repite para siempre", hint: "Usa 'repetir mientras verdadero' para que el semáforo no se detenga." },
-      { inLoop: RETO_LED_SET, min: 3, text: "Cambiar los LEDs dentro del ciclo (al menos 3 veces)", hint: "Dentro del ciclo enciende y apaga cada LED en su turno." },
+      { inLoopField: { type: "set_led", name: "STATE", value: "1" }, min: 3, text: "Encender cada LED en su turno (3 veces 'on')", hint: "Dentro del ciclo pon en 'on' el rojo, el verde y el amarillo, cada uno en su momento." },
+      { inLoopField: { type: "set_led", name: "STATE", value: "0" }, min: 3, text: "Apagar cada LED al terminar su turno (3 veces 'off')", hint: "Antes de prender el siguiente color, apaga el anterior con 'off'." },
       { inLoop: ["time_sleep"], min: 3, text: "Tres esperas dentro del ciclo", hint: "Cada color necesita su tiempo: pon un 'esperar' después de cada cambio." },
     ],
   },
@@ -70,7 +83,8 @@ const RETOS = [
       { has: ["led_init"], text: "Iniciar un LED", hint: "Ve a LEDs y crea el LED." },
       { forever: true, text: "Un ciclo que revisa el botón para siempre", hint: "El botón hay que leerlo todo el tiempo: usa 'repetir mientras verdadero'." },
       { inCond: ["interruptor_read"], text: "Leer el botón en la condición de un 'si'", hint: "En Lógica usa 'si' y pon 'leer Pin' del botón en su condición." },
-      { inIf: RETO_LED_SET, min: 1, text: "Cambiar el LED dentro del 'si'", hint: "Dentro del 'si' enciende el LED (y en 'si no', apágalo)." },
+      { inIfField: { type: "set_led", name: "STATE", value: "1" }, text: "Encender el LED cuando se presiona", hint: "Dentro del 'si' pon el estado del LED en 'on'." },
+      { inIfField: { type: "set_led", name: "STATE", value: "0" }, text: "Apagar el LED cuando se suelta ('si no')", hint: "Toca el engranaje del 'si', agrega 'si no' y ahí pon el LED en 'off'." },
     ],
   },
   {
@@ -98,6 +112,8 @@ const RETOS = [
       { has: ["init_servo"], text: "Iniciar el servo", hint: "Ve a Actuadores → Servo y crea el servo con su pin." },
       { forever: true, text: "Un ciclo que se repite para siempre", hint: "Usa 'repetir mientras verdadero'." },
       { inLoop: RETO_SERVO_MOVE, min: 2, text: "Mover el servo dos veces dentro del ciclo", hint: "Dentro del ciclo mueve a 0° y luego a 180°." },
+      { anyOf: [{ distinct: { type: "move_servo", name: "ANGLE" }, min: 2 }, { has: ["move_servo_var", "servo_move_pulse"], min: 2 }],
+        text: "Ir a dos ángulos distintos", hint: "Para que se mueva de un lado a otro, los dos ángulos tienen que ser diferentes (por ejemplo 0° y 180°)." },
       { inLoop: ["time_sleep"], min: 2, text: "Esperar después de cada movimiento", hint: "El servo tarda en llegar: pon un 'esperar' después de cada movimiento." },
     ],
   },
@@ -109,7 +125,8 @@ const RETOS = [
       { has: ["led_init"], text: "Iniciar un LED", hint: "Ve a LEDs y crea el LED." },
       { forever: true, text: "Un ciclo que mide todo el tiempo", hint: "Usa 'repetir mientras verdadero'." },
       { inCond: ["adc_read", "adc_read_u16"], text: "Comparar la lectura en un 'si'", hint: "En Lógica usa 'si' con una comparación: lectura < 1000, por ejemplo." },
-      { inIf: RETO_LED_SET, min: 1, text: "Cambiar el LED dentro del 'si'", hint: "Dentro del 'si' enciende el LED, y en 'si no' apágalo." },
+      { inIfField: { type: "set_led", name: "STATE", value: "1" }, text: "Encender el LED cuando hay poca luz", hint: "Dentro del 'si' pon el estado del LED en 'on'." },
+      { inIfField: { type: "set_led", name: "STATE", value: "0" }, text: "Apagar el LED cuando hay luz ('si no')", hint: "Toca el engranaje del 'si', agrega 'si no' y ahí pon el LED en 'off'." },
     ],
   },
   {

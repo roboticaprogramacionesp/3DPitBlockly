@@ -184,3 +184,14 @@ input[type="color"] {
   width: 44px; height: 34px; padding: 0; border: 1px solid var(--line);
   border-radius: 6px; background: var(--panel-2);
 }
+
+/* Aviso de "conecta la placa" (Tools.needBoard). */
+.need-board {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: #4d3b0f;
+  border: 1px solid #f5c518;
+  color: #ffe9a8;
+  font-size: 15px;
+}

@@ -70,6 +70,16 @@ const Retos = (() => {
 
   function evaluar(check, blocks) {
     if (check.anyOf) return check.anyOf.some((c) => evaluar(c, blocks));
+    if (check.allOf) return check.allOf.every((c) => evaluar(c, blocks));
+    // Un estado concreto (p.ej. LED en "on") dentro de un ciclo o de un "si".
+    if (check.inLoopField || check.inIfField) {
+      const { type, name, value } = check.inLoopField || check.inIfField;
+      const inside = check.inLoopField
+        ? (c) => c.where === "body" && RETO_LOOPS.includes(c.block.type)
+        : (c) => c.where === "body" && c.block.type === "controls_if";
+      return blocks.filter((b) => b.type === type && b.getFieldValue(name) === value && containers(b).some(inside))
+        .length >= (check.min || 1);
+    }
     if (check.has) return count(blocks, check.has).length >= (check.min || 1);
     if (check.field) {
       const { type, name, value } = check.field;
@@ -112,6 +122,7 @@ const Retos = (() => {
       '<div class="reto-buttons"><button class="reto-check">✔ Comprobar</button><button class="reto-list">🏆 Otros retos</button></div>';
     (document.getElementById("viewBlocks") || document.body).appendChild(card);
     card.querySelector(".reto-close").onclick = stop;
+    hacerArrastrable(card, card.querySelector(".reto-head"));
     card.querySelector(".reto-check").onclick = () => comprobar(true);
     card.querySelector(".reto-list").onclick = () => window.ToolsPanel && window.ToolsPanel.open("retos.html");
     Code.workspace.addChangeListener((e) => {
@@ -119,6 +130,34 @@ const Retos = (() => {
       clearTimeout(timer);
       timer = setTimeout(() => comprobar(false), 300);
     });
+  }
+
+  // Se mueve tomándola de la barra del título (mouse o dedo), como el
+  // monitor serial y el panel de tutoriales; no se puede sacar de la pantalla.
+  function hacerArrastrable(panel, handle) {
+    let sx, sy, ox, oy, dragging = false;
+    handle.addEventListener("pointerdown", (e) => {
+      if (e.target.closest(".reto-close")) return;
+      const r = panel.getBoundingClientRect();
+      sx = e.clientX; sy = e.clientY; ox = r.left; oy = r.top;
+      panel.style.left = ox + "px";
+      panel.style.top = oy + "px";
+      panel.style.right = panel.style.bottom = "auto";
+      dragging = true;
+      handle.setPointerCapture(e.pointerId);
+      handle.classList.add("dragging");
+      e.preventDefault();
+    });
+    handle.addEventListener("pointermove", (e) => {
+      if (!dragging) return;
+      const maxX = window.innerWidth - panel.offsetWidth;
+      const maxY = window.innerHeight - 40;
+      panel.style.left = Math.min(maxX, Math.max(0, ox + e.clientX - sx)) + "px";
+      panel.style.top = Math.min(maxY, Math.max(48, oy + e.clientY - sy)) + "px";
+    });
+    const end = () => { dragging = false; handle.classList.remove("dragging"); };
+    handle.addEventListener("pointerup", end);
+    handle.addEventListener("pointercancel", end);
   }
 
   function render(results) {

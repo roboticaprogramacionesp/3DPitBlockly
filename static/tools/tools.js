@@ -95,6 +95,26 @@ const Tools = (() => {
     window.parent.postMessage({ type: "3dpit-repl-status" }, location.origin);
   }
 
+  // Antes de usar la placa: si no se puede (herramienta abierta sola, placa
+  // sin conectar o subiendo código) avisa qué hacer y devuelve false.
+  // `notice` (opcional) es un elemento donde además se deja el aviso.
+  function needBoard(st, notice) {
+    let msg = null;
+    if (!embedded) msg = "Abre esta herramienta desde 3DPit Blocks (botón 🛠) para usar la placa.";
+    else if (!st.connected) msg = "🔌 Primero conecta la placa: cierra esta ventana y usa el botón de conexión (el enchufe) de la barra de arriba. Después vuelve a intentarlo.";
+    else if (st.busy) msg = "⏳ La app está subiendo código a la placa. Espera a que termine y vuelve a intentarlo.";
+    if (!msg) return true;
+    toast(msg.split(":")[0].split(".")[0]);
+    if (notice) {
+      notice.innerHTML = "";
+      const p = document.createElement("p");
+      p.className = "need-board";
+      p.textContent = msg;
+      notice.appendChild(p);
+    }
+    return false;
+  }
+
   // Placa elegida en la app (ESP32_BOARDS de conversion.js), si la hay.
   function currentBoard() {
     try {
@@ -231,5 +251,5 @@ const Tools = (() => {
     });
   });
 
-  return { embedded, toast, copy, editPayload, insertBlocks, escapeXml, pyName, paintGrid, monoHex, monoFromHex, xy, palette, repl, replStatus, replOnce, replListen, replCleanup, currentBoard };
+  return { embedded, toast, copy, editPayload, insertBlocks, escapeXml, pyName, paintGrid, monoHex, monoFromHex, xy, palette, repl, replStatus, replOnce, replListen, replCleanup, needBoard, currentBoard };
 })();

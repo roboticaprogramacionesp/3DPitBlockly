@@ -131,7 +131,7 @@
     $("scan").onclick = () => {
       Tools.replOnce((st) => {
         setStatus(st);
-        if (!st.connected || st.busy) return;
+        if (!Tools.needBoard(st, $("results"))) return;
         buffer = "";
         $("scan").disabled = true;
         $("results").innerHTML = "<p class='hint'>Buscando…</p>";
