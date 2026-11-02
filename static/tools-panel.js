@@ -171,6 +171,20 @@
   window.addEventListener("message", (e) => {
     if (e.origin !== location.origin || e.source !== frame.contentWindow) return;
     const data = e.data || {};
+    // ¡Échale coco! (static/coco.js): la lista de temas, o responder un
+    // cuestionario del docente (se vuelve a validar en la app).
+    if (data.type === "3dpit-coco-open" && window.EchaleCoco) {
+      close();
+      window.EchaleCoco.abrir();
+      return;
+    }
+    if (data.type === "3dpit-coco-start" && window.EchaleCoco && window.CocoCore) {
+      close();
+      try {
+        window.EchaleCoco.responder(window.CocoCore.sanitizar(data.quiz), { docente: true });
+      } catch (_) {}
+      return;
+    }
     if (data.type === "3dpit-start-reto" && typeof data.id === "string") {
       close();
       if (window.Retos) window.Retos.start(data.id);
@@ -193,21 +207,6 @@
       console.error("No se pudo insertar el bloque de la herramienta:", err);
     }
   });
-
-  // Enlace de quiz (#quiz=...): se abre el quiz en la ventana, listo para
-  // responder. El dato pasa al iframe en su propio fragmento (#), que
-  // nunca se manda a un servidor, y se quita de la barra de direcciones.
-  function abrirQuizDesdeEnlace() {
-    const h = location.hash || "";
-    if (!h.startsWith("#quiz=")) return;
-    try {
-      history.replaceState(null, "", location.pathname + location.search);
-    } catch (_) {}
-    window.toolsEditPayload = null;
-    open("quiz.html" + h);
-  }
-  abrirQuizDesdeEnlace();
-  window.addEventListener("hashchange", abrirQuizDesdeEnlace);
 
   window.ToolsPanel = { open, edit };
 })();

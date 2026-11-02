@@ -38,10 +38,15 @@
       <h3>Retos</h3>
       <p>Retos con verificación: arma el programa y la app lo revisa y te da pistas.</p>
     </a>
+    <a class="card" href="#" id="cocoCard">
+      <div class="icon">🥥</div>
+      <h3>¡Échale coco!</h3>
+      <p>Preguntas para reforzar lo aprendido: LEDs, ciclos, lógica, sensores, electrónica, protocolos y más.</p>
+    </a>
     <a class="card" href="quiz.html">
-      <div class="icon">📝</div>
-      <h3>Quiz</h3>
-      <p>Docentes: crea preguntas y compártelas. Alumnos: responde y manda tu resultado.</p>
+      <div class="icon">✏️</div>
+      <h3>¡Échale coco! para docentes</h3>
+      <p>Crea tus propias preguntas, compártelas por enlace o archivo y revisa los resultados.</p>
     </a>
   </div>
 
@@ -150,5 +155,14 @@
       <p>Prueba los bloques y / o / no con dos botones y un LED.</p>
     </a>
   </div>
+  <script src="tools.js"></script>
+  <script>
+    // ¡Échale coco! se responde en la ventana flotante de la app.
+    document.getElementById("cocoCard").onclick = (e) => {
+      e.preventDefault();
+      if (Tools.embedded) window.parent.postMessage({ type: "3dpit-coco-open" }, location.origin);
+      else location.href = "../../";
+    };
+  </script>
 </body>
 </html>

@@ -152,3 +152,89 @@
   min-height: 36px;
 }
 .reto-buttons .reto-check { background: #7b6cf6; border-color: #7b6cf6; font-weight: 600; }
+
+/* ── ¡Échale coco! (static/coco.js): mismo estilo que el tutorial guiado ── */
+#coco-panel {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 400px;
+  max-width: calc(100vw - 40px);
+  max-height: 88vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  background: #12152a;
+  border: 1px solid #3454d1;
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(52, 84, 209, 0.2);
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 14px;
+  color: #c8d8ff;
+  z-index: 9001;
+}
+#coco-panel[data-minimized="1"] { max-height: unset; overflow: hidden; }
+#coco-panel[data-minimized="1"] .ts-header { border-radius: 8px; border-bottom: none; }
+#coco-panel[data-minimized="1"] .ts-drag-hint { display: none; }
+#coco-panel::-webkit-scrollbar { width: 6px; }
+#coco-panel::-webkit-scrollbar-thumb { background: #2a3560; border-radius: 3px; }
+.coco-body { display: flex; flex-direction: column; gap: 10px; }
+.coco-list { display: flex; flex-direction: column; gap: 6px; }
+.coco-item, .coco-opt {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  padding: 9px 12px;
+  background: #161b36;
+  border: 1px solid #2a3560;
+  border-radius: 6px;
+  color: #c8d8ff;
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+}
+.coco-item:hover, .coco-opt:hover:not(:disabled) { background: #1e2a5a; border-color: #3454d1; }
+.coco-item-icon { font-size: 18px; }
+.coco-item-title { flex: 1; color: #e8eeff; font-weight: 600; }
+.coco-item-best { font-size: 11px; color: #ffd43b; white-space: nowrap; }
+.coco-opt.chosen { border-color: #4466e8; box-shadow: 0 0 0 2px rgba(68, 102, 232, 0.4); }
+.coco-opt.right { background: #12391f; border-color: #00e676; color: #c8ffd9; }
+.coco-opt.wrong { background: #3d1515; border-color: #e74c3c; color: #ffd0cc; }
+.coco-opt:disabled { cursor: default; }
+.coco-opts { display: flex; flex-direction: column; gap: 6px; }
+.coco-q { font-size: 14px; line-height: 1.5; white-space: normal; }
+.coco-code {
+  margin: 0;
+  padding: 8px 10px;
+  background: #0a0d1a;
+  border: 1px solid #2a3560;
+  border-radius: 6px;
+  color: #a0f0c0;
+  font-size: 12px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.coco-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 10px;
+  background: #161b36;
+  border: 1px solid #2a3560;
+  border-radius: 6px;
+  color: #e8eeff;
+  font-family: inherit;
+  font-size: 14px;
+}
+.coco-feedback { padding: 9px 11px; border-radius: 6px; font-size: 13px; line-height: 1.5; }
+.coco-feedback.ok { background: #12391f; border: 1px solid #00e676; }
+.coco-feedback.no { background: #3d2b0f; border: 1px solid #f5c518; }
+.coco-expl { margin-top: 4px; color: #c8d8ff; }
+.coco-review { margin: 0; padding-left: 20px; font-size: 12px; line-height: 1.5; }
+.coco-review li { margin-top: 4px; }
+.coco-review li.ok { color: #8898d8; }
+.coco-mine { color: #f5c518; }
+.coco-warn { padding: 10px; border-radius: 6px; background: #3d2b0f; border: 1px solid #f5c518; color: #ffe9a8; margin: 0; }
+.coco-teacher { margin-top: 4px; }
