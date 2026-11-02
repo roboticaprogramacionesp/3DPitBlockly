@@ -228,7 +228,12 @@
 #practica-menu .tut-option-docente:hover { background: rgba(124, 106, 247, .15); color: #fff; }
 
 /* ── Cartas de preguntas (static/cartas.js): comparte las reglas de #coco-panel ── */
-#cartas-panel { width: 560px; }
+/* Grande para que se lean bien las cartas; se puede agrandar o achicar desde la esquina. */
+#cartas-panel {
+  width: 760px; min-width: 420px; max-width: calc(100vw - 20px);
+  top: 56px; bottom: auto; right: 20px; max-height: calc(100vh - 66px);
+  resize: both;
+}
 /* El encabezado se queda arriba aunque la ventana tenga scroll (el visor de cartas es alto). */
 #coco-panel > .ts-header, #reto-panel > .ts-header, #cartas-panel > .ts-header { position: sticky; top: 0; z-index: 2; }
 .cartas-body { display: flex; flex-direction: column; gap: 10px; }
