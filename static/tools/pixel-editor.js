@@ -74,14 +74,23 @@ function PixelEditor(opts) {
 
   // ── Cargar imagen ──
   let image = null;
-  let lit = null, threshold = null;
+  let lit = null, threshold = null, fit = null, bg = null;
   if (opts.imagePanel) {
     opts.imagePanel.innerHTML =
       '<p class="section-title">Cargar una imagen</p>' +
       '<div class="row"><button data-load>📁 Elegir imagen</button>' +
       '<input type="file" accept="image/*" hidden></div>' +
+      '<div class="row" style="margin-top:8px">' +
+      '<label class="field">Achicar <select data-fit>' +
+      '<option value="smooth">mezclando colores (fotos)</option>' +
+      '<option value="exact">píxeles exactos (pixel art)</option></select></label>' +
       (color
-        ? '<p class="hint" style="margin-top:6px">Se achica al tamaño del dibujo. Las fotos con mucho detalle se ven mejor en tamaños grandes.</p>'
+        ? '<label class="field">Fondo de lo transparente <span class="row" style="gap:6px">' +
+          '<input type="color" data-bg value="#000000"><button data-bg-off title="Negro = LED apagado">Apagado</button></span></label>'
+        : "") +
+      "</div>" +
+      (color
+        ? '<p class="hint" style="margin-top:6px">El negro es LED apagado: si la imagen tiene partes negras (como un gato negro), elige un fondo de color para que se vean.</p>'
         : '<div class="row" style="margin-top:8px">' +
           '<label class="field">Encender las partes <select data-lit><option value="dark">oscuras</option>' +
           '<option value="light">claras</option></select></label>' +
@@ -104,6 +113,16 @@ function PixelEditor(opts) {
     };
     lit = opts.imagePanel.querySelector("[data-lit]");
     threshold = opts.imagePanel.querySelector("[data-th]");
+    fit = opts.imagePanel.querySelector("[data-fit]");
+    bg = opts.imagePanel.querySelector("[data-bg]");
+    fit.onchange = () => image && applyImage();
+    if (bg) {
+      bg.oninput = () => image && applyImage();
+      opts.imagePanel.querySelector("[data-bg-off]").onclick = () => {
+        bg.value = "#000000";
+        if (image) applyImage();
+      };
+    }
     if (lit) lit.onchange = () => image && applyImage();
     if (threshold) threshold.oninput = () => {
       opts.imagePanel.querySelector("[data-th-val]").textContent = threshold.value;
@@ -117,9 +136,13 @@ function PixelEditor(opts) {
     const c = document.createElement("canvas");
     c.width = W; c.height = H;
     const g = c.getContext("2d");
+    // "Píxeles exactos": sin mezclar colores, para que un sprite de pixel
+    // art no pierda contornos finos al achicarlo.
+    g.imageSmoothingEnabled = fit.value !== "exact";
     g.imageSmoothingQuality = "high";
-    // Fondo = "apagado": negro, salvo en blanco y negro encendiendo lo oscuro.
-    g.fillStyle = (color || lit.value === "light") ? "#000" : "#fff";
+    // Fondo de lo transparente: el color elegido (a colores) o "apagado"
+    // (en blanco y negro: negro, salvo encendiendo lo oscuro).
+    g.fillStyle = color ? bg.value : lit.value === "light" ? "#000" : "#fff";
     g.fillRect(0, 0, W, H);
     const k = Math.min(W / image.width, H / image.height);
     const dw = image.width * k, dh = image.height * k;
