@@ -3,6 +3,39 @@
    Agregar este <script> en index.html ANTES de main.js
 ══════════════════════════════════════════════════════════════ */
 
+/* ── Imágenes del selector (select_imgs) ──
+   Las primeras son las de siempre (mismos valores, para no romper
+   proyectos guardados); después, los sprites de 16x16 de
+   static/img/sprites/ (guardados x4 sin suavizado y sin fondo). En el menú
+   se ve la miniatura de cada una. */
+const GAME_SPRITES = [
+  "amongus", "amongus2", "ballena1", "ballena2", "ballena3", "ballena4", "ballena5", "ballena6",
+  "ballena7", "ballena8", "ballena9", "bee", "beer", "c2", "c3", "c4", "c5", "c6", "c7", "c8", "c9",
+  "cake", "carne", "cat", "catarina", "cereza", "champinon", "chica1", "chicas2", "chicas3",
+  "chocolate1", "chocolate2", "chocolate3", "coco", "conjelado", "control", "corazon_amarillo",
+  "corazon_azul", "corazon_b", "corazon_chicas", "corazon_cyan", "corazon_m", "corazon_morado",
+  "corazon_rojo", "corazon_verde", "corazoneas", "corazones", "corazones2", "corazones3",
+  "corazones4", "corazones5", "crab", "cup", "delfin", "egg", "egg2", "emocionado", "enfermo",
+  "enfermo2", "enfermo3", "enojado", "estrella2", "fantasma_cafe", "fantasma_cyan", "fantasma_rosa",
+  "feliz", "floor", "fresa", "halloween1", "halloween10", "halloween11", "halloween2", "halloween3",
+  "halloween4", "halloween5", "halloween6", "halloween7", "halloween8", "halloween9", "hamburguesa",
+  "hot_cake1", "hot_cake2", "hot_cake3", "hulk", "ice_ceream1", "ice_cream2", "iron_man", "jirafa",
+  "jitomate", "kirby", "lagrima", "lechuga", "leon", "like", "link", "link2", "llorando", "lol",
+  "luigi", "malas_palabras", "mario2", "mario3", "noel", "pacman", "pacman2", "pan", "papas", "pino",
+  "pino2", "pizza", "plato", "poke_amarilla", "poke_azul", "poke_blanca", "poke_roja", "popote",
+  "regalo", "regalo_rojo", "regalo_verde", "robot1", "robot2", "sandia", "shield", "tin_yang",
+  "vaso", "vida", "wallet"
+];
+
+const GAME_IMAGE_OPTIONS = [
+  "car", "laberinto", "laberinto2", "mario", "corazon", "alien", "estrella",
+  "bomba", "moneda", "tortuga", "fantasma", "cohete", "carro_rojo",
+].map((n) => [{ src: `./static/img/${n}.png`, width: 24, height: 24, alt: n }, `${n}.png`])
+  .concat(GAME_SPRITES.map((n) => [
+    { src: `./static/img/sprites/${n}.png`, width: 24, height: 24, alt: n },
+    `sprites/${n}.png`,
+  ]));
+
 Blockly.defineBlocksWithJsonArray([
   /* ──────────────────────────────
      PANTALLA
@@ -26,21 +59,7 @@ Blockly.defineBlocksWithJsonArray([
       {
         type: "field_dropdown",
         name: "IMG",
-        options: [
-          ["🚗 car.png", "car.png"],
-          ["🏁 laberinto.png", "laberinto.png"],
-          ["🏁 laberinto2.png", "laberinto2.png"],
-          ["🍄 mario.png", "mario.png"],
-          ["❤️ corazon.png", "corazon.png"],
-          ["👾 alien.png", "alien.png"],
-          ["⭐ estrella.png", "estrella.png"],
-          ["💣 bomba.png", "bomba.png"],
-          ["🪙 moneda.png", "moneda.png"],
-          ["🐢 tortuga.png", "tortuga.png"],
-          ["👻 fantasma.png", "fantasma.png"],
-          ["🚀 cohete.png", "cohete.png"],
-          ["🏎️ carro_rojo.png", "carro_rojo.png"],
-        ],
+        options: GAME_IMAGE_OPTIONS,
       },
     ],
     output: "String",
