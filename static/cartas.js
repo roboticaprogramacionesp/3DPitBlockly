@@ -18,7 +18,7 @@
 ══════════════════════════════════════════════════════════════ */
 const Cartas = (() => {
   const MEJOR = "3dpit-cartas-mejor";
-  const REPASO = "3dpit-cartas-repaso";
+  const REPASO = "3dpit-cartas-repaso2"; // (la 1ª usaba los números viejos de archivo)
   const LETRAS = ["a", "b", "c", "d"];
   const NIVELES = [
     ["facil", "🟢 Fácil"], ["intermedio", "🔵 Intermedio"], ["dificil", "🟣 Difícil"], ["todas", "🃏 Mezcladas"],
