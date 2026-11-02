@@ -465,7 +465,10 @@
           document.getElementById("backLink").hidden = true;
           return responder(quiz);
         } catch (_) {
-          app.append(el("p", { text: "⚠️ El enlace del quiz no es válido o está dañado." }));
+          // inicio() limpia la página: el aviso va después, arriba de todo.
+          inicio();
+          app.prepend(el("p", { class: "panel", text: "⚠️ El enlace del quiz no es válido o está dañado. Pídele a tu docente que lo vuelva a copiar, o el archivo .quiz.json." }));
+          return;
         }
       }
       inicio();
