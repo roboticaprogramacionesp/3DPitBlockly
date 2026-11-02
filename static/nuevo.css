@@ -240,7 +240,12 @@
 .carta-flip { perspective: 900px; }
 .carta-img {
   display: block;
-  width: 100%;
+  width: auto;
+  max-width: 100%;
+  /* Alto según la pantalla: la carta, los botones a/b/c/d y la barra de abajo caben sin scroll. */
+  max-height: calc(100vh - 330px);
+  min-height: 160px;
+  margin: 0 auto;
   border-radius: 8px;
   border: 1px solid #2a3560;
   animation: cartaVoltear 0.45s ease-out;
