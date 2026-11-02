@@ -16,6 +16,10 @@
      inIf     — bloques de esos tipos dentro de un "si".
      inCond   — bloques de esos tipos dentro de la CONDICIÓN de un "si".
      distinct — al menos `min` bloques `type` con distinto campo `name`.
+     inside   — bloques de esos tipos dentro (en cualquier entrada) de un
+                bloque de los tipos `of` (p.ej. una lectura en el ángulo del servo).
+     distinctNum — al menos `min` números distintos en la entrada `input`
+                de los bloques `type` (p.ej. esperas de distinta duración).
      anyOf    — se cumple si se cumple cualquiera de los checks de la lista.
      allOf    — se cumple si se cumplen todos los checks de la lista.
      inLoopField / inIfField — bloque `type` con el campo `name` = `value`
@@ -32,6 +36,8 @@ const RETO_LED_OFF_LOOP = { anyOf: [{ inLoopField: { type: "set_led", name: "STA
 const RETO_BLINK_WAITS = { anyOf: [{ allOf: [{ inLoop: ["toggle_led"] }, { inLoop: ["time_sleep"] }] }, { inLoop: ["time_sleep"], min: 2 }] };
 
 const RETO_SERVO_MOVE = ["move_servo", "move_servo_var", "servo_move_pulse"];
+const RETO_BUZZER = ["buzzer_melody", "buzzer_song", "buzzer_tone", "buzzer_tone_var"];
+const RETO_NEOPIXEL_INIT = ["neopixel_init", "neopixel_init_5x5", "neopixel_init_8x8", "neopixel_matrix_init"];
 
 const RETOS = [
   {
@@ -136,6 +142,91 @@ const RETOS = [
       { has: ["oled_init", "sh1106_init"], text: "Iniciar la pantalla OLED", hint: "Ve a Pantallas → OLED y usa el bloque para iniciarla." },
       { has: ["oled_text", "oled_text20"], text: "Escribir un texto", hint: "Usa el bloque 'texto' de la OLED." },
       { has: ["oled_text", "oled_text20", "oled_image", "oled_icon", "oled_rect", "oled_circle", "oled_line"], min: 2, text: "Algo más debajo (otro texto o un dibujo)", hint: "Agrega otro texto con distinta Y, o un dibujo hecho con 🛠 Imagen para OLED." },
+    ],
+  },
+
+  // ── Retos agregados (segunda tanda) ──
+  {
+    id: "sos", level: 2, icon: "🆘", title: "Mensaje SOS",
+    desc: "Haz que el LED mande S.O.S. en código Morse: 3 destellos cortos, 3 largos y 3 cortos, y que lo repita.",
+    checks: [
+      { has: ["led_init"], text: "Iniciar un LED", hint: "Ve a LEDs y crea el LED." },
+      { repeat: 3, min: 2, text: "Al menos dos 'repetir 3 veces'", hint: "Cada letra son 3 destellos: usa 'repetir 3 veces' para las S y para la O." },
+      { ...RETO_LED_ON_LOOP, text: "Encender el LED dentro de los ciclos", hint: "Dentro de cada 'repetir' pon el LED en 'on'." },
+      { ...RETO_LED_OFF_LOOP, text: "Apagar el LED dentro de los ciclos", hint: "Después de cada destello apágalo con 'off'." },
+      { distinctNum: { type: "time_sleep", input: "VALUE" }, min: 2, text: "Esperas cortas y largas", hint: "Los destellos cortos y largos se distinguen por el tiempo: usa por ejemplo 0.2 y 0.6 segundos." },
+    ],
+  },
+  {
+    id: "doorbell", level: 2, icon: "🔔", title: "Timbre con botón",
+    desc: "Cuando presiones el botón, que suene el buzzer como un timbre.",
+    checks: [
+      { has: ["interruptor_init"], text: "Iniciar el botón", hint: "Ve a Interruptores y crea el botón con su pin." },
+      { forever: true, text: "Un ciclo que revisa el botón para siempre", hint: "Usa 'repetir mientras verdadero'." },
+      { inCond: ["interruptor_read"], text: "Leer el botón en la condición de un 'si'", hint: "En Lógica usa 'si' y pon 'leer Pin' del botón en la condición." },
+      { inIf: RETO_BUZZER, text: "Hacer sonar el buzzer dentro del 'si'", hint: "Ve a Sensores → Sensores Digitales → Buzzer (KY-006) y pon un tono o una melodía dentro del 'si'." },
+    ],
+  },
+  {
+    id: "neopixel_draw", level: 2, icon: "🌈", title: "Dibujo en NeoPixel",
+    desc: "Muestra un dibujo a colores en una matriz NeoPixel (un corazón, una carita…).",
+    checks: [
+      { has: RETO_NEOPIXEL_INIT, text: "Iniciar la matriz NeoPixel", hint: "Ve a Pantallas → NeoPixel y usa el bloque para iniciar la matriz de tu tamaño." },
+      { has: ["neopixel_image", "neopixel_5x5", "neopixel_8x8"], text: "Hacer un dibujo", hint: "Dibújalo con 🛠 Herramientas → Matriz NeoPixel a colores y usa 'Insertar en mis bloques'." },
+      { has: ["neopixel_show"], text: "Mostrarlo", hint: "Sin el bloque 'mostrar' los LEDs no cambian: agrégalo después del dibujo." },
+    ],
+  },
+  {
+    id: "lcd_symbol", level: 2, icon: "🔤", title: "Tu símbolo en la LCD",
+    desc: "Crea un símbolo propio (un corazón, una carita…) y muéstralo en la LCD.",
+    checks: [
+      { has: ["lcd_init", "lcd_i2c_init"], text: "Iniciar la LCD", hint: "Ve a Pantallas → LCD I2C (o LCD) y usa el bloque para iniciarla." },
+      { has: ["lcd_create_char", "lcd_i2c_create_char"], text: "Crear el carácter propio", hint: "Dibújalo con 🛠 Herramientas → Caracteres para LCD, o con el bloque 'crear carácter'." },
+      { has: ["lcd_custom_char"], text: "Escribirlo en la pantalla", hint: "Usa 'escribir' de la LCD con el bloque 'carácter propio' del mismo número." },
+    ],
+  },
+  {
+    id: "tm_word", level: 2, icon: "🔢", title: "Palabra en el display",
+    desc: "Escribe una palabra de 4 letras (como HOLA) en el display TM1637.",
+    checks: [
+      { has: ["tm1637_init"], text: "Iniciar el TM1637", hint: "Ve a Pantallas → TM1637 y usa el bloque para iniciarlo." },
+      { has: ["tm1637_segments", "tm1637_show", "tm1637_scroll"], text: "Mostrar letras", hint: "Usa 'mostrar segmentos' (ármalo con 🛠 Segmentos TM1637) o 'mostrar texto'." },
+    ],
+  },
+  {
+    id: "presses", level: 3, icon: "👆", title: "Contador de pulsaciones",
+    desc: "Cuenta cuántas veces presionas el botón y muestra el número en el monitor serial.",
+    checks: [
+      { has: ["interruptor_init"], text: "Iniciar el botón", hint: "Ve a Interruptores y crea el botón." },
+      { has: ["variables_set"], text: "Una variable que empiece en 0", hint: "En Variables crea 'contador' y usa 'establecer contador a 0' antes del ciclo." },
+      { forever: true, text: "Un ciclo que revisa el botón para siempre", hint: "Usa 'repetir mientras verdadero'." },
+      { inCond: ["interruptor_read"], text: "Leer el botón en la condición de un 'si'", hint: "Pon 'leer Pin' del botón en la condición de un 'si'." },
+      { inIf: ["math_change"], text: "Sumar 1 solo cuando se presiona", hint: "El 'cambiar contador por 1' va DENTRO del 'si', no afuera." },
+      { inIf: ["text_print"], text: "Imprimir el número al presionar", hint: "Dentro del 'si' usa 'imprimir' con la variable." },
+      { inLoop: ["time_sleep"], text: "Una pequeña espera", hint: "Sin una espera, una sola presión cuenta muchas veces: agrega 'esperar 0.2 segundos' dentro del 'si' o del ciclo." },
+    ],
+  },
+  {
+    id: "thermometer", level: 3, icon: "🌡️", title: "Termómetro en pantalla",
+    desc: "Lee la temperatura con un DHT11/DHT22 y muéstrala en una pantalla (OLED, LCD o TM1637) cada pocos segundos.",
+    checks: [
+      { has: ["dht_init"], text: "Iniciar el sensor DHT", hint: "Ve a Sensores → Sensores Digitales → DHT11 / DHT22." },
+      { forever: true, text: "Un ciclo que mide para siempre", hint: "Usa 'repetir mientras verdadero'." },
+      { inLoop: ["dht_measure"], text: "Medir dentro del ciclo", hint: "Antes de leer la temperatura hay que usar 'medir DHT' dentro del ciclo." },
+      { inside: ["dht_temperature"], of: ["oled_text", "oled_text20", "lcd_print", "lcd_i2c_print", "tm1637_number", "tm1637_temperature", "tm1637_show"],
+        text: "Mostrar la temperatura en la pantalla", hint: "Pon 'temperatura DHT' dentro del bloque de texto de tu pantalla (puedes unirlo con 'crear texto con')." },
+      { inLoop: ["time_sleep"], text: "Esperar entre lecturas", hint: "El DHT necesita unos 2 segundos entre medidas: agrega 'esperar 2 segundos'." },
+    ],
+  },
+  {
+    id: "servo_knob", level: 3, icon: "🎛️", title: "Servo con perilla",
+    desc: "Mueve el servo girando un potenciómetro: la perilla manda el ángulo.",
+    checks: [
+      { has: ["init_servo"], text: "Iniciar el servo", hint: "Ve a Actuadores → Servo." },
+      { has: ["adc_pin"], text: "Preparar la lectura del potenciómetro (ADC)", hint: "En Machine → ADC usa 'ADC(Pin(...))' con un pin analógico (mira 🛠 Mapa de pines)." },
+      { forever: true, text: "Un ciclo que lee la perilla para siempre", hint: "Usa 'repetir mientras verdadero'." },
+      { inside: ["adc_read", "adc_read_u16"], of: ["move_servo_var", "servo_move_pulse"], text: "La lectura va dentro del ángulo del servo", hint: "Usa 'servo mover a' con hueco y pon ahí la lectura. Como el potenciómetro da 0 a 4095 y el servo usa 0 a 180, divide la lectura entre 23." },
+      { inLoop: RETO_SERVO_MOVE, text: "Mover el servo dentro del ciclo", hint: "El bloque del servo va DENTRO del ciclo para que siga a la perilla." },
     ],
   },
 ];

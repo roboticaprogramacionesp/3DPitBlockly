@@ -84,7 +84,15 @@ const EchaleCoco = (() => {
     if (typeof _tsMakeDraggable === "function") _tsMakeDraggable(panel);
   }
 
+  // El recorrido de bienvenida (js-tutorial.js) cubre toda la pantalla y
+  // no dejaría usar la ventana: si está abierto, se cierra.
+  function cerrarBienvenida() {
+    const tour = document.getElementById("tutorialOverlay");
+    if (tour && !tour.classList.contains("hidden") && typeof closeTutorial === "function") closeTutorial();
+  }
+
   function mostrar() {
+    cerrarBienvenida();
     if (!panel) crear();
     panel.style.display = "flex";
     panel.removeAttribute("data-minimized");
@@ -326,6 +334,36 @@ const EchaleCoco = (() => {
   desdeEnlace();
   window.addEventListener("hashchange", desdeEnlace);
 
-  return { abrir, responder, cerrar };
+  // ── Acceso desde el menú de Tutoriales: grupo "🎯 Practica" ──
+  // Va debajo de "📚 Mis tutoriales" (tutorial-docente.js), con su mismo estilo.
+  function agregarAlMenu() {
+    const dd = document.getElementById("tut-dropdown");
+    if (!dd || document.getElementById("practica-menu")) return;
+    const opcion = (icono, texto, accion) => {
+      const o = el("div", { class: "tut-option-docente", role: "option" }, el("span", { class: "tut-opt-icon", text: icono }), texto);
+      o.addEventListener("click", (e) => {
+        e.stopPropagation();
+        dd.classList.remove("open");
+        const tr = document.getElementById("tut-trigger");
+        if (tr) {
+          tr.classList.remove("open");
+          tr.setAttribute("aria-expanded", "false");
+        }
+        accion();
+      });
+      return o;
+    };
+    const grupo = el("div", { id: "practica-menu" },
+      el("div", { class: "tut-group-label", text: "🎯 Practica" }),
+      opcion("🏆", "Retos", () => window.ToolsPanel && window.ToolsPanel.open("retos.html")),
+      opcion("🥥", "¡Échale coco!", abrir));
+    const misTutoriales = document.getElementById("tdoc-menu");
+    dd.insertBefore(grupo, misTutoriales ? misTutoriales.nextSibling : dd.firstChild);
+  }
+  // Después de que tutorial-docente.js arme "Mis tutoriales".
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => setTimeout(agregarAlMenu, 0));
+  else setTimeout(agregarAlMenu, 0);
+
+  return { abrir, responder, cerrar, cerrarBienvenida };
 })();
 window.EchaleCoco = EchaleCoco;

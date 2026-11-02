@@ -107,54 +107,25 @@
 }
 .tools-close:hover { background: rgba(255, 255, 255, 0.25); }
 
-/* ── Tarjeta del reto (static/retos.js) ── */
-.reto-card {
-  position: fixed;
-  right: 90px;
-  bottom: 20px;
-  width: min(340px, calc(100vw - 32px));
-  max-height: 70vh;
-  overflow: auto;
-  z-index: 900;
-  background: #1f2447;
-  color: #eef0ff;
-  border: 2px solid #3a4180;
-  border-radius: 12px;
-  padding: 12px 14px;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  font-size: 14px;
-}
-.reto-card[hidden] { display: none; }
-.reto-card.won { border-color: #2ecc71; }
-.reto-card.shake { animation: retoShake 0.35s; }
+/* ── Ventana del reto (static/retos.js): mismo estilo que el tutorial
+   guiado; comparte las reglas de #coco-panel de abajo. Arriba a la
+   derecha para no encimarse con ¡Échale coco! ni con el tutorial. ── */
+#reto-panel.won { border-color: #00e676; }
+#reto-panel.shake { animation: retoShake 0.35s; }
 @keyframes retoShake {
   25% { transform: translateX(-6px); }
   75% { transform: translateX(6px); }
 }
-.reto-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; cursor: grab; touch-action: none; user-select: none; }
-.reto-head.dragging { cursor: grabbing; }
-.reto-title { font-weight: 700; font-size: 16px; }
-.reto-close { background: none; border: 0; color: #a9afd9; font-size: 16px; cursor: pointer; }
-.reto-desc { margin: 6px 0 8px; color: #c9cdf0; }
-.reto-checks { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.reto-body { display: flex; flex-direction: column; gap: 8px; min-height: 0; }
+.reto-checks { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: #c8d8ff; }
 .reto-checks li { display: flex; gap: 8px; align-items: flex-start; }
+.reto-checks li.ok { color: #8ef0b4; }
 .reto-checks small { display: block; color: #f5c518; margin-top: 2px; }
-.reto-win { margin-top: 10px; padding: 8px; border-radius: 8px; background: #1d4d2e; text-align: center; font-weight: 700; }
-.reto-buttons { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
-.reto-buttons button {
-  border: 1px solid #3a4180;
-  border-radius: 6px;
-  padding: 7px 12px;
-  cursor: pointer;
-  background: #272d58;
-  color: #eef0ff;
-  min-height: 36px;
-}
-.reto-buttons .reto-check { background: #7b6cf6; border-color: #7b6cf6; font-weight: 600; }
+.reto-win { padding: 8px; border-radius: 6px; background: #12391f; border: 1px solid #00e676; text-align: center; font-weight: 700; color: #c8ffd9; }
 
-/* ── ¡Échale coco! (static/coco.js): mismo estilo que el tutorial guiado ── */
-#coco-panel {
+/* ── ¡Échale coco! (static/coco.js) y ventana del reto: mismo estilo que el tutorial guiado ── */
+#coco-panel,
+#reto-panel {
   position: fixed;
   bottom: 20px;
   right: 20px;
@@ -171,14 +142,24 @@
   font-family: 'Consolas', 'Courier New', monospace;
   font-size: 14px;
   color: #c8d8ff;
-  /* Encima del recorrido de bienvenida (.tutorial-overlay, z 9999), que si no la tapa. */
-  z-index: 10001;
+  /* Igual que el tutorial guiado: debajo de los menús de la barra (Archivo,
+     Tutoriales). El recorrido de bienvenida, que la taparía, se cierra al
+     abrir estas ventanas (cerrarBienvenida() en coco.js y retos.js). */
+  z-index: 9000;
 }
-#coco-panel[data-minimized="1"] { max-height: unset; overflow: hidden; }
-#coco-panel[data-minimized="1"] .ts-header { border-radius: 8px; border-bottom: none; }
-#coco-panel[data-minimized="1"] .ts-drag-hint { display: none; }
-#coco-panel::-webkit-scrollbar { width: 6px; }
-#coco-panel::-webkit-scrollbar-thumb { background: #2a3560; border-radius: 3px; }
+#coco-panel[data-minimized="1"], #reto-panel[data-minimized="1"] { max-height: unset; overflow: hidden; }
+#coco-panel[data-minimized="1"] .ts-header, #reto-panel[data-minimized="1"] .ts-header { border-radius: 8px; border-bottom: none; }
+#coco-panel[data-minimized="1"] .ts-drag-hint, #reto-panel[data-minimized="1"] .ts-drag-hint { display: none; }
+#coco-panel::-webkit-scrollbar, #reto-panel::-webkit-scrollbar { width: 6px; }
+#coco-panel::-webkit-scrollbar-thumb, #reto-panel::-webkit-scrollbar-thumb { background: #2a3560; border-radius: 3px; }
+/* Posición propia del reto (después de la regla compartida para que gane). */
+#reto-panel {
+  top: 60px;
+  bottom: auto;
+  right: 90px;
+  width: 360px;
+  max-height: calc(100vh - 80px);
+}
 .coco-body { display: flex; flex-direction: column; gap: 10px; }
 .coco-list { display: flex; flex-direction: column; gap: 6px; }
 .coco-item, .coco-opt {
@@ -239,3 +220,8 @@
 .coco-mine { color: #f5c518; }
 .coco-warn { padding: 10px; border-radius: 6px; background: #3d2b0f; border: 1px solid #f5c518; color: #ffe9a8; margin: 0; }
 .coco-teacher { margin-top: 4px; }
+
+/* Grupo "🎯 Practica" del menú de Tutoriales (coco.js). Mismo estilo que
+   "Mis tutoriales", por si ese CSS (que inyecta tutorial-docente.js) no está. */
+#practica-menu .tut-option-docente { display: flex; align-items: center; gap: 9px; padding: 8px 14px; font-size: 13px; color: #aaaace; cursor: pointer; }
+#practica-menu .tut-option-docente:hover { background: rgba(124, 106, 247, .15); color: #fff; }
