@@ -3,38 +3,105 @@
    Agregar este <script> en index.html ANTES de main.js
 ══════════════════════════════════════════════════════════════ */
 
-/* ── Imágenes del selector (select_imgs) ──
-   Las primeras son las de siempre (mismos valores, para no romper
-   proyectos guardados); después, los sprites de 16x16 de
-   static/img/sprites/ (guardados x4 sin suavizado y sin fondo). En el menú
-   se ve la miniatura de cada una. */
-const GAME_SPRITES = [
-  "amongus", "amongus2", "ballena1", "ballena2", "ballena3", "ballena4", "ballena5", "ballena6",
-  "ballena7", "ballena8", "ballena9", "bee", "beer", "c2", "c3", "c4", "c5", "c6", "c7", "c8", "c9",
-  "cake", "carne", "cat", "catarina", "cereza", "champinon", "chica1", "chicas2", "chicas3",
-  "chocolate1", "chocolate2", "chocolate3", "coco", "conjelado", "control", "corazon_amarillo",
-  "corazon_azul", "corazon_b", "corazon_chicas", "corazon_cyan", "corazon_m", "corazon_morado",
-  "corazon_rojo", "corazon_verde", "corazoneas", "corazones", "corazones2", "corazones3",
-  "corazones4", "corazones5", "crab", "cup", "delfin", "egg", "egg2", "emocionado", "enfermo",
-  "enfermo2", "enfermo3", "enojado", "estrella2", "fantasma_cafe", "fantasma_cyan", "fantasma_rosa",
-  "feliz", "floor", "fresa", "halloween1", "halloween10", "halloween11", "halloween2", "halloween3",
-  "halloween4", "halloween5", "halloween6", "halloween7", "halloween8", "halloween9", "hamburguesa",
-  "hot_cake1", "hot_cake2", "hot_cake3", "hulk", "ice_ceream1", "ice_cream2", "iron_man", "jirafa",
-  "jitomate", "kirby", "lagrima", "lechuga", "leon", "like", "link", "link2", "llorando", "lol",
-  "luigi", "malas_palabras", "mario2", "mario3", "noel", "pacman", "pacman2", "pan", "papas", "pino",
-  "pino2", "pizza", "plato", "poke_amarilla", "poke_azul", "poke_blanca", "poke_roja", "popote",
-  "regalo", "regalo_rojo", "regalo_verde", "robot1", "robot2", "sandia", "shield", "tin_yang",
-  "vaso", "vida", "wallet"
-];
+/* ── Imágenes del juego ──
+   select_imgs ("🖼️ imagen") tiene las de siempre, con los mismos valores
+   para no romper proyectos guardados. Los sprites de 16x16 (en
+   static/img/sprites/, guardados x4 sin suavizado y sin fondo) van en un
+   bloque por grupo -- game_sprite_<grupo> -- para que cada menú sea corto.
+   Las rutas son relativas a static/img/ (sin .png). En el menú se ve la
+   miniatura de cada imagen. */
+function gameImageOptions(paths) {
+  return paths.map((p) => [
+    { src: `./static/img/${p}.png`, width: 24, height: 24, alt: p.replace("sprites/", "") },
+    `${p}.png`,
+  ]);
+}
 
-const GAME_IMAGE_OPTIONS = [
+const GAME_IMAGE_OPTIONS = gameImageOptions([
   "car", "laberinto", "laberinto2", "mario", "corazon", "alien", "estrella",
   "bomba", "moneda", "tortuga", "fantasma", "cohete", "carro_rojo",
-].map((n) => [{ src: `./static/img/${n}.png`, width: 24, height: 24, alt: n }, `${n}.png`])
-  .concat(GAME_SPRITES.map((n) => [
-    { src: `./static/img/sprites/${n}.png`, width: 24, height: 24, alt: n },
-    `sprites/${n}.png`,
-  ]));
+]);
+
+const GAME_SPRITE_GROUPS = [
+  {
+    key: "personajes", icon: "🧍", label: "personaje",
+    images: [
+      "mario", "alien", "fantasma", "sprites/amongus", "sprites/amongus_2", "sprites/chica_1",
+      "sprites/chica_2", "sprites/chica_3", "sprites/hulk", "sprites/iron_man", "sprites/kirby",
+      "sprites/link", "sprites/link_2", "sprites/luigi", "sprites/mario_2", "sprites/mario_3",
+      "sprites/pacman", "sprites/pacman_cerrado", "sprites/robot_1", "sprites/robot_2",
+      "sprites/walle", "sprites/fantasma_cafe", "sprites/fantasma_cyan", "sprites/fantasma_rosa",
+    ],
+  },
+  {
+    key: "animales", icon: "🐾", label: "animal",
+    images: [
+      "tortuga", "sprites/abeja", "sprites/gato", "sprites/catarina", "sprites/cangrejo",
+      "sprites/delfin", "sprites/jirafa", "sprites/leon", "sprites/ballena_1",
+      "sprites/ballena_2", "sprites/ballena_3", "sprites/ballena_4", "sprites/ballena_5",
+      "sprites/ballena_6", "sprites/ballena_7", "sprites/ballena_8", "sprites/ballena_9",
+    ],
+  },
+  {
+    key: "caritas", icon: "😀", label: "carita",
+    images: [
+      "sprites/feliz", "sprites/emocionado", "sprites/risa_lagrima", "sprites/llorando",
+      "sprites/enojado", "sprites/malas_palabras", "sprites/enfermo", "sprites/enfermo_2",
+      "sprites/enfermo_3", "sprites/congelado", "sprites/lol", "sprites/pulgar_arriba",
+    ],
+  },
+  {
+    key: "corazones", icon: "❤️", label: "corazón",
+    images: [
+      "corazon", "sprites/corazon_grande_verde", "sprites/corazon_grande_azul",
+      "sprites/corazon_grande_amarillo", "sprites/corazon_grande_cyan",
+      "sprites/corazon_grande_rosa", "sprites/corazon_grande_naranja",
+      "sprites/corazon_grande_vino", "sprites/corazon_grande_morado", "sprites/corazon_rojo",
+      "sprites/corazon_verde", "sprites/corazon_azul", "sprites/corazon_amarillo",
+      "sprites/corazon_cyan", "sprites/corazon_morado", "sprites/corazon_brasil",
+      "sprites/corazon_mexico", "sprites/corazon_rosa_blanco", "sprites/corazones_colores",
+      "sprites/corazon_contorno", "sprites/corazon_arcoiris_1", "sprites/corazon_arcoiris_2",
+      "sprites/corazon_arcoiris_3", "sprites/corazon_arcoiris_4",
+    ],
+  },
+  {
+    key: "comida", icon: "🍔", label: "comida",
+    images: [
+      "sprites/hamburguesa", "sprites/pizza", "sprites/papas", "sprites/pastel",
+      "sprites/cereza", "sprites/sandia", "sprites/jitomate", "sprites/lechuga",
+      "sprites/carne", "sprites/pan", "sprites/huevo_frito", "sprites/hot_cake_1",
+      "sprites/hot_cake_2", "sprites/hot_cake_3", "sprites/chocolate_1", "sprites/chocolate_2",
+      "sprites/chocolate_3", "sprites/paleta", "sprites/helado", "sprites/malteada_fresa",
+      "sprites/vaso_popote", "sprites/vaso", "sprites/coco", "sprites/tarro", "sprites/plato",
+    ],
+  },
+  {
+    key: "halloween", icon: "🎃", label: "Halloween",
+    images: [
+      "sprites/calabaza", "sprites/calabaza_gato", "sprites/fantasma_blanco",
+      "sprites/calavera", "sprites/calavera_dientes", "sprites/murcielago", "sprites/arana",
+      "sprites/gato_negro", "sprites/sombrero_bruja", "sprites/sombrero_morado",
+      "sprites/lapida",
+    ],
+  },
+  {
+    key: "navidad", icon: "🎄", label: "Navidad",
+    images: [
+      "sprites/pino", "sprites/pino_2", "sprites/santa", "sprites/regalo",
+      "sprites/regalo_rojo", "sprites/regalo_verde",
+    ],
+  },
+  {
+    key: "objetos", icon: "⭐", label: "objeto",
+    images: [
+      "estrella", "moneda", "bomba", "cohete", "carro_rojo", "car", "sprites/estrella_arcoiris",
+      "sprites/hongo_vida", "sprites/hongo", "sprites/huevo_yoshi", "sprites/trofeo",
+      "sprites/control", "sprites/escudo", "sprites/yin_yang", "sprites/flor_maceta",
+      "sprites/pokebola_roja", "sprites/pokebola_azul", "sprites/pokebola_amarilla",
+      "sprites/pokebola_blanca",
+    ],
+  },
+];
 
 Blockly.defineBlocksWithJsonArray([
   /* ──────────────────────────────
@@ -1021,3 +1088,24 @@ Blockly.defineBlocksWithJsonArray([
    GENERADORES JS — MULTI-PERSONAJE
    Se agregan aquí porque game_blocks.js ya carga antes que main.js.
 ══════════════════════════════════════════════════════════════ */
+
+
+GAME_SPRITE_GROUPS.forEach((group) => {
+  const type = `game_sprite_${group.key}`;
+  Blockly.Blocks[type] = {
+    init: function () {
+      this.appendDummyInput()
+        .appendField(`${group.icon} ${group.label}`)
+        .appendField(new Blockly.FieldDropdown(gameImageOptions(group.images)), "IMG");
+      this.setOutput(true, "String");
+      this.setColour(160);
+      this.setTooltip(`Elige un sprite del grupo "${group.label}" para usar en el juego.`);
+    },
+  };
+  Blockly.Python[type] = function (block) {
+    return ["'" + block.getFieldValue("IMG") + "'", Blockly.Python.ORDER_ATOMIC];
+  };
+  Blockly.JavaScript[type] = function (block) {
+    return ["'" + block.getFieldValue("IMG") + "'", Blockly.JavaScript.ORDER_ATOMIC];
+  };
+});
