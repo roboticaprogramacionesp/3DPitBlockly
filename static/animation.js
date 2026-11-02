@@ -2787,6 +2787,29 @@ function initInterpreter(code) {
       }),
     );
 
+    /* Cartas de preguntas (static/cartas.js, bloques 🃏 de game_blocks.js) */
+    interpreter.setProperty(
+      geObj,
+      "cartaSacar",
+      interpreter.createNativeFunction(function (nivel) {
+        return window.Cartas ? window.Cartas.sacar(_s(nivel)) : "";
+      }),
+    );
+    interpreter.setProperty(
+      geObj,
+      "cartaCorrecta",
+      interpreter.createNativeFunction(function () {
+        return window.Cartas ? window.Cartas.correcta() : "";
+      }),
+    );
+    interpreter.setProperty(
+      geObj,
+      "cartaOpciones",
+      interpreter.createNativeFunction(function () {
+        return window.Cartas ? window.Cartas.opciones() : 0;
+      }),
+    );
+
     interpreter.setProperty(globalObject, "GameEngine", geObj);
   });
 }

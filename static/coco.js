@@ -356,7 +356,8 @@ const EchaleCoco = (() => {
     const grupo = el("div", { id: "practica-menu" },
       el("div", { class: "tut-group-label", text: "🎯 Practica" }),
       opcion("🏆", "Retos", () => window.ToolsPanel && window.ToolsPanel.open("retos.html")),
-      opcion("🥥", "¡Échale coco!", abrir));
+      opcion("🥥", "¡Échale coco!", abrir),
+      opcion("🃏", "Cartas de preguntas", () => window.Cartas && window.Cartas.abrir()));
     const misTutoriales = document.getElementById("tdoc-menu");
     dd.insertBefore(grupo, misTutoriales ? misTutoriales.nextSibling : dd.firstChild);
   }

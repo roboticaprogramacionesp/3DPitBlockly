@@ -191,7 +191,7 @@ window.GameEngine = (function () {
   /* Mapa de teclas de juego → carácter serial que se envía al ESP32 */
   var _keySerialMap = {
     'ArrowUp': 'w', 'ArrowDown': 's', 'ArrowLeft': 'a', 'ArrowRight': 'd',
-    'w': 'w', 'a': 'a', 's': 's', 'd': 'd',
+    'w': 'w', 'a': 'a', 's': 's', 'd': 'd', 'b': 'b', 'c': 'c',
     ' ': ' ', 'Enter': '\r', 'z': 'z', 'x': 'x'
   };
   document.addEventListener('keydown', function(e) {

@@ -5584,7 +5584,7 @@ Blockly.Python["key_is_pressed"] = function (block) {
   const charMap = {
     "ArrowUp": "w", "ArrowDown": "s",
     "ArrowLeft": "a", "ArrowRight": "d",
-    "w": "w", "a": "a", "s": "s", "d": "d",
+    "w": "w", "a": "a", "s": "s", "d": "d", "b": "b", "c": "c",
     " ": " ", "Enter": "\r", "z": "z", "x": "x"
   };
   const ch = charMap[key] || key[0] || "?";

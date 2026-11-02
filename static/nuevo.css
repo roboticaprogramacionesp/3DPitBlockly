@@ -125,7 +125,8 @@
 
 /* ── ¡Échale coco! (static/coco.js) y ventana del reto: mismo estilo que el tutorial guiado ── */
 #coco-panel,
-#reto-panel {
+#reto-panel,
+#cartas-panel {
   position: fixed;
   bottom: 20px;
   right: 20px;
@@ -147,10 +148,10 @@
      abrir estas ventanas (cerrarBienvenida() en coco.js y retos.js). */
   z-index: 9000;
 }
-#coco-panel[data-minimized="1"], #reto-panel[data-minimized="1"] { max-height: unset; overflow: hidden; }
-#coco-panel[data-minimized="1"] .ts-header, #reto-panel[data-minimized="1"] .ts-header { border-radius: 8px; border-bottom: none; }
-#coco-panel[data-minimized="1"] .ts-drag-hint, #reto-panel[data-minimized="1"] .ts-drag-hint { display: none; }
-#coco-panel::-webkit-scrollbar, #reto-panel::-webkit-scrollbar { width: 6px; }
+#coco-panel[data-minimized="1"], #reto-panel[data-minimized="1"], #cartas-panel[data-minimized="1"] { max-height: unset; overflow: hidden; }
+#coco-panel[data-minimized="1"] .ts-header, #reto-panel[data-minimized="1"] .ts-header, #cartas-panel[data-minimized="1"] .ts-header { border-radius: 8px; border-bottom: none; }
+#coco-panel[data-minimized="1"] .ts-drag-hint, #reto-panel[data-minimized="1"] .ts-drag-hint, #cartas-panel[data-minimized="1"] .ts-drag-hint { display: none; }
+#coco-panel::-webkit-scrollbar, #reto-panel::-webkit-scrollbar, #cartas-panel::-webkit-scrollbar { width: 6px; }
 #coco-panel::-webkit-scrollbar-thumb, #reto-panel::-webkit-scrollbar-thumb { background: #2a3560; border-radius: 3px; }
 /* Posición propia del reto (después de la regla compartida para que gane). */
 #reto-panel {
@@ -225,3 +226,27 @@
    "Mis tutoriales", por si ese CSS (que inyecta tutorial-docente.js) no está. */
 #practica-menu .tut-option-docente { display: flex; align-items: center; gap: 9px; padding: 8px 14px; font-size: 13px; color: #aaaace; cursor: pointer; }
 #practica-menu .tut-option-docente:hover { background: rgba(124, 106, 247, .15); color: #fff; }
+
+/* ── Cartas de preguntas (static/cartas.js): comparte las reglas de #coco-panel ── */
+#cartas-panel { width: 560px; }
+.cartas-body { display: flex; flex-direction: column; gap: 10px; }
+.carta-flip { perspective: 900px; }
+.carta-img {
+  display: block;
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid #2a3560;
+  animation: cartaVoltear 0.45s ease-out;
+  transform-origin: center;
+}
+@keyframes cartaVoltear {
+  from { transform: rotateY(90deg); opacity: 0.2; }
+  to { transform: rotateY(0); opacity: 1; }
+}
+.carta-opts { display: flex; gap: 8px; }
+.carta-opts .coco-opt { justify-content: center; }
+.carta-letra { flex: 1; font-size: 20px; font-weight: 700; text-transform: uppercase; padding: 12px 0; }
+.cartas-cuantas { display: flex; align-items: center; gap: 8px; }
+.cartas-cuantas .coco-opt { width: auto; padding: 6px 14px; }
+.cartas-repaso { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.cartas-repaso img { width: 100%; border-radius: 4px; border: 1px solid #2a3560; }

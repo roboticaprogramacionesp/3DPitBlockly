@@ -293,6 +293,8 @@ Blockly.defineBlocksWithJsonArray([
           ["A", "a"],
           ["S", "s"],
           ["D", "d"],
+          ["B", "b"],
+          ["C", "c"],
           ["Espacio", " "],
           ["Enter", "Enter"],
           ["Z", "z"],
@@ -1109,3 +1111,61 @@ GAME_SPRITE_GROUPS.forEach((group) => {
     return ["'" + block.getFieldValue("IMG") + "'", Blockly.JavaScript.ORDER_ATOMIC];
   };
 });
+
+/* ── Cartas de preguntas 🃏 (las tarjetas y la hoja de respuestas están en
+   cartas-data.js; las funciones, en cartas.js). Para programar tu propio
+   juego de preguntas: sacar una carta y ver si la respuesta es la correcta
+   (con las teclas A/B/C/D, o con 4 botones del ESP32 usando "leer Pin"). ── */
+const GAME_CARD_LEVELS = [["Fácil", "facil"], ["Intermedio", "intermedio"], ["Difícil", "dificil"], ["Cualquiera", "todas"]];
+Blockly.defineBlocksWithJsonArray([
+  {
+    type: "game_card_draw",
+    message0: "🃏 sacar carta nivel %1",
+    args0: [{ type: "field_dropdown", name: "LEVEL", options: GAME_CARD_LEVELS }],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 20,
+    tooltip: "Saca una carta de preguntas al azar del nivel elegido (sin repetir hasta acabarlas) y la pone de fondo del juego.",
+  },
+  {
+    type: "game_card_answer",
+    message0: "🃏 respuesta correcta de la carta",
+    output: "String",
+    colour: 20,
+    tooltip: "La letra de la respuesta correcta de la carta que se sacó: a, b, c o d.",
+  },
+  {
+    type: "game_card_is",
+    message0: "🃏 ¿la respuesta es %1 ?",
+    args0: [{ type: "field_dropdown", name: "LETTER", options: [["a", "a"], ["b", "b"], ["c", "c"], ["d", "d"]] }],
+    output: "Boolean",
+    colour: 20,
+    tooltip: "Verdadero si esa letra es la respuesta correcta de la carta que se sacó.",
+  },
+  {
+    type: "game_card_options",
+    message0: "🃏 número de opciones de la carta",
+    output: "Number",
+    colour: 20,
+    tooltip: "Cuántas opciones trae la carta que se sacó (3 o 4).",
+  },
+]);
+Blockly.JavaScript["game_card_draw"] = function (block) {
+  return "GameEngine.setBgImage(GameEngine.cartaSacar('" + block.getFieldValue("LEVEL") + "'));\n";
+};
+Blockly.JavaScript["game_card_answer"] = function () {
+  return ["GameEngine.cartaCorrecta()", Blockly.JavaScript.ORDER_FUNCTION_CALL];
+};
+Blockly.JavaScript["game_card_is"] = function (block) {
+  return ["(GameEngine.cartaCorrecta() === '" + block.getFieldValue("LETTER") + "')", Blockly.JavaScript.ORDER_ATOMIC];
+};
+Blockly.JavaScript["game_card_options"] = function () {
+  return ["GameEngine.cartaOpciones()", Blockly.JavaScript.ORDER_FUNCTION_CALL];
+};
+// Solo funcionan en la vista Juego (como el resto de bloques de juego).
+Blockly.Python["game_card_draw"] = function (block) {
+  return "# [Juego] sacar carta nivel " + block.getFieldValue("LEVEL") + "\n";
+};
+Blockly.Python["game_card_answer"] = function () { return ["''", Blockly.Python.ORDER_ATOMIC]; };
+Blockly.Python["game_card_is"] = function () { return ["False", Blockly.Python.ORDER_ATOMIC]; };
+Blockly.Python["game_card_options"] = function () { return ["0", Blockly.Python.ORDER_ATOMIC]; };
