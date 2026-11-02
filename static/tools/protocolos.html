@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Protocolos de comunicación</title>
+  <link rel="stylesheet" href="tools.css">
+  <style>
+    .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 4px; }
+    .tabs + .tabs { margin-bottom: 12px; }
+    .tabs .lbl { font-size: 12px; color: var(--muted); align-self: center; min-width: 90px; }
+    .facts { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px; margin-top: 10px; }
+    .fact { background: var(--panel-2); border-radius: 8px; padding: 8px 10px; }
+    .fact b { display: block; font-size: 12px; color: var(--muted); font-weight: 600; margin-bottom: 2px; }
+    .warn { margin-top: 10px; padding: 10px 12px; border-radius: 8px; background: #4d3b0f; border: 1px solid #f5c518; color: #ffe9a8; font-size: 14px; }
+    svg.wiring { width: min(100%, 560px); display: block; margin: 8px 0; }
+    .wave-wrap { overflow-x: auto; background: #0f1226; border-radius: 8px; padding: 6px; margin-top: 8px; }
+    svg.wave text { font-family: monospace; }
+    table { border-collapse: collapse; width: 100%; font-size: 13px; }
+    th, td { border-bottom: 1px solid var(--line); padding: 6px 8px; text-align: left; vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; }
+    p.lead { font-size: 15px; margin: 6px 0 0; }
+  </style>
+</head>
+<body>
+  <a class="back" href="index.html">← Herramientas</a>
+  <h1>🔌 Protocolos de comunicación</h1>
+  <p class="subtitle">Cómo hablan el ESP32 y los módulos: qué cables usa cada protocolo, qué tan rápido es y cuál conviene.</p>
+
+  <div class="tabs" id="tabsWired"><span class="lbl">Con cables</span></div>
+  <div class="tabs" id="tabsWireless"><span class="lbl">Inalámbricos</span></div>
+  <div id="content"></div>
+
+  <script src="tools.js"></script>
+  <script>
+    /* ── Datos de cada protocolo ──
+       wires: cables entre el ESP32 y el módulo [nombre ESP32, nombre módulo, color, flecha]
+       (flecha: ">" sale del ESP32, "<" entra al ESP32, "<>" ambos sentidos). */
+    const P = {
+      uart: {
+        icon: "↔️", name: "UART (serial)", wired: true,
+        lead: "Dos cables para hablar en los dos sentidos: lo que uno transmite (TX) llega a lo que el otro recibe (RX). Es como una conversación por teléfono entre solo dos aparatos.",
+        wires: [["TX", "RX", "#ff6b6b", ">"], ["RX", "TX", "#4dabf7", "<"], ["GND", "GND", "#adb5bd", ""]],
+        facts: { "Cables": "2 de datos (TX, RX) + GND", "Velocidad típica": "9600 a 115200 bits por segundo", "Dispositivos": "1 a 1 (cada UART conecta dos aparatos)", "Distancia": "Unos metros", "En 3DPit": "Comunicación Serial → UART; HC-05/HC-06, GPS, DFPlayer, lector de huella", "Pines ESP32": "UART2: TX 17, RX 16 (la UART0 es el USB)" },
+        warn: "TX va a RX y RX va a TX (se cruzan). Los dos lados deben usar la misma velocidad (baudrate), si no llegan caracteres raros.",
+      },
+      i2c: {
+        icon: "🔗", name: "I2C", wired: true,
+        lead: "Dos cables compartidos por muchos módulos a la vez. Cada módulo tiene una dirección (como el número de una casa) y el ESP32 le habla al que nombra. SCL marca el ritmo y SDA lleva los datos.",
+        wires: [["SDA", "SDA", "#ffd43b", "<>"], ["SCL", "SCL", "#69db7c", ">"], ["GND", "GND", "#adb5bd", ""], ["3.3V", "VCC", "#ff8787", ""]],
+        facts: { "Cables": "2 (SDA datos, SCL reloj) + GND y VCC", "Velocidad típica": "100 000 a 400 000 bits por segundo", "Dispositivos": "Muchos en los mismos 2 cables (cada uno con su dirección)", "Distancia": "Menos de 1 metro", "En 3DPit": "OLED, LCD I2C, MPU6050, BMP280, BH1750, DS3231, TCS34725…", "Pines ESP32": "SDA 21, SCL 22 (S3/C3: 8 y 9)" },
+        warn: "Si dos módulos tienen la misma dirección no pueden ir juntos. Usa 🛠 Escáner I2C para ver qué direcciones responden.",
+      },
+      spi: {
+        icon: "⚡", name: "SPI", wired: true,
+        lead: "Más cables pero mucho más rápido. Un cable de reloj (SCK), uno para enviar (MOSI), uno para recibir (MISO) y un cable CS por cada módulo para elegir con cuál se habla.",
+        wires: [["MOSI", "DIN", "#ff6b6b", ">"], ["MISO", "DOUT", "#4dabf7", "<"], ["SCK", "CLK", "#69db7c", ">"], ["CS", "CS", "#da77f2", ">"], ["GND", "GND", "#adb5bd", ""]],
+        facts: { "Cables": "4 (MOSI, MISO, SCK, CS) + GND", "Velocidad típica": "1 a 80 millones de bits por segundo", "Dispositivos": "Varios: comparten MOSI/MISO/SCK y cada uno tiene su CS", "Distancia": "Muy corta (centímetros)", "En 3DPit": "Pantalla TFT, matriz MAX7219, lector RFID, tarjeta SD", "Pines ESP32": "MOSI 23, MISO 19, SCK 18, CS 5" },
+        warn: "Algunos módulos solo reciben (pantallas, matrices) y no usan MISO. Cada módulo necesita su propio pin CS.",
+      },
+      i2s: {
+        icon: "🎤", name: "I2S (audio)", wired: true,
+        lead: "Un protocolo especial para sonido digital. Manda las muestras de audio una tras otra, marcando si cada una es del canal izquierdo o del derecho.",
+        wires: [["SCK", "BCLK", "#69db7c", ">"], ["WS", "LRCL", "#da77f2", ">"], ["SD", "DOUT", "#4dabf7", "<"], ["GND", "GND", "#adb5bd", ""]],
+        facts: { "Cables": "3 (reloj BCLK, canal WS, datos SD) + GND", "Velocidad típica": "Miles de muestras por segundo (16 000 a 44 100)", "Dispositivos": "1 micrófono o 1 amplificador por bus", "Distancia": "Muy corta", "En 3DPit": "Comunicación Serial → I2S (Audio) para enviar sonido; micrófono INMP441 en Periféricos → Módulos I2S", "Pines ESP32": "Cualquier pin de E/S (por ejemplo SCK 14, WS 15, SD 32)" },
+        warn: "El sonido genera muchos datos: guarda o procesa en partes pequeñas para no llenar la memoria.",
+      },
+      onewire: {
+        icon: "🌡️", name: "OneWire", wired: true,
+        lead: "¡Un solo cable de datos! Los pulsos largos y cortos son los ceros y unos. Cada sensor tiene un número de serie único, así que varios pueden ir en el mismo cable.",
+        wires: [["Pin", "DQ", "#ffd43b", "<>"], ["3.3V", "VDD", "#ff8787", ""], ["GND", "GND", "#adb5bd", ""]],
+        facts: { "Cables": "1 de datos + GND y VCC", "Velocidad típica": "Unos 16 000 bits por segundo (lento)", "Dispositivos": "Varios en el mismo cable (cada uno con su ID de 64 bits)", "Distancia": "Hasta decenas de metros", "En 3DPit": "Comunicación Serial → OneWire; sensor de temperatura DS18B20", "Pines ESP32": "Cualquier pin de E/S (por ejemplo 4)" },
+        warn: "Necesita una resistencia de 4.7 kΩ entre el cable de datos y 3.3 V (muchos módulos ya la traen).",
+      },
+      wifi: {
+        icon: "📶", name: "WiFi", wired: false,
+        lead: "La misma red de la casa o la escuela. El ESP32 se conecta a un router (o crea su propia red) y puede usar internet, mostrar una página web o mandar notificaciones.",
+        facts: { "Necesita": "Un router, o que el ESP32 cree su red (punto de acceso)", "Alcance": "Unos 30 a 50 m dentro de un edificio", "Velocidad": "Muy alta (millones de bits por segundo)", "Consumo": "Alto", "En 3DPit": "Comunicación Inalámbrica → WiFi, Socket, Portal Cautivo", "Ideal para": "Internet, páginas web, controlar desde el celular en la misma red" },
+        warn: "Mientras el WiFi está encendido, los pines ADC2 no pueden leer sensores analógicos (mira 🛠 Mapa de pines).",
+      },
+      btc: {
+        icon: "🔵", name: "Bluetooth clásico", wired: false,
+        lead: "Conexión directa con un celular o computadora como si fuera un cable serial. Se usa con módulos HC-05/HC-06 o con el Bluetooth del ESP32 clásico.",
+        facts: { "Necesita": "Emparejar con el celular (clave típica 1234)", "Alcance": "Unos 10 m", "Velocidad": "Media", "Consumo": "Medio", "En 3DPit": "Comunicación Inalámbrica → HC-06, BluetoothClasico", "Ideal para": "Controlar un carrito desde una app de celular" },
+        warn: "El ESP32 S3 y el C3 NO tienen Bluetooth clásico, solo BLE. Con esas placas usa BLE o un módulo HC-05/HC-06.",
+      },
+      ble: {
+        icon: "🔷", name: "Bluetooth BLE", wired: false,
+        lead: "Bluetooth de bajo consumo. Está en todos los ESP32 (también S3 y C3) y en casi todos los celulares, sin emparejar con clave.",
+        facts: { "Necesita": "Una app BLE en el celular (por ejemplo una terminal serial BLE)", "Alcance": "Unos 10 a 30 m", "Velocidad": "Baja a media (mensajes cortos)", "Consumo": "Bajo", "En 3DPit": "Comunicación Inalámbrica → BluetoothBLE", "Ideal para": "Sensores que mandan datos al celular, control con poca batería" },
+        warn: "Los mensajes BLE son cortos (unos 20 caracteres por envío): manda textos breves.",
+      },
+      espnow: {
+        icon: "📡", name: "ESP-NOW", wired: false,
+        lead: "Mensajes directos entre ESP32, sin router ni internet. Rápido y de buen alcance: ideal para un control remoto o para que varias placas se hablen.",
+        facts: { "Necesita": "Otro ESP32 (se identifican por su dirección MAC)", "Alcance": "Más de 100 m al aire libre", "Velocidad": "Muy rápida para mensajes cortos", "Consumo": "Bajo", "En 3DPit": "Comunicación Inalámbrica → ESP-NOW", "Ideal para": "Control remoto, chat entre placas, sensores a distancia" },
+        warn: "Cada mensaje puede tener hasta 250 bytes. Las dos placas deben estar en el mismo canal WiFi.",
+      },
+    };
+
+    // ── Dibujo de la conexión ESP32 ↔ módulo ──
+    function wiringSvg(p) {
+      const n = p.wires.length, h = 40 + n * 34;
+      let s = `<svg class="wiring" viewBox="0 0 560 ${h}"><rect x="10" y="10" width="110" height="${h - 20}" rx="8" fill="#2b6cb0"/>` +
+        `<text x="65" y="${h / 2 + 5}" fill="#fff" font-size="16" font-weight="700" text-anchor="middle">ESP32</text>` +
+        `<rect x="440" y="10" width="110" height="${h - 20}" rx="8" fill="#5f3dc4"/>` +
+        `<text x="495" y="${h / 2 + 5}" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">Módulo</text>`;
+      p.wires.forEach(([a, b, color, dir], i) => {
+        const y = 36 + i * 34;
+        s += `<line x1="120" y1="${y}" x2="440" y2="${y}" stroke="${color}" stroke-width="4"/>` +
+          `<text x="130" y="${y - 6}" fill="${color}" font-size="13" font-weight="700">${a}</text>` +
+          `<text x="430" y="${y - 6}" fill="${color}" font-size="13" font-weight="700" text-anchor="end">${b}</text>`;
+        const arrow = (x, right) => `<polygon points="${right ? `${x - 8},${y - 6} ${x + 6},${y} ${x - 8},${y + 6}` : `${x + 8},${y - 6} ${x - 6},${y} ${x + 8},${y + 6}`}" fill="${color}"/>`;
+        if (dir.includes(">")) s += arrow(300, true);
+        if (dir.includes("<")) s += arrow(260, false);
+      });
+      return s + "</svg>";
+    }
+
+    /* ── Señales: cómo viaja un byte por los cables ──
+       Cada protocolo devuelve las señales (0/1 por paso de tiempo) y
+       etiquetas sobre tramos de tiempo. Simplificado para que se entienda. */
+    const bitsMSB = (b) => [...Array(8)].map((_, i) => (b >> (7 - i)) & 1);
+    const bitsLSB = (b) => bitsMSB(b).reverse();
+    const WAVES = {
+      uart(b) {
+        const tx = [1, 1, 0, ...bitsLSB(b), 1, 1];
+        return { signals: [{ name: "TX", color: "#ff6b6b", steps: tx }],
+          labels: [[2, 3, "inicio"], ...bitsLSB(b).map((v, i) => [3 + i, 4 + i, String(v)]), [11, 12, "fin"]],
+          note: "Primero un bit de inicio (0), luego los 8 bits empezando por el de la derecha, y un bit de fin (1). No hay reloj: por eso los dos lados deben usar la misma velocidad." };
+      },
+      spi(b) {
+        const bits = bitsMSB(b);
+        const cs = [1, ...Array(16).fill(0), 1];
+        const sck = [0, ...bits.flatMap(() => [0, 1]), 0];
+        const mosi = [0, ...bits.flatMap((v) => [v, v]), 0];
+        return { signals: [{ name: "CS", color: "#da77f2", steps: cs }, { name: "SCK", color: "#69db7c", steps: sck }, { name: "MOSI", color: "#ff6b6b", steps: mosi }],
+          labels: bits.map((v, i) => [1 + i * 2, 3 + i * 2, String(v)]),
+          note: "CS baja para elegir el módulo. En cada subida de SCK el módulo lee un bit de MOSI. Como hay reloj, puede ir muy rápido." };
+      },
+      i2c(b) {
+        const addr = [...bitsMSB(0x3c).slice(1), 0]; // 7 bits de dirección + escribir (0)
+        const frame = [...addr, 0, ...bitsMSB(b), 0];  // + ACK + dato + ACK
+        const sda = [1, 1, 0, ...frame.flatMap((v) => [v, v]), 0, 0, 1];
+        const scl = [1, 1, 1, ...frame.flatMap(() => [0, 1]), 0, 1, 1];
+        const at = (k) => 3 + k * 2;
+        return { signals: [{ name: "SCL", color: "#69db7c", steps: scl }, { name: "SDA", color: "#ffd43b", steps: sda }],
+          labels: [[1, 3, "inicio"], [at(0), at(7), "dirección 0x3C"], [at(7), at(8), "esc"], [at(8), at(9), "ACK"], [at(9), at(17), "dato"], [at(17), at(18), "ACK"], [at(18), at(18) + 3, "fin"]],
+          note: "Inicio: SDA baja mientras SCL está arriba. Después va la dirección del módulo (0x3C = OLED), el dato, y el módulo responde ACK (0) para decir \"recibido\"." };
+      },
+      i2s(b) {
+        const bits = bitsMSB(b);
+        const ws = [...Array(16).fill(0), ...Array(16).fill(1)];
+        const bclk = [...Array(16)].flatMap(() => [0, 1]);
+        const sd = [...bits.flatMap((v) => [v, v]), ...bits.flatMap((v) => [v, v])];
+        return { signals: [{ name: "WS", color: "#da77f2", steps: ws }, { name: "BCLK", color: "#69db7c", steps: bclk }, { name: "SD", color: "#4dabf7", steps: sd }],
+          labels: [[0, 16, "canal izquierdo"], [16, 32, "canal derecho"]],
+          note: "WS dice de qué canal es la muestra (0 izquierdo, 1 derecho) y BCLK marca cada bit de SD. Así llegan miles de muestras por segundo." };
+      },
+      onewire(b) {
+        const steps = [1, ...Array(6).fill(0), 1, 1, ...Array(3).fill(0), 1, 1];
+        const labels = [[1, 7, "reinicio"], [9, 12, "presencia"]];
+        bitsLSB(b).forEach((v, i) => {
+          const start = steps.length;
+          steps.push(...(v ? [0, 1, 1, 1] : [0, 0, 0, 1]));
+          labels.push([start, start + 4, String(v)]);
+        });
+        steps.push(1);
+        return { signals: [{ name: "DQ", color: "#ffd43b", steps }], labels,
+          note: "El ESP32 manda un pulso largo de reinicio y el sensor responde \"aquí estoy\". Después, un pulso corto es un 1 y uno largo es un 0." };
+      },
+    };
+
+    function waveSvg(w) {
+      const total = Math.max(...w.signals.map((s) => s.steps.length));
+      const step = 22, left = 56, rowH = 46, top = 30;
+      const width = left + total * step + 10, height = top + w.signals.length * rowH + 6;
+      let s = `<svg class="wave" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">`;
+      w.labels.forEach(([a, b, t]) => {
+        const x1 = left + a * step, x2 = left + b * step;
+        s += `<rect x="${x1}" y="4" width="${x2 - x1}" height="${height - 8}" fill="rgba(123,108,246,0.08)" stroke="rgba(123,108,246,0.35)"/>` +
+          `<text x="${(x1 + x2) / 2}" y="18" fill="#c9cdf0" font-size="11" text-anchor="middle">${t}</text>`;
+      });
+      w.signals.forEach((sig, r) => {
+        const yHi = top + r * rowH + 8, yLo = yHi + 26;
+        let pts = "";
+        sig.steps.forEach((v, i) => {
+          const y = v ? yHi : yLo;
+          pts += `${left + i * step},${y} ${left + (i + 1) * step},${y} `;
+        });
+        s += `<text x="6" y="${yLo - 6}" fill="${sig.color}" font-size="12" font-weight="700">${sig.name}</text>` +
+          `<polyline points="${pts}" fill="none" stroke="${sig.color}" stroke-width="2.5"/>`;
+      });
+      return s + `<line id="cursor" x1="${left}" y1="4" x2="${left}" y2="${height - 4}" stroke="#fff" stroke-width="2" opacity="0"/></svg>`;
+    }
+
+    // ── Página de un protocolo ──
+    let current = "uart";
+    function show(key) {
+      current = key;
+      document.querySelectorAll("[data-p]").forEach((b) => b.classList.toggle("active", b.dataset.p === key));
+      const p = P[key], c = document.getElementById("content");
+      if (key === "compare") return compare();
+      c.innerHTML = "";
+      const panel = document.createElement("div");
+      panel.className = "panel";
+      panel.innerHTML = `<h2 style="margin:0">${p.icon} ${p.name}</h2><p class="lead"></p>` +
+        (p.wires ? wiringSvg(p) : "") + `<div class="facts"></div><div class="warn"></div>`;
+      panel.querySelector(".lead").textContent = p.lead;
+      const facts = panel.querySelector(".facts");
+      Object.entries(p.facts).forEach(([k, v]) => {
+        const f = document.createElement("div");
+        f.className = "fact";
+        f.innerHTML = "<b></b><span></span>";
+        f.firstChild.textContent = k;
+        f.lastChild.textContent = v;
+        facts.appendChild(f);
+      });
+      panel.querySelector(".warn").textContent = "⚠️ " + p.warn;
+      c.appendChild(panel);
+
+      if (WAVES[key]) {
+        const sim = document.createElement("div");
+        sim.className = "panel";
+        sim.style.marginTop = "12px";
+        sim.innerHTML = `<p class="section-title">Mira cómo viaja una letra por los cables</p>` +
+          `<div class="row"><label class="field">Letra <input type="text" id="ch" maxlength="1" value="A" style="width:60px"></label>` +
+          `<span class="hint" id="bin" style="align-self:flex-end;padding-bottom:8px"></span>` +
+          `<button class="primary" id="send" style="align-self:flex-end">▶ Enviar</button></div>` +
+          `<div class="wave-wrap" id="wave"></div><p class="hint" id="note" style="margin-top:8px"></p>`;
+        c.appendChild(sim);
+        const draw = () => {
+          const ch = document.getElementById("ch").value || "A";
+          const b = ch.charCodeAt(0) & 0xff;
+          document.getElementById("bin").textContent = `'${ch}' = ${b} = ${b.toString(2).padStart(8, "0")} en binario`;
+          const w = WAVES[key](b);
+          document.getElementById("wave").innerHTML = waveSvg(w);
+          document.getElementById("note").textContent = w.note;
+        };
+        document.getElementById("ch").oninput = draw;
+        document.getElementById("send").onclick = () => {
+          draw();
+          const svg = document.querySelector("#wave svg"), cur = svg.getElementById("cursor");
+          const x0 = 56, x1 = Number(svg.getAttribute("width")) - 10, t0 = performance.now(), dur = 3000;
+          cur.setAttribute("opacity", "1");
+          const tick = (t) => {
+            const k = Math.min(1, (t - t0) / dur), x = x0 + (x1 - x0) * k;
+            cur.setAttribute("x1", x); cur.setAttribute("x2", x);
+            document.getElementById("wave").scrollLeft = Math.max(0, x - 300);
+            if (k < 1) requestAnimationFrame(tick); else cur.setAttribute("opacity", "0");
+          };
+          requestAnimationFrame(tick);
+        };
+        draw();
+      }
+    }
+
+    // ── Comparación ──
+    function compare() {
+      const c = document.getElementById("content");
+      const wired = ["uart", "i2c", "spi", "i2s", "onewire"], wireless = ["wifi", "btc", "ble", "espnow"];
+      const table = (keys, cols) => `<table><tr><th>Protocolo</th>${cols.map((k) => `<th>${k}</th>`).join("")}</tr>` +
+        keys.map((k) => `<tr><td><b>${P[k].icon} ${P[k].name}</b></td>${cols.map((col) => `<td>${P[k].facts[col] || ""}</td>`).join("")}</tr>`).join("") + "</table>";
+      c.innerHTML = `<div class="panel"><p class="section-title">Con cables</p>${table(wired, ["Cables", "Velocidad típica", "Dispositivos", "En 3DPit"])}</div>` +
+        `<div class="panel" style="margin-top:12px"><p class="section-title">Inalámbricos</p>${table(wireless, ["Necesita", "Alcance", "Consumo", "Ideal para"])}</div>` +
+        `<div class="panel" style="margin-top:12px"><p class="section-title">¿Cuál uso?</p><ul style="margin:0;padding-left:20px;font-size:14px;line-height:1.6">` +
+        `<li>Muchos sensores y una pantalla pequeña con pocos cables → <b>I2C</b></li>` +
+        `<li>Una pantalla grande o algo que necesita velocidad → <b>SPI</b></li>` +
+        `<li>Un módulo con TX/RX (GPS, Bluetooth HC-05, MP3) → <b>UART</b></li>` +
+        `<li>Temperatura con cables largos → <b>OneWire</b> (DS18B20)</li>` +
+        `<li>Micrófono o parlante digital → <b>I2S</b></li>` +
+        `<li>Controlar desde el celular → <b>BLE</b> (o WiFi si quieres una página web)</li>` +
+        `<li>Dos ESP32 que se hablan sin router → <b>ESP-NOW</b></li></ul></div>`;
+    }
+
+    // ── Pestañas ──
+    Object.entries(P).forEach(([key, p]) => {
+      const b = document.createElement("button");
+      b.dataset.p = key;
+      b.textContent = `${p.icon} ${p.name}`;
+      b.onclick = () => show(key);
+      document.getElementById(p.wired ? "tabsWired" : "tabsWireless").appendChild(b);
+    });
+    const cmp = document.createElement("button");
+    cmp.dataset.p = "compare";
+    cmp.textContent = "📊 Comparar todos";
+    cmp.onclick = () => show("compare");
+    document.getElementById("tabsWireless").appendChild(cmp);
+    show("uart");
+  </script>
+</body>
+</html>
