@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>¡Échale coco! para docentes</title>
+  <title>Crear ¡Échale coco!</title>
   <link rel="stylesheet" href="tools.css">
   <style>
     textarea, input[type="text"].wide {
@@ -24,16 +24,17 @@
 </head>
 <body>
   <a class="back" href="index.html">← Herramientas</a>
-  <h1>🥥 ¡Échale coco! para docentes</h1>
+  <h1>✏️ Crear un ¡Échale coco!</h1>
   <div id="app"></div>
 
   <script src="tools.js"></script>
   <script src="../coco-core.js"></script>
   <script>
     /* ════════════════════════════════════════════════════════════════
-       Editor de cuestionarios "¡Échale coco!" para docentes, y "Ver un
-       resultado" (el código que manda el alumno). Los alumnos responden
-       en la ventana flotante de la app (static/coco.js). Validación,
+       Editor de cuestionarios "¡Échale coco!" (los puede crear
+       cualquiera) y "Ver un resultado" (el código que manda quien
+       respondió). Se responde en la ventana flotante de la app
+       (static/coco.js). Validación,
        compresión y texto seguro: static/coco-core.js.
        ════════════════════════════════════════════════════════════════ */
     const C = CocoCore, LIM = C.LIM;
@@ -75,11 +76,11 @@
     function inicio() {
       app.innerHTML = "";
       app.append(
-        el("p", { class: "subtitle", text: "Crea preguntas para tus alumnos y compártelas con un enlace o un archivo. Ellos responden en la app y te mandan su código de resultado." }),
+        el("p", { class: "subtitle", text: "Crea tus propias preguntas y compártelas con un enlace o un archivo. Quien las responda en la app te puede mandar su código de resultado." }),
         el("div", { class: "cards" },
           tarjeta("✏️", "Crear o editar", "Arma las preguntas y compártelas.", () => editor(cargarBorrador())),
           tarjeta("📂", "Abrir un archivo", "Abre un .quiz.json para editarlo o probarlo.", abrirArchivo),
-          tarjeta("📊", "Ver un resultado", "Pega el código que te mandó un alumno.", verResultado)),
+          tarjeta("📊", "Ver un resultado", "Pega el código que te mandó quien respondió.", verResultado)),
       );
     }
     function tarjeta(icon, titulo, texto, onclick) {
@@ -123,7 +124,7 @@
     }
 
     const NUEVA = {
-      opcion: () => ({ tipo: "opcion", texto: "", codigo: "", explicacion: "", opciones: ["", "", ""], correcta: 0 }),
+      opcion: () => ({ tipo: "opcion", texto: "", codigo: "", explicacion: "", opciones: ["", "", "", ""], correcta: 0 }),
       vf: () => ({ tipo: "vf", texto: "", codigo: "", explicacion: "", correcta: true }),
       corta: () => ({ tipo: "corta", texto: "", codigo: "", explicacion: "", correcta: "" }),
     };
@@ -135,7 +136,7 @@
       const head = el("div", { class: "panel" },
         el("label", { class: "field" }, "Título", el("input", { type: "text", class: "wide", value: quiz.titulo, maxlength: LIM.titulo,
           oninput: (e) => { quiz.titulo = e.target.value; save(); } })),
-        el("label", { class: "field", style: "margin-top:8px" }, "Indicaciones para los alumnos (opcional)",
+        el("label", { class: "field", style: "margin-top:8px" }, "Indicaciones para quien responda (opcional)",
           el("textarea", { rows: 2, maxlength: LIM.texto, oninput: (e) => { quiz.descripcion = e.target.value; save(); } }, quiz.descripcion)),
         el("label", { class: "row", style: "margin-top:8px" },
           el("input", Object.assign({ type: "checkbox", onchange: (e) => { quiz.mostrarRespuestas = e.target.checked; save(); } }, quiz.mostrarRespuestas ? { checked: "" } : {})),
@@ -226,7 +227,7 @@
       const datos = await C.comprimir(JSON.stringify(C.sanitizar(quiz)));
       if (datos.length > LIM.enlace) return Tools.toast("Es demasiado grande para un enlace: usa el archivo");
       await Tools.copy(appUrl() + "#quiz=" + datos);
-      Tools.toast("Enlace copiado: compártelo con tus alumnos");
+      Tools.toast("Enlace copiado: compártelo");
     }
     function descargar(quiz) {
       const p = problemas(quiz);
@@ -243,7 +244,7 @@
       const input = el("textarea", { rows: 3, placeholder: "3DPIT-..." });
       const out = el("div", { style: "margin-top:12px" });
       app.append(el("div", { class: "panel" },
-        el("label", { class: "field" }, "Pega el código de resultado que te mandó el alumno", input),
+        el("label", { class: "field" }, "Pega el código de resultado que te mandaron", input),
         el("div", { class: "row", style: "margin-top:8px" },
           el("button", { class: "primary", text: "Ver", onclick: async () => {
             out.innerHTML = "";
@@ -259,7 +260,7 @@
                 el("p", { class: "muted", text: `${C.str(r.titulo, LIM.titulo)} · ${C.str(r.fecha, 20).replace("T", " ")}` }),
                 el("h2", { style: "margin:0", text: C.str(r.nombre, LIM.nombre) || "(sin nombre)" }),
                 el("div", { class: "score", text: `${Number(r.puntos) | 0} / ${Number(r.total) | 0}` }), lista,
-                el("p", { class: "hint", text: "El código lo genera el navegador del alumno: sirve para revisar, pero no es a prueba de trampas." })));
+                el("p", { class: "hint", text: "El código lo genera el navegador de quien respondió: sirve para revisar, pero no es a prueba de trampas." })));
             } catch (_) {
               out.append(el("p", { text: "⚠️ El código no es válido o está incompleto." }));
             }

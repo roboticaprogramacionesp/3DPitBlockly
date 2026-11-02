@@ -171,7 +171,8 @@
   font-family: 'Consolas', 'Courier New', monospace;
   font-size: 14px;
   color: #c8d8ff;
-  z-index: 9001;
+  /* Encima del recorrido de bienvenida (.tutorial-overlay, z 9999), que si no la tapa. */
+  z-index: 10001;
 }
 #coco-panel[data-minimized="1"] { max-height: unset; overflow: hidden; }
 #coco-panel[data-minimized="1"] .ts-header { border-radius: 8px; border-bottom: none; }

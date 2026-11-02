@@ -4,10 +4,11 @@
    guiado (clases .ts-* de tutorial-steps.css y _tsMakeDraggable).
 
    - Lista de cuestionarios de la app (coco-data.js) con el mejor puntaje.
-   - Cuestionarios de docentes: por enlace (#quiz=...) o archivo
-     .quiz.json; piden el nombre y al final dan un código de resultado.
-   - El editor para docentes y "Ver un resultado" están en
-     🛠 Herramientas (static/tools/quiz.html).
+   - Cuestionarios compartidos (los puede crear cualquiera): por enlace
+     (#quiz=...) o archivo .quiz.json; piden el nombre y al final dan un
+     código de resultado para quien lo compartió.
+   - El editor y "Ver un resultado" están en 🛠 Herramientas
+     (static/tools/quiz.html).
    Agregar DESPUÉS de tutorial-steps.js, tools-panel.js, coco-core.js y
    coco-data.js.
 ══════════════════════════════════════════════════════════════ */
@@ -77,7 +78,8 @@ const EchaleCoco = (() => {
       if (min) panel.removeAttribute("data-minimized");
       else panel.setAttribute("data-minimized", "1");
       panel.querySelector("#coco-collapsible").style.display = min ? "" : "none";
-      panel.querySelector("#coco-min").textContent = min ? "−" : "+";
+      // Igual que el tutorial guiado: □ para restaurar, − para minimizar.
+      panel.querySelector("#coco-min").textContent = min ? "−" : "□";
     };
     if (typeof _tsMakeDraggable === "function") _tsMakeDraggable(panel);
   }
@@ -125,10 +127,10 @@ const EchaleCoco = (() => {
     body.append(
       el("p", { class: "ts-step-desc", text: "Responde preguntas cortas sobre lo que has programado. ¡Échale coco! 🥥" }),
       lista,
-      el("p", { class: "ts-step-desc coco-teacher", text: "¿Tu docente te mandó un archivo .quiz.json? Ábrelo aquí:" }));
+      el("p", { class: "ts-step-desc coco-teacher", text: "¿Te compartieron un cuestionario en un archivo .quiz.json? Ábrelo aquí:" }));
     pie(
       boton("📂 Abrir archivo", "ts-btn-sec", abrirArchivo),
-      boton("✏️ Crear (docentes)", "ts-btn-sec", () => window.ToolsPanel && window.ToolsPanel.open("quiz.html")));
+      boton("✏️ Crear cuestionario", "ts-btn-sec", () => window.ToolsPanel && window.ToolsPanel.open("quiz.html")));
   }
 
   function abrirArchivo() {
@@ -138,7 +140,7 @@ const EchaleCoco = (() => {
       if (!f) return;
       try {
         if (f.size > C.LIM.bytes) throw new Error("grande");
-        responder(C.sanitizar(JSON.parse(await f.text())), { docente: true });
+        responder(C.sanitizar(JSON.parse(await f.text())), { compartido: true });
       } catch (_) {
         aviso("Ese archivo no es un cuestionario válido de 3DPit.");
       }
@@ -157,7 +159,7 @@ const EchaleCoco = (() => {
 
   // ── Responder ──
   // opts.id: cuestionario de la app (se guarda el mejor puntaje).
-  // opts.docente: viene de un docente (pide nombre y da código de resultado).
+  // opts.compartido: lo compartió alguien (pide nombre y da código de resultado).
   function responder(quiz, opts) {
     opts = opts || {};
     if (!quiz.preguntas.length) return aviso("Este cuestionario no tiene preguntas.");
@@ -166,7 +168,7 @@ const EchaleCoco = (() => {
     const respuestas = new Array(quiz.preguntas.length).fill(null);
     let nombre = "";
 
-    if (opts.docente) {
+    if (opts.compartido) {
       progreso(0, 0);
       progressTxt.textContent = `${quiz.preguntas.length} preguntas`;
       body.innerHTML = "";
@@ -178,7 +180,11 @@ const EchaleCoco = (() => {
         if (!nombre) return input.focus();
         pregunta(0);
       };
-      input.onkeydown = (e) => e.key === "Enter" && empezar();
+      // Ojo: un onkeydown que devuelve false cancela la tecla (no se podría
+      // escribir); por eso va con llaves y sin devolver nada.
+      input.onkeydown = (e) => {
+        if (e.key === "Enter") empezar();
+      };
       pie(boton("← Temas", "ts-btn-sec", abrir), boton("Empezar →", "ts-btn-primary", empezar));
       setTimeout(() => input.focus(), 50);
     } else {
@@ -201,11 +207,23 @@ const EchaleCoco = (() => {
       if (q.tipo === "corta") {
         const input = el("input", { type: "text", class: "coco-input", maxlength: C.LIM.respuesta, placeholder: "Tu respuesta" });
         input.oninput = () => { elegida = input.value; siguiente.disabled = !elegida.trim(); };
-        input.onkeydown = (e) => e.key === "Enter" && !siguiente.disabled && siguiente.click();
+        input.onkeydown = (e) => {
+          if (e.key === "Enter" && !siguiente.disabled) siguiente.click();
+        };
         opciones.appendChild(input);
         setTimeout(() => input.focus(), 50);
       } else {
         const lista = q.tipo === "vf" ? [[true, "Verdadero"], [false, "Falso"]] : q.opciones.map((o, k) => [k, o]);
+        // En los temas de la app se mezcla el orden cada vez, para que la
+        // correcta no quede siempre en el mismo lugar. Los cuestionarios
+        // compartidos respetan el orden de quien los creó (puede haber
+        // opciones como "todas las anteriores").
+        if (opts.id && q.tipo === "opcion") {
+          for (let a = lista.length - 1; a > 0; a--) {
+            const b = Math.floor(Math.random() * (a + 1));
+            [lista[a], lista[b]] = [lista[b], lista[a]];
+          }
+        }
         lista.forEach(([v, label]) => {
           const b = el("button", { class: "coco-opt" }, C.rich(label));
           b.onclick = () => {
@@ -264,10 +282,10 @@ const EchaleCoco = (() => {
         el("h3", { text: `${puntos} de ${total}` }),
         el("p", { text: (nombre ? nombre + ": " : "") + frase })), repaso);
 
-      if (opts.docente) {
+      if (opts.compartido) {
         const codigo = el("pre", { class: "coco-code", text: "Generando…" });
-        body.append(el("p", { class: "ts-step-title", text: "Código para tu docente" }), codigo,
-          el("p", { class: "ts-step-desc", text: "Cópialo y mándaselo a tu docente (por chat, correo o en un documento)." }));
+        body.append(el("p", { class: "ts-step-title", text: "Código de resultado" }), codigo,
+          el("p", { class: "ts-step-desc", text: "Cópialo y mándaselo a quien te compartió el cuestionario (por chat, correo o en un documento)." }));
         pie(boton("↻ Otra vez", "ts-btn-sec", () => responder(quiz, opts)), boton("📋 Copiar código", "ts-btn-primary", () => copiar(codigo.textContent)));
         if (!C.soportaEnlace) { codigo.textContent = `${nombre}: ${puntos}/${total}`; return; }
         const resultado = {
@@ -289,7 +307,7 @@ const EchaleCoco = (() => {
     } catch (_) {}
   }
 
-  // ── Enlace del docente: #quiz=... ──
+  // ── Enlace compartido: #quiz=... ──
   // El dato va en el fragmento (#), que nunca se manda a un servidor, y se
   // quita de la barra de direcciones para que no quede al recargar.
   async function desdeEnlace() {
@@ -298,11 +316,11 @@ const EchaleCoco = (() => {
     try {
       history.replaceState(null, "", location.pathname + location.search);
     } catch (_) {}
-    if (!C.soportaEnlace) return aviso("Este navegador no puede abrir enlaces de cuestionario. Pídele a tu docente el archivo .quiz.json.");
+    if (!C.soportaEnlace) return aviso("Este navegador no puede abrir enlaces de cuestionario. Pide el archivo .quiz.json.");
     try {
-      responder(C.sanitizar(JSON.parse(await C.descomprimir(h.slice(6)))), { docente: true });
+      responder(C.sanitizar(JSON.parse(await C.descomprimir(h.slice(6)))), { compartido: true });
     } catch (_) {
-      aviso("El enlace del cuestionario no es válido o está dañado. Pídele a tu docente que lo vuelva a copiar, o el archivo .quiz.json.");
+      aviso("El enlace del cuestionario no es válido o está dañado. Pide que lo vuelvan a copiar, o el archivo .quiz.json.");
     }
   }
   desdeEnlace();

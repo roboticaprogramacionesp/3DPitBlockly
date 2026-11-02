@@ -172,7 +172,7 @@
     if (e.origin !== location.origin || e.source !== frame.contentWindow) return;
     const data = e.data || {};
     // ¡Échale coco! (static/coco.js): la lista de temas, o responder un
-    // cuestionario del docente (se vuelve a validar en la app).
+    // cuestionario compartido (se vuelve a validar en la app).
     if (data.type === "3dpit-coco-open" && window.EchaleCoco) {
       close();
       window.EchaleCoco.abrir();
@@ -181,7 +181,7 @@
     if (data.type === "3dpit-coco-start" && window.EchaleCoco && window.CocoCore) {
       close();
       try {
-        window.EchaleCoco.responder(window.CocoCore.sanitizar(data.quiz), { docente: true });
+        window.EchaleCoco.responder(window.CocoCore.sanitizar(data.quiz), { compartido: true });
       } catch (_) {}
       return;
     }

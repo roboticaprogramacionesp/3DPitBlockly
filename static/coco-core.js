@@ -1,7 +1,7 @@
 /* ══════════════════════════════════════════════════════════════
    coco-core.js — Lo común de "¡Échale coco!" (preguntas para reforzar
    lo aprendido): lo usan la ventana flotante de la app (static/coco.js)
-   y el editor para docentes (static/tools/quiz.html).
+   y el editor de cuestionarios (static/tools/quiz.html).
 
    SEGURIDAD: un cuestionario compartido por enlace o archivo, y un
    código de resultado, son contenido NO confiable. sanitizar()
