@@ -87,6 +87,11 @@ const DEL_SIMULADOR = [
     nota: "Usa un pin analógico (34, 35, 36 o 39): esos pines solo leen.",
   },
   {
+    archivo: "ky-022", titulo: "Receptor Infrarrojo (KY-022)", tutoriales: ["ir_ky022"], simulador: "control_remoto_ky-022.json",
+    nombresPin: { "ky-022.vcc": "+ (centro)", "ky-022.gnd": "−" },
+    nota: "El lente negro debe apuntar hacia el control remoto.",
+  },
+  {
     archivo: "dht11", titulo: "DHT11 — Temperatura y Humedad", tutoriales: ["dht11"], simulador: "dht11.json",
     nota: "Si usas el sensor sin placa (4 patas), pon una resistencia de 10 kΩ entre DATA y 3V3.",
   },
@@ -146,12 +151,6 @@ module.exports = [
     ],
     conexiones: [["u.vcc", "5V"], ["u.trig", "IO12"], ["u.echo", "IO13"], ["u.gnd", "GND"], ["t.touch", "IO4"]],
     nota: "Pon el sensor arriba mirando hacia el piso. Toca el aluminio para medir.",
-  },
-  {
-    archivo: "ky-022", titulo: "Receptor Infrarrojo (KY-022)", tutoriales: ["ir_ky022"],
-    modulos: [{ id: "r", tipo: "ky-022", etiqueta: "KY-022", material: "Receptor infrarrojo KY-022 + control" }],
-    conexiones: [["r.s", "IO16"], ["r.vcc", "3V3"], ["r.gnd", "GND"]],
-    nota: "El lente negro debe apuntar hacia el control remoto.",
   },
   {
     archivo: "encoder_ky040", titulo: "Encoder Rotatorio (KY-040)", tutoriales: ["encoder_rotatorio"],

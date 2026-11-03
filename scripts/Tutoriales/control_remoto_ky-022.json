@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "timestamp": 1793680919149,
+  "timestamp": 1793684183015,
   "components": [
     {
       "id": "esp32_wroom_5t2j5ur",
@@ -41,30 +41,30 @@
   ],
   "wires": [
     {
-      "id": "wire_zl05ceb",
+      "id": "wire_csexefz",
       "from": {
         "componentId": "ky-022_cun5lhj",
-        "pinId": "s"
+        "pinId": "gnd"
       },
       "to": {
         "componentId": "esp32_wroom_5t2j5ur",
-        "pinId": "gnd_1"
+        "pinId": "gnd_2"
       },
       "points": [
         {
           "x": 588.608417254612,
-          "y": 440.0608408719481
+          "y": 443.2878654854853
         },
         {
-          "x": 426.28,
-          "y": 440.0608408719481
+          "x": 436.28,
+          "y": 443.2878654854853
         }
       ],
       "color": "#1a1a1a",
-      "connectorType": "hembra-macho"
+      "connectorType": "hembra-hembra"
     },
     {
-      "id": "wire_y4wluow",
+      "id": "wire_ii5aoa0",
       "from": {
         "componentId": "esp32_wroom_5t2j5ur",
         "pinId": "3v3"
@@ -76,46 +76,46 @@
       "points": [
         {
           "x": 406.28,
-          "y": 452.47926714685644
+          "y": 458.16945078198944
         },
         {
           "x": 597.648417254612,
-          "y": 452.47926714685644
+          "y": 458.16945078198944
         }
       ],
       "color": "#ff5252",
-      "connectorType": "hembra-macho"
+      "connectorType": "hembra-hembra"
     },
     {
-      "id": "wire_rjzq83v",
+      "id": "wire_5pdvu4z",
       "from": {
+        "componentId": "ky-022_cun5lhj",
+        "pinId": "s"
+      },
+      "to": {
         "componentId": "esp32_wroom_5t2j5ur",
         "pinId": "io16"
       },
-      "to": {
-        "componentId": "ky-022_cun5lhj",
-        "pinId": "gnd"
-      },
       "points": [
         {
-          "x": 466.28,
-          "y": 208.1669105768031
-        },
-        {
-          "x": 631.7771097168313,
-          "y": 208.1669105768031
-        },
-        {
-          "x": 631.7771097168313,
-          "y": 319.60925308282424
-        },
-        {
           "x": 606.648417254612,
-          "y": 319.60925308282424
+          "y": 319.61676009039934
+        },
+        {
+          "x": 633.487834360554,
+          "y": 319.61676009039934
+        },
+        {
+          "x": 633.487834360554,
+          "y": 209.2877656507998
+        },
+        {
+          "x": 466.28,
+          "y": 209.2877656507998
         }
       ],
       "color": "#f2994a",
-      "connectorType": "hembra-macho"
+      "connectorType": "hembra-hembra"
     }
   ],
   "annotations": []
