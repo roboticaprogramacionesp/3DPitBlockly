@@ -655,7 +655,8 @@ function etiquetaExtremo(E, id, piezas, def) {
 }
 
 // Bornes de tornillo o terminales sin pin (llevan cable con punta macho).
-const BORNES = { l298n: /^(out|power_)/, motor: /./, battery_18650: /./, bocina: /./, touch: /./ };
+// (los teclados matriciales traen conector hembra, así que también van con macho)
+const BORNES = { l298n: /^(out|power_)/, motor: /./, battery_18650: /./, bocina: /./, touch: /./, keypad4x4: /./, keypad3x4: /./ };
 function puntaCable(p, id) {
   if (p.esPlaca) return "macho";
   const b = BORNES[p.comp.tipo];
