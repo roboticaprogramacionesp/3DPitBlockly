@@ -16,6 +16,7 @@ const fs = require("fs");
 const path = require("path");
 const { componente } = require("./componentes");
 const DIAGRAMAS = require("./diagramas");
+const LOGO = "data:image/png;base64," + fs.readFileSync(path.join(__dirname, "logo.png")).toString("base64");
 
 const SALIDA = process.env.SALIDA_CONEXIONES || path.join(__dirname, "..", "..", "static", "img", "conexiones");
 
@@ -205,7 +206,7 @@ function aEstrella(G, a, da, b, db, bit, cruce = false) {
       let extra = 0;
       if (!libre(nc)) {
         if (!cruce || G.obst[nc]) continue;
-        extra = 40;
+        extra = 4;
       }
       const ns = nc * 4 + nd, ng = gs + 1 + extra + (nd === d ? 0 : VUELTA);
       if (G.sello[ns] === sello && G.g[ns] <= ng) continue;
@@ -375,12 +376,9 @@ function trazar(G, piezas, cons, orden, r, permitirCruce = true) {
   const cables = [];
   for (const c of orden.filter((c) => validas.includes(c))) {
     const [ea, eb, ca, cb] = salidas.get(c);
-    let res = aEstrella(G, ca, ea.dir, cb, (eb.dir + 2) & 3, bits.get(c));
-    let cruza = false;
-    if (!res && permitirCruce) {
-      res = aEstrella(G, ca, ea.dir, cb, (eb.dir + 2) & 3, bits.get(c), true);
-      if (res) { cruza = true; costo += 1500; }
-    }
+    // Un cable puede cruzar por encima de otro (en línea recta, con un
+    // costo extra para preferir no hacerlo), pero nunca pasar sobre una pieza.
+    const res = aEstrella(G, ca, ea.dir, cb, (eb.dir + 2) & 3, bits.get(c), permitirCruce);
     if (!res) {
       fallas++; costo += 5000;
       if (process.env.DEBUG) console.log("   falla", c.A.clave + "." + (c.A.id || c.A.grupo), "→", c.B.clave + "." + (c.B.id || c.B.grupo), "libres:", !G.obst[ca] && !(G.mask[ca] & ~bits.get(c)), !G.obst[cb] && !(G.mask[cb] & ~bits.get(c)));
@@ -390,7 +388,7 @@ function trazar(G, piezas, cons, orden, r, permitirCruce = true) {
     costo += res.costo;
     const medio = esquinas(G, res.celdas);
     const puntos = ea.tramo.concat(medio.slice(1, -1), eb.tramo.slice().reverse());
-    cables.push({ con: c, puntos: limpiarPuntos(puntos), pinA: asign.get(c)[0], pinB: asign.get(c)[1], cruza });
+    cables.push({ con: c, puntos: limpiarPuntos(puntos), pinA: asign.get(c)[0], pinB: asign.get(c)[1] });
   }
   return { cables, costo, fallas };
 }
@@ -558,7 +556,9 @@ function dibujar(def, piezas, trazo, cons) {
   svg += `<rect width="${W}" height="78" fill="#1e2a5a"/>`;
   svg += `<text x="28" y="40" font-size="28" font-weight="700" fill="#ffffff">${esc(def.titulo)}</text>`;
   svg += `<text x="28" y="64" font-size="15" fill="#aab8ff">Conexiones eléctricas · ESP32 WeMos D1 R32</text>`;
-  svg += `<text x="${W - 28}" y="44" font-size="16" font-weight="700" fill="#ffd43b" text-anchor="end">3DPit Blocks</text>`;
+  // Logo 3DP!t (el mismo del reporte del simulador), sobre una placa blanca.
+  svg += `<rect x="${W - 176}" y="14" width="150" height="50" rx="10" fill="#ffffff"/>`;
+  svg += `<image x="${W - 166}" y="20" width="130" height="38" preserveAspectRatio="xMidYMid meet" href="${LOGO}" xlink:href="${LOGO}"/>`;
   svg += `<rect x="${AX - 8}" y="${AY - 8}" width="${AW + 16}" height="${AH + 16}" rx="12" fill="#f4f6fb" stroke="#dde3f0"/>`;
 
   svg += `<g transform="translate(${f(ox)},${f(oy)}) scale(${f(S)})">`;
@@ -571,23 +571,9 @@ function dibujar(def, piezas, trazo, cons) {
   for (const c of trazo.cables) {
     usados.push([c.puntos[0], c.con.color], [c.puntos[c.puntos.length - 1], c.con.color]);
   }
-  // Cables: contorno oscuro + color
+  // Cables con el mismo trazo que el simulador (una línea de 2.3, esquinas redondeadas).
   for (const c of trazo.cables) {
-    const d = caminoRedondeado(c.puntos);
-    svg += `<path d="${d}" fill="none" stroke="${c.con.color === COLOR_GND ? "#868e96" : "#1a1a1a"}" stroke-opacity="0.55" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round"/>`;
-    svg += `<path d="${d}" fill="none" stroke="${c.con.color}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>`;
-  }
-  // Puente: el cable que tuvo que cruzar pasa por encima con un arquito.
-  for (const c of trazo.cables.filter((k) => k.cruza)) {
-    for (const o of trazo.cables) {
-      if (o === c) continue;
-      for (const [x, y, horiz] of cruces(c.puntos, o.puntos)) {
-        const [a, b] = horiz ? [[x - 6, y], [x + 6, y]] : [[x, y - 6], [x, y + 6]];
-        svg += `<path d="M${f(a[0])} ${f(a[1])} L${f(b[0])} ${f(b[1])}" stroke="#f4f6fb" stroke-width="7"/>`;
-        const arco = `M${f(a[0])} ${f(a[1])} A6 6 0 0 ${horiz ? 1 : 0} ${f(b[0])} ${f(b[1])}`;
-        svg += `<path d="${arco}" fill="none" stroke="#1a1a1a" stroke-opacity="0.55" stroke-width="3.6"/><path d="${arco}" fill="none" stroke="${c.con.color}" stroke-width="2.4"/>`;
-      }
-    }
+    svg += `<path d="${caminoRedondeado(c.puntos)}" fill="none" stroke="${c.con.color}" stroke-width="2.3" stroke-linejoin="round" stroke-linecap="round"/>`;
   }
   for (const [[x, y], color] of usados) {
     svg += `<circle cx="${f(x)}" cy="${f(y)}" r="2.4" fill="${color}" stroke="#ffffff" stroke-width="0.8"/>`;
@@ -608,9 +594,18 @@ function dibujar(def, piezas, trazo, cons) {
         `<text x="0" y="2.1" text-anchor="middle" font-size="5.6" font-weight="700" fill="${c.con.color === "#fab005" ? "#212529" : "#ffffff"}">${nombre}</text></g>`;
     }
   }
-  // Notas en el dibujo (p. ej. "LED integrado")
+  // Notas en el dibujo (p. ej. "Emisor" / "Receptor")
   for (const n of def.etiquetas || []) {
     svg += `<text x="${BX + n[0]}" y="${BY + n[1]}" font-size="${n[3] || 8}" font-weight="700" fill="#1e2a5a" text-anchor="middle">${esc(n[2])}</text>`;
+  }
+  // Marcas junto a un módulo (p. ej. la polaridad del LED): [x, y, texto, tamaño, color]
+  for (const m of def.modulos || []) {
+    const p = piezas.find((q) => q.clave === m.id);
+    for (const [mx, my, t, tam = 6, color = "#1e2a5a"] of m.marcas || []) {
+      const x = p.x + mx * p.s, y = p.y + my * p.s;
+      svg += `<circle cx="${f(x)}" cy="${f(y - tam * 0.35)}" r="${f(tam * 0.62)}" fill="#ffffff" stroke="${color}" stroke-width="0.8"/>`;
+      svg += `<text x="${f(x)}" y="${f(y)}" font-size="${tam}" font-weight="700" fill="${color}" text-anchor="middle">${esc(t)}</text>`;
+    }
   }
   svg += `</g>`;
 
@@ -650,24 +645,6 @@ function dibujar(def, piezas, trazo, cons) {
   return svg + `</svg>`;
 }
 
-// Puntos donde se cruzan dos cables (tramos perpendiculares).
-function cruces(p, q) {
-  const out = [];
-  for (let i = 1; i < p.length; i++) {
-    const [a, b] = [p[i - 1], p[i]];
-    const hp = Math.abs(a[1] - b[1]) < 0.01;
-    for (let j = 1; j < q.length; j++) {
-      const [c, d] = [q[j - 1], q[j]];
-      const hq = Math.abs(c[1] - d[1]) < 0.01;
-      if (hp === hq) continue;
-      const [H1, H2, V1, V2] = hp ? [a, b, c, d] : [c, d, a, b];
-      const x = V1[0], y = H1[1];
-      if (x > Math.min(H1[0], H2[0]) + 1 && x < Math.max(H1[0], H2[0]) - 1 && y > Math.min(V1[1], V2[1]) + 1 && y < Math.max(V1[1], V2[1]) - 1) out.push([x, y, hp]);
-    }
-  }
-  return out;
-}
-
 function etiquetaExtremo(E, id, piezas, def) {
   const p = piezas.find((q) => q.clave === E.clave);
   if (p.esPlaca) return (piezas.filter((q) => q.esPlaca).length > 1 ? "ESP32 " : "") + nombrePinPlaca(id);
@@ -675,6 +652,14 @@ function etiquetaExtremo(E, id, piezas, def) {
   const corto = mod.etiqueta || p.comp.nombre;
   const pinNombre = (def.nombresPin && def.nombresPin[E.clave + "." + E.id]) || E.nombre;
   return `${corto} ${pinNombre}`;
+}
+
+// Bornes de tornillo o terminales sin pin (llevan cable con punta macho).
+const BORNES = { l298n: /^(out|power_)/, motor: /./, battery_18650: /./, bocina: /./, touch: /./ };
+function puntaCable(p, id) {
+  if (p.esPlaca) return "macho";
+  const b = BORNES[p.comp.tipo];
+  return b && b.test(id) ? "macho" : "hembra";
 }
 
 function material(def, piezas, trazo) {
@@ -691,8 +676,17 @@ function material(def, piezas, trazo) {
   const res = {};
   for (const c of trazo.cables) if (c.con.op.r) res[c.con.op.r] = (res[c.con.op.r] || 0) + 1;
   for (const [v, k] of Object.entries(res)) out.push(`${k} resistencia${k > 1 ? "s" : ""} de ${v}`);
-  const dupont = trazo.cables.filter((c) => !c.con.op.ocultar).length;
-  if (dupont) out.push(`${dupont} cables dupont`);
+  // Tipo de cable: la D1 R32 tiene conector hembra (lleva punta macho), los
+  // módulos traen pines macho (llevan punta hembra) y los bornes de
+  // tornillo, punta macho.
+  const tipos = {};
+  for (const c of trazo.cables) {
+    if (c.con.op.ocultar) continue;
+    const puntas = [[c.con.A, c.pinA], [c.con.B, c.pinB]].map(([E, id]) => puntaCable(piezas.find((q) => q.clave === E.clave), id)).sort();
+    const t = puntas[0] === puntas[1] ? `${puntas[0]}-${puntas[1]}` : "macho-hembra";
+    tipos[t] = (tipos[t] || 0) + 1;
+  }
+  for (const [t, k] of Object.entries(tipos)) out.push(`${k} cable${k > 1 ? "s" : ""} dupont ${t}`);
   for (const m of def.material || []) out.push(m);
   return out;
 }

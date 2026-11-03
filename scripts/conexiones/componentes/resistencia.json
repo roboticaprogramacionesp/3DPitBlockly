@@ -1,0 +1,22 @@
+{
+    "type": "resistencia",
+    "name": "Resistencia",
+    "category": "Componentes básicos",
+
+    "width": 49,
+    "height": 10.79,
+
+    "svgPath": "components/resistencia/resistencia.svg",
+
+    "pinShape": "square",
+    "pinSize": 2.8,
+
+    "pins": [
+        { "id": "term1", "name": "Terminal 1", "x": 1.14,  "y": 5.39, "type": "signal" },
+        { "id": "term2", "name": "Terminal 2", "x": 47.87, "y": 5.39, "type": "signal" }
+    ],
+
+    "properties": {
+        "ohms": 220
+    }
+}

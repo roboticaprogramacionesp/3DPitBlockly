@@ -21,10 +21,15 @@ module.exports = [
   // ── LEDs y salidas ──
   {
     archivo: "led", titulo: "LED", tutoriales: ["led_basico", "led_infinito", "wifi_ntfy_led"],
-    modulos: [{ id: "l", tipo: "led", etiqueta: "LED", material: "LED (opcional, el ESP32 trae uno en IO2)" }],
-    conexiones: [["l.anodo", "IO2", { r: "220 Ω", color: "#f08c00" }], ["l.catodo", "GND"]],
-    nombresPin: { "l.anodo": "+ (pata larga)", "l.catodo": "− (pata corta)" },
-    nota: "La placa ya trae un LED en IO2: no hace falta conectar nada. El LED externo es opcional.",
+    modulos: [
+      // Polaridad: + ánodo (pata larga) y − cátodo (pata corta, lado plano).
+      { id: "l", tipo: "led", etiqueta: "LED", material: "LED (opcional, el ESP32 trae uno en IO2)",
+        pos: [150, 262], marcas: [[29, 30, "+", 11, "#e03131"], [-9, 30, "−", 11, "#1c7ed6"]] },
+      { id: "r", tipo: "resistencia", etiqueta: "Resistencia", material: "Resistencia de 220 Ω", dir: { term1: 2, term2: 0 }, pos: [196, 316] },
+    ],
+    conexiones: [["l.anodo", "r.term1", { color: "#f08c00" }], ["r.term2", "IO2", { color: "#f08c00" }], ["l.catodo", "GND"]],
+    nombresPin: { "l.anodo": "+ ánodo (pata larga)", "l.catodo": "− cátodo (pata corta)", "r.term1": "pata 1", "r.term2": "pata 2" },
+    nota: "La placa ya trae un LED en IO2: no hace falta conectar nada. Para uno externo cuida la polaridad: la pata larga (+) va hacia la resistencia y la corta (−, lado plano) a GND.",
   },
   {
     archivo: "semaforo", titulo: "Semáforo", tutoriales: ["semaforo"],
@@ -33,10 +38,9 @@ module.exports = [
   },
   {
     archivo: "boton", titulo: "Botón", tutoriales: ["boton"],
-    modulos: [{ id: "b", tipo: "switch", etiqueta: "Botón", material: "Botón pulsador" }],
-    conexiones: [["b.term1", "IO12"], ["b.term2", "GND"]],
-    nombresPin: { "b.term1": "pata 1", "b.term2": "pata 2" },
-    nota: "Usa el modo PULL_UP: el pin lee 0 cuando presionas el botón.",
+    modulos: [{ id: "b", tipo: "ky_004", etiqueta: "KY-004", material: "Módulo botón KY-004" }],
+    conexiones: [["b.senal", "IO12"], ["b.vcc", "3V3"], ["b.gnd", "GND"]],
+    nota: "Usa el modo PULL_UP: el pin lee 0 cuando presionas el botón. Alimenta el módulo con 3V3, no con 5V.",
   },
   {
     archivo: "buzzer", titulo: "Buzzer", tutoriales: ["buzzer"],

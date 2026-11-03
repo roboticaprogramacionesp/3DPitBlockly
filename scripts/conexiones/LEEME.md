@@ -52,10 +52,14 @@ Los diagramas anteriores están en `static/img/conexiones_anteriores/`.
 
 4. Sube `CACHE_NAME` en `service-worker.js` y regenera `static/file-list.json`.
 
-## Cruces
+## Cables
 
-Cuando el orden de los pines del módulo es distinto al de la placa (por
-ejemplo SCL/SDA en algunas pantallas I2C) es imposible unirlos sin cruzar
-algún cable. En ese caso el generador permite el menor número de cruces y los
-dibuja como un puente (el cable pasa por encima con un arquito), para que se
-vea que no se tocan.
+- Se dibujan como en el simulador (una línea de color, esquinas redondeadas).
+- Un cable puede cruzar por encima de otro (el generador lo evita si hay un
+  camino parecido), pero nunca pasa por encima de la tarjeta ni de un módulo.
+- El Material dice el tipo de cable de cada conexión: la D1 R32 tiene
+  conector hembra (punta **macho**), los módulos y las patas de LED o
+  resistencia son pines macho (punta **hembra**) y los bornes de tornillo
+  llevan punta **macho** (lista `BORNES` en `generar.js`).
+- `marcas: [[x, y, "+", tamaño, color]]` en un módulo pone una marca junto a
+  él (se usa para la polaridad del LED).

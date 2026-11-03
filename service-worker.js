@@ -1,10 +1,10 @@
-/* ============================================================
-   Service Worker — 3DPit Blocks PWA
+﻿/* ============================================================
+   Service Worker â€” 3DPit Blocks PWA
    ============================================================ */
 
-const CACHE_NAME = '3dpit-blocks-v95';
+const CACHE_NAME = '3dpit-blocks-v96';
 
-/* ── INSTALL ── */
+/* â”€â”€ INSTALL â”€â”€ */
 self.addEventListener('install', event => {
   event.waitUntil(
     fetch('./static/file-list.json')
@@ -99,18 +99,18 @@ self.addEventListener('install', event => {
           './static/codeMirror/dracula.css',
           './static/codeMirror/codemirror.js',
           './static/codeMirror/lang-python.js',
-          /* Imágenes y media desde file-list.json */
+          /* ImÃ¡genes y media desde file-list.json */
           ...dynamicFiles
         ];
 
         return caches.open(CACHE_NAME).then(cache =>
           Promise.allSettled(
             allFiles.map(url =>
-              /* cache.add() usa la caché HTTP del navegador, que a veces ya
+              /* cache.add() usa la cachÃ© HTTP del navegador, que a veces ya
                  tiene guardada una respuesta 206 (Partial Content) para este
-                 mismo archivo — típico en audio/video que se pidió antes con
-                 Range. La Cache API no acepta 206, así que forzamos una
-                 petición de red completa ({cache:'reload'}) y solo guardamos
+                 mismo archivo â€” tÃ­pico en audio/video que se pidiÃ³ antes con
+                 Range. La Cache API no acepta 206, asÃ­ que forzamos una
+                 peticiÃ³n de red completa ({cache:'reload'}) y solo guardamos
                  si la respuesta es un 200 normal. */
               fetch(url, { cache: 'reload' })
                 .then(response => {
@@ -132,7 +132,7 @@ self.addEventListener('install', event => {
   );
 });
 
-/* ── ACTIVATE ── */
+/* â”€â”€ ACTIVATE â”€â”€ */
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys =>
@@ -145,7 +145,7 @@ self.addEventListener('activate', event => {
   );
 });
 
-/* ── FETCH: Cache-first, red como respaldo ── */
+/* â”€â”€ FETCH: Cache-first, red como respaldo â”€â”€ */
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
 
@@ -159,10 +159,10 @@ self.addEventListener('fetch', event => {
       return fetch(event.request)
         .then(response => {
           /* GitHub Pages manda los 404 con Cache-Control: max-age=600, y el
-             navegador los reusa 10 minutos: si una imagen se pidió justo
+             navegador los reusa 10 minutos: si una imagen se pidiÃ³ justo
              mientras se publicaba un cambio (archivo nuevo o renombrado),
-             seguía "rota" aunque ya existiera. Se vuelve a pedir una vez
-             saltando la caché HTTP. */
+             seguÃ­a "rota" aunque ya existiera. Se vuelve a pedir una vez
+             saltando la cachÃ© HTTP. */
           if (response && response.status === 404 && event.request.destination === 'image') {
             return fetch(event.request, { cache: 'reload' });
           }
