@@ -1,0 +1,283 @@
+{
+  "version": "1.0",
+  "timestamp": 1793668347492,
+  "components": [
+    {
+      "id": "esp32_wroom_7pxrowu",
+      "type": "esp32_wroom",
+      "name": "ESP32 WeMos D1 R32",
+      "x": 320,
+      "y": 180,
+      "width": 276.28,
+      "height": 210,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "mcu": "ESP32-WROOM-32",
+        "voltaje_operacion": 3.3,
+        "flash_mb": 4,
+        "isPowerSource": true,
+        "macAddress": "B7:E5:BA:0E:7C:4C"
+      },
+      "locked": false
+    },
+    {
+      "id": "28byj_q3lc999",
+      "type": "28byj",
+      "name": "28BYJ-48 Motor Paso a Paso + Driver ULN2003",
+      "x": 640.7231406946552,
+      "y": 166.30295300409333,
+      "width": 300,
+      "height": 175,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "modelo": "28BYJ-48 (motor paso a paso unipolar de 5 hilos) + driver ULN2003, entrada 5-12V. El motor viene pre-cableado de fábrica al driver (conector JST de 5 hilos) -- solo se cablean IN1-IN4 (a GPIOs digitales) y VCC/GND (5-12V)."
+      },
+      "locked": false
+    },
+    {
+      "id": "battery_18650_ylj9zrh",
+      "type": "battery_18650",
+      "name": "Batería 18650 (portapilas x2)",
+      "x": 339.6694233896106,
+      "y": 413.0578501974737,
+      "width": 217.1906,
+      "height": 113.38971,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "modelo": "2x pilas 18650 en serie (~7.4V nominal)",
+        "voltaje": 7.4,
+        "celdas": 2,
+        "isPowerSource": true
+      },
+      "locked": false
+    },
+    {
+      "id": "switch_1jpipww",
+      "type": "switch",
+      "name": "Interruptor ON/OFF",
+      "x": 605.8718016950146,
+      "y": 435.1025568087775,
+      "width": 40,
+      "height": 26,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "modelo": "Interruptor de palanca ON/OFF (clic para cambiar de estado; queda fijo, no es momentáneo)"
+      },
+      "locked": false
+    }
+  ],
+  "wires": [
+    {
+      "id": "wire_opkdshe",
+      "from": {
+        "componentId": "esp32_wroom_7pxrowu",
+        "pinId": "io26"
+      },
+      "to": {
+        "componentId": "28byj_q3lc999",
+        "pinId": "in1"
+      },
+      "points": [
+        {
+          "x": 563.4896590983776,
+          "y": 170.55510290749703
+        },
+        {
+          "x": 638.9473402797789,
+          "y": 170.55510290749703
+        },
+        {
+          "x": 638.9473402797789,
+          "y": 239.86295300409333
+        }
+      ],
+      "color": "#ff66cc",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_jtr50ah",
+      "from": {
+        "componentId": "28byj_q3lc999",
+        "pinId": "in2"
+      },
+      "to": {
+        "componentId": "esp32_wroom_7pxrowu",
+        "pinId": "io25"
+      },
+      "points": [
+        {
+          "x": 628.7689980232458,
+          "y": 249.92295300409333
+        },
+        {
+          "x": 628.7689980232458,
+          "y": 158.680370274875
+        },
+        {
+          "x": 546.1199951171875,
+          "y": 158.680370274875
+        },
+        {
+          "x": 546.1199951171875,
+          "y": 190
+        }
+      ],
+      "color": "#4da3ff",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_jyflji9",
+      "from": {
+        "componentId": "28byj_q3lc999",
+        "pinId": "in3"
+      },
+      "to": {
+        "componentId": "esp32_wroom_7pxrowu",
+        "pinId": "io17"
+      },
+      "points": [
+        {
+          "x": 617.3699951171875,
+          "y": 259.9729530040933
+        },
+        {
+          "x": 617.3699951171875,
+          "y": 142.98875929605308
+        },
+        {
+          "x": 536.1199951171875,
+          "y": 142.98875929605308
+        },
+        {
+          "x": 536.1199951171875,
+          "y": 190
+        }
+      ],
+      "color": "#bb86fc",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_nrj9crv",
+      "from": {
+        "componentId": "28byj_q3lc999",
+        "pinId": "in4"
+      },
+      "to": {
+        "componentId": "esp32_wroom_7pxrowu",
+        "pinId": "io16"
+      },
+      "points": [
+        {
+          "x": 604.5954351639796,
+          "y": 270.0329530040933
+        },
+        {
+          "x": 604.5954351639796,
+          "y": 128.99353869331998
+        },
+        {
+          "x": 525.8699951171875,
+          "y": 128.99353869331998
+        },
+        {
+          "x": 525.8699951171875,
+          "y": 190
+        }
+      ],
+      "color": "#2ecc71",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_djto0be",
+      "from": {
+        "componentId": "battery_18650_ylj9zrh",
+        "pinId": "vcc"
+      },
+      "to": {
+        "componentId": "switch_1jpipww",
+        "pinId": "term1"
+      },
+      "points": [],
+      "color": "#ff5252",
+      "connectorType": "macho-macho"
+    },
+    {
+      "id": "wire_vvufcxd",
+      "from": {
+        "componentId": "switch_1jpipww",
+        "pinId": "term2"
+      },
+      "to": {
+        "componentId": "28byj_q3lc999",
+        "pinId": "vcc"
+      },
+      "points": [
+        {
+          "x": 694.2381055977996,
+          "y": 457.1025568087775
+        },
+        {
+          "x": 694.2381055977996,
+          "y": 320.37295300409335
+        }
+      ],
+      "color": "#ff5252",
+      "connectorType": "macho-macho"
+    },
+    {
+      "id": "wire_aemxgvn",
+      "from": {
+        "componentId": "battery_18650_ylj9zrh",
+        "pinId": "gnd"
+      },
+      "to": {
+        "componentId": "28byj_q3lc999",
+        "pinId": "gnd"
+      },
+      "points": [
+        {
+          "x": 684.4945205598788,
+          "y": 473.8531081974737
+        },
+        {
+          "x": 684.4945205598788,
+          "y": 320.37295300409335
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "macho-macho"
+    },
+    {
+      "id": "wire_8ghr8bq",
+      "from": {
+        "componentId": "esp32_wroom_7pxrowu",
+        "pinId": "gnd_2"
+      },
+      "to": {
+        "componentId": "28byj_q3lc999",
+        "pinId": "gnd"
+      },
+      "points": [
+        {
+          "x": 496.28,
+          "y": 401.00292460593784
+        },
+        {
+          "x": 683.9531406946552,
+          "y": 401.00292460593784
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "macho-macho"
+    }
+  ],
+  "annotations": []
+}

@@ -63,3 +63,11 @@ Los diagramas anteriores están en `static/img/conexiones_anteriores/`.
   llevan punta **macho** (lista `BORNES` en `generar.js`).
 - `marcas: [[x, y, "+", tamaño, color]]` en un módulo pone una marca junto a
   él (se usa para la polaridad del LED).
+
+## Diagramas armados en el simulador
+
+Si el circuito se arma en 3DPitSimu y se guarda en `scripts/Tutoriales/`
+(con el nombre del tutorial), en `diagramas.js` basta poner
+`simulador: "archivo.json"` (lista `DEL_SIMULADOR`): se respetan las piezas,
+su lugar y giro, y el recorrido, color y tipo de cada cable; el generador
+solo agrega los pines resaltados, la tabla, el material y la nota.

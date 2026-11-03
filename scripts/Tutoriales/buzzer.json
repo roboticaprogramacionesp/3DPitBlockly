@@ -1,0 +1,100 @@
+{
+  "version": "1.0",
+  "timestamp": 1793667161401,
+  "components": [
+    {
+      "id": "esp32_wroom_l1vpipc",
+      "type": "esp32_wroom",
+      "name": "ESP32 WeMos D1 R32",
+      "x": 260,
+      "y": 100,
+      "width": 276.28,
+      "height": 210,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "mcu": "ESP32-WROOM-32",
+        "voltaje_operacion": 3.3,
+        "flash_mb": 4,
+        "isPowerSource": true,
+        "macAddress": "1F:C5:B8:BB:91:1F"
+      },
+      "locked": false
+    },
+    {
+      "id": "buzzer_2mab5q0",
+      "type": "buzzer",
+      "name": "Buzzer Piezo Pasivo (KY-006)",
+      "x": 567.1710471581861,
+      "y": 103.06578224880565,
+      "width": 56.694,
+      "height": 65,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "modelo": "Buzzer piezo PASIVO (necesita PWM -- freq()/duty() -- para sonar, a diferencia de uno activo)",
+        "nota": "Suena de verdad en el navegador (Web Audio API) mientras el firmware mantenga el PWM activo en el pin S. Compatible con rtttl.py/songs.py tal cual: from machine import Pin, PWM; PWM(pin, freq=440, duty=512)."
+      },
+      "locked": false
+    }
+  ],
+  "wires": [
+    {
+      "id": "wire_tcu00w0",
+      "from": {
+        "componentId": "buzzer_2mab5q0",
+        "pinId": "s"
+      },
+      "to": {
+        "componentId": "esp32_wroom_l1vpipc",
+        "pinId": "io12"
+      },
+      "points": [
+        {
+          "x": 581.9110471581861,
+          "y": 181.99212480510212
+        },
+        {
+          "x": 549.3869073661358,
+          "y": 181.99212480510212
+        },
+        {
+          "x": 549.3869073661358,
+          "y": 87.57103188935184
+        },
+        {
+          "x": 430.28,
+          "y": 87.57103188935184
+        }
+      ],
+      "color": "#f2994a",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_fozborh",
+      "from": {
+        "componentId": "buzzer_2mab5q0",
+        "pinId": "gnd"
+      },
+      "to": {
+        "componentId": "esp32_wroom_l1vpipc",
+        "pinId": "gnd_2"
+      },
+      "points": [
+        {
+          "x": 609.125047158186,
+          "y": 318.492183042002
+        },
+        {
+          "x": 436.28,
+          "y": 318.492183042002
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "hembra-macho"
+    }
+  ],
+  "annotations": []
+}

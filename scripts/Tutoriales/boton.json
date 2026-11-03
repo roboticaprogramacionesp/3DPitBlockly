@@ -1,0 +1,120 @@
+{
+  "version": "1.0",
+  "timestamp": 1793666953666,
+  "components": [
+    {
+      "id": "esp32_wroom_a2m2txh",
+      "type": "esp32_wroom",
+      "name": "ESP32 WeMos D1 R32",
+      "x": 340,
+      "y": 260,
+      "width": 276.28,
+      "height": 210,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "mcu": "ESP32-WROOM-32",
+        "voltaje_operacion": 3.3,
+        "flash_mb": 4,
+        "isPowerSource": true,
+        "macAddress": "C4:8F:53:F4:B6:97"
+      },
+      "locked": false
+    },
+    {
+      "id": "ky_004_b1szs6d",
+      "type": "ky_004",
+      "name": "KY-004 Botón",
+      "x": 648.1460476466784,
+      "y": 267.82498646955565,
+      "width": 56.694,
+      "height": 89.736,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {},
+      "locked": false
+    }
+  ],
+  "wires": [
+    {
+      "id": "wire_50q529l",
+      "from": {
+        "componentId": "esp32_wroom_a2m2txh",
+        "pinId": "io12"
+      },
+      "to": {
+        "componentId": "ky_004_b1szs6d",
+        "pinId": "senal"
+      },
+      "points": [
+        {
+          "x": 510.28,
+          "y": 241.2213199111142
+        },
+        {
+          "x": 627.9226436883756,
+          "y": 241.2213199111142
+        },
+        {
+          "x": 627.9226436883756,
+          "y": 376.04195459323535
+        },
+        {
+          "x": 667.1010476466785,
+          "y": 376.04195459323535
+        }
+      ],
+      "color": "#f2994a",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_oky0x6h",
+      "from": {
+        "componentId": "ky_004_b1szs6d",
+        "pinId": "vcc"
+      },
+      "to": {
+        "componentId": "esp32_wroom_a2m2txh",
+        "pinId": "3v3"
+      },
+      "points": [
+        {
+          "x": 676.7010476466784,
+          "y": 488.4702204894013
+        },
+        {
+          "x": 486.28,
+          "y": 488.4702204894013
+        }
+      ],
+      "color": "#ff5252",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_qh8wxal",
+      "from": {
+        "componentId": "esp32_wroom_a2m2txh",
+        "pinId": "gnd_2"
+      },
+      "to": {
+        "componentId": "ky_004_b1szs6d",
+        "pinId": "gnd"
+      },
+      "points": [
+        {
+          "x": 516.28,
+          "y": 476.8075358283181
+        },
+        {
+          "x": 686.3120476466784,
+          "y": 476.8075358283181
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "hembra-macho"
+    }
+  ],
+  "annotations": []
+}

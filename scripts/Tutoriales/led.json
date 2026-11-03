@@ -1,0 +1,123 @@
+{
+  "version": "1.0",
+  "timestamp": 1793666428637,
+  "components": [
+    {
+      "id": "esp32_wroom_njt9xvf",
+      "type": "esp32_wroom",
+      "name": "ESP32 WeMos D1 R32",
+      "x": 400,
+      "y": 150,
+      "width": 276.28,
+      "height": 210,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "mcu": "ESP32-WROOM-32",
+        "voltaje_operacion": 3.3,
+        "flash_mb": 4,
+        "isPowerSource": true,
+        "macAddress": "15:45:38:73:09:5D"
+      },
+      "locked": false
+    },
+    {
+      "id": "led_yz0q05d",
+      "type": "led",
+      "name": "LED",
+      "x": 701.9368345092242,
+      "y": 245.32367803874467,
+      "width": 20.6,
+      "height": 39.49,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "voltaje_directo": 2,
+        "corriente_ma": 20,
+        "color": "#e60000"
+      },
+      "locked": false
+    },
+    {
+      "id": "resistencia_r21r381",
+      "type": "resistencia",
+      "name": "Resistencia",
+      "x": 658.3036096239111,
+      "y": 385.86995323535507,
+      "width": 49,
+      "height": 10.79,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "ohms": 220
+      },
+      "locked": false
+    }
+  ],
+  "wires": [
+    {
+      "id": "wire_ztna6nb",
+      "from": {
+        "componentId": "resistencia_r21r381",
+        "pinId": "term2"
+      },
+      "to": {
+        "componentId": "led_yz0q05d",
+        "pinId": "anodo"
+      },
+      "points": [
+        {
+          "x": 717.2917606256856,
+          "y": 391.25995323535506
+        },
+        {
+          "x": 717.2917606256856,
+          "y": 284.8136780387447
+        }
+      ],
+      "color": "#f2994a",
+      "connectorType": "hembra-hembra"
+    },
+    {
+      "id": "wire_ryo915c",
+      "from": {
+        "componentId": "resistencia_r21r381",
+        "pinId": "term1"
+      },
+      "to": {
+        "componentId": "esp32_wroom_njt9xvf",
+        "pinId": "io2"
+      },
+      "points": [],
+      "color": "#f2c94c",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_cq2infe",
+      "from": {
+        "componentId": "esp32_wroom_njt9xvf",
+        "pinId": "gnd_2"
+      },
+      "to": {
+        "componentId": "led_yz0q05d",
+        "pinId": "catodo"
+      },
+      "points": [
+        {
+          "x": 576.28,
+          "y": 376.72671590857385
+        },
+        {
+          "x": 706.6468345092243,
+          "y": 376.72671590857385
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "hembra-hembra"
+    }
+  ],
+  "annotations": []
+}

@@ -1,0 +1,114 @@
+{
+  "version": "1.0",
+  "timestamp": 1793666830851,
+  "components": [
+    {
+      "id": "esp32_wroom_0lgb2kx",
+      "type": "esp32_wroom",
+      "name": "ESP32 WeMos D1 R32",
+      "x": 240,
+      "y": 140,
+      "width": 276.28,
+      "height": 210,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "mcu": "ESP32-WROOM-32",
+        "voltaje_operacion": 3.3,
+        "flash_mb": 4,
+        "isPowerSource": true,
+        "macAddress": "BD:28:F4:C3:67:88"
+      },
+      "locked": false
+    },
+    {
+      "id": "neopixel_ring_by66xey",
+      "type": "neopixel_ring",
+      "name": "Anillo de NeoPixel",
+      "x": 531,
+      "y": 176,
+      "width": 124.72226013779195,
+      "height": 124.72226013779195,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "count": 8
+      },
+      "locked": false
+    }
+  ],
+  "wires": [
+    {
+      "id": "wire_vgeicsz",
+      "from": {
+        "componentId": "esp32_wroom_0lgb2kx",
+        "pinId": "io4"
+      },
+      "to": {
+        "componentId": "neopixel_ring_by66xey",
+        "pinId": "din"
+      },
+      "points": [
+        {
+          "x": 456.28,
+          "y": 361.2009463385217
+        },
+        {
+          "x": 593.3611300688959,
+          "y": 361.2009463385217
+        }
+      ],
+      "color": "#26c6da",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_5apdbbt",
+      "from": {
+        "componentId": "esp32_wroom_0lgb2kx",
+        "pinId": "gnd_2"
+      },
+      "to": {
+        "componentId": "neopixel_ring_by66xey",
+        "pinId": "gnd"
+      },
+      "points": [
+        {
+          "x": 416.28,
+          "y": 370.9976014538315
+        },
+        {
+          "x": 577.5751721465932,
+          "y": 370.9976014538315
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_2zacwt9",
+      "from": {
+        "componentId": "esp32_wroom_0lgb2kx",
+        "pinId": "5v_2"
+      },
+      "to": {
+        "componentId": "neopixel_ring_by66xey",
+        "pinId": "vcc"
+      },
+      "points": [
+        {
+          "x": 396.28,
+          "y": 380.3065147953225
+        },
+        {
+          "x": 609.1470879911988,
+          "y": 380.3065147953225
+        }
+      ],
+      "color": "#ff5252",
+      "connectorType": "hembra-macho"
+    }
+  ],
+  "annotations": []
+}

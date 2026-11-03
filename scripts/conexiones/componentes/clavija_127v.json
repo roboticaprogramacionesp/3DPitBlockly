@@ -1,0 +1,24 @@
+{
+    "type": "clavija_127v",
+    "name": "Clavija 127V (Toma de corriente)",
+    "category": "Alimentación",
+
+    "width": 60,
+    "height": 60,
+
+    "svgPath": "components/clavija_127v/clavija_127v.svg",
+
+    "pinShape": "square",
+    "pinSize": 6,
+
+    "pins": [
+        { "id": "fase",   "name": "Fase (127V)", "x": 24, "y": 55, "type": "power",  "signal": "power", "voltage": 127 },
+        { "id": "neutro", "name": "Neutro",      "x": 36, "y": 55, "type": "ground", "signal": "ground" }
+    ],
+
+    "properties": {
+        "modelo": "Toma de corriente de pared, 127V AC (tipo A, 2 patas) -- fuente de alimentación real, como la batería",
+        "isPowerSource": true,
+        "voltaje": 127
+    }
+}

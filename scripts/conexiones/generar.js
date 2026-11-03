@@ -56,7 +56,21 @@ const esc = (t) => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replac
 
 // ── Piezas en el plano ──
 // pieza: { clave, comp, s (escala), x, y }  →  rectángulo y pines en el mundo
-function rect(p) { return { x: p.x, y: p.y, w: p.comp.w * p.s, h: p.comp.h * p.s }; }
+function rect(p) {
+  if (!p.rot) return { x: p.x, y: p.y, w: p.comp.w * p.s, h: p.comp.h * p.s };
+  // Girada (las que vienen del simulador): caja de las 4 esquinas.
+  const esq = [[0, 0], [p.comp.w, 0], [0, p.comp.h], [p.comp.w, p.comp.h]].map(([x, y]) => posSim(p, x, y));
+  const xs = esq.map((e) => e.x), ys = esq.map((e) => e.y);
+  return { x: Math.min(...xs), y: Math.min(...ys), w: Math.max(...xs) - Math.min(...xs), h: Math.max(...ys) - Math.min(...ys) };
+}
+
+// Posición en el plano de un punto (x, y) de la pieza, igual que
+// Component.getPinPosition() del simulador (espejo, escala y giro).
+function posSim(p, x, y) {
+  const lx = (p.flip ? p.comp.w - x : x) * p.s, ly = y * p.s;
+  const a = ((p.rot || 0) * Math.PI) / 180, c = Math.cos(a), s = Math.sin(a);
+  return { x: p.x + lx * c - ly * s, y: p.y + lx * s + ly * c };
+}
 
 function pin(p, id) {
   const q = p.comp.pines.find((k) => k.id === id);
@@ -564,7 +578,9 @@ function dibujar(def, piezas, trazo, cons) {
   svg += `<g transform="translate(${f(ox)},${f(oy)}) scale(${f(S)})">`;
   // Piezas
   for (const p of piezas) {
-    svg += `<g transform="translate(${f(p.x)},${f(p.y)}) scale(${f(p.s)})">${p.comp.dibujo(p.clave + "_")}</g>`;
+    // Mismo transform que Component.updateTransform() del simulador.
+    const espejo = p.flip ? `translate(${f(p.comp.w * p.s)},0) scale(${f(-p.s)},${f(p.s)})` : `scale(${f(p.s)})`;
+    svg += `<g transform="translate(${f(p.x)},${f(p.y)})${p.rot ? ` rotate(${p.rot})` : ""} ${espejo}">${p.comp.dibujo(p.clave + "_")}</g>`;
   }
   // Pines usados (resaltados)
   const usados = [];
@@ -680,14 +696,24 @@ function material(def, piezas, trazo) {
   // Tipo de cable: la D1 R32 tiene conector hembra (lleva punta macho), los
   // módulos traen pines macho (llevan punta hembra) y los bornes de
   // tornillo, punta macho.
+  // (en los diagramas del simulador manda el tipo que se eligió en cada cable)
   const tipos = {};
+  let electrico = 0;
   for (const c of trazo.cables) {
     if (c.con.op.ocultar) continue;
-    const puntas = [[c.con.A, c.pinA], [c.con.B, c.pinB]].map(([E, id]) => puntaCable(piezas.find((q) => q.clave === E.clave), id)).sort();
-    const t = puntas[0] === puntas[1] ? `${puntas[0]}-${puntas[1]}` : "macho-hembra";
+    const pzs = [c.con.A, c.con.B].map((E) => piezas.find((q) => q.clave === E.clave));
+    if (pzs.some((p) => p.comp.tipo === "clavija_127v" || p.comp.tipo === "bombillo")) { electrico++; continue; }
+    let t;
+    if (c.con.op.tipoCable) {
+      t = c.con.op.tipoCable.split("-").sort().reverse().join("-");
+    } else {
+      const puntas = [[c.con.A, c.pinA], [c.con.B, c.pinB]].map(([E, id], k) => puntaCable(pzs[k], id)).sort();
+      t = puntas[0] === puntas[1] ? `${puntas[0]}-${puntas[1]}` : "macho-hembra";
+    }
     tipos[t] = (tipos[t] || 0) + 1;
   }
   for (const [t, k] of Object.entries(tipos)) out.push(`${k} cable${k > 1 ? "s" : ""} dupont ${t}`);
+  if (electrico) out.push(`${electrico} tramos de cable eléctrico (127 V)`);
   for (const m of def.material || []) out.push(m);
   return out;
 }
@@ -702,8 +728,81 @@ function partir(texto, ancho) {
   return out;
 }
 
+// ── Diagramas armados en el simulador (scripts/Tutoriales/*.json) ──
+// Se respetan tal cual las piezas, su lugar y giro, y el recorrido y color de
+// cada cable; aquí solo se agrega lo de los diagramas (pines resaltados,
+// tabla, material y nota).
+const TUTORIALES_SIM = path.join(__dirname, "..", "Tutoriales");
+// Nombre corto (tabla) y nombre en el material de cada tipo de pieza.
+const NOMBRES_SIM = {
+  led: ["LED", "LED"], resistencia: ["Resistencia", "Resistencia"], ky_004: ["KY-004", "Módulo botón KY-004"],
+  buzzer: ["Buzzer", "Buzzer pasivo"], neopixel_ring: ["NeoPixel", "Anillo NeoPixel"], "28byj": ["ULN2003", "Motor 28BYJ-48 con driver ULN2003"],
+  battery_18650: ["Batería", "Portapilas 2×18650 (7.4 V)"], switch: ["Interruptor", "Interruptor ON/OFF"], l298n: ["L298N", "Puente H L298N"],
+  motor: ["Motor", "Motor DC con reductora"], "ky-019": ["Relevador", "Módulo relevador KY-019"], clavija_127v: ["Clavija", "Clavija para toma de 127 V"],
+  bombillo: ["Foco", "Foco con socket"], semaforo: ["Semáforo", "Módulo semáforo"], tcrt5000: ["Sensor IR", "Sensor infrarrojo TCRT5000"], sg90: ["Servo", "Servo SG90"],
+};
+
+function desdeSimulador(def) {
+  const proy = JSON.parse(fs.readFileSync(path.join(TUTORIALES_SIM, def.simulador), "utf8"));
+  const placa = proy.components.find((c) => c.type === "esp32_wroom");
+  const piezas = proy.components.map((c) => {
+    const esPlaca = c === placa;
+    return { clave: esPlaca ? "esp" : c.id, comp: componente(c.type), s: c.scale || 1, x: c.x, y: c.y, rot: c.rotation || 0, flip: !!c.flipX, esPlaca, fija: true };
+  });
+  // Módulos con nombre corto; si hay dos iguales se numeran (Motor A, Motor B).
+  const vistos = {};
+  const modulos = proy.components.filter((c) => c !== placa).map((c) => {
+    const [corto, mat] = NOMBRES_SIM[c.type] || [c.name, c.name];
+    const igual = proy.components.filter((o) => o.type === c.type).length;
+    vistos[c.type] = (vistos[c.type] || 0) + 1;
+    const ohm = c.type === "resistencia" && c.properties && c.properties.ohms;
+    return {
+      id: c.id, tipo: c.type,
+      etiqueta: igual > 1 ? `${corto} ${String.fromCharCode(64 + vistos[c.type])}` : corto,
+      material: ohm ? `${mat} de ${ohm >= 1000 ? ohm / 1000 + " kΩ" : ohm + " Ω"}` : mat,
+      marcas: (def.marcas || {})[c.type],
+    };
+  });
+  // nombresPin por tipo ("led.anodo") → por pieza
+  const nombresPin = {};
+  for (const m of modulos) for (const [k, v] of Object.entries(def.nombresPin || {})) if (k.startsWith(m.tipo + ".")) nombresPin[m.id + k.slice(m.tipo.length)] = v;
+  const def2 = { ...def, modulos, nombresPin };
+  const porId = Object.fromEntries(proy.components.map((c, i) => [c.id, piezas[i]]));
+  const cables = proy.wires.map((w, i) => {
+    const pa = porId[w.from.componentId], pb = porId[w.to.componentId];
+    const fin = (p, id) => {
+      const q = p.comp.pines.find((k) => k.id === id);
+      if (!q) throw new Error(`${def.simulador}: ${p.comp.tipo} no tiene el pin "${id}"`);
+      return { q, pos: posSim(p, q.x, q.y) };
+    };
+    const a = fin(pa, w.from.pinId), b = fin(pb, w.to.pinId);
+    // Mismo trazo que Utils.buildOrthogonalPoints() del simulador.
+    const ancla = [a.pos, ...(w.points || []).filter((p) => Number.isFinite(p.x) && Number.isFinite(p.y)), b.pos];
+    const puntos = [[ancla[0].x, ancla[0].y]];
+    for (let k = 1; k < ancla.length; k++) {
+      const [px, py] = puntos[puntos.length - 1], n = ancla[k];
+      const dx = n.x - px, dy = n.y - py;
+      if (Math.abs(dx) < 0.01 && Math.abs(dy) < 0.01) continue;
+      if (Math.abs(dx) >= 0.01 && Math.abs(dy) >= 0.01) puntos.push(Math.abs(dx) >= Math.abs(dy) ? [n.x, py] : [px, n.y]);
+      puntos.push([n.x, n.y]);
+    }
+    const E = (p, id, q) => ({ clave: p.clave, id, nombre: q.nombre });
+    return {
+      con: { i, A: E(pa, w.from.pinId, a.q), B: E(pb, w.to.pinId, b.q), color: w.color || "#f08c00", op: { tipoCable: w.connectorType } },
+      puntos, pinA: w.from.pinId, pinB: w.to.pinId,
+    };
+  });
+  return { def: def2, piezas, trazo: { cables, costo: 0, fallas: 0 } };
+}
+
 // ── Principal ──
 function generar(def) {
+  if (def.simulador) {
+    const r = desdeSimulador(def);
+    const svg = dibujar(r.def, r.piezas, r.trazo, []);
+    fs.writeFileSync(path.join(SALIDA, def.archivo + ".svg"), svg);
+    return { kb: Math.round(svg.length / 1024), cables: r.trazo.cables.length, fallas: 0 };
+  }
   const piezas = prepararPiezas(def);
   const cons = resolverConexiones(def, piezas);
   const G = crearRejilla(BX - 340, BY - 330, BX + 276 + 340 + (def.placas > 1 ? 340 : 0), BY + 210 + 330);

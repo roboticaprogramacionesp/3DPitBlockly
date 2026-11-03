@@ -17,51 +17,62 @@ const USB = { color: "#495057", ocultar: true };
 const PC = { id: "pc", tipo: "pc", etiqueta: "PC", sinMaterial: true };
 const SOLO_PLACA = "No necesitas conectar módulos: conecta la placa a la computadora con el cable USB.";
 
-module.exports = [
-  // ── LEDs y salidas ──
+// Armados en el simulador 3DPitSimu (scripts/Tutoriales/*.json): se respetan
+// tal cual las piezas, su lugar y los cables; nombresPin y marcas van por
+// tipo de pieza ("led.anodo").
+const DEL_SIMULADOR = [
   {
-    archivo: "led", titulo: "LED", tutoriales: ["led_basico", "led_infinito", "wifi_ntfy_led"],
-    modulos: [
-      // Polaridad: + ánodo (pata larga) y − cátodo (pata corta, lado plano).
-      { id: "l", tipo: "led", etiqueta: "LED", material: "LED (opcional, el ESP32 trae uno en IO2)",
-        pos: [150, 262], marcas: [[29, 30, "+", 11, "#e03131"], [-9, 30, "−", 11, "#1c7ed6"]] },
-      { id: "r", tipo: "resistencia", etiqueta: "Resistencia", material: "Resistencia de 220 Ω", dir: { term1: 2, term2: 0 }, pos: [196, 316] },
-    ],
-    conexiones: [["l.anodo", "r.term1", { color: "#f08c00" }], ["r.term2", "IO2", { color: "#f08c00" }], ["l.catodo", "GND"]],
-    nombresPin: { "l.anodo": "+ ánodo (pata larga)", "l.catodo": "− cátodo (pata corta)", "r.term1": "pata 1", "r.term2": "pata 2" },
+    archivo: "led", titulo: "LED", tutoriales: ["led_basico", "led_infinito", "wifi_ntfy_led"], simulador: "led.json",
+    marcas: { led: [[29, 30, "+", 11, "#e03131"], [-9, 30, "−", 11, "#1c7ed6"]] },
+    nombresPin: { "led.anodo": "+ ánodo (pata larga)", "led.catodo": "− cátodo (pata corta)", "resistencia.term1": "pata 1", "resistencia.term2": "pata 2" },
     nota: "La placa ya trae un LED en IO2: no hace falta conectar nada. Para uno externo cuida la polaridad: la pata larga (+) va hacia la resistencia y la corta (−, lado plano) a GND.",
   },
   {
-    archivo: "semaforo", titulo: "Semáforo", tutoriales: ["semaforo"],
-    modulos: [{ id: "t", tipo: "semaforo_kit", etiqueta: "Semáforo", material: "Módulo semáforo" }],
-    conexiones: [["t.r", "IO23", { color: "#e03131" }], ["t.y", "IO19", { color: "#fab005" }], ["t.g", "IO18", { color: "#2f9e44" }], ["t.gnd", "GND"]],
+    archivo: "semaforo", titulo: "Semáforo", tutoriales: ["semaforo"], simulador: "semaforo.json",
+    nota: "Cada luz ya trae su resistencia en el módulo. El pin GND (−) es común a las tres luces.",
   },
   {
-    archivo: "boton", titulo: "Botón", tutoriales: ["boton"],
-    modulos: [{ id: "b", tipo: "ky_004", etiqueta: "KY-004", material: "Módulo botón KY-004" }],
-    conexiones: [["b.senal", "IO12"], ["b.vcc", "3V3"], ["b.gnd", "GND"]],
+    archivo: "boton", titulo: "Botón (KY-004)", tutoriales: ["boton"], simulador: "boton.json",
     nota: "Usa el modo PULL_UP: el pin lee 0 cuando presionas el botón. Alimenta el módulo con 3V3, no con 5V.",
   },
   {
-    archivo: "buzzer", titulo: "Buzzer", tutoriales: ["buzzer"],
-    modulos: [{ id: "z", tipo: "buzzer", etiqueta: "Buzzer", material: "Buzzer" }],
-    conexiones: [["z.s", "IO12"], ["z.gnd", "GND"]],
-    nombresPin: { "z.s": "S (+)", "z.gnd": "−" },
-    nota: "Un buzzer activo suena con on/off; uno pasivo necesita una nota (PWM).",
+    archivo: "buzzer", titulo: "Buzzer", tutoriales: ["buzzer"], simulador: "buzzer.json",
+    nombresPin: { "buzzer.s": "S (señal)", "buzzer.gnd": "−" },
+    nota: "Es un buzzer pasivo: necesita una nota (PWM) para sonar; con solo encenderlo el pin no suena.",
   },
   {
-    archivo: "servo", titulo: "Servo Motor", tutoriales: ["servo"],
-    modulos: [{ id: "m", tipo: "sg90", etiqueta: "Servo", material: "Servo SG90" }],
-    conexiones: [["m.signal", "IO13", { color: "#f08c00" }], ["m.vcc", "5V"], ["m.gnd", "GND", { color: "#795548" }]],
-    nombresPin: { "m.signal": "naranja (señal)", "m.vcc": "rojo", "m.gnd": "café" },
-    nota: "Si el servo vibra sin moverse, aliméntalo con 5V externos y une los GND.",
+    archivo: "servo", titulo: "Servo Motor", tutoriales: ["servo"], simulador: "servo.json",
+    nombresPin: { "sg90.signal": "naranja (señal)", "sg90.vcc": "rojo (+)", "sg90.gnd": "café (−)" },
+    nota: "El conector del servo es hembra: usa cables macho-macho. Si vibra sin moverse, aliméntalo con 5V externos y une los GND.",
   },
   {
-    archivo: "neopixel", titulo: "NeoPixel RGB", tutoriales: ["neopixel_basico"],
-    modulos: [{ id: "n", tipo: "neopixel_ring", etiqueta: "NeoPixel", material: "Anillo / tira NeoPixel" }],
-    conexiones: [["n.vcc", "5V"], ["n.din", "IO4"], ["n.gnd", "GND"]],
+    archivo: "neopixel", titulo: "NeoPixel RGB", tutoriales: ["neopixel_basico"], simulador: "neopixel.json",
     nota: "Con más de 8 LEDs a brillo alto usa una fuente de 5V externa y une los GND.",
   },
+  {
+    archivo: "stepper", titulo: "Motor Paso a Paso (28BYJ-48)", tutoriales: ["stepper_motor"], simulador: "motor_a_pasos.json",
+    nota: "El motor se alimenta de las pilas, con el interruptor para apagarlo; une el GND de las pilas con el del ESP32.",
+  },
+  {
+    archivo: "puente_h", titulo: "Puente H — Motores DC", tutoriales: ["puente_h"], simulador: "puenteH.json",
+    nombresPin: { "l298n.power_gnd": "GND", "l298n.power_12v": "+12V", "battery_18650.vcc": "+", "battery_18650.gnd": "−" },
+    nota: "No alimentes los motores desde el ESP32: usa las pilas (con su interruptor) y une su GND con el del ESP32.",
+  },
+  {
+    archivo: "relevador", titulo: "Relevador (Relay)", tutoriales: ["relevador"], simulador: "relevador.json",
+    nombresPin: { "clavija_127v.fase": "fase", "clavija_127v.neutro": "neutro", "bombillo.p1": "terminal 1", "bombillo.p2": "terminal 2" },
+    nota: "¡Cuidado, 127 V! Arma la parte del foco desconectada y con ayuda de un adulto. Del lado del ESP32 todo es de bajo voltaje.",
+  },
+  {
+    archivo: "infrarrojo", titulo: "Sensor Infrarrojo — Detectar Línea", tutoriales: ["infrarrojo_basico"], simulador: "sensor_ir.json",
+    nombresPin: { "tcrt5000.do": "OUT (DO)", "tcrt5000.vcc": "VCC", "tcrt5000.gnd": "GND" },
+    nota: "Gira el potenciómetro del módulo hasta que su LED cambie entre negro y blanco.",
+  },
+];
+
+module.exports = [
+  ...DEL_SIMULADOR,
+  // ── LEDs y salidas ──
   {
     archivo: "neopixel_matriz", titulo: "Matriz NeoPixel 5x5", tutoriales: ["neopixel_matriz"],
     modulos: [{ id: "n", tipo: "np5x5", etiqueta: "Matriz", material: "Matriz NeoPixel 5x5" }],
@@ -80,36 +91,7 @@ module.exports = [
     conexiones: [["e.s", "IO4"], ["e.vcc", "3V3"], ["e.gnd", "GND"]],
     nombresPin: { "e.vcc": "+", "e.gnd": "−" },
   },
-  {
-    archivo: "relevador", titulo: "Relevador (Relay)", tutoriales: ["relevador"],
-    modulos: [{ id: "r", tipo: "ky-019", etiqueta: "Relevador", material: "Módulo relevador KY-019" }],
-    conexiones: [["r.s", "IO26"], ["r.vcc", "5V"], ["r.gnd", "GND"]],
-    nota: "Del lado COM / NO / NC va la carga. ¡Cuidado con 127 V: pide ayuda a un adulto!",
-  },
   // ── Motores ──
-  {
-    archivo: "stepper", titulo: "Motor Paso a Paso (28BYJ-48)", tutoriales: ["stepper_motor"],
-    modulos: [{ id: "m", tipo: "28byj", etiqueta: "ULN2003", material: "Motor 28BYJ-48 con driver ULN2003" }],
-    conexiones: [["m.in1", "IO26"], ["m.in2", "IO25"], ["m.in3", "IO17"], ["m.in4", "IO16"], ["m.vcc", "5V"], ["m.gnd", "GND"]],
-    nota: "El motor consume bastante: mejor con una fuente de 5V externa y los GND unidos.",
-  },
-  {
-    archivo: "puente_h", titulo: "Puente H — Motores DC", tutoriales: ["puente_h"],
-    modulos: [
-      { id: "h", tipo: "l298n", etiqueta: "L298N", material: "Puente H L298N", pos: [88.28, -270] },
-      { id: "a", tipo: "motor", etiqueta: "Motor A", material: "Motor DC", pos: [-141.72, -190] },
-      { id: "b", tipo: "motor", etiqueta: "Motor B", material: "Motor DC", pos: [298.28, -210] },
-      { id: "p", tipo: "battery_18650", etiqueta: "Batería", material: "Batería (pila 18650 o 7-12 V)", pos: [-261.72, -30] },
-    ],
-    conexiones: [
-      ["h.in1", "IO26"], ["h.in2", "IO25"], ["h.in3", "IO17"], ["h.in4", "IO16"], ["h.power_gnd", "GND"],
-      ["p.vcc", "h.power_12v", { color: "#e03131" }], ["p.gnd", "h.power_gnd"],
-      ["a.pin1", "h.out1", { color: "#7048e8" }], ["a.pin2", "h.out2", { color: "#7048e8" }],
-      ["b.pin1", "h.out3", { color: "#0b7285" }], ["b.pin2", "h.out4", { color: "#0b7285" }],
-    ],
-    nombresPin: { "h.power_gnd": "GND", "h.power_12v": "+12V", "p.vcc": "+", "p.gnd": "−" },
-    nota: "No alimentes los motores desde el ESP32: usa la batería y une su GND con el del ESP32.",
-  },
   {
     archivo: "carrito", titulo: "Carrito Esquiva Obstáculos", tutoriales: ["carrito_esquiva_obstaculos"],
     modulos: [
@@ -144,13 +126,6 @@ module.exports = [
     ],
     conexiones: [["u.vcc", "5V"], ["u.trig", "IO12"], ["u.echo", "IO13"], ["u.gnd", "GND"], ["t.touch", "IO4"]],
     nota: "Pon el sensor arriba mirando hacia el piso. Toca el aluminio para medir.",
-  },
-  {
-    archivo: "infrarrojo", titulo: "Sensor Infrarrojo — Detectar Línea", tutoriales: ["infrarrojo_basico"],
-    modulos: [{ id: "s", tipo: "tcrt5000", etiqueta: "Sensor IR", material: "Sensor infrarrojo TCRT5000" }],
-    conexiones: [["s.do", "IO12"], ["s.vcc", "3V3"], ["s.gnd", "GND"]],
-    nombresPin: { "s.do": "OUT (DO)" },
-    nota: "Gira el potenciómetro del módulo hasta que su LED cambie entre negro y blanco.",
   },
   {
     archivo: "adkeypad", titulo: "Teclado Analógico (ADKey)", tutoriales: ["analogico_adkey"],

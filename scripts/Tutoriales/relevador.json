@@ -1,0 +1,218 @@
+{
+  "version": "1.0",
+  "timestamp": 1793667916759,
+  "components": [
+    {
+      "id": "esp32_wroom_3fru50n",
+      "type": "esp32_wroom",
+      "name": "ESP32 WeMos D1 R32",
+      "x": 320,
+      "y": 180,
+      "width": 276.28,
+      "height": 210,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "mcu": "ESP32-WROOM-32",
+        "voltaje_operacion": 3.3,
+        "flash_mb": 4,
+        "isPowerSource": true,
+        "macAddress": "D8:DA:2F:63:BE:EC"
+      },
+      "locked": false
+    },
+    {
+      "id": "ky-019_ix1dhra",
+      "type": "ky-019",
+      "name": "KY-019 Módulo Relevador 5V",
+      "x": 628.9723525959969,
+      "y": 262.50528310884687,
+      "width": 62.66,
+      "height": 90,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "modelo": "Keyes KY-019 (relevador 5V, 1 canal)",
+        "activeLow": true
+      },
+      "locked": false
+    },
+    {
+      "id": "clavija_127v_stke5we",
+      "type": "clavija_127v",
+      "name": "Clavija 127V (Toma de corriente)",
+      "x": 638.9571941210281,
+      "y": 167.038967790312,
+      "width": 60,
+      "height": 60,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "modelo": "Toma de corriente de pared, 127V AC (tipo A, 2 patas) -- fuente de alimentación real, como la batería",
+        "isPowerSource": true,
+        "voltaje": 127
+      },
+      "locked": false
+    },
+    {
+      "id": "bombillo_lkdb4c7",
+      "type": "bombillo",
+      "name": "Foco / Bombillo",
+      "x": 702.75,
+      "y": 166.5,
+      "width": 40,
+      "height": 61.33,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "modelo": "Foco incandescente genérico -- sin polaridad, se prende con cualquiera de los 2 terminales a alimentación y el otro a tierra (ej. a través del COM/NO de un relevador)",
+        "voltaje": 5
+      },
+      "locked": false
+    }
+  ],
+  "wires": [
+    {
+      "id": "wire_zjdnzzl",
+      "from": {
+        "componentId": "esp32_wroom_3fru50n",
+        "pinId": "io26"
+      },
+      "to": {
+        "componentId": "ky-019_ix1dhra",
+        "pinId": "s"
+      },
+      "points": [
+        {
+          "x": 556.28,
+          "y": 167.92593440861162
+        },
+        {
+          "x": 614.0539126877161,
+          "y": 167.92593440861162
+        },
+        {
+          "x": 614.0539126877161,
+          "y": 364.6480808554695
+        },
+        {
+          "x": 661.9723525959969,
+          "y": 364.6480808554695
+        }
+      ],
+      "color": "#f2994a",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_gon031j",
+      "from": {
+        "componentId": "ky-019_ix1dhra",
+        "pinId": "vcc"
+      },
+      "to": {
+        "componentId": "esp32_wroom_3fru50n",
+        "pinId": "5v_2"
+      },
+      "points": [
+        {
+          "x": 667.9723525959969,
+          "y": 410.03518193108965
+        },
+        {
+          "x": 476.28,
+          "y": 410.03518193108965
+        }
+      ],
+      "color": "#ff5252",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_y31fuft",
+      "from": {
+        "componentId": "esp32_wroom_3fru50n",
+        "pinId": "gnd_2"
+      },
+      "to": {
+        "componentId": "ky-019_ix1dhra",
+        "pinId": "gnd"
+      },
+      "points": [
+        {
+          "x": 496.28,
+          "y": 397.2243066274872
+        },
+        {
+          "x": 673.9723525959969,
+          "y": 397.2243066274872
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_fjmhl4o",
+      "from": {
+        "componentId": "ky-019_ix1dhra",
+        "pinId": "com"
+      },
+      "to": {
+        "componentId": "clavija_127v_stke5we",
+        "pinId": "fase"
+      },
+      "points": [],
+      "color": "#ff5252",
+      "connectorType": "macho-macho"
+    },
+    {
+      "id": "wire_67p7xtt",
+      "from": {
+        "componentId": "clavija_127v_stke5we",
+        "pinId": "neutro"
+      },
+      "to": {
+        "componentId": "bombillo_lkdb4c7",
+        "pinId": "p1"
+      },
+      "points": [
+        {
+          "x": 674.9571941210281,
+          "y": 235.1228485107422
+        },
+        {
+          "x": 718.75,
+          "y": 235.1228485107422
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "macho-macho"
+    },
+    {
+      "id": "wire_m1hzg35",
+      "from": {
+        "componentId": "ky-019_ix1dhra",
+        "pinId": "nc"
+      },
+      "to": {
+        "componentId": "bombillo_lkdb4c7",
+        "pinId": "p2"
+      },
+      "points": [
+        {
+          "x": 650.7723525959968,
+          "y": 246.1228485107422
+        },
+        {
+          "x": 726.75,
+          "y": 246.1228485107422
+        }
+      ],
+      "color": "#f2994a",
+      "connectorType": "macho-macho"
+    }
+  ],
+  "annotations": []
+}

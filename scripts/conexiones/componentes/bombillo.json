@@ -1,0 +1,22 @@
+{
+    "type": "bombillo",
+    "name": "Foco / Bombillo",
+
+    "width": 40,
+    "height": 61.33,
+
+    "svgPath": "components/bombillo/bombillo.svg",
+
+    "pinShape": "square",
+    "pinSize": 6,
+
+    "pins": [
+        { "id": "p1", "name": "Terminal 1", "x": 16, "y": 58.67 },
+        { "id": "p2", "name": "Terminal 2", "x": 24, "y": 58.67 }
+    ],
+
+    "properties": {
+        "modelo": "Foco incandescente genérico -- sin polaridad, se prende con cualquiera de los 2 terminales a alimentación y el otro a tierra (ej. a través del COM/NO de un relevador)",
+        "voltaje": 5
+    }
+}

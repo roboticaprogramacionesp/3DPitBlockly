@@ -1,0 +1,130 @@
+{
+  "version": "1.0",
+  "timestamp": 1793667267769,
+  "components": [
+    {
+      "id": "esp32_wroom_exgzjdi",
+      "type": "esp32_wroom",
+      "name": "ESP32 WeMos D1 R32",
+      "x": 254,
+      "y": 167,
+      "width": 276.28,
+      "height": 210,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "mcu": "ESP32-WROOM-32",
+        "voltaje_operacion": 3.3,
+        "flash_mb": 4,
+        "isPowerSource": true,
+        "macAddress": "AD:C4:72:A9:41:8B"
+      },
+      "locked": false
+    },
+    {
+      "id": "sg90_dg2yu1d",
+      "type": "sg90",
+      "name": "Servo SG90",
+      "x": 565.725018465797,
+      "y": 256.5289259869719,
+      "width": 157.04755,
+      "height": 46.062609,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "angle": 90,
+        "shaftPivot": {
+          "x": 58.5,
+          "y": -49.5
+        }
+      },
+      "locked": false
+    }
+  ],
+  "wires": [
+    {
+      "id": "wire_0tcmcfp",
+      "from": {
+        "componentId": "esp32_wroom_exgzjdi",
+        "pinId": "io13"
+      },
+      "to": {
+        "componentId": "sg90_dg2yu1d",
+        "pinId": "signal"
+      },
+      "points": [
+        {
+          "x": 414.28,
+          "y": 156.54726773174576
+        },
+        {
+          "x": 547.6079892975749,
+          "y": 156.54726773174576
+        },
+        {
+          "x": 547.6079892975749,
+          "y": 271.5579259869719
+        }
+      ],
+      "color": "#f2994a",
+      "connectorType": "macho-macho"
+    },
+    {
+      "id": "wire_u4k3vyq",
+      "from": {
+        "componentId": "esp32_wroom_exgzjdi",
+        "pinId": "5v_2"
+      },
+      "to": {
+        "componentId": "sg90_dg2yu1d",
+        "pinId": "vcc"
+      },
+      "points": [
+        {
+          "x": 410.28,
+          "y": 398.7858980834209
+        },
+        {
+          "x": 548.1164813655819,
+          "y": 398.7858980834209
+        },
+        {
+          "x": 548.1164813655819,
+          "y": 277.9409259869719
+        }
+      ],
+      "color": "#ff5252",
+      "connectorType": "macho-macho"
+    },
+    {
+      "id": "wire_1cguedy",
+      "from": {
+        "componentId": "esp32_wroom_exgzjdi",
+        "pinId": "gnd_1"
+      },
+      "to": {
+        "componentId": "sg90_dg2yu1d",
+        "pinId": "gnd"
+      },
+      "points": [
+        {
+          "x": 420.28,
+          "y": 384.7906764901211
+        },
+        {
+          "x": 556.5136143215618,
+          "y": 384.7906764901211
+        },
+        {
+          "x": 556.5136143215618,
+          "y": 284.3239259869719
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "macho-macho"
+    }
+  ],
+  "annotations": []
+}

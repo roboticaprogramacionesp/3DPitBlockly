@@ -1,0 +1,123 @@
+{
+  "version": "1.0",
+  "timestamp": 1793667047983,
+  "components": [
+    {
+      "id": "esp32_wroom_nrn4xqq",
+      "type": "esp32_wroom",
+      "name": "ESP32 WeMos D1 R32",
+      "x": 360,
+      "y": 120,
+      "width": 276.28,
+      "height": 210,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "mcu": "ESP32-WROOM-32",
+        "voltaje_operacion": 3.3,
+        "flash_mb": 4,
+        "isPowerSource": true,
+        "macAddress": "5F:A0:7E:B2:AA:81"
+      },
+      "locked": false
+    },
+    {
+      "id": "tcrt5000_v41ref7",
+      "type": "tcrt5000",
+      "name": "TCRT5000 Sensor Infrarrojo (Línea/Obstáculo)",
+      "x": 673.7131384298871,
+      "y": 220.32106117712277,
+      "width": 99.212598,
+      "height": 42.519685,
+      "rotation": 270,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "modelo": "TCRT5000: sensor infrarrojo reflectivo (línea/obstáculo), salida digital 'Do' activa en BAJO al detectar. 'Ao' (salida analógica cruda del comparador) no está implementado -- se puede cablear pero no reporta un valor variable",
+        "detectado": false
+      },
+      "locked": false
+    }
+  ],
+  "wires": [
+    {
+      "id": "wire_3yen4w2",
+      "from": {
+        "componentId": "tcrt5000_v41ref7",
+        "pinId": "vcc"
+      },
+      "to": {
+        "componentId": "esp32_wroom_nrn4xqq",
+        "pinId": "3v3"
+      },
+      "points": [
+        {
+          "x": 682.9331384298871,
+          "y": 352.5570098938822
+        },
+        {
+          "x": 506.28,
+          "y": 352.5570098938822
+        }
+      ],
+      "color": "#ff5252",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_7resf27",
+      "from": {
+        "componentId": "esp32_wroom_nrn4xqq",
+        "pinId": "gnd_2"
+      },
+      "to": {
+        "componentId": "tcrt5000_v41ref7",
+        "pinId": "gnd"
+      },
+      "points": [
+        {
+          "x": 536.28,
+          "y": 340.258179667238
+        },
+        {
+          "x": 691.853138429887,
+          "y": 340.258179667238
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_sgtgibt",
+      "from": {
+        "componentId": "esp32_wroom_nrn4xqq",
+        "pinId": "io12"
+      },
+      "to": {
+        "componentId": "tcrt5000_v41ref7",
+        "pinId": "do"
+      },
+      "points": [
+        {
+          "x": 530.28,
+          "y": 107.85270461428016
+        },
+        {
+          "x": 728.4535464790015,
+          "y": 107.85270461428016
+        },
+        {
+          "x": 728.4535464790015,
+          "y": 233.38559244485566
+        },
+        {
+          "x": 700.7831384298871,
+          "y": 233.38559244485566
+        }
+      ],
+      "color": "#f2994a",
+      "connectorType": "hembra-macho"
+    }
+  ],
+  "annotations": []
+}
