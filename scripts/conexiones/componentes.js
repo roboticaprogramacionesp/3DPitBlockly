@@ -72,6 +72,19 @@ function nombreCorto(nombre) {
     .trim();
 }
 
+// Franjas de la resistencia según su valor (el dibujo del simulador trae
+// otras): 1ª cifra, 2ª cifra y multiplicador; la 4ª (dorada) es la tolerancia.
+const CODIGO = ["#111111", "#8a3d06", "#e03131", "#f76707", "#fab005", "#2f9e44", "#1c7ed6", "#7048e8", "#868e96", "#f8f9fa"];
+function pintarBandas(interior, prefijo, ohms) {
+  const e = Math.max(0, Math.floor(Math.log10(ohms)) - 1);
+  const cifras = String(Math.round(ohms / 10 ** e)).padStart(2, "0");
+  const color = { band_1_st: CODIGO[+cifras[0]], band_2_nd: CODIGO[+cifras[1]], band_rd_multiplier: CODIGO[e] };
+  return interior.replace(/<[a-z]+\b[^>]*>/g, (tag) => {
+    const m = tag.match(new RegExp(`id="${prefijo}(band_1_st|band_2_nd|band_rd_multiplier)"`));
+    return m ? tag.replace(/fill="[^"]*"/, `fill="${color[m[1]]}"`) : tag;
+  });
+}
+
 // Componente del simulador.
 function delSimulador(tipo) {
   const json = JSON.parse(fs.readFileSync(path.join(DIR, tipo + ".json"), "utf8"));
@@ -82,8 +95,9 @@ function delSimulador(tipo) {
     w: json.width,
     h: json.height,
     pines: json.pins.map((p) => ({ id: p.id, nombre: nombreCorto(p.name), x: p.x, y: p.y })),
-    dibujo(prefijo) {
-      const { interior, viewBox } = limpiarSvg(svg, prefijo);
+    dibujo(prefijo, props = {}) {
+      let { interior, viewBox } = limpiarSvg(svg, prefijo);
+      if (tipo === "resistencia") interior = pintarBandas(interior, prefijo, props.ohms || 220);
       const sx = this.w / viewBox.w, sy = this.h / viewBox.h;
       return `<g transform="scale(${+sx.toFixed(5)},${+sy.toFixed(5)}) translate(${-viewBox.x},${-viewBox.y})">${interior}</g>`;
     },

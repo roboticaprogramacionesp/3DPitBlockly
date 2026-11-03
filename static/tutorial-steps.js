@@ -166,7 +166,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Conexión física del semáforo",
-        desc: "Conecta los tres LEDs al ESP32 con una resistencia de <b>220Ω</b> en cada uno:<br>🔴 LED <b>Rojo</b> → pin <b>23</b><br>🟡 LED <b>Amarillo</b> → pin <b>19</b><br>🟢 LED <b>Verde</b> → pin <b>18</b><br>⏚ Cátodo (pata corta) de cada LED → GND",
+        desc: "Conecta el módulo semáforo al ESP32 (cada luz ya trae su resistencia):<br>🔴 <b>R</b> (rojo) → pin <b>18</b><br>🟡 <b>Y</b> (amarillo) → pin <b>19</b><br>🟢 <b>G</b> (verde) → pin <b>23</b><br>⏚ <b>GND</b> → GND",
         highlightCat: null, bloque: null
       },
 
@@ -177,7 +177,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Arrastra: Inicializar Semáforo",
-        desc: "Arrastra el bloque <em>Preparar semáforo</em> al área de trabajo. Los pines predeterminados son: Verde=<b>18</b>, Amarillo=<b>19</b>, Rojo=<b>23</b>.",
+        desc: "Arrastra el bloque <em>Preparar semáforo</em> al área de trabajo. Los pines predeterminados son: Rojo=<b>18</b>, Amarillo=<b>19</b>, Verde=<b>23</b>.",
         highlightCat: "Semáforo (Leds)", expandCat: "LEDs", bloque: "init_semaforo", bloqueLabel: "Preparar semáforo"
       },
       {
@@ -816,7 +816,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Conexión física completa",
-        desc: "Este carrito usa <b>dos módulos a la vez</b>, cada uno con sus propios pines (no se cruzan):<br><br>📡 <b>HC-SR04</b> (sensor, al frente del carrito):<br>⚡ VCC → 5V &nbsp; ⏚ GND → GND<br>📌 TRIG → pin <b>12</b> &nbsp; 📌 ECHO → pin <b>13</b><br><br>⚡ <b>L298N</b> (puente H, controla las dos ruedas):<br>⚡ 12V → batería de los motores &nbsp; ⏚ GND → GND del ESP32 y de la batería<br>📌 IN1 → pin <b>26</b> &nbsp; 📌 IN2 → pin <b>25</b> &nbsp; 📌 IN3 → pin <b>17</b> &nbsp; 📌 IN4 → pin <b>16</b><br>🔌 OUT1/OUT2 → Motor izquierdo (A) &nbsp; 🔌 OUT3/OUT4 → Motor derecho (B)<br><br>⚠️ No alimentes los motores directamente del ESP32: usan la batería del L298N. El botón de diagrama muestra el cableado del L298N.",
+        desc: "Este carrito usa <b>dos módulos a la vez</b>, cada uno con sus propios pines (no se cruzan):<br><br>📡 <b>HC-SR04</b> (sensor, al frente del carrito):<br>⚡ VCC → 5V &nbsp; ⏚ GND → GND<br>📌 TRIG → pin <b>12</b> &nbsp; 📌 ECHO → pin <b>13</b><br><br>⚡ <b>L298N</b> (puente H, controla las dos ruedas):<br>⚡ 12V → batería de los motores &nbsp; ⏚ GND → GND del ESP32 y de la batería<br>📌 IN1 → pin <b>16</b> &nbsp; 📌 IN2 → pin <b>17</b> &nbsp; 📌 IN3 → pin <b>25</b> &nbsp; 📌 IN4 → pin <b>26</b><br>🔌 OUT1/OUT2 → Motor izquierdo (A) &nbsp; 🔌 OUT3/OUT4 → Motor derecho (B)<br><br>⚠️ No alimentes los motores directamente del ESP32: usan la batería del L298N. El botón de diagrama muestra el cableado del L298N.",
         highlightCat: null, bloque: null
       },
       {
@@ -836,7 +836,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Arrastra: Preparar el controlador de motores",
-        desc: "Arrastra el bloque <em>Preparar Motor DC (L298N)</em> justo después del bloque del sensor. Configura IN1=<b>26</b>, IN2=<b>25</b>, IN3=<b>17</b>, IN4=<b>16</b>. También va fuera de cualquier ciclo.",
+        desc: "Arrastra el bloque <em>Preparar Motor DC (L298N)</em> justo después del bloque del sensor. Configura IN1=<b>16</b>, IN2=<b>17</b>, IN3=<b>25</b>, IN4=<b>26</b>. También va fuera de cualquier ciclo.",
         highlightCat: "Motor DC", expandCat: "Actuadores", bloque: "init_dc_motor", bloqueLabel: "Preparar Motor DC (L298N)"
       },
       {
@@ -1138,7 +1138,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Conexión física del L298N",
-        desc: "Conecta el módulo L298N al ESP32 así:<br>⚡ <b>12V</b> → fuente de poder para los motores (batería)<br>⏚ <b>GND</b> → GND del ESP32 y de la batería<br>📌 <b>IN1</b> → pin <b>26</b><br>📌 <b>IN2</b> → pin <b>25</b><br>📌 <b>IN3</b> → pin <b>17</b><br>📌 <b>IN4</b> → pin <b>16</b><br>🔌 <b>OUT1/OUT2</b> → Motor A | <b>OUT3/OUT4</b> → Motor B<br><br>⚠️ No alimentes los motores directamente del ESP32.",
+        desc: "Conecta el módulo L298N al ESP32 así:<br>⚡ <b>12V</b> → pilas (+), pasando por el interruptor<br>⏚ <b>GND</b> → GND del ESP32 y pilas (−)<br>📌 <b>IN1</b> → pin <b>16</b><br>📌 <b>IN2</b> → pin <b>17</b><br>📌 <b>IN3</b> → pin <b>25</b><br>📌 <b>IN4</b> → pin <b>26</b><br>🔌 <b>OUT1/OUT2</b> → Motor A | <b>OUT3/OUT4</b> → Motor B<br><br>⚠️ No alimentes los motores directamente del ESP32.",
         highlightCat: null, bloque: null
       },
       {
@@ -1148,7 +1148,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Arrastra: Preparar el controlador de motores",
-        desc: "Arrastra el bloque <em>Preparar Motor DC (L298N)</em> al área de trabajo. Configura los pines: IN1=<b>26</b>, IN2=<b>25</b>, IN3=<b>17</b>, IN4=<b>16</b>. Estos pines controlan la dirección de ambos motores.",
+        desc: "Arrastra el bloque <em>Preparar Motor DC (L298N)</em> al área de trabajo. Configura los pines: IN1=<b>16</b>, IN2=<b>17</b>, IN3=<b>25</b>, IN4=<b>26</b>. Estos pines controlan la dirección de ambos motores.",
         highlightCat: "Motor DC", expandCat: "Actuadores", bloque: "init_dc_motor", bloqueLabel: "Preparar Motor DC (L298N)"
       },
       {
@@ -1251,7 +1251,7 @@ var TUTORIALS = {
     steps: [
       {
         titulo: "¿Qué aprenderemos?",
-        desc: "Vamos a controlar un <b>módulo relevador (relay)</b> — un interruptor electrónico que te permite prender/apagar desde el ESP32 cosas que usan corriente más alta (una lámpara, un motor, un electrodoméstico de 110-220V), sin que esa corriente pase por el ESP32.",
+        desc: "Vamos a controlar un <b>módulo relevador (relay)</b> — un interruptor electrónico que te permite prender/apagar desde el ESP32 cosas que usan corriente más alta, sin que esa corriente pase por el ESP32. En este tutorial prenderemos y apagaremos un <b>foco de 127V</b>.",
         highlightCat: null, bloque: null
       },
       {
@@ -1261,7 +1261,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Conexión física",
-        desc: "El módulo relay típico se conecta así:<br>⚡ <b>VCC</b> → <b>5V</b><br>⏚ <b>GND</b> → GND<br>📌 <b>IN</b> (señal) → pin <b>26</b><br><br>⚠️ Del lado de <b>COM/NO/NC</b> va la carga de alto voltaje — si no sabés cablear 110-220V, pedile ayuda a un adulto. Para practicar podés usar un LED en vez de una carga real.",
+        desc: "<b>Lado del ESP32</b> (bajo voltaje):<br>⚡ <b>VCC</b> → <b>5V</b><br>⏚ <b>GND</b> → GND<br>📌 <b>S</b> (señal) → pin <b>26</b><br><br><b>Lado del foco</b> (127V):<br>🔌 <b>COM</b> → fase de la clavija<br>💡 <b>NO</b> → una terminal del foco<br>🔌 La otra terminal del foco → neutro de la clavija<br><br>Con <b>NO</b> (normalmente abierto) el foco se prende solo cuando el relevador se activa.<br>⚠️ Arma esta parte <b>siempre desconectada</b> y con ayuda de un adulto: 127V es peligroso. Para practicar puedes usar un LED en vez del foco.",
         highlightCat: null, bloque: null
       },
       {
@@ -1309,7 +1309,7 @@ var TUTORIALS = {
       },
       {
         titulo: "¡Ejecuta y prueba!",
-        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Deberías escuchar el <b>clic</b> del relay al encenderse y, 2 segundos después, al apagarse. 🔌",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Deberías escuchar el <b>clic</b> del relay y ver el <b>foco encenderse</b>; 2 segundos después se apaga. 💡",
         highlightElement: "#btnRun", waitForAction: "run"
       }
     ]

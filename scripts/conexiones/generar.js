@@ -580,7 +580,7 @@ function dibujar(def, piezas, trazo, cons) {
   for (const p of piezas) {
     // Mismo transform que Component.updateTransform() del simulador.
     const espejo = p.flip ? `translate(${f(p.comp.w * p.s)},0) scale(${f(-p.s)},${f(p.s)})` : `scale(${f(p.s)})`;
-    svg += `<g transform="translate(${f(p.x)},${f(p.y)})${p.rot ? ` rotate(${p.rot})` : ""} ${espejo}">${p.comp.dibujo(p.clave + "_")}</g>`;
+    svg += `<g transform="translate(${f(p.x)},${f(p.y)})${p.rot ? ` rotate(${p.rot})` : ""} ${espejo}">${p.comp.dibujo(p.clave + "_", p.props)}</g>`;
   }
   // Pines usados (resaltados)
   const usados = [];
@@ -747,7 +747,7 @@ function desdeSimulador(def) {
   const placa = proy.components.find((c) => c.type === "esp32_wroom");
   const piezas = proy.components.map((c) => {
     const esPlaca = c === placa;
-    return { clave: esPlaca ? "esp" : c.id, comp: componente(c.type), s: c.scale || 1, x: c.x, y: c.y, rot: c.rotation || 0, flip: !!c.flipX, esPlaca, fija: true };
+    return { clave: esPlaca ? "esp" : c.id, comp: componente(c.type), s: c.scale || 1, x: c.x, y: c.y, rot: c.rotation || 0, flip: !!c.flipX, esPlaca, fija: true, props: c.properties || {} };
   });
   // Módulos con nombre corto; si hay dos iguales se numeran (Motor A, Motor B).
   const vistos = {};

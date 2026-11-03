@@ -61,7 +61,7 @@ const DEL_SIMULADOR = [
   {
     archivo: "relevador", titulo: "Relevador (Relay)", tutoriales: ["relevador"], simulador: "relevador.json",
     nombresPin: { "clavija_127v.fase": "fase", "clavija_127v.neutro": "neutro", "bombillo.p1": "terminal 1", "bombillo.p2": "terminal 2" },
-    nota: "¡Cuidado, 127 V! Arma la parte del foco desconectada y con ayuda de un adulto. Del lado del ESP32 todo es de bajo voltaje.",
+    nota: "Con NO el foco prende solo cuando el relevador se activa. ¡Cuidado, 127 V! Arma la parte del foco desconectada y con ayuda de un adulto.",
   },
   {
     archivo: "infrarrojo", titulo: "Sensor Infrarrojo — Detectar Línea", tutoriales: ["infrarrojo_basico"], simulador: "sensor_ir.json",
@@ -103,7 +103,7 @@ module.exports = [
     ],
     conexiones: [
       ["u.vcc", "5V"], ["u.trig", "IO12"], ["u.echo", "IO13"], ["u.gnd", "GND"],
-      ["h.in1", "IO26"], ["h.in2", "IO25"], ["h.in3", "IO17"], ["h.in4", "IO16"], ["h.power_gnd", "GND"],
+      ["h.in1", "IO16"], ["h.in2", "IO17"], ["h.in3", "IO25"], ["h.in4", "IO26"], ["h.power_gnd", "GND"],
       ["p.vcc", "h.power_12v", { color: "#e03131" }], ["p.gnd", "h.power_gnd"],
       ["a.pin1", "h.out1", { color: "#7048e8" }], ["a.pin2", "h.out2", { color: "#7048e8" }],
       ["b.pin1", "h.out3", { color: "#0b7285" }], ["b.pin2", "h.out4", { color: "#0b7285" }],

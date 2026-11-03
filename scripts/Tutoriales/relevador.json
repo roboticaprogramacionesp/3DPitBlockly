@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "timestamp": 1793667916759,
+  "timestamp": 1793674269049,
   "components": [
     {
       "id": "esp32_wroom_3fru50n",
@@ -191,10 +191,10 @@
       "connectorType": "macho-macho"
     },
     {
-      "id": "wire_m1hzg35",
+      "id": "wire_eeubtnr",
       "from": {
         "componentId": "ky-019_ix1dhra",
-        "pinId": "nc"
+        "pinId": "no"
       },
       "to": {
         "componentId": "bombillo_lkdb4c7",
@@ -202,16 +202,16 @@
       },
       "points": [
         {
-          "x": 650.7723525959968,
-          "y": 246.1228485107422
+          "x": 674.1723525959969,
+          "y": 254.81911618897726
         },
         {
           "x": 726.75,
-          "y": 246.1228485107422
+          "y": 254.81911618897726
         }
       ],
       "color": "#f2994a",
-      "connectorType": "macho-macho"
+      "connectorType": "hembra-hembra"
     }
   ],
   "annotations": []
