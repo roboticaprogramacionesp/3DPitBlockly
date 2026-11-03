@@ -1,0 +1,153 @@
+{
+  "version": "1.0",
+  "timestamp": 1793681421763,
+  "components": [
+    {
+      "id": "esp32_wroom_o6gx9a5",
+      "type": "esp32_wroom",
+      "name": "ESP32 WeMos D1 R32",
+      "x": 280,
+      "y": 240,
+      "width": 276.28,
+      "height": 210,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "mcu": "ESP32-WROOM-32",
+        "voltaje_operacion": 3.3,
+        "flash_mb": 4,
+        "isPowerSource": true,
+        "macAddress": "16:C1:A2:3D:AD:1A"
+      },
+      "locked": false
+    },
+    {
+      "id": "ds3231_qekfobg",
+      "type": "ds3231",
+      "name": "DS3231 Reloj de Tiempo Real (RTC, I2C)",
+      "x": 603.0191317738503,
+      "y": 244.92413933333359,
+      "width": 107.72,
+      "height": 62.36,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "modelo": "DS3231 (módulo ZS-042): RTC I2C de alta precisión, dirección fija 0x68. La fecha/hora se ajusta desde el panel de propiedades (por defecto sigue la hora real de la computadora) y sigue corriendo sola mientras el circuito esté simulando"
+      },
+      "locked": false
+    }
+  ],
+  "wires": [
+    {
+      "id": "wire_wcdvt7c",
+      "from": {
+        "componentId": "ds3231_qekfobg",
+        "pinId": "gnd"
+      },
+      "to": {
+        "componentId": "esp32_wroom_o6gx9a5",
+        "pinId": "gnd_2"
+      },
+      "points": [
+        {
+          "x": 565.312506263303,
+          "y": 295.4341393333336
+        },
+        {
+          "x": 565.312506263303,
+          "y": 458.876627972198
+        },
+        {
+          "x": 456.28,
+          "y": 458.876627972198
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_vp2zmnv",
+      "from": {
+        "componentId": "esp32_wroom_o6gx9a5",
+        "pinId": "3v3"
+      },
+      "to": {
+        "componentId": "ds3231_qekfobg",
+        "pinId": "vcc"
+      },
+      "points": [
+        {
+          "x": 426.28,
+          "y": 469.60629786039453
+        },
+        {
+          "x": 575.109161378613,
+          "y": 469.60629786039453
+        },
+        {
+          "x": 575.109161378613,
+          "y": 288.2341393333336
+        }
+      ],
+      "color": "#ff5252",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_zq6120w",
+      "from": {
+        "componentId": "esp32_wroom_o6gx9a5",
+        "pinId": "io21"
+      },
+      "to": {
+        "componentId": "ds3231_qekfobg",
+        "pinId": "sda"
+      },
+      "points": [
+        {
+          "x": 370.28,
+          "y": 226.3933097119465
+        },
+        {
+          "x": 564.6521523017312,
+          "y": 226.3933097119465
+        },
+        {
+          "x": 564.6521523017312,
+          "y": 281.0341393333336
+        }
+      ],
+      "color": "#2ecc71",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_qus4bo2",
+      "from": {
+        "componentId": "esp32_wroom_o6gx9a5",
+        "pinId": "io22"
+      },
+      "to": {
+        "componentId": "ds3231_qekfobg",
+        "pinId": "scl"
+      },
+      "points": [
+        {
+          "x": 360.28,
+          "y": 215.32297044232573
+        },
+        {
+          "x": 575.4119696939183,
+          "y": 215.32297044232573
+        },
+        {
+          "x": 575.4119696939183,
+          "y": 273.8341393333336
+        }
+      ],
+      "color": "#bb86fc",
+      "connectorType": "hembra-macho"
+    }
+  ],
+  "annotations": []
+}

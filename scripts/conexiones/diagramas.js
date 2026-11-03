@@ -68,6 +68,57 @@ const DEL_SIMULADOR = [
     nombresPin: { "tcrt5000.do": "OUT (DO)", "tcrt5000.vcc": "VCC", "tcrt5000.gnd": "GND" },
     nota: "Gira el potenciómetro del módulo hasta que su LED cambie entre negro y blanco.",
   },
+  {
+    archivo: "ky-005", titulo: "Emisor Infrarrojo (KY-005)", tutoriales: ["ir_tx_ky005"], simulador: "emisor_ir.json",
+    nombresPin: { "ky-005.vcc": "+ (centro)", "ky-005.gnd": "−" },
+    nota: "El LED infrarrojo no se ve a simple vista: míralo con la cámara del celular para comprobar que parpadea.",
+  },
+  {
+    archivo: "carrito", titulo: "Carrito Esquiva Obstáculos", tutoriales: ["carrito_esquiva_obstaculos"], simulador: "carro_esquiva_obstaculos.json",
+    nombresPin: { "l298n.power_gnd": "GND", "l298n.power_12v": "+12V", "battery_18650.vcc": "+", "battery_18650.gnd": "−" },
+    nota: "Los motores se alimentan de las pilas (con su interruptor); une el GND de las pilas, del L298N y del ESP32. El HC-SR04 va a 3V3: si no mide bien, pásalo a 5V.",
+  },
+  {
+    archivo: "ultrasonico", titulo: "Sensor Ultrasónico (HC-SR04)", tutoriales: ["ultrasonico"], simulador: "ultrasonico.json",
+    nota: "TRIG manda el pulso y ECHO lo recibe: no los inviertas. Con 3V3 el ECHO es seguro para el ESP32; si tu sensor no mide bien, pásalo a 5V.",
+  },
+  {
+    archivo: "adkeypad", titulo: "Teclado Analógico (ADKey)", tutoriales: ["analogico_adkey"], simulador: "adkey.json",
+    nota: "Usa un pin analógico (34, 35, 36 o 39): esos pines solo leen.",
+  },
+  {
+    archivo: "dht11", titulo: "DHT11 — Temperatura y Humedad", tutoriales: ["dht11"], simulador: "dht11.json",
+    nota: "Si usas el sensor sin placa (4 patas), pon una resistencia de 10 kΩ entre DATA y 3V3.",
+  },
+  {
+    archivo: "ky-001", titulo: "KY-001 — Temperatura DS18B20", tutoriales: ["ky001"], simulador: "ky-001.json",
+    nota: "Siempre a 3V3, nunca a 5V.",
+  },
+  {
+    archivo: "oled", titulo: "Display OLED (SSD1306 / SH1106)", tutoriales: ["oled_display", "sh1106_display"], simulador: "oled.json",
+    nombresPin: { "oled.sck": "SCL" },
+    nota: "Siempre a 3V3, nunca a 5V. Dirección I2C: 0x3C.",
+  },
+  {
+    archivo: "lcd_i2c", titulo: "LCD 16x2 I2C", tutoriales: ["lcd_i2c_display"], simulador: "lcd_i2c.json",
+    nota: "Si enciende pero no se ve texto, gira el potenciómetro azul (contraste). Dirección I2C: 0x27.",
+  },
+  {
+    archivo: "rtc_ds3231", titulo: "Reloj RTC DS3231", tutoriales: ["rtc_ds3231"], simulador: "rtc.json",
+    nota: "Con su pila puesta, guarda la hora aunque desconectes la placa.",
+  },
+  {
+    archivo: "mpu6050", titulo: "Giroscopio / Acelerómetro MPU6050", tutoriales: ["mpu6050_imu"], simulador: "mpu6050.json",
+    nota: "Siempre a 3V3. Pégalo bien al objeto que quieres medir.",
+  },
+  {
+    archivo: "tm1637", titulo: "Display TM1637 (4 dígitos)", tutoriales: ["tm1637_display"], simulador: "tm1637.json",
+    nota: "Funciona con 3V3 o con 5V. Pon en el bloque los mismos pines que conectaste: CLK 22 y DIO 21.",
+  },
+  {
+    archivo: "matrix8", titulo: "Matriz LED 8x8 (MAX7219)", tutoriales: ["matrix8_display"], simulador: "matrix8x8.json",
+    nota: "Va a 3V3; si la matriz se ve débil o muestra puntos al azar, aliméntala con 5V.",
+  },
 ];
 
 module.exports = [
@@ -85,39 +136,8 @@ module.exports = [
     conexiones: [["n.vcc", "5V"], ["n.din", "IO5"], ["n.gnd", "GND"]],
     nota: "64 LEDs consumen mucho: usa brillo bajo o una fuente de 5V externa. Si usas otro pin de datos, cámbialo en el bloque.",
   },
-  {
-    archivo: "ky-005", titulo: "Emisor Infrarrojo (KY-005)", tutoriales: ["ir_tx_ky005"],
-    modulos: [{ id: "e", tipo: "ky005", etiqueta: "KY-005", material: "Emisor infrarrojo KY-005" }],
-    conexiones: [["e.s", "IO4"], ["e.vcc", "3V3"], ["e.gnd", "GND"]],
-    nombresPin: { "e.vcc": "+", "e.gnd": "−" },
-  },
   // ── Motores ──
-  {
-    archivo: "carrito", titulo: "Carrito Esquiva Obstáculos", tutoriales: ["carrito_esquiva_obstaculos"],
-    modulos: [
-      { id: "h", tipo: "l298n", etiqueta: "L298N", material: "Puente H L298N", pos: [88.28, -270] },
-      { id: "a", tipo: "motor", etiqueta: "Motor izq.", material: "Motor DC", pos: [-141.72, -190] },
-      { id: "b", tipo: "motor", etiqueta: "Motor der.", material: "Motor DC", pos: [298.28, -210] },
-      { id: "p", tipo: "battery_18650", etiqueta: "Batería", material: "Batería (pila 18650 o 7-12 V)", pos: [-261.72, -30] },
-      { id: "u", tipo: "hcsr04", etiqueta: "HC-SR04", material: "Sensor ultrasónico HC-SR04" },
-    ],
-    conexiones: [
-      ["u.vcc", "5V"], ["u.trig", "IO12"], ["u.echo", "IO13"], ["u.gnd", "GND"],
-      ["h.in1", "IO16"], ["h.in2", "IO17"], ["h.in3", "IO25"], ["h.in4", "IO26"], ["h.power_gnd", "GND"],
-      ["p.vcc", "h.power_12v", { color: "#e03131" }], ["p.gnd", "h.power_gnd"],
-      ["a.pin1", "h.out1", { color: "#7048e8" }], ["a.pin2", "h.out2", { color: "#7048e8" }],
-      ["b.pin1", "h.out3", { color: "#0b7285" }], ["b.pin2", "h.out4", { color: "#0b7285" }],
-    ],
-    nombresPin: { "h.power_gnd": "GND", "h.power_12v": "+12V", "p.vcc": "+", "p.gnd": "−" },
-    nota: "Une el GND de la batería, del L298N y del ESP32. Los motores se alimentan de la batería.",
-  },
   // ── Sensores ──
-  {
-    archivo: "ultrasonico", titulo: "Sensor Ultrasónico (HC-SR04)", tutoriales: ["ultrasonico"],
-    modulos: [{ id: "u", tipo: "hcsr04", etiqueta: "HC-SR04", material: "Sensor ultrasónico HC-SR04" }],
-    conexiones: [["u.vcc", "5V"], ["u.trig", "IO12"], ["u.echo", "IO13"], ["u.gnd", "GND"]],
-    nota: "TRIG manda el pulso y ECHO lo recibe: no los inviertas.",
-  },
   {
     archivo: "medidor_estatura", titulo: "Medidor de Estatura", tutoriales: ["medidor_estatura"],
     modulos: [
@@ -128,28 +148,10 @@ module.exports = [
     nota: "Pon el sensor arriba mirando hacia el piso. Toca el aluminio para medir.",
   },
   {
-    archivo: "adkeypad", titulo: "Teclado Analógico (ADKey)", tutoriales: ["analogico_adkey"],
-    modulos: [{ id: "k", tipo: "adkey_real", etiqueta: "ADKey", material: "Teclado analógico ADKey" }],
-    conexiones: [["k.out", "IO35"], ["k.vcc", "3V3"], ["k.gnd", "GND"]],
-    nota: "Usa un pin analógico (34, 35, 36 o 39): esos pines solo leen.",
-  },
-  {
     archivo: "ky-022", titulo: "Receptor Infrarrojo (KY-022)", tutoriales: ["ir_ky022"],
     modulos: [{ id: "r", tipo: "ky-022", etiqueta: "KY-022", material: "Receptor infrarrojo KY-022 + control" }],
     conexiones: [["r.s", "IO16"], ["r.vcc", "3V3"], ["r.gnd", "GND"]],
     nota: "El lente negro debe apuntar hacia el control remoto.",
-  },
-  {
-    archivo: "dht11", titulo: "DHT11 — Temperatura y Humedad", tutoriales: ["dht11"],
-    modulos: [{ id: "s", tipo: "dht11", etiqueta: "DHT11", material: "Sensor DHT11 (KY-015)" }],
-    conexiones: [["s.signal", "IO4"], ["s.vcc", "3V3"], ["s.gnd", "GND"]],
-    nota: "Si usas el sensor sin placa (4 patas), pon una resistencia de 10 kΩ entre DATA y 3V3.",
-  },
-  {
-    archivo: "ky-001", titulo: "KY-001 — Temperatura DS18B20", tutoriales: ["ky001"],
-    modulos: [{ id: "s", tipo: "ky_001", etiqueta: "KY-001", material: "Sensor KY-001 (DS18B20)" }],
-    conexiones: [["s.signal", "IO4"], ["s.vcc", "3V3"], ["s.gnd", "GND"]],
-    nota: "Siempre a 3V3, nunca a 5V.",
   },
   {
     archivo: "encoder_ky040", titulo: "Encoder Rotatorio (KY-040)", tutoriales: ["encoder_rotatorio"],
@@ -172,31 +174,6 @@ module.exports = [
     nota: "L/R a GND elige el canal izquierdo. Siempre a 3V3.",
   },
   // ── I2C ──
-  {
-    archivo: "oled", titulo: "Display OLED (SSD1306 / SH1106)", tutoriales: ["oled_display", "sh1106_display"],
-    modulos: [{ id: "d", tipo: "oled", etiqueta: "OLED", material: "Pantalla OLED 0.96\" I2C" }],
-    conexiones: [["d.gnd", "GND"], ["d.vdd", "3V3"], ["d.sck", "IO22"], ["d.sda", "IO21"]],
-    nombresPin: { "d.sck": "SCL" },
-    nota: "Siempre a 3V3, nunca a 5V. Dirección I2C: 0x3C.",
-  },
-  {
-    archivo: "lcd_i2c", titulo: "LCD 16x2 I2C", tutoriales: ["lcd_i2c_display"],
-    modulos: [{ id: "d", tipo: "lcd_16x2_i2c", etiqueta: "LCD", material: "LCD 16x2 con módulo I2C" }],
-    conexiones: [["d.gnd", "GND"], ["d.vcc", "5V"], ["d.sda", "IO21"], ["d.scl", "IO22"]],
-    nota: "Si enciende pero no se ve texto, gira el potenciómetro azul (contraste).",
-  },
-  {
-    archivo: "rtc_ds3231", titulo: "Reloj RTC DS3231", tutoriales: ["rtc_ds3231"],
-    modulos: [{ id: "r", tipo: "ds3231", etiqueta: "DS3231", material: "Reloj RTC DS3231" }],
-    conexiones: [["r.gnd", "GND"], ["r.vcc", "3V3"], ["r.sda", "IO21"], ["r.scl", "IO22"]],
-    nota: "Con su pila puesta, guarda la hora aunque desconectes la placa.",
-  },
-  {
-    archivo: "mpu6050", titulo: "Giroscopio / Acelerómetro MPU6050", tutoriales: ["mpu6050_imu"],
-    modulos: [{ id: "m", tipo: "mpu6050", etiqueta: "MPU6050", material: "Módulo MPU6050" }],
-    conexiones: [["m.vcc", "3V3"], ["m.gnd", "GND"], ["m.scl", "IO22"], ["m.sda", "IO21"]],
-    nota: "Siempre a 3V3. Pégalo bien al objeto que quieres medir.",
-  },
   {
     archivo: "bmp280", titulo: "Sensor de Presión BMP280", tutoriales: ["bmp280_presion"],
     modulos: [{ id: "b", tipo: "bmp280", etiqueta: "BMP280", material: "Sensor BMP280" }],
@@ -230,16 +207,6 @@ module.exports = [
     nota: "Dirección I2C: 0x20. Solo usa 2 pines de datos.",
   },
   // ── Pantallas y SPI ──
-  {
-    archivo: "tm1637", titulo: "Display TM1637 (4 dígitos)", tutoriales: ["tm1637_display"],
-    modulos: [{ id: "d", tipo: "tm1637", etiqueta: "TM1637", material: "Display TM1637" }],
-    conexiones: [["d.vcc", "5V"], ["d.gnd", "GND"], ["d.dio", "IO22"], ["d.clk", "IO21"]],
-  },
-  {
-    archivo: "matrix8", titulo: "Matriz LED 8x8 (MAX7219)", tutoriales: ["matrix8_display"],
-    modulos: [{ id: "m", tipo: "max7219", etiqueta: "MAX7219", material: "Matriz 8x8 MAX7219" }],
-    conexiones: [["m.vcc", "5V"], ["m.gnd", "GND"], ["m.din", "IO13"], ["m.cs", "IO5"], ["m.clk", "IO18"]],
-  },
   {
     archivo: "tft_display", titulo: "Pantalla TFT a color (ST7789)", tutoriales: ["tft_display"],
     modulos: [{ id: "t", tipo: "tft_st7789", etiqueta: "TFT", material: "Pantalla TFT ST7789 240x240" }],

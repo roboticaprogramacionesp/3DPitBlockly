@@ -86,6 +86,21 @@ function pintarBandas(interior, prefijo, ohms) {
 }
 
 // Componente del simulador.
+// La MAX7219 el simulador la dibuja por código (max7219.behavior.js): marco
+// negro, rejilla de LEDs de 20 y los pines sobre el borde izquierdo.
+// Aquí los LEDs van apagados (rojo muy oscuro) para que se vea la matriz.
+function matrizMax7219(c, props) {
+  const cols = props.cols || 8, rows = props.rows || 8, pad = 8, u = 20, r = (u * 0.76) / 2;
+  let s = `<rect x="0" y="0" width="${c.w}" height="${c.h}" rx="4" fill="#111" stroke="#000"/>`;
+  s += `<rect x="${pad}" y="${pad}" width="${cols * u}" height="${rows * u}" fill="#0a0a0a"/>`;
+  for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) s += `<circle cx="${pad + x * u + u / 2}" cy="${pad + y * u + u / 2}" r="${r}" fill="#3a0d0d"/>`;
+  for (const p of c.pines) {
+    s += `<rect x="-3" y="${p.y - 3}" width="6" height="6" fill="#c9a227" stroke="#7a5f10" stroke-width="0.6"/>`;
+    s += `<text x="-6" y="${p.y - 4}" text-anchor="end" font-size="8" font-weight="700" fill="#343a40">${p.nombre}</text>`;
+  }
+  return s;
+}
+
 function delSimulador(tipo) {
   const json = JSON.parse(fs.readFileSync(path.join(DIR, tipo + ".json"), "utf8"));
   const svg = fs.readFileSync(path.join(DIR, tipo + ".svg"), "utf8");
@@ -96,6 +111,7 @@ function delSimulador(tipo) {
     h: json.height,
     pines: json.pins.map((p) => ({ id: p.id, nombre: nombreCorto(p.name), x: p.x, y: p.y })),
     dibujo(prefijo, props = {}) {
+      if (tipo === "max7219") return matrizMax7219(this, props);
       let { interior, viewBox } = limpiarSvg(svg, prefijo);
       if (tipo === "resistencia") interior = pintarBandas(interior, prefijo, props.ohms || 220);
       const sx = this.w / viewBox.w, sy = this.h / viewBox.h;

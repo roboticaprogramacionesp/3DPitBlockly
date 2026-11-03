@@ -1,0 +1,163 @@
+{
+  "version": "1.0",
+  "timestamp": 1793681131503,
+  "components": [
+    {
+      "id": "esp32_wroom_6p66un6",
+      "type": "esp32_wroom",
+      "name": "ESP32 WeMos D1 R32",
+      "x": 260,
+      "y": 220,
+      "width": 276.28,
+      "height": 210,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "mcu": "ESP32-WROOM-32",
+        "voltaje_operacion": 3.3,
+        "flash_mb": 4,
+        "isPowerSource": true,
+        "macAddress": "89:B8:CC:C3:78:54"
+      },
+      "locked": false
+    },
+    {
+      "id": "oled_ngb75k3",
+      "type": "oled",
+      "name": "OLED 128x64 I2C",
+      "x": 583.3020958414538,
+      "y": 226.79064613309578,
+      "width": 76.535,
+      "height": 76.917,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "screenWidth": 128,
+        "screenHeight": 64,
+        "colorScheme": "blue"
+      },
+      "locked": false
+    }
+  ],
+  "wires": [
+    {
+      "id": "wire_q82q2nc",
+      "from": {
+        "componentId": "esp32_wroom_6p66un6",
+        "pinId": "gnd_2"
+      },
+      "to": {
+        "componentId": "oled_ngb75k3",
+        "pinId": "gnd"
+      },
+      "points": [
+        {
+          "x": 436.60106950619115,
+          "y": 420
+        },
+        {
+          "x": 436.60106950619115,
+          "y": 446.97359267931154
+        },
+        {
+          "x": 545.7084481231608,
+          "y": 446.97359267931154
+        },
+        {
+          "x": 545.7084481231608,
+          "y": 218.19242152425664
+        },
+        {
+          "x": 610.7710958414539,
+          "y": 218.19242152425664
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "hembra-hembra"
+    },
+    {
+      "id": "wire_2qtyhzk",
+      "from": {
+        "componentId": "oled_ngb75k3",
+        "pinId": "vdd"
+      },
+      "to": {
+        "componentId": "esp32_wroom_6p66un6",
+        "pinId": "3v3"
+      },
+      "points": [
+        {
+          "x": 617.9710958414538,
+          "y": 207.40967769251012
+        },
+        {
+          "x": 559.7836276045116,
+          "y": 207.40967769251012
+        },
+        {
+          "x": 559.7836276045116,
+          "y": 459.6900452622446
+        },
+        {
+          "x": 406.404006554078,
+          "y": 459.6900452622446
+        },
+        {
+          "x": 406.404006554078,
+          "y": 420
+        }
+      ],
+      "color": "#ff5252",
+      "connectorType": "hembra-hembra"
+    },
+    {
+      "id": "wire_v8run3s",
+      "from": {
+        "componentId": "oled_ngb75k3",
+        "pinId": "sck"
+      },
+      "to": {
+        "componentId": "esp32_wroom_6p66un6",
+        "pinId": "io22"
+      },
+      "points": [
+        {
+          "x": 625.1710958414538,
+          "y": 191.67702437409352
+        },
+        {
+          "x": 340.28,
+          "y": 191.67702437409352
+        }
+      ],
+      "color": "#2ecc71",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_vz93jw3",
+      "from": {
+        "componentId": "oled_ngb75k3",
+        "pinId": "sda"
+      },
+      "to": {
+        "componentId": "esp32_wroom_6p66un6",
+        "pinId": "io21"
+      },
+      "points": [
+        {
+          "x": 632.3680958414539,
+          "y": 179.1899928621596
+        },
+        {
+          "x": 350.28,
+          "y": 179.1899928621596
+        }
+      ],
+      "color": "#bb86fc",
+      "connectorType": "hembra-macho"
+    }
+  ],
+  "annotations": []
+}

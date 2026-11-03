@@ -1,0 +1,23 @@
+{
+    "type": "ky-005",
+    "name": "KY-005 Transmisor Infrarrojo",
+    "category": "Actuadores",
+
+    "width": 53.150391,
+    "height": 118.4822,
+
+    "svg": "components/ky-005/ky-005.svg",
+
+    "pinShape": "square",
+    "pinSize": 4,
+
+    "pins": [
+        { "id": "s",   "name": "S",   "x": 17.79, "y": 117.89, "type": "output", "signal": "digital" },
+        { "id": "vcc", "name": "VCC", "x": 26.83, "y": 117.89, "type": "power",  "signal": "power", "voltage": 5 },
+        { "id": "gnd", "name": "GND", "x": 35.83, "y": 117.89, "type": "ground", "signal": "ground" }
+    ],
+
+    "properties": {
+        "modelo": "KY-005: LED infrarrojo (protocolo NEC) -- se maneja con machine.Pin + la librería ir_tx (NEC), igual que en hardware real. El protocolo IR de verdad no se simula a nivel de pulsos (no es viable con la latencia de este simulador) -- NEC.transmit(addr, cmd) manda el código directo a cualquier KY-022 bien cableado y alimentado del lienzo, como un control remoto real (sin 'emparejar' con uno en particular)."
+    }
+}

@@ -1,0 +1,161 @@
+{
+  "version": "1.0",
+  "timestamp": 1793681547617,
+  "components": [
+    {
+      "id": "esp32_wroom_m8ohlb0",
+      "type": "esp32_wroom",
+      "name": "ESP32 WeMos D1 R32",
+      "x": 240,
+      "y": 180,
+      "width": 276.28,
+      "height": 210,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "mcu": "ESP32-WROOM-32",
+        "voltaje_operacion": 3.3,
+        "flash_mb": 4,
+        "isPowerSource": true,
+        "macAddress": "9F:2E:A7:E3:86:9F"
+      },
+      "locked": false
+    },
+    {
+      "id": "mpu6050_ua1oayr",
+      "type": "mpu6050",
+      "name": "MPU6050 Acelerómetro + Giroscopio",
+      "x": 531.3432801989615,
+      "y": 241.55264077424738,
+      "width": 56.694,
+      "height": 89.736,
+      "rotation": 270,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "modelo": "MPU6050 (GY-521): acelerómetro + giroscopio de 3 ejes + temperatura, I2C",
+        "i2cAddress": "0x68",
+        "accelX": 0,
+        "accelY": 0,
+        "accelZ": 1,
+        "gyroX": 0,
+        "gyroY": 0,
+        "gyroZ": 0,
+        "temperature": 24
+      },
+      "locked": false
+    }
+  ],
+  "wires": [
+    {
+      "id": "wire_4v1hsv7",
+      "from": {
+        "componentId": "mpu6050_ua1oayr",
+        "pinId": "gnd"
+      },
+      "to": {
+        "componentId": "esp32_wroom_m8ohlb0",
+        "pinId": "gnd_2"
+      },
+      "points": [
+        {
+          "x": 547.9612801989615,
+          "y": 399.9079485048777
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_j2fk95m",
+      "from": {
+        "componentId": "esp32_wroom_m8ohlb0",
+        "pinId": "3v3"
+      },
+      "to": {
+        "componentId": "mpu6050_ua1oayr",
+        "pinId": "vcc"
+      },
+      "points": [
+        {
+          "x": 386.28,
+          "y": 413.86085398157354
+        },
+        {
+          "x": 536.7342801989614,
+          "y": 413.86085398157354
+        },
+        {
+          "x": 536.7342801989614,
+          "y": 413.1728418061759
+        }
+      ],
+      "color": "#ff5252",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_mzhzo9d",
+      "from": {
+        "componentId": "mpu6050_ua1oayr",
+        "pinId": "sda"
+      },
+      "to": {
+        "componentId": "esp32_wroom_m8ohlb0",
+        "pinId": "io21"
+      },
+      "points": [
+        {
+          "x": 570.3932801989614,
+          "y": 256.85603706785434
+        },
+        {
+          "x": 629.6041943915728,
+          "y": 256.85603706785434
+        },
+        {
+          "x": 629.6041943915728,
+          "y": 160.75550796515654
+        },
+        {
+          "x": 330.28,
+          "y": 160.75550796515654
+        }
+      ],
+      "color": "#2ecc71",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_fz94u6y",
+      "from": {
+        "componentId": "esp32_wroom_m8ohlb0",
+        "pinId": "io22"
+      },
+      "to": {
+        "componentId": "mpu6050_ua1oayr",
+        "pinId": "scl"
+      },
+      "points": [
+        {
+          "x": 320.28,
+          "y": 147.21401130872505
+        },
+        {
+          "x": 647.1830547260467,
+          "y": 147.21401130872505
+        },
+        {
+          "x": 647.1830547260467,
+          "y": 271.9114329311561
+        },
+        {
+          "x": 558.8512801989615,
+          "y": 271.9114329311561
+        }
+      ],
+      "color": "#bb86fc",
+      "connectorType": "hembra-macho"
+    }
+  ],
+  "annotations": []
+}

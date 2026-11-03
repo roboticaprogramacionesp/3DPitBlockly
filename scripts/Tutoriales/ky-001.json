@@ -1,0 +1,115 @@
+{
+  "version": "1.0",
+  "timestamp": 1793680027866,
+  "components": [
+    {
+      "id": "esp32_wroom_g6s7de4",
+      "type": "esp32_wroom",
+      "name": "ESP32 WeMos D1 R32",
+      "x": 260,
+      "y": 200,
+      "width": 276.28,
+      "height": 210,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "mcu": "ESP32-WROOM-32",
+        "voltaje_operacion": 3.3,
+        "flash_mb": 4,
+        "isPowerSource": true,
+        "macAddress": "02:14:E0:B6:DD:46"
+      },
+      "locked": false
+    },
+    {
+      "id": "ky_001_g802ed3",
+      "type": "ky_001",
+      "name": "KY-001 Temp Sensor",
+      "x": 563.6076771075418,
+      "y": 207.70575783065638,
+      "width": 56.694,
+      "height": 89.736,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "temperature": 25,
+        "address": "28 01 02 03 04 05 06"
+      },
+      "locked": false
+    }
+  ],
+  "wires": [
+    {
+      "id": "wire_d0knieu",
+      "from": {
+        "componentId": "esp32_wroom_g6s7de4",
+        "pinId": "io4"
+      },
+      "to": {
+        "componentId": "ky_001_g802ed3",
+        "pinId": "signal"
+      },
+      "points": [
+        {
+          "x": 476.28,
+          "y": 420.47231202450064
+        },
+        {
+          "x": 601.6076771075418,
+          "y": 420.47231202450064
+        }
+      ],
+      "color": "#f2994a",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_iq7gfw9",
+      "from": {
+        "componentId": "esp32_wroom_g6s7de4",
+        "pinId": "gnd_2"
+      },
+      "to": {
+        "componentId": "ky_001_g802ed3",
+        "pinId": "gnd"
+      },
+      "points": [
+        {
+          "x": 436.28,
+          "y": 434.32758109365966
+        },
+        {
+          "x": 582.6076771075418,
+          "y": 434.32758109365966
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_9krt7vd",
+      "from": {
+        "componentId": "esp32_wroom_g6s7de4",
+        "pinId": "3v3"
+      },
+      "to": {
+        "componentId": "ky_001_g802ed3",
+        "pinId": "vcc"
+      },
+      "points": [
+        {
+          "x": 406.28,
+          "y": 451.26179884485396
+        },
+        {
+          "x": 592.1076771075418,
+          "y": 451.26179884485396
+        }
+      ],
+      "color": "#ff5252",
+      "connectorType": "hembra-macho"
+    }
+  ],
+  "annotations": []
+}

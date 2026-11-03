@@ -1,0 +1,433 @@
+{
+  "version": "1.0",
+  "timestamp": 1793680808911,
+  "components": [
+    {
+      "id": "esp32_wroom_8mtoh8e",
+      "type": "esp32_wroom",
+      "name": "ESP32 WeMos D1 R32",
+      "x": 220.25,
+      "y": 179,
+      "width": 276.28,
+      "height": 210,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "mcu": "ESP32-WROOM-32",
+        "voltaje_operacion": 3.3,
+        "flash_mb": 4,
+        "isPowerSource": true,
+        "macAddress": "57:D8:31:C7:2B:6E"
+      },
+      "locked": false
+    },
+    {
+      "id": "l298n_svcmbg4",
+      "type": "l298n",
+      "name": "L298N Puente H",
+      "x": 323.8062921289086,
+      "y": -43.40952707323956,
+      "width": 169.29,
+      "height": 169.29,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "modelo": "L298N",
+        "jumperEnaInstalled": true,
+        "jumperEnbInstalled": true
+      },
+      "locked": false
+    },
+    {
+      "id": "battery_18650_5wasxgq",
+      "type": "battery_18650",
+      "name": "Batería 18650 (portapilas x2)",
+      "x": -45.20620775851154,
+      "y": 101.25866578157256,
+      "width": 217.1906,
+      "height": 113.38971,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "modelo": "2x pilas 18650 en serie (~7.4V nominal)",
+        "voltaje": 7.4,
+        "celdas": 2,
+        "isPowerSource": true
+      },
+      "locked": false
+    },
+    {
+      "id": "switch_n38k812",
+      "type": "switch",
+      "name": "Interruptor ON/OFF",
+      "x": 238.79925040525205,
+      "y": 122.13513795759874,
+      "width": 40,
+      "height": 26,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "modelo": "Interruptor de palanca ON/OFF (clic para cambiar de estado; queda fijo, no es momentáneo)"
+      },
+      "locked": false
+    },
+    {
+      "id": "motor_5tm78vd",
+      "type": "motor",
+      "name": "Motor DC (reductora)",
+      "x": 207.78970367558725,
+      "y": 70,
+      "width": 193.465,
+      "height": 93.215,
+      "rotation": 270,
+      "scale": 1,
+      "flipX": false,
+      "properties": {},
+      "locked": false
+    },
+    {
+      "id": "motor_drdw7iy",
+      "type": "motor",
+      "name": "Motor DC (reductora)",
+      "x": 512.402189360445,
+      "y": 68,
+      "width": 193.465,
+      "height": 93.215,
+      "rotation": 270,
+      "scale": 1,
+      "flipX": false,
+      "properties": {},
+      "locked": false
+    },
+    {
+      "id": "hcsr04_fw1d82m",
+      "type": "hcsr04",
+      "name": "HC-SR04 Ultrasónico",
+      "x": 540.6345000187583,
+      "y": 183.19899891201874,
+      "width": 127.56,
+      "height": 56.69,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "distance": 100
+      },
+      "locked": false
+    }
+  ],
+  "wires": [
+    {
+      "id": "wire_2z11igq",
+      "from": {
+        "componentId": "esp32_wroom_8mtoh8e",
+        "pinId": "io26"
+      },
+      "to": {
+        "componentId": "l298n_svcmbg4",
+        "pinId": "in4"
+      },
+      "points": [],
+      "color": "#2ecc71",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_lgx3hh3",
+      "from": {
+        "componentId": "esp32_wroom_8mtoh8e",
+        "pinId": "io25"
+      },
+      "to": {
+        "componentId": "l298n_svcmbg4",
+        "pinId": "in3"
+      },
+      "points": [],
+      "color": "#bb86fc",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_pthfld6",
+      "from": {
+        "componentId": "esp32_wroom_8mtoh8e",
+        "pinId": "io17"
+      },
+      "to": {
+        "componentId": "l298n_svcmbg4",
+        "pinId": "in2"
+      },
+      "points": [],
+      "color": "#4da3ff",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_6i1gfn1",
+      "from": {
+        "componentId": "esp32_wroom_8mtoh8e",
+        "pinId": "io16"
+      },
+      "to": {
+        "componentId": "l298n_svcmbg4",
+        "pinId": "in1"
+      },
+      "points": [],
+      "color": "#ff66cc",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_9k9kzep",
+      "from": {
+        "componentId": "battery_18650_5wasxgq",
+        "pinId": "vcc"
+      },
+      "to": {
+        "componentId": "switch_n38k812",
+        "pinId": "term1"
+      },
+      "points": [],
+      "color": "#ff5252",
+      "connectorType": "macho-macho"
+    },
+    {
+      "id": "wire_jherafu",
+      "from": {
+        "componentId": "switch_n38k812",
+        "pinId": "term2"
+      },
+      "to": {
+        "componentId": "l298n_svcmbg4",
+        "pinId": "power_12v"
+      },
+      "points": [],
+      "color": "#ff5252",
+      "connectorType": "macho-macho"
+    },
+    {
+      "id": "wire_31o41xx",
+      "from": {
+        "componentId": "battery_18650_5wasxgq",
+        "pinId": "gnd"
+      },
+      "to": {
+        "componentId": "l298n_svcmbg4",
+        "pinId": "power_gnd"
+      },
+      "points": [
+        {
+          "x": 177.22239224148845,
+          "y": 161.44785481458473
+        },
+        {
+          "x": 378.26661682128906,
+          "y": 161.44785481458473
+        },
+        {
+          "x": 378.26661682128906,
+          "y": 124.09047292676044
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "macho-macho"
+    },
+    {
+      "id": "wire_krffl1e",
+      "from": {
+        "componentId": "esp32_wroom_8mtoh8e",
+        "pinId": "gnd_0"
+      },
+      "to": {
+        "componentId": "l298n_svcmbg4",
+        "pinId": "power_gnd"
+      },
+      "points": [
+        {
+          "x": 330.53,
+          "y": 161.6950454711914
+        },
+        {
+          "x": 377.9262921289086,
+          "y": 161.6950454711914
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "macho-macho"
+    },
+    {
+      "id": "wire_unozd6i",
+      "from": {
+        "componentId": "motor_5tm78vd",
+        "pinId": "pin2"
+      },
+      "to": {
+        "componentId": "l298n_svcmbg4",
+        "pinId": "out1"
+      },
+      "points": [],
+      "color": "#f2994a",
+      "connectorType": "macho-macho"
+    },
+    {
+      "id": "wire_wq3g5vs",
+      "from": {
+        "componentId": "motor_5tm78vd",
+        "pinId": "pin1"
+      },
+      "to": {
+        "componentId": "l298n_svcmbg4",
+        "pinId": "out2"
+      },
+      "points": [
+        {
+          "x": 230.673828125,
+          "y": 61.91408615869362
+        },
+        {
+          "x": 230.673828125,
+          "y": 80.23047292676044
+        }
+      ],
+      "color": "#2ecc71",
+      "connectorType": "macho-macho"
+    },
+    {
+      "id": "wire_8dlkkfx",
+      "from": {
+        "componentId": "l298n_svcmbg4",
+        "pinId": "out4"
+      },
+      "to": {
+        "componentId": "motor_drdw7iy",
+        "pinId": "pin1"
+      },
+      "points": [],
+      "color": "#f2994a",
+      "connectorType": "macho-macho"
+    },
+    {
+      "id": "wire_vilo8hw",
+      "from": {
+        "componentId": "l298n_svcmbg4",
+        "pinId": "out3"
+      },
+      "to": {
+        "componentId": "motor_drdw7iy",
+        "pinId": "pin2"
+      },
+      "points": [],
+      "color": "#2ecc71",
+      "connectorType": "macho-macho"
+    },
+    {
+      "id": "wire_05ew04r",
+      "from": {
+        "componentId": "hcsr04_fw1d82m",
+        "pinId": "vcc"
+      },
+      "to": {
+        "componentId": "esp32_wroom_8mtoh8e",
+        "pinId": "3v3"
+      },
+      "points": [
+        {
+          "x": 592.7215000187583,
+          "y": 413.528011702556
+        },
+        {
+          "x": 366.53,
+          "y": 413.528011702556
+        }
+      ],
+      "color": "#ff5252",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_8lnzx3y",
+      "from": {
+        "componentId": "hcsr04_fw1d82m",
+        "pinId": "gnd"
+      },
+      "to": {
+        "componentId": "esp32_wroom_8mtoh8e",
+        "pinId": "gnd_2"
+      },
+      "points": [
+        {
+          "x": 614.3205000187584,
+          "y": 400.4185085267168
+        },
+        {
+          "x": 396.53,
+          "y": 400.4185085267168
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_s6nkl4c",
+      "from": {
+        "componentId": "hcsr04_fw1d82m",
+        "pinId": "trig"
+      },
+      "to": {
+        "componentId": "esp32_wroom_8mtoh8e",
+        "pinId": "io12"
+      },
+      "points": [
+        {
+          "x": 599.9215000187584,
+          "y": 265.1284437534619
+        },
+        {
+          "x": 509.3774963816584,
+          "y": 265.1284437534619
+        },
+        {
+          "x": 509.3774963816584,
+          "y": 173.02465057373047
+        },
+        {
+          "x": 390.53,
+          "y": 173.02465057373047
+        }
+      ],
+      "color": "#2ecc71",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_vk7ohbm",
+      "from": {
+        "componentId": "esp32_wroom_8mtoh8e",
+        "pinId": "io13"
+      },
+      "to": {
+        "componentId": "hcsr04_fw1d82m",
+        "pinId": "echo"
+      },
+      "points": [
+        {
+          "x": 380.53,
+          "y": 167.27465057373047
+        },
+        {
+          "x": 524.0242749268234,
+          "y": 167.27465057373047
+        },
+        {
+          "x": 524.0242749268234,
+          "y": 252.6075493224584
+        },
+        {
+          "x": 607.1215000187583,
+          "y": 252.6075493224584
+        }
+      ],
+      "color": "#26c6da",
+      "connectorType": "hembra-macho"
+    }
+  ],
+  "annotations": []
+}

@@ -1,0 +1,114 @@
+{
+  "version": "1.0",
+  "timestamp": 1793679858314,
+  "components": [
+    {
+      "id": "esp32_wroom_srmj1ua",
+      "type": "esp32_wroom",
+      "name": "ESP32 WeMos D1 R32",
+      "x": 400,
+      "y": 150,
+      "width": 276.28,
+      "height": 210,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "mcu": "ESP32-WROOM-32",
+        "voltaje_operacion": 3.3,
+        "flash_mb": 4,
+        "isPowerSource": true,
+        "macAddress": "69:D7:50:5A:DD:18"
+      },
+      "locked": false
+    },
+    {
+      "id": "ky-005_oekru73",
+      "type": "ky-005",
+      "name": "KY-005 Transmisor Infrarrojo",
+      "x": 706.3765325070397,
+      "y": 153.06856917582266,
+      "width": 53.150391,
+      "height": 118.4822,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "modelo": "KY-005: LED infrarrojo (protocolo NEC) -- se maneja con machine.Pin + la librería ir_tx (NEC), igual que en hardware real. El protocolo IR de verdad no se simula a nivel de pulsos (no es viable con la latencia de este simulador) -- NEC.transmit(addr, cmd) manda el código directo a cualquier KY-022 bien cableado y alimentado del lienzo, como un control remoto real (sin 'emparejar' con uno en particular)."
+      },
+      "locked": false
+    }
+  ],
+  "wires": [
+    {
+      "id": "wire_gesvb16",
+      "from": {
+        "componentId": "ky-005_oekru73",
+        "pinId": "s"
+      },
+      "to": {
+        "componentId": "esp32_wroom_srmj1ua",
+        "pinId": "io4"
+      },
+      "points": [
+        {
+          "x": 724.1665325070396,
+          "y": 367.4429171037308
+        },
+        {
+          "x": 616.28,
+          "y": 367.4429171037308
+        }
+      ],
+      "color": "#f2994a",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_tixa09e",
+      "from": {
+        "componentId": "esp32_wroom_srmj1ua",
+        "pinId": "3v3"
+      },
+      "to": {
+        "componentId": "ky-005_oekru73",
+        "pinId": "vcc"
+      },
+      "points": [
+        {
+          "x": 546.28,
+          "y": 387.03622733435043
+        },
+        {
+          "x": 733.2065325070397,
+          "y": 387.03622733435043
+        }
+      ],
+      "color": "#ff5252",
+      "connectorType": "hembra-hembra"
+    },
+    {
+      "id": "wire_xkb8bpw",
+      "from": {
+        "componentId": "esp32_wroom_srmj1ua",
+        "pinId": "gnd_2"
+      },
+      "to": {
+        "componentId": "ky-005_oekru73",
+        "pinId": "gnd"
+      },
+      "points": [
+        {
+          "x": 576.28,
+          "y": 377.7060796054839
+        },
+        {
+          "x": 742.2065325070397,
+          "y": 377.7060796054839
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "hembra-hembra"
+    }
+  ],
+  "annotations": []
+}

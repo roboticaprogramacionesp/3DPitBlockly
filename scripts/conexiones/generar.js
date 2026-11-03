@@ -706,6 +706,8 @@ function material(def, piezas, trazo) {
     let t;
     if (c.con.op.tipoCable) {
       t = c.con.op.tipoCable.split("-").sort().reverse().join("-");
+      // la placa tiene conector hembra: esa punta siempre es macho
+      if (t === "hembra-hembra" && pzs.some((p) => p.esPlaca)) t = "macho-hembra";
     } else {
       const puntas = [[c.con.A, c.pinA], [c.con.B, c.pinB]].map(([E, id], k) => puntaCable(pzs[k], id)).sort();
       t = puntas[0] === puntas[1] ? `${puntas[0]}-${puntas[1]}` : "macho-hembra";
@@ -740,6 +742,10 @@ const NOMBRES_SIM = {
   battery_18650: ["Batería", "Portapilas 2×18650 (7.4 V)"], switch: ["Interruptor", "Interruptor ON/OFF"], l298n: ["L298N", "Puente H L298N"],
   motor: ["Motor", "Motor DC con reductora"], "ky-019": ["Relevador", "Módulo relevador KY-019"], clavija_127v: ["Clavija", "Clavija para toma de 127 V"],
   bombillo: ["Foco", "Foco con socket"], semaforo: ["Semáforo", "Módulo semáforo"], tcrt5000: ["Sensor IR", "Sensor infrarrojo TCRT5000"], sg90: ["Servo", "Servo SG90"],
+  "ky-005": ["KY-005", "Emisor infrarrojo KY-005"], dht11: ["DHT11", "Sensor DHT11 (KY-015)"], ky_001: ["KY-001", "Sensor KY-001 (DS18B20)"],
+  adkey_real: ["ADKey", "Teclado analógico ADKey"], hcsr04: ["HC-SR04", "Sensor ultrasónico HC-SR04"], "ky-022": ["KY-022", "Receptor infrarrojo KY-022 + control"],
+  oled: ["OLED", "Pantalla OLED 0.96\" I2C"], lcd_16x2_i2c: ["LCD", "LCD 16x2 con módulo I2C"], ds3231: ["DS3231", "Reloj RTC DS3231"],
+  mpu6050: ["MPU6050", "Módulo MPU6050"], tm1637: ["TM1637", "Display TM1637"], max7219: ["MAX7219", "Matriz 8x8 MAX7219"],
 };
 
 function desdeSimulador(def) {

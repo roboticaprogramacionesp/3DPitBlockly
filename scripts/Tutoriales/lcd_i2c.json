@@ -1,0 +1,155 @@
+{
+  "version": "1.0",
+  "timestamp": 1793681318244,
+  "components": [
+    {
+      "id": "esp32_wroom_ntgj3sk",
+      "type": "esp32_wroom",
+      "name": "ESP32 WeMos D1 R32",
+      "x": 220,
+      "y": 220,
+      "width": 276.28,
+      "height": 210,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "mcu": "ESP32-WROOM-32",
+        "voltaje_operacion": 3.3,
+        "flash_mb": 4,
+        "isPowerSource": true,
+        "macAddress": "69:68:D5:37:28:14"
+      },
+      "locked": false
+    },
+    {
+      "id": "lcd_16x2_i2c_ryiyxfo",
+      "type": "lcd_16x2_i2c",
+      "name": "LCD 16x2 I2C",
+      "x": 557.6816237073415,
+      "y": 224.90001423653058,
+      "width": 234.692,
+      "height": 102.047,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "modelo": "LCD1602 + backpack PCF8574",
+        "i2cAddress": "0x27",
+        "colorScheme": "yellow_green"
+      },
+      "locked": false
+    }
+  ],
+  "wires": [
+    {
+      "id": "wire_v0gjsnd",
+      "from": {
+        "componentId": "lcd_16x2_i2c_ryiyxfo",
+        "pinId": "gnd"
+      },
+      "to": {
+        "componentId": "esp32_wroom_ntgj3sk",
+        "pinId": "gnd_2"
+      },
+      "points": [
+        {
+          "x": 507.25686664779266,
+          "y": 239.3000142365306
+        },
+        {
+          "x": 507.25686664779266,
+          "y": 438.72068994146747
+        },
+        {
+          "x": 396.28,
+          "y": 438.72068994146747
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_l56jnrz",
+      "from": {
+        "componentId": "esp32_wroom_ntgj3sk",
+        "pinId": "5v_2"
+      },
+      "to": {
+        "componentId": "lcd_16x2_i2c_ryiyxfo",
+        "pinId": "vcc"
+      },
+      "points": [
+        {
+          "x": 376.28,
+          "y": 447.0992112621094
+        },
+        {
+          "x": 517.2089891160123,
+          "y": 447.0992112621094
+        },
+        {
+          "x": 517.2089891160123,
+          "y": 246.50001423653057
+        }
+      ],
+      "color": "#ff5252",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_mlkgqmn",
+      "from": {
+        "componentId": "esp32_wroom_ntgj3sk",
+        "pinId": "io21"
+      },
+      "to": {
+        "componentId": "lcd_16x2_i2c_ryiyxfo",
+        "pinId": "sda"
+      },
+      "points": [
+        {
+          "x": 310.28,
+          "y": 208.03313764207064
+        },
+        {
+          "x": 543.8033950689717,
+          "y": 208.03313764207064
+        },
+        {
+          "x": 543.8033950689717,
+          "y": 253.7000142365306
+        }
+      ],
+      "color": "#2ecc71",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_x20bvdm",
+      "from": {
+        "componentId": "lcd_16x2_i2c_ryiyxfo",
+        "pinId": "scl"
+      },
+      "to": {
+        "componentId": "esp32_wroom_ntgj3sk",
+        "pinId": "io22"
+      },
+      "points": [
+        {
+          "x": 529.3416660892285,
+          "y": 260.9000142365306
+        },
+        {
+          "x": 529.3416660892285,
+          "y": 196.8369603674308
+        },
+        {
+          "x": 300.28,
+          "y": 196.8369603674308
+        }
+      ],
+      "color": "#bb86fc",
+      "connectorType": "hembra-macho"
+    }
+  ],
+  "annotations": []
+}

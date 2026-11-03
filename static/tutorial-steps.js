@@ -562,7 +562,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Conexión física del HC-SR04",
-        desc: "Conecta el sensor HC-SR04 al ESP32 así:<br>⚡ <b>VCC</b> → 5V<br>⏚ <b>GND</b> → GND<br>📌 <b>TRIG</b> → pin <b>12</b> (envía el pulso)<br>📌 <b>ECHO</b> → pin <b>13</b> (recibe el rebote)<br><br>El sensor tiene un rango de detección de <b>2 cm a 400 cm</b>.",
+        desc: "Conecta el sensor HC-SR04 al ESP32 así:<br>⚡ <b>VCC</b> → 3.3V (si tu sensor no mide bien, pásalo a 5V)<br>⏚ <b>GND</b> → GND<br>📌 <b>TRIG</b> → pin <b>12</b> (envía el pulso)<br>📌 <b>ECHO</b> → pin <b>13</b> (recibe el rebote)<br><br>El sensor tiene un rango de detección de <b>2 cm a 400 cm</b>.",
         highlightCat: null, bloque: null
       },
       {
@@ -816,7 +816,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Conexión física completa",
-        desc: "Este carrito usa <b>dos módulos a la vez</b>, cada uno con sus propios pines (no se cruzan):<br><br>📡 <b>HC-SR04</b> (sensor, al frente del carrito):<br>⚡ VCC → 5V &nbsp; ⏚ GND → GND<br>📌 TRIG → pin <b>12</b> &nbsp; 📌 ECHO → pin <b>13</b><br><br>⚡ <b>L298N</b> (puente H, controla las dos ruedas):<br>⚡ 12V → batería de los motores &nbsp; ⏚ GND → GND del ESP32 y de la batería<br>📌 IN1 → pin <b>16</b> &nbsp; 📌 IN2 → pin <b>17</b> &nbsp; 📌 IN3 → pin <b>25</b> &nbsp; 📌 IN4 → pin <b>26</b><br>🔌 OUT1/OUT2 → Motor izquierdo (A) &nbsp; 🔌 OUT3/OUT4 → Motor derecho (B)<br><br>⚠️ No alimentes los motores directamente del ESP32: usan la batería del L298N. El botón de diagrama muestra el cableado del L298N.",
+        desc: "Este carrito usa <b>dos módulos a la vez</b>, cada uno con sus propios pines (no se cruzan):<br><br>📡 <b>HC-SR04</b> (sensor, al frente del carrito):<br>⚡ VCC → 3.3V &nbsp; ⏚ GND → GND<br>📌 TRIG → pin <b>12</b> &nbsp; 📌 ECHO → pin <b>13</b><br><br>⚡ <b>L298N</b> (puente H, controla las dos ruedas):<br>⚡ 12V → pilas (+), pasando por el interruptor &nbsp; ⏚ GND → GND del ESP32 y pilas (−)<br>📌 IN1 → pin <b>16</b> &nbsp; 📌 IN2 → pin <b>17</b> &nbsp; 📌 IN3 → pin <b>25</b> &nbsp; 📌 IN4 → pin <b>26</b><br>🔌 OUT1/OUT2 → Motor izquierdo (A) &nbsp; 🔌 OUT3/OUT4 → Motor derecho (B)<br><br>⚠️ No alimentes los motores directamente del ESP32: usan la batería del L298N. El botón de diagrama muestra el cableado del L298N.",
         highlightCat: null, bloque: null
       },
       {
@@ -3950,7 +3950,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Conexión física",
-        desc: "El TM1637 tiene 4 pines:<br>⚡ <b>VCC</b> → <b>5V</b> (o 3.3V, revisa tu módulo)<br>⏚ <b>GND</b> → GND<br>📌 <b>CLK</b> → pin <b>21</b><br>📌 <b>DIO</b> → pin <b>22</b>",
+        desc: "El TM1637 tiene 4 pines:<br>⚡ <b>VCC</b> → <b>3.3V</b> (también funciona con 5V)<br>⏚ <b>GND</b> → GND<br>📌 <b>CLK</b> → pin <b>22</b><br>📌 <b>DIO</b> → pin <b>21</b>",
         highlightCat: null, bloque: null
       },
       {
@@ -3965,7 +3965,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Arrastra: Inicializar TM1637",
-        desc: "Arrastra el bloque <em>iniciar CLK DIO brillo</em> al área de trabajo. Deja los pines por defecto (CLK <b>21</b>, DIO <b>22</b>) y el brillo en <b>7</b> (máximo). Este bloque va <b>una sola vez</b> al inicio.",
+        desc: "Arrastra el bloque <em>iniciar CLK DIO brillo</em> al área de trabajo. Deja los pines por defecto (CLK <b>22</b>, DIO <b>21</b>) y el brillo en <b>7</b> (máximo). Este bloque va <b>una sola vez</b> al inicio.",
         highlightCat: "TM1637", expandCat: "Pantallas",
         bloque: "tm1637_init", bloqueLabel: "iniciar CLK DIO brillo"
       },
@@ -4009,7 +4009,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Conexión física",
-        desc: "El módulo MAX7219 se conecta por SPI, 5 pines:<br>⚡ <b>VCC</b> → <b>5V</b><br>⏚ <b>GND</b> → GND<br>📌 <b>DIN</b> → pin <b>13</b><br>📌 <b>CS</b> → pin <b>5</b><br>📌 <b>CLK</b> → pin <b>18</b>",
+        desc: "El módulo MAX7219 se conecta por SPI, 5 pines:<br>⚡ <b>VCC</b> → <b>3.3V</b> (si se ve débil o falla, usa 5V)<br>⏚ <b>GND</b> → GND<br>📌 <b>DIN</b> → pin <b>13</b><br>📌 <b>CS</b> → pin <b>5</b><br>📌 <b>CLK</b> → pin <b>18</b>",
         highlightCat: null, bloque: null
       },
       {

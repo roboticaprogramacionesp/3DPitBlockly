@@ -1,0 +1,153 @@
+{
+  "version": "1.0",
+  "timestamp": 1793680232855,
+  "components": [
+    {
+      "id": "esp32_wroom_ni15l20",
+      "type": "esp32_wroom",
+      "name": "ESP32 WeMos D1 R32",
+      "x": 218,
+      "y": 164,
+      "width": 276.28,
+      "height": 210,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "mcu": "ESP32-WROOM-32",
+        "voltaje_operacion": 3.3,
+        "flash_mb": 4,
+        "isPowerSource": true,
+        "macAddress": "34:21:19:51:1F:D1"
+      },
+      "locked": false
+    },
+    {
+      "id": "hcsr04_4711g8m",
+      "type": "hcsr04",
+      "name": "HC-SR04 Ultrasónico",
+      "x": 533.5297491372647,
+      "y": 170.45681660419163,
+      "width": 127.56,
+      "height": 56.69,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "distance": 100
+      },
+      "locked": false
+    }
+  ],
+  "wires": [
+    {
+      "id": "wire_fy1ftsq",
+      "from": {
+        "componentId": "hcsr04_4711g8m",
+        "pinId": "vcc"
+      },
+      "to": {
+        "componentId": "esp32_wroom_ni15l20",
+        "pinId": "3v3"
+      },
+      "points": [
+        {
+          "x": 585.6167491372647,
+          "y": 396.6393521569085
+        },
+        {
+          "x": 364.28,
+          "y": 396.6393521569085
+        }
+      ],
+      "color": "#ff5252",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_rknmqyp",
+      "from": {
+        "componentId": "esp32_wroom_ni15l20",
+        "pinId": "gnd_2"
+      },
+      "to": {
+        "componentId": "hcsr04_4711g8m",
+        "pinId": "gnd"
+      },
+      "points": [
+        {
+          "x": 394.28,
+          "y": 383.60000527019446
+        },
+        {
+          "x": 607.2157491372648,
+          "y": 383.60000527019446
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_61rf81s",
+      "from": {
+        "componentId": "esp32_wroom_ni15l20",
+        "pinId": "io12"
+      },
+      "to": {
+        "componentId": "hcsr04_4711g8m",
+        "pinId": "trig"
+      },
+      "points": [
+        {
+          "x": 388.28,
+          "y": 149.09025984221898
+        },
+        {
+          "x": 503.469931867555,
+          "y": 149.09025984221898
+        },
+        {
+          "x": 503.469931867555,
+          "y": 254.93941583069682
+        },
+        {
+          "x": 592.8167491372648,
+          "y": 254.93941583069682
+        }
+      ],
+      "color": "#2ecc71",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_5q128ov",
+      "from": {
+        "componentId": "esp32_wroom_ni15l20",
+        "pinId": "io13"
+      },
+      "to": {
+        "componentId": "hcsr04_4711g8m",
+        "pinId": "echo"
+      },
+      "points": [
+        {
+          "x": 378.28,
+          "y": 135.41327590129373
+        },
+        {
+          "x": 515.8235825256952,
+          "y": 135.41327590129373
+        },
+        {
+          "x": 515.8235825256952,
+          "y": 242.2858760661075
+        },
+        {
+          "x": 600.0167491372647,
+          "y": 242.2858760661075
+        }
+      ],
+      "color": "#26c6da",
+      "connectorType": "hembra-macho"
+    }
+  ],
+  "annotations": []
+}
