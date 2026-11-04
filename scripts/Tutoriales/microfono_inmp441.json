@@ -1,0 +1,160 @@
+{
+  "version": "1.0",
+  "timestamp": 1793804979253,
+  "components": [
+    {
+      "id": "esp32_wroom_0krvh90",
+      "type": "esp32_wroom",
+      "name": "ESP32 WeMos D1 R32",
+      "x": 280,
+      "y": 220,
+      "width": 276.28,
+      "height": 210,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "mcu": "ESP32-WROOM-32",
+        "voltaje_operacion": 3.3,
+        "flash_mb": 4,
+        "isPowerSource": true,
+        "macAddress": "A0:CD:9C:98:D5:D3"
+      },
+      "locked": false
+    },
+    {
+      "id": "inmp441_1f07q1t",
+      "type": "inmp441",
+      "name": "INMP441 Micrófono I2S",
+      "x": 581.1842136660381,
+      "y": 308.78069799233185,
+      "width": 42.51961,
+      "height": 42.51959,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "info": "Micrófono digital I2S (machine.I2S, modo RX) -- usa el micrófono REAL de tu PC (con tu permiso) para alimentar I2S.readinto() en modo navegador. Ver inmp441.hal.py."
+      },
+      "locked": false
+    }
+  ],
+  "wires": [
+    {
+      "id": "wire_hf85fh8",
+      "from": {
+        "componentId": "esp32_wroom_0krvh90",
+        "pinId": "3v3"
+      },
+      "to": {
+        "componentId": "inmp441_1f07q1t",
+        "pinId": "vdd"
+      },
+      "points": [
+        {
+          "x": 426.28,
+          "y": 459.0251228035832
+        },
+        {
+          "x": 602.234213666038,
+          "y": 459.0251228035832
+        }
+      ],
+      "color": "#ff5252",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_lz6rfuh",
+      "from": {
+        "componentId": "inmp441_1f07q1t",
+        "pinId": "gnd"
+      },
+      "to": {
+        "componentId": "esp32_wroom_0krvh90",
+        "pinId": "gnd_2"
+      },
+      "points": [
+        {
+          "x": 609.4142136660381,
+          "y": 470.70824574105023
+        },
+        {
+          "x": 456.28,
+          "y": 470.70824574105023
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_0h41ppe",
+      "from": {
+        "componentId": "esp32_wroom_0krvh90",
+        "pinId": "io32"
+      },
+      "to": {
+        "componentId": "inmp441_1f07q1t",
+        "pinId": "sd"
+      },
+      "points": [
+        {
+          "x": 444.6,
+          "y": 444.70455282431675
+        },
+        {
+          "x": 595.0442136660381,
+          "y": 444.70455282431675
+        }
+      ],
+      "color": "#4da3ff",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_6aia4tq",
+      "from": {
+        "componentId": "esp32_wroom_0krvh90",
+        "pinId": "io26"
+      },
+      "to": {
+        "componentId": "inmp441_1f07q1t",
+        "pinId": "sck"
+      },
+      "points": [
+        {
+          "x": 516.28,
+          "y": 207.2750457686153
+        },
+        {
+          "x": 595.0442136660381,
+          "y": 207.2750457686153
+        }
+      ],
+      "color": "#bb86fc",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_nrgfce4",
+      "from": {
+        "componentId": "esp32_wroom_0krvh90",
+        "pinId": "io25"
+      },
+      "to": {
+        "componentId": "inmp441_1f07q1t",
+        "pinId": "ws"
+      },
+      "points": [
+        {
+          "x": 506.28,
+          "y": 198.13739550967213
+        },
+        {
+          "x": 602.234213666038,
+          "y": 198.13739550967213
+        }
+      ],
+      "color": "#2ecc71",
+      "connectorType": "hembra-macho"
+    }
+  ],
+  "annotations": []
+}

@@ -1,0 +1,215 @@
+{
+  "version": "1.0",
+  "timestamp": 1793803770658,
+  "components": [
+    {
+      "id": "esp32_wroom_o47n5rv",
+      "type": "esp32_wroom",
+      "name": "ESP32 WeMos D1 R32",
+      "x": 400,
+      "y": 150,
+      "width": 276.28,
+      "height": 210,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "mcu": "ESP32-WROOM-32",
+        "voltaje_operacion": 3.3,
+        "flash_mb": 4,
+        "isPowerSource": true,
+        "macAddress": "06:10:5B:D1:C0:B0"
+      },
+      "locked": false
+    },
+    {
+      "id": "sdcard_7xc07m9",
+      "type": "sdcard",
+      "name": "Módulo Lector microSD (SPI)",
+      "x": 801.4637915262002,
+      "y": 272.0686296888638,
+      "width": 68.03,
+      "height": 119.06,
+      "rotation": 180,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "info": "Lector de tarjetas microSD por SPI (os.mount en \"/sd\"). La comunicacion SPI real a nivel de bloques (CMD0..CMD58, CSD, etc.) no se simula -- el runtime de este simulador no trae un driver FAT compilado (no existe os.VfsFat), asi que en vez de eso los archivos de \"/sd\" se guardan de verdad en el sistema de archivos del simulador (persisten mientras dure la simulacion)."
+      },
+      "locked": false
+    }
+  ],
+  "wires": [
+    {
+      "id": "wire_5op0lh7",
+      "from": {
+        "componentId": "esp32_wroom_o47n5rv",
+        "pinId": "5v_2"
+      },
+      "to": {
+        "componentId": "sdcard_7xc07m9",
+        "pinId": "vcc"
+      },
+      "points": [
+        {
+          "x": 556.28,
+          "y": 388.8748360456859
+        },
+        {
+          "x": 778.7637915262002,
+          "y": 388.8748360456859
+        }
+      ],
+      "color": "#ff5252",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_ku8kgor",
+      "from": {
+        "componentId": "esp32_wroom_o47n5rv",
+        "pinId": "gnd_2"
+      },
+      "to": {
+        "componentId": "sdcard_7xc07m9",
+        "pinId": "gnd"
+      },
+      "points": [
+        {
+          "x": 576.28,
+          "y": 374.05026971705104
+        },
+        {
+          "x": 785.9637915262002,
+          "y": 374.05026971705104
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_bmm0ifc",
+      "from": {
+        "componentId": "sdcard_7xc07m9",
+        "pinId": "miso"
+      },
+      "to": {
+        "componentId": "esp32_wroom_o47n5rv",
+        "pinId": "io19"
+      },
+      "points": [
+        {
+          "x": 771.5637915262002,
+          "y": 326.165854082274
+        },
+        {
+          "x": 679.637699853309,
+          "y": 326.165854082274
+        },
+        {
+          "x": 679.637699853309,
+          "y": 119.52029313707087
+        },
+        {
+          "x": 530.28,
+          "y": 119.52029313707087
+        }
+      ],
+      "color": "#bb86fc",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_de6bwwt",
+      "from": {
+        "componentId": "sdcard_7xc07m9",
+        "pinId": "mosi"
+      },
+      "to": {
+        "componentId": "esp32_wroom_o47n5rv",
+        "pinId": "io23"
+      },
+      "points": [
+        {
+          "x": 764.3637915262002,
+          "y": 313.7256616973376
+        },
+        {
+          "x": 695.8790421307447,
+          "y": 313.7256616973376
+        },
+        {
+          "x": 695.8790421307447,
+          "y": 129.88712378946963
+        },
+        {
+          "x": 540.28,
+          "y": 129.88712378946963
+        }
+      ],
+      "color": "#4da3ff",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_pwh27pg",
+      "from": {
+        "componentId": "esp32_wroom_o47n5rv",
+        "pinId": "io18"
+      },
+      "to": {
+        "componentId": "sdcard_7xc07m9",
+        "pinId": "sck"
+      },
+      "points": [
+        {
+          "x": 520.28,
+          "y": 105.35229492326717
+        },
+        {
+          "x": 708.6648299510282,
+          "y": 105.35229492326717
+        },
+        {
+          "x": 708.6648299510282,
+          "y": 299.90315939702197
+        },
+        {
+          "x": 757.1637915262003,
+          "y": 299.90315939702197
+        }
+      ],
+      "color": "#2ecc71",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_v8znlf7",
+      "from": {
+        "componentId": "esp32_wroom_o47n5rv",
+        "pinId": "io5"
+      },
+      "to": {
+        "componentId": "sdcard_7xc07m9",
+        "pinId": "cs"
+      },
+      "points": [
+        {
+          "x": 550.28,
+          "y": 140.59952493129748
+        },
+        {
+          "x": 721.105008226228,
+          "y": 140.59952493129748
+        },
+        {
+          "x": 721.105008226228,
+          "y": 286.7718616883862
+        },
+        {
+          "x": 749.9637915262002,
+          "y": 286.7718616883862
+        }
+      ],
+      "color": "#ff66cc",
+      "connectorType": "hembra-macho"
+    }
+  ],
+  "annotations": []
+}

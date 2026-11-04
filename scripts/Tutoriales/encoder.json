@@ -1,0 +1,155 @@
+{
+  "version": "1.0",
+  "timestamp": 1793737001122,
+  "components": [
+    {
+      "id": "esp32_wroom_lvc80em",
+      "type": "esp32_wroom",
+      "name": "ESP32 WeMos D1 R32",
+      "x": 400,
+      "y": 150,
+      "width": 276.28,
+      "height": 210,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "mcu": "ESP32-WROOM-32",
+        "voltaje_operacion": 3.3,
+        "flash_mb": 4,
+        "isPowerSource": true,
+        "macAddress": "CB:1B:19:BB:B2:C4",
+        "espnowCode": "from machine import Pin\nfrom time import sleep\n\nled = Pin(2, Pin.OUT, value=0)\nwhile True:\n  led.value(1)\n  sleep(1)\n  led.value(0)\n  sleep(1)\n"
+      },
+      "locked": false
+    },
+    {
+      "id": "ky040_ojzi6d5",
+      "type": "ky040",
+      "name": "KY-040 Encoder Rotativo",
+      "x": 704.1110785440605,
+      "y": 149.12863994125303,
+      "width": 56.694,
+      "height": 89.736,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "modelo": "Encoder rotativo KY-040 (cuadratura CLK/DT + botón SW)",
+        "stepsPerRev": 20
+      },
+      "locked": false
+    }
+  ],
+  "wires": [
+    {
+      "id": "wire_h200mpf",
+      "from": {
+        "componentId": "esp32_wroom_lvc80em",
+        "pinId": "gnd_2"
+      },
+      "to": {
+        "componentId": "ky040_ojzi6d5",
+        "pinId": "gnd"
+      },
+      "points": [
+        {
+          "x": 576.28,
+          "y": 372.20325545201626
+        },
+        {
+          "x": 724.3120785440606,
+          "y": 372.20325545201626
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "hembra-hembra"
+    },
+    {
+      "id": "wire_gup1dbj",
+      "from": {
+        "componentId": "esp32_wroom_lvc80em",
+        "pinId": "3v3"
+      },
+      "to": {
+        "componentId": "ky040_ojzi6d5",
+        "pinId": "vcc"
+      },
+      "points": [
+        {
+          "x": 546.28,
+          "y": 386.41966792647645
+        },
+        {
+          "x": 731.8310785440606,
+          "y": 386.41966792647645
+        }
+      ],
+      "color": "#ff5252",
+      "connectorType": "hembra-hembra"
+    },
+    {
+      "id": "wire_bbzz7ty",
+      "from": {
+        "componentId": "ky040_ojzi6d5",
+        "pinId": "dt"
+      },
+      "to": {
+        "componentId": "esp32_wroom_lvc80em",
+        "pinId": "io18"
+      },
+      "points": [
+        {
+          "x": 746.9890785440606,
+          "y": 264.5919418185911
+        },
+        {
+          "x": 788.4167308645667,
+          "y": 264.5919418185911
+        },
+        {
+          "x": 788.4167308645667,
+          "y": 120.74117728007113
+        },
+        {
+          "x": 520.28,
+          "y": 120.74117728007113
+        }
+      ],
+      "color": "#bb86fc",
+      "connectorType": "hembra-hembra"
+    },
+    {
+      "id": "wire_k8vx6hc",
+      "from": {
+        "componentId": "esp32_wroom_lvc80em",
+        "pinId": "io19"
+      },
+      "to": {
+        "componentId": "ky040_ojzi6d5",
+        "pinId": "clk"
+      },
+      "points": [
+        {
+          "x": 530.28,
+          "y": 132.83581719356684
+        },
+        {
+          "x": 776.466657450211,
+          "y": 132.83581719356684
+        },
+        {
+          "x": 776.466657450211,
+          "y": 253.78218073683416
+        },
+        {
+          "x": 754.5690785440605,
+          "y": 253.78218073683416
+        }
+      ],
+      "color": "#2ecc71",
+      "connectorType": "hembra-hembra"
+    }
+  ],
+  "annotations": []
+}

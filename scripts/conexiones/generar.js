@@ -746,6 +746,11 @@ const NOMBRES_SIM = {
   adkey_real: ["ADKey", "Teclado analógico ADKey"], hcsr04: ["HC-SR04", "Sensor ultrasónico HC-SR04"], "ky-022": ["KY-022", "Receptor infrarrojo KY-022 + control"],
   oled: ["OLED", "Pantalla OLED 0.96\" I2C"], lcd_16x2_i2c: ["LCD", "LCD 16x2 con módulo I2C"], ds3231: ["DS3231", "Reloj RTC DS3231"],
   mpu6050: ["MPU6050", "Módulo MPU6050"], tm1637: ["TM1637", "Display TM1637"], max7219: ["MAX7219", "Matriz 8x8 MAX7219"],
+  bh1750: ["BH1750", "Sensor de luz BH1750"], bmp280: ["BMP280", "Sensor de presión BMP280"], qmc5883l: ["QMC5883L", "Brújula QMC5883L"],
+  tcs34725: ["TCS34725", "Sensor de color TCS34725"], "hc-06": ["HC-06", "Módulo Bluetooth HC-06"], gps: ["GPS", "Módulo GPS (NEO-6M)"],
+  fingerprint: ["Huella", "Sensor de huella FPM383C"], dfplayer: ["DFPlayer", "DFPlayer Mini + microSD con MP3"], bocina: ["Bocina", "Bocina de 8 Ω"],
+  ky040: ["KY-040", "Encoder rotatorio KY-040"], keypad3x4: ["Teclado", "Teclado matricial 4x3"], keypad4x4: ["Teclado", "Teclado matricial 4x4"],
+  rc522_real: ["RC522", "Lector RFID MFRC522 + tarjeta"], sdcard: ["SD", "Módulo microSD + memoria"], yf201: ["YF-201", "Sensor de flujo YF-201"],
 };
 
 function desdeSimulador(def) {
@@ -753,12 +758,14 @@ function desdeSimulador(def) {
   const placa = proy.components.find((c) => c.type === "esp32_wroom");
   const piezas = proy.components.map((c) => {
     const esPlaca = c === placa;
-    return { clave: esPlaca ? "esp" : c.id, comp: componente(c.type), s: c.scale || 1, x: c.x, y: c.y, rot: c.rotation || 0, flip: !!c.flipX, esPlaca, fija: true, props: c.properties || {} };
+    return { clave: esPlaca ? "esp" : c.id, comp: componente(c.type, c.properties || {}), s: c.scale || 1, x: c.x, y: c.y, rot: c.rotation || 0, flip: !!c.flipX, esPlaca, fija: true, props: c.properties || {} };
   });
   // Módulos con nombre corto; si hay dos iguales se numeran (Motor A, Motor B).
   const vistos = {};
   const modulos = proy.components.filter((c) => c !== placa).map((c) => {
-    const [corto, mat] = NOMBRES_SIM[c.type] || [c.name, c.name];
+    const [corto, mat] = c.type === "neopixel_matrix"
+      ? ["Matriz", componente(c.type, c.properties || {}).nombre]
+      : NOMBRES_SIM[c.type] || [c.name, c.name];
     const igual = proy.components.filter((o) => o.type === c.type).length;
     vistos[c.type] = (vistos[c.type] || 0) + 1;
     const ohm = c.type === "resistencia" && c.properties && c.properties.ohms;

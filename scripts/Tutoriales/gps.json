@@ -1,0 +1,161 @@
+{
+  "version": "1.0",
+  "timestamp": 1793736808635,
+  "components": [
+    {
+      "id": "esp32_wroom_lvc80em",
+      "type": "esp32_wroom",
+      "name": "ESP32 WeMos D1 R32",
+      "x": 400,
+      "y": 150,
+      "width": 276.28,
+      "height": 210,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "mcu": "ESP32-WROOM-32",
+        "voltaje_operacion": 3.3,
+        "flash_mb": 4,
+        "isPowerSource": true,
+        "macAddress": "CB:1B:19:BB:B2:C4",
+        "espnowCode": "from machine import Pin\nfrom time import sleep\n\nled = Pin(2, Pin.OUT, value=0)\nwhile True:\n  led.value(1)\n  sleep(1)\n  led.value(0)\n  sleep(1)\n"
+      },
+      "locked": false
+    },
+    {
+      "id": "gps_boqthnq",
+      "type": "gps",
+      "name": "Módulo GPS NEO-6M (UART)",
+      "x": 701.1140369827783,
+      "y": 146.61987646903424,
+      "width": 62.5,
+      "height": 88.75,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "modelo": "GPS NEO-6M: recibe por UART (TX del módulo -> RX del ESP32) oraciones NMEA reales (GPRMC+GGA con checksum) generadas a partir de la posición elegida en el panel. RX (configuración del módulo) no está implementado",
+        "lat": 19.4326,
+        "lon": -99.1332,
+        "altitude": 2240,
+        "speedKnots": 0,
+        "course": 0,
+        "satellites": 8,
+        "fixValid": true
+      },
+      "locked": false
+    }
+  ],
+  "wires": [
+    {
+      "id": "wire_xr9htef",
+      "from": {
+        "componentId": "esp32_wroom_lvc80em",
+        "pinId": "3v3"
+      },
+      "to": {
+        "componentId": "gps_boqthnq",
+        "pinId": "vcc"
+      },
+      "points": [
+        {
+          "x": 546.28,
+          "y": 379.1817732851339
+        },
+        {
+          "x": 712.3640369827783,
+          "y": 379.1817732851339
+        }
+      ],
+      "color": "#ff5252",
+      "connectorType": "hembra-hembra"
+    },
+    {
+      "id": "wire_8eo8wu8",
+      "from": {
+        "componentId": "esp32_wroom_lvc80em",
+        "pinId": "gnd_2"
+      },
+      "to": {
+        "componentId": "gps_boqthnq",
+        "pinId": "gnd"
+      },
+      "points": [
+        {
+          "x": 576.28,
+          "y": 366.6379166964474
+        },
+        {
+          "x": 723.6140369827783,
+          "y": 366.6379166964474
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "hembra-hembra"
+    },
+    {
+      "id": "wire_n0i5d5l",
+      "from": {
+        "componentId": "esp32_wroom_lvc80em",
+        "pinId": "io16"
+      },
+      "to": {
+        "componentId": "gps_boqthnq",
+        "pinId": "tx"
+      },
+      "points": [
+        {
+          "x": 606.28,
+          "y": 116.48768030319258
+        },
+        {
+          "x": 780.383928938005,
+          "y": 116.48768030319258
+        },
+        {
+          "x": 780.383928938005,
+          "y": 255.02622978592962
+        },
+        {
+          "x": 734.8640369827783,
+          "y": 255.02622978592962
+        }
+      ],
+      "color": "#2ecc71",
+      "connectorType": "hembra-hembra"
+    },
+    {
+      "id": "wire_q3mn6ob",
+      "from": {
+        "componentId": "gps_boqthnq",
+        "pinId": "rx"
+      },
+      "to": {
+        "componentId": "esp32_wroom_lvc80em",
+        "pinId": "io17"
+      },
+      "points": [
+        {
+          "x": 746.1140369827783,
+          "y": 245.2876970116236
+        },
+        {
+          "x": 768.3467668775247,
+          "y": 245.2876970116236
+        },
+        {
+          "x": 768.3467668775247,
+          "y": 129.05352935735593
+        },
+        {
+          "x": 616.28,
+          "y": 129.05352935735593
+        }
+      ],
+      "color": "#bb86fc",
+      "connectorType": "hembra-hembra"
+    }
+  ],
+  "annotations": []
+}

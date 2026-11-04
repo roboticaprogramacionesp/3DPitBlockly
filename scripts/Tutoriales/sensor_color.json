@@ -1,0 +1,154 @@
+{
+  "version": "1.0",
+  "timestamp": 1793804113393,
+  "components": [
+    {
+      "id": "esp32_wroom_hnzsmjf",
+      "type": "esp32_wroom",
+      "name": "ESP32 WeMos D1 R32",
+      "x": 240,
+      "y": 200,
+      "width": 276.28,
+      "height": 210,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "mcu": "ESP32-WROOM-32",
+        "voltaje_operacion": 3.3,
+        "flash_mb": 4,
+        "isPowerSource": true,
+        "macAddress": "1F:80:97:EE:2E:2F"
+      },
+      "locked": false
+    },
+    {
+      "id": "tcs34725_isq5urq",
+      "type": "tcs34725",
+      "name": "TCS34725 Sensor de Color (I2C)",
+      "x": 560.2685229289366,
+      "y": 205.3278835065128,
+      "width": 72,
+      "height": 72,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "modelo": "TCS34725 (módulo GY-33): sensor de color RGB + luz clara (I2C, dirección fija 0x29). VDD = entrada de alimentación real (3-5V); 3V3 es la SALIDA del regulador interno, NO una entrada de poder -- no cuenta para el chequeo de encendido del propio módulo. El color reportado se elige desde el panel de propiedades",
+        "color": "#ff8000"
+      },
+      "locked": false
+    }
+  ],
+  "wires": [
+    {
+      "id": "wire_lq57t19",
+      "from": {
+        "componentId": "tcs34725_isq5urq",
+        "pinId": "v3"
+      },
+      "to": {
+        "componentId": "esp32_wroom_hnzsmjf",
+        "pinId": "3v3"
+      },
+      "points": [
+        {
+          "x": 605.2685229289366,
+          "y": 435.3612483717951
+        },
+        {
+          "x": 386.28,
+          "y": 435.3612483717951
+        }
+      ],
+      "color": "#ff5252",
+      "connectorType": "hembra-hembra"
+    },
+    {
+      "id": "wire_9ynn13t",
+      "from": {
+        "componentId": "tcs34725_isq5urq",
+        "pinId": "gnd"
+      },
+      "to": {
+        "componentId": "esp32_wroom_hnzsmjf",
+        "pinId": "gnd_2"
+      },
+      "points": [
+        {
+          "x": 614.2685229289366,
+          "y": 420.8476690862595
+        },
+        {
+          "x": 416.28,
+          "y": 420.8476690862595
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "hembra-hembra"
+    },
+    {
+      "id": "wire_sfbtl3q",
+      "from": {
+        "componentId": "tcs34725_isq5urq",
+        "pinId": "sda"
+      },
+      "to": {
+        "componentId": "esp32_wroom_hnzsmjf",
+        "pinId": "io21"
+      },
+      "points": [
+        {
+          "x": 587.2685229289366,
+          "y": 297.5643991583601
+        },
+        {
+          "x": 531.8796286393039,
+          "y": 297.5643991583601
+        },
+        {
+          "x": 531.8796286393039,
+          "y": 187.59394391629465
+        },
+        {
+          "x": 330.28,
+          "y": 187.59394391629465
+        }
+      ],
+      "color": "#bb86fc",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_c8vofcn",
+      "from": {
+        "componentId": "tcs34725_isq5urq",
+        "pinId": "scl"
+      },
+      "to": {
+        "componentId": "esp32_wroom_hnzsmjf",
+        "pinId": "io22"
+      },
+      "points": [
+        {
+          "x": 596.2685229289366,
+          "y": 311.3556660721797
+        },
+        {
+          "x": 545.3565218784909,
+          "y": 311.3556660721797
+        },
+        {
+          "x": 545.3565218784909,
+          "y": 173.42594926165992
+        },
+        {
+          "x": 320.28,
+          "y": 173.42594926165992
+        }
+      ],
+      "color": "#2ecc71",
+      "connectorType": "hembra-macho"
+    }
+  ],
+  "annotations": []
+}

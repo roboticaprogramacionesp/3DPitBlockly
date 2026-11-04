@@ -1,0 +1,146 @@
+{
+  "version": "1.0",
+  "timestamp": 1793737850761,
+  "components": [
+    {
+      "id": "esp32_wroom_txouq3u",
+      "type": "esp32_wroom",
+      "name": "ESP32 WeMos D1 R32",
+      "x": 380,
+      "y": 280,
+      "width": 276.28,
+      "height": 210,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "mcu": "ESP32-WROOM-32",
+        "voltaje_operacion": 3.3,
+        "flash_mb": 4,
+        "isPowerSource": true,
+        "macAddress": "6E:CE:A5:C4:FB:57"
+      },
+      "locked": false
+    },
+    {
+      "id": "keypad4x4_i2c_m71atx2",
+      "type": "keypad4x4_i2c",
+      "name": "Teclado matricial 4x4 (I2C, PCF8574)",
+      "x": 447.14887490264584,
+      "y": 181.24998211185488,
+      "width": 65,
+      "height": 79.4,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "address": "0x20",
+        "modelo": "Teclado matricial 4x4 sobre expansor I2C (tipo PCF8574), 16 teclas",
+        "nota": "Usá keypad4_i2c.py tal cual (Keypad4x4_I2C(i2c, address=0x20)). La lectura/escritura I2C en sí se sigue resolviendo por DIRECCIÓN (este campo 'address'), no por topología de cables -- pero, a partir de la validación de PININFO, SDA y SCL SÍ tienen que estar cableados en el canvas exactamente a los mismos GPIO que declaraste en tu I2C(sda=.., scl=..) (o en I2cLcd/etc, si hay otro dispositivo I2C en el mismo circuito) -- si no, el teclado se trata como desconectado."
+      },
+      "locked": false
+    }
+  ],
+  "wires": [
+    {
+      "id": "wire_03jw2rx",
+      "from": {
+        "componentId": "esp32_wroom_txouq3u",
+        "pinId": "io22"
+      },
+      "to": {
+        "componentId": "keypad4x4_i2c_m71atx2",
+        "pinId": "sda"
+      },
+      "points": [],
+      "color": "#bb86fc",
+      "connectorType": "hembra-hembra"
+    },
+    {
+      "id": "wire_3gze19m",
+      "from": {
+        "componentId": "keypad4x4_i2c_m71atx2",
+        "pinId": "scl"
+      },
+      "to": {
+        "componentId": "esp32_wroom_txouq3u",
+        "pinId": "io21"
+      },
+      "points": [
+        {
+          "x": 472.9788749026458,
+          "y": 261.1266577419444
+        },
+        {
+          "x": 470.28,
+          "y": 261.1266577419444
+        }
+      ],
+      "color": "#2ecc71",
+      "connectorType": "hembra-hembra"
+    },
+    {
+      "id": "wire_f8np95m",
+      "from": {
+        "componentId": "keypad4x4_i2c_m71atx2",
+        "pinId": "vcc"
+      },
+      "to": {
+        "componentId": "esp32_wroom_txouq3u",
+        "pinId": "3v3"
+      },
+      "points": [
+        {
+          "x": 486.31887490264586,
+          "y": 271.3499342845507
+        },
+        {
+          "x": 669.6512174706988,
+          "y": 271.3499342845507
+        },
+        {
+          "x": 669.6512174706988,
+          "y": 514.7895660926062
+        },
+        {
+          "x": 526.28,
+          "y": 514.7895660926062
+        }
+      ],
+      "color": "#ff5252",
+      "connectorType": "hembra-hembra"
+    },
+    {
+      "id": "wire_jjgls52",
+      "from": {
+        "componentId": "esp32_wroom_txouq3u",
+        "pinId": "gnd_2"
+      },
+      "to": {
+        "componentId": "keypad4x4_i2c_m71atx2",
+        "pinId": "gnd"
+      },
+      "points": [
+        {
+          "x": 556.28,
+          "y": 500.8165240592089
+        },
+        {
+          "x": 686.2514107812636,
+          "y": 500.8165240592089
+        },
+        {
+          "x": 686.2514107812636,
+          "y": 264.44843851774084
+        },
+        {
+          "x": 499.64887490264584,
+          "y": 264.44843851774084
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "hembra-hembra"
+    }
+  ],
+  "annotations": []
+}

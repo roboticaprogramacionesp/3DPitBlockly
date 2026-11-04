@@ -1,0 +1,240 @@
+{
+  "version": "1.0",
+  "timestamp": 1793737291734,
+  "components": [
+    {
+      "id": "esp32_wroom_gfgszju",
+      "type": "esp32_wroom",
+      "name": "ESP32 WeMos D1 R32",
+      "x": 300,
+      "y": 220,
+      "width": 276.28,
+      "height": 210,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "mcu": "ESP32-WROOM-32",
+        "voltaje_operacion": 3.3,
+        "flash_mb": 4,
+        "isPowerSource": true,
+        "macAddress": "22:4C:F8:AF:F8:29"
+      },
+      "locked": false
+    },
+    {
+      "id": "rc522_real_0une3jt",
+      "type": "rc522_real",
+      "name": "Lector RFID RC522",
+      "x": 755.3490290850884,
+      "y": 366.4662141758875,
+      "width": 113.924,
+      "height": 86.4,
+      "rotation": 180,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "modelo": "RC522 (13.56MHz, SPI) -- mfrc522.py real. Visual: PCB real de un lector distinto (125kHz/UART, ver comentario en el .svg) reusado como piel -- el header SPI de abajo es propio, la electrónica es idéntica al 'rc522' original (ahora oculto)",
+        "cardIndex": 0,
+        "holding": false
+      },
+      "locked": false
+    }
+  ],
+  "wires": [
+    {
+      "id": "wire_e7b6ang",
+      "from": {
+        "componentId": "esp32_wroom_gfgszju",
+        "pinId": "3v3"
+      },
+      "to": {
+        "componentId": "rc522_real_0une3jt",
+        "pinId": "vcc"
+      },
+      "points": [
+        {
+          "x": 446.28,
+          "y": 453.86513522940965
+        },
+        {
+          "x": 582.5937082954318,
+          "y": 453.86513522940965
+        },
+        {
+          "x": 582.5937082954318,
+          "y": 298.0662141758875
+        }
+      ],
+      "color": "#ff5252",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_urnvxa0",
+      "from": {
+        "componentId": "esp32_wroom_gfgszju",
+        "pinId": "gnd_2"
+      },
+      "to": {
+        "componentId": "rc522_real_0une3jt",
+        "pinId": "gnd"
+      },
+      "points": [
+        {
+          "x": 476.28,
+          "y": 444.4407411586693
+        },
+        {
+          "x": 593.011852825377,
+          "y": 444.4407411586693
+        },
+        {
+          "x": 593.011852825377,
+          "y": 312.4662141758875
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_ydhfwqa",
+      "from": {
+        "componentId": "esp32_wroom_gfgszju",
+        "pinId": "io22"
+      },
+      "to": {
+        "componentId": "rc522_real_0une3jt",
+        "pinId": "rst"
+      },
+      "points": [
+        {
+          "x": 380.28,
+          "y": 166.16191962421686
+        },
+        {
+          "x": 595.041492581465,
+          "y": 166.16191962421686
+        },
+        {
+          "x": 595.041492581465,
+          "y": 305.3776169899785
+        },
+        {
+          "x": 645.0250290850884,
+          "y": 305.3776169899785
+        }
+      ],
+      "color": "#f2994a",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_7j07bwp",
+      "from": {
+        "componentId": "esp32_wroom_gfgszju",
+        "pinId": "io21"
+      },
+      "to": {
+        "componentId": "rc522_real_0une3jt",
+        "pinId": "sda"
+      },
+      "points": [
+        {
+          "x": 390.28,
+          "y": 175.6514599999903
+        },
+        {
+          "x": 603.175452859715,
+          "y": 175.6514599999903
+        },
+        {
+          "x": 603.175452859715,
+          "y": 348.4662141758875
+        }
+      ],
+      "color": "#2ecc71",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_h5uz7gp",
+      "from": {
+        "componentId": "esp32_wroom_gfgszju",
+        "pinId": "io18"
+      },
+      "to": {
+        "componentId": "rc522_real_0une3jt",
+        "pinId": "sck"
+      },
+      "points": [
+        {
+          "x": 420.28,
+          "y": 187.3100513125094
+        },
+        {
+          "x": 609.4114164039694,
+          "y": 187.3100513125094
+        },
+        {
+          "x": 609.4114164039694,
+          "y": 341.2662141758875
+        }
+      ],
+      "color": "#ff66cc",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_kfrf6kw",
+      "from": {
+        "componentId": "esp32_wroom_gfgszju",
+        "pinId": "io19"
+      },
+      "to": {
+        "componentId": "rc522_real_0une3jt",
+        "pinId": "miso"
+      },
+      "points": [
+        {
+          "x": 430.28,
+          "y": 195.59703766768
+        },
+        {
+          "x": 617.5987856082278,
+          "y": 195.59703766768
+        },
+        {
+          "x": 617.5987856082278,
+          "y": 326.86621417588754
+        }
+      ],
+      "color": "#bb86fc",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_73gr7tf",
+      "from": {
+        "componentId": "rc522_real_0une3jt",
+        "pinId": "mosi"
+      },
+      "to": {
+        "componentId": "esp32_wroom_gfgszju",
+        "pinId": "io23"
+      },
+      "points": [
+        {
+          "x": 624.1279271443519,
+          "y": 334.0662141758875
+        },
+        {
+          "x": 624.1279271443519,
+          "y": 207.32814850640264
+        },
+        {
+          "x": 440.28,
+          "y": 207.32814850640264
+        }
+      ],
+      "color": "#4da3ff",
+      "connectorType": "hembra-macho"
+    }
+  ],
+  "annotations": []
+}

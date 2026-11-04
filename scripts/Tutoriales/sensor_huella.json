@@ -1,0 +1,137 @@
+{
+  "version": "1.0",
+  "timestamp": 1793804564584,
+  "components": [
+    {
+      "id": "esp32_wroom_phcnj2p",
+      "type": "esp32_wroom",
+      "name": "ESP32 WeMos D1 R32",
+      "x": 300,
+      "y": 199.58186414144143,
+      "width": 276.28,
+      "height": 210,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "mcu": "ESP32-WROOM-32",
+        "voltaje_operacion": 3.3,
+        "flash_mb": 4,
+        "isPowerSource": true,
+        "macAddress": "5E:97:F6:80:D9:D5"
+      },
+      "locked": false
+    },
+    {
+      "id": "fingerprint_7obs15w",
+      "type": "fingerprint",
+      "name": "Sensor de Huella FPM383C (SFM-V1.7)",
+      "x": 608.2924026768908,
+      "y": 210.24267692403117,
+      "width": 72,
+      "height": 72,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "info": "Sensor óptico de huella (protocolo AS608 por UART, 57600 baudios). Solo VCC/GND/TXD/RXD participan de la simulación -- TOUCH/WAKEUP existen en el módulo real pero no se simulan. Usá el botón \"Poner el dedo\" del panel para simular una huella apoyada (hace falta mientras corre el programa, para que gen_img()/wait_finger()/search() detecten algo)."
+      },
+      "locked": false
+    }
+  ],
+  "wires": [
+    {
+      "id": "wire_rl2t97n",
+      "from": {
+        "componentId": "fingerprint_7obs15w",
+        "pinId": "vcc"
+      },
+      "to": {
+        "componentId": "esp32_wroom_phcnj2p",
+        "pinId": "3v3"
+      },
+      "points": [
+        {
+          "x": 627.6124026768908,
+          "y": 434.4074226059455
+        },
+        {
+          "x": 446.28,
+          "y": 434.4074226059455
+        }
+      ],
+      "color": "#ff5252",
+      "connectorType": "macho-macho"
+    },
+    {
+      "id": "wire_g84zeu2",
+      "from": {
+        "componentId": "fingerprint_7obs15w",
+        "pinId": "gnd"
+      },
+      "to": {
+        "componentId": "esp32_wroom_phcnj2p",
+        "pinId": "gnd_2"
+      },
+      "points": [
+        {
+          "x": 634.1624026768908,
+          "y": 422.69832223595955
+        },
+        {
+          "x": 476.28,
+          "y": 422.69832223595955
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "macho-macho"
+    },
+    {
+      "id": "wire_zjz99e4",
+      "from": {
+        "componentId": "fingerprint_7obs15w",
+        "pinId": "tx"
+      },
+      "to": {
+        "componentId": "esp32_wroom_phcnj2p",
+        "pinId": "io16"
+      },
+      "points": [
+        {
+          "x": 640.7024026768908,
+          "y": 177.8387254923897
+        },
+        {
+          "x": 506.28,
+          "y": 177.8387254923897
+        }
+      ],
+      "color": "#2ecc71",
+      "connectorType": "macho-macho"
+    },
+    {
+      "id": "wire_cok8zek",
+      "from": {
+        "componentId": "fingerprint_7obs15w",
+        "pinId": "rx"
+      },
+      "to": {
+        "componentId": "esp32_wroom_phcnj2p",
+        "pinId": "io17"
+      },
+      "points": [
+        {
+          "x": 647.2424026768908,
+          "y": 188.9317998428154
+        },
+        {
+          "x": 516.28,
+          "y": 188.9317998428154
+        }
+      ],
+      "color": "#4da3ff",
+      "connectorType": "macho-macho"
+    }
+  ],
+  "annotations": []
+}

@@ -1,0 +1,155 @@
+{
+  "version": "1.0",
+  "timestamp": 1793738804169,
+  "components": [
+    {
+      "id": "esp32_wroom_i9wdfiy",
+      "type": "esp32_wroom",
+      "name": "ESP32 WeMos D1 R32",
+      "x": 340,
+      "y": 180,
+      "width": 276.28,
+      "height": 210,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "mcu": "ESP32-WROOM-32",
+        "voltaje_operacion": 3.3,
+        "flash_mb": 4,
+        "isPowerSource": true,
+        "macAddress": "2D:69:AE:BF:18:FC"
+      },
+      "locked": false
+    },
+    {
+      "id": "bh1750_o0wd9u0",
+      "type": "bh1750",
+      "name": "BH1750 Sensor de Luz Ambiental (I2C)",
+      "x": 701.1133301937044,
+      "y": 182.20373332011553,
+      "width": 60.312,
+      "height": 39.565,
+      "rotation": 90,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "modelo": "BH1750: sensor de luz ambiental digital, I2C",
+        "i2cAddress": "0x23",
+        "lux": 200
+      },
+      "locked": false
+    }
+  ],
+  "wires": [
+    {
+      "id": "wire_9b5hrld",
+      "from": {
+        "componentId": "esp32_wroom_i9wdfiy",
+        "pinId": "gnd_2"
+      },
+      "to": {
+        "componentId": "bh1750_o0wd9u0",
+        "pinId": "gnd"
+      },
+      "points": [
+        {
+          "x": 516.28,
+          "y": 397.70419039122487
+        },
+        {
+          "x": 689.0303301937045,
+          "y": 397.70419039122487
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_glmuyj0",
+      "from": {
+        "componentId": "esp32_wroom_i9wdfiy",
+        "pinId": "3v3"
+      },
+      "to": {
+        "componentId": "bh1750_o0wd9u0",
+        "pinId": "vcc"
+      },
+      "points": [
+        {
+          "x": 486.28,
+          "y": 407.12858376957195
+        },
+        {
+          "x": 696.1643301937045,
+          "y": 407.12858376957195
+        }
+      ],
+      "color": "#ff5252",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_w96k6vv",
+      "from": {
+        "componentId": "esp32_wroom_i9wdfiy",
+        "pinId": "io21"
+      },
+      "to": {
+        "componentId": "bh1750_o0wd9u0",
+        "pinId": "sda"
+      },
+      "points": [
+        {
+          "x": 430.28,
+          "y": 172.24245475509042
+        },
+        {
+          "x": 626.705924172182,
+          "y": 172.24245475509042
+        },
+        {
+          "x": 626.705924172182,
+          "y": 270.0903125163368
+        },
+        {
+          "x": 674.6813301937044,
+          "y": 270.0903125163368
+        }
+      ],
+      "color": "#2ecc71",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_l1bsasa",
+      "from": {
+        "componentId": "esp32_wroom_i9wdfiy",
+        "pinId": "io22"
+      },
+      "to": {
+        "componentId": "bh1750_o0wd9u0",
+        "pinId": "scl"
+      },
+      "points": [
+        {
+          "x": 420.28,
+          "y": 161.33819348811033
+        },
+        {
+          "x": 641.504557968947,
+          "y": 161.33819348811033
+        },
+        {
+          "x": 641.504557968947,
+          "y": 257.3686823936954
+        },
+        {
+          "x": 681.8773301937044,
+          "y": 257.3686823936954
+        }
+      ],
+      "color": "#bb86fc",
+      "connectorType": "hembra-macho"
+    }
+  ],
+  "annotations": []
+}

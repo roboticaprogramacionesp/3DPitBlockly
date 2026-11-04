@@ -5105,7 +5105,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Conexión física",
-        desc: "El DFPlayer se conecta por <b>UART</b> (serial), y necesita una bocina/parlante:<br>⚡ <b>VCC</b> → <b>5V</b><br>⏚ <b>GND</b> → GND<br>📌 <b>TX</b> del DFPlayer → pin <b>16</b> (RX del ESP32)<br>📌 <b>RX</b> del DFPlayer → pin <b>17</b> (TX del ESP32), con una resistencia de <b>1kΩ</b> en serie<br>🔊 <b>SPK_1 / SPK_2</b> → altavoz de 3-8Ω",
+        desc: "El DFPlayer se conecta por <b>UART</b> (serial), y necesita una bocina/parlante:<br>⚡ <b>VCC</b> → <b>5V</b><br>⏚ <b>GND</b> → GND<br>📌 <b>TX</b> del DFPlayer → pin <b>16</b> (RX del ESP32)<br>📌 <b>RX</b> del DFPlayer → pin <b>27</b> (TX del ESP32)<br>🔊 <b>SPK_1 / SPK_2</b> → altavoz de 3-8Ω",
         highlightCat: null, bloque: null
       },
       {
@@ -5120,7 +5120,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Arrastra: Inicializar DFPlayer",
-        desc: "Arrastra el bloque <em>Inicializar</em> al área de trabajo. Deja los pines por defecto (TX <b>17</b>, RX <b>16</b>). Este bloque va <b>una sola vez</b> al inicio.",
+        desc: "Arrastra el bloque <em>Inicializar</em> al área de trabajo. Cambia <b>TX</b> a <b>27</b> y deja <b>RX</b> en <b>16</b>: los mismos pines que conectaste. Este bloque va <b>una sola vez</b> al inicio.",
         highlightCat: "DFPlayer", expandCats: ["Periféricos", "Modulos UART"],
         bloque: "dfplayer_init", bloqueLabel: "Inicializar DFPlayer"
       },
@@ -5371,7 +5371,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Conexión física",
-        desc: "El sensor de flujo tiene 3 cables:<br>⚡ <b>Rojo (VCC)</b> → <b>5V</b><br>⏚ <b>Negro (GND)</b> → GND<br>📌 <b>Amarillo (señal)</b> → pin <b>27</b><br><br>💧 El sensor va instalado en la tubería, con el agua fluyendo en el sentido que indica la flecha en su carcasa.",
+        desc: "El sensor de flujo tiene 3 cables:<br>⚡ <b>Rojo (VCC)</b> → <b>5V</b><br>⏚ <b>Negro (GND)</b> → GND<br>📌 <b>Amarillo (señal)</b> → pin <b>17</b><br><br>💧 El sensor va instalado en la tubería, con el agua fluyendo en el sentido que indica la flecha en su carcasa.",
         highlightCat: null, bloque: null
       },
       {
@@ -5386,7 +5386,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Arrastra: Inicializar sensor de flujo",
-        desc: "Arrastra el bloque <em>Inicializar</em> al área de trabajo. Este bloque va <b>una sola vez</b> al inicio.",
+        desc: "Arrastra el bloque <em>Inicializar</em> al área de trabajo y elige el pin <b>17</b>, el mismo que conectaste. Este bloque va <b>una sola vez</b> al inicio.",
         highlightCat: "Flujo Agua", expandCat: "Periféricos",
         bloque: "yf201_init", bloqueLabel: "Inicializar sensor de flujo"
       },

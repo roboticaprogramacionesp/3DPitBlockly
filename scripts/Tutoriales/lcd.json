@@ -1,0 +1,409 @@
+{
+  "version": "1.0",
+  "timestamp": 1793739479361,
+  "components": [
+    {
+      "id": "esp32_wroom_wzuljto",
+      "type": "esp32_wroom",
+      "name": "ESP32 WeMos D1 R32",
+      "x": 400,
+      "y": 150,
+      "width": 276.28,
+      "height": 210,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "mcu": "ESP32-WROOM-32",
+        "voltaje_operacion": 3.3,
+        "flash_mb": 4,
+        "isPowerSource": true,
+        "macAddress": "31:68:14:72:17:99"
+      },
+      "locked": false
+    },
+    {
+      "id": "lcd16x2_7xgvc9k",
+      "type": "lcd16x2",
+      "name": "LCD 16x2 (paralelo)",
+      "x": 719.4921110944622,
+      "y": 223.5289259869719,
+      "width": 226.771,
+      "height": 102.047,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "modelo": "HD44780 16x2",
+        "colorScheme": "yellow_green"
+      },
+      "locked": false
+    },
+    {
+      "id": "resistencia_r3mlgjp",
+      "type": "resistencia",
+      "name": "Resistencia",
+      "x": 748.0697222849343,
+      "y": 151.89808413328373,
+      "width": 49,
+      "height": 10.79,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "ohms": 220
+      },
+      "locked": false
+    }
+  ],
+  "wires": [
+    {
+      "id": "wire_himaeqt",
+      "from": {
+        "componentId": "lcd16x2_7xgvc9k",
+        "pinId": "vss"
+      },
+      "to": {
+        "componentId": "esp32_wroom_wzuljto",
+        "pinId": "gnd_2"
+      },
+      "points": [
+        {
+          "x": 738.9221110944621,
+          "y": 204.70445665799716
+        },
+        {
+          "x": 679.3571982912991,
+          "y": 204.70445665799716
+        },
+        {
+          "x": 679.3571982912991,
+          "y": 363.1586624031529
+        },
+        {
+          "x": 576.28,
+          "y": 363.1586624031529
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_x9erylq",
+      "from": {
+        "componentId": "lcd16x2_7xgvc9k",
+        "pinId": "vdd"
+      },
+      "to": {
+        "componentId": "esp32_wroom_wzuljto",
+        "pinId": "3v3"
+      },
+      "points": [
+        {
+          "x": 746.1211110944622,
+          "y": 196.302297306144
+        },
+        {
+          "x": 714.6433451129503,
+          "y": 196.302297306144
+        },
+        {
+          "x": 714.6433451129503,
+          "y": 401.03097028317586
+        },
+        {
+          "x": 546.28,
+          "y": 401.03097028317586
+        }
+      ],
+      "color": "#ff5252",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_pg72xd9",
+      "from": {
+        "componentId": "lcd16x2_7xgvc9k",
+        "pinId": "k"
+      },
+      "to": {
+        "componentId": "esp32_wroom_wzuljto",
+        "pinId": "gnd_2"
+      },
+      "points": [
+        {
+          "x": 846.9221110944623,
+          "y": 173.67348273545002
+        },
+        {
+          "x": 705.2862785918386,
+          "y": 173.67348273545002
+        },
+        {
+          "x": 705.2862785918386,
+          "y": 388.96705153221194
+        },
+        {
+          "x": 576.28,
+          "y": 388.96705153221194
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_rlgyn0o",
+      "from": {
+        "componentId": "lcd16x2_7xgvc9k",
+        "pinId": "v0"
+      },
+      "to": {
+        "componentId": "esp32_wroom_wzuljto",
+        "pinId": "gnd_2"
+      },
+      "points": [
+        {
+          "x": 753.3211110944621,
+          "y": 204.60616503942606
+        },
+        {
+          "x": 697.2517646108364,
+          "y": 204.60616503942606
+        },
+        {
+          "x": 697.2517646108364,
+          "y": 380.36746872917604
+        },
+        {
+          "x": 576.28,
+          "y": 380.36746872917604
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "hembra-hembra"
+    },
+    {
+      "id": "wire_8kbj1cf",
+      "from": {
+        "componentId": "lcd16x2_7xgvc9k",
+        "pinId": "rs"
+      },
+      "to": {
+        "componentId": "esp32_wroom_wzuljto",
+        "pinId": "io12"
+      },
+      "points": [
+        {
+          "x": 760.5211110944622,
+          "y": 138.59848428998447
+        },
+        {
+          "x": 570.28,
+          "y": 138.59848428998447
+        }
+      ],
+      "color": "#8d6e63",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_7hw7h47",
+      "from": {
+        "componentId": "lcd16x2_7xgvc9k",
+        "pinId": "rw"
+      },
+      "to": {
+        "componentId": "esp32_wroom_wzuljto",
+        "pinId": "gnd_2"
+      },
+      "points": [
+        {
+          "x": 767.7211110944622,
+          "y": 204.42272346065647
+        },
+        {
+          "x": 687.7622130648659,
+          "y": 204.42272346065647
+        },
+        {
+          "x": 687.7622130648659,
+          "y": 372.2823072549068
+        },
+        {
+          "x": 576.28,
+          "y": 372.2823072549068
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "hembra-hembra"
+    },
+    {
+      "id": "wire_myqg9np",
+      "from": {
+        "componentId": "lcd16x2_7xgvc9k",
+        "pinId": "e"
+      },
+      "to": {
+        "componentId": "esp32_wroom_wzuljto",
+        "pinId": "io13"
+      },
+      "points": [
+        {
+          "x": 774.9221110944621,
+          "y": 133.22269229901832
+        },
+        {
+          "x": 560.28,
+          "y": 133.22269229901832
+        }
+      ],
+      "color": "#26c6da",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_9m85azk",
+      "from": {
+        "componentId": "lcd16x2_7xgvc9k",
+        "pinId": "d4"
+      },
+      "to": {
+        "componentId": "esp32_wroom_wzuljto",
+        "pinId": "io5"
+      },
+      "points": [
+        {
+          "x": 810.9221110944623,
+          "y": 118.25571338299373
+        },
+        {
+          "x": 550.28,
+          "y": 118.25571338299373
+        }
+      ],
+      "color": "#ff66cc",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_odsnfum",
+      "from": {
+        "componentId": "lcd16x2_7xgvc9k",
+        "pinId": "d5"
+      },
+      "to": {
+        "componentId": "esp32_wroom_wzuljto",
+        "pinId": "io23"
+      },
+      "points": [
+        {
+          "x": 818.1211110944622,
+          "y": 112.50023224715763
+        },
+        {
+          "x": 540.28,
+          "y": 112.50023224715763
+        }
+      ],
+      "color": "#4da3ff",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_fr4bt8y",
+      "from": {
+        "componentId": "lcd16x2_7xgvc9k",
+        "pinId": "d6"
+      },
+      "to": {
+        "componentId": "esp32_wroom_wzuljto",
+        "pinId": "io19"
+      },
+      "points": [
+        {
+          "x": 825.3211110944621,
+          "y": 104.58644568538297
+        },
+        {
+          "x": 530.28,
+          "y": 104.58644568538297
+        }
+      ],
+      "color": "#bb86fc",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_fglmq90",
+      "from": {
+        "componentId": "lcd16x2_7xgvc9k",
+        "pinId": "d7"
+      },
+      "to": {
+        "componentId": "esp32_wroom_wzuljto",
+        "pinId": "io18"
+      },
+      "points": [
+        {
+          "x": 832.5211110944622,
+          "y": 97.39209426558783
+        },
+        {
+          "x": 520.28,
+          "y": 97.39209426558783
+        }
+      ],
+      "color": "#2ecc71",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_qc9prkk",
+      "from": {
+        "componentId": "resistencia_r3mlgjp",
+        "pinId": "term2"
+      },
+      "to": {
+        "componentId": "lcd16x2_7xgvc9k",
+        "pinId": "a"
+      },
+      "points": [
+        {
+          "x": 839.4789202169882,
+          "y": 157.62141618511723
+        },
+        {
+          "x": 839.4789202169882,
+          "y": 227.3289259869719
+        }
+      ],
+      "color": "#f2994a",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_78x88u5",
+      "from": {
+        "componentId": "resistencia_r3mlgjp",
+        "pinId": "term1"
+      },
+      "to": {
+        "componentId": "lcd16x2_7xgvc9k",
+        "pinId": "vdd"
+      },
+      "points": [
+        {
+          "x": 744.7425364653268,
+          "y": 157.28808413328372
+        },
+        {
+          "x": 744.7425364653268,
+          "y": 197.48816451717823
+        },
+        {
+          "x": 745.6119974991448,
+          "y": 197.48816451717823
+        },
+        {
+          "x": 745.6119974991448,
+          "y": 227.3289259869719
+        }
+      ],
+      "color": "#ff5252",
+      "connectorType": "hembra-macho"
+    }
+  ],
+  "annotations": []
+}

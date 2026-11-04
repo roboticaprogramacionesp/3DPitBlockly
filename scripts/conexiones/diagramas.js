@@ -124,24 +124,71 @@ const DEL_SIMULADOR = [
     archivo: "matrix8", titulo: "Matriz LED 8x8 (MAX7219)", tutoriales: ["matrix8_display"], simulador: "matrix8x8.json",
     nota: "Va a 3V3; si la matriz se ve débil o muestra puntos al azar, aliméntala con 5V.",
   },
+  {
+    archivo: "neopixel_matriz", titulo: "Matriz NeoPixel 5x5", tutoriales: ["neopixel_matriz"], simulador: "neopixel5x5.json",
+    nota: "Empieza con brillo bajo (20-30 %) para no gastar demasiada corriente.",
+  },
+  {
+    archivo: "neopixel_matriz_8x8", titulo: "Matriz NeoPixel 8x8", tutoriales: ["neopixel_matriz_8x8"], simulador: "neopixel8x8.json",
+    nota: "64 LEDs consumen mucho: usa brillo bajo o una fuente de 5V externa. Si usas otro pin de datos, cámbialo en el bloque.",
+  },
+  {
+    archivo: "flujo_agua", titulo: "Sensor de Flujo de Agua (YF-201)", tutoriales: ["flujo_agua"], simulador: "sensor_flujo.json",
+    nota: "La flecha del sensor indica hacia dónde debe correr el agua. La señal (cable amarillo) va al pin 17.",
+  },
+  {
+    archivo: "bmp280", titulo: "Sensor de Presión BMP280", tutoriales: ["bmp280_presion"], simulador: "bmp280.json",
+    nota: "Siempre a 3V3. Dirección I2C: 0x76.",
+  },
+  {
+    archivo: "bh1750", titulo: "Sensor de Luz BH1750", tutoriales: ["bh1750_luz"], simulador: "bh1750.json",
+    nota: "Siempre a 3V3. Dirección I2C: 0x23.",
+  },
+  {
+    archivo: "qmc5883l", titulo: "Brújula QMC5883L", tutoriales: ["qmc5883l_brujula"], simulador: "brujula.json",
+    nota: "Aléjala de imanes y motores: desvían la lectura.",
+  },
+  {
+    archivo: "tcs34725", titulo: "Sensor de Color TCS34725", tutoriales: ["color_tcs34725"], simulador: "sensor_color.json",
+    nota: "Pon el objeto a 1-2 cm del sensor y lejos de la luz del sol.",
+  },
+  {
+    archivo: "rfid_mfrc522", titulo: "RFID MFRC522", tutoriales: ["rfid_mfrc522"], simulador: "rfid.json",
+    nota: "Siempre a 3V3: este módulo se daña con 5V.",
+  },
+  {
+    archivo: "sdcard", titulo: "Módulo SD Card", tutoriales: ["sdcard_modulo"], simulador: "sdcard.json",
+    nota: "Formatea la memoria en FAT32 antes de usarla.",
+  },
+  {
+    archivo: "teclado_matricial", titulo: "Teclado Matricial 4x4", tutoriales: ["teclado_matricial"], simulador: "keypad4x4.json",
+    nota: "No lleva VCC ni GND. Pon en el bloque los mismos pines que conectaste (son los que trae por defecto).",
+  },
+  {
+    archivo: "teclado_4x3", titulo: "Teclado Matricial 4x3", tutoriales: ["teclado_4x3"], simulador: "keypad3x4.json",
+    nota: "No lleva VCC ni GND. Pon en el bloque los mismos pines que conectaste (son los que trae por defecto).",
+  },
+  {
+    archivo: "hc-06", titulo: "Bluetooth HC-06", tutoriales: ["hc06_basico"], simulador: "bluetooth_hc-05.json",
+    nota: "Se cruzan: TX del módulo va al RX del ESP32 (IO16) y RX al TX (IO17).",
+  },
+  {
+    archivo: "gps", titulo: "Módulo GPS", tutoriales: ["gps_modulo"], simulador: "gps.json",
+    nota: "Se cruzan: TX del GPS al RX del ESP32 (IO16). Afuera y con cielo abierto encuentra satélites más rápido.",
+  },
+  {
+    archivo: "fpm383c", titulo: "Sensor de Huella FPM383C", tutoriales: ["fpm383c_huella"], simulador: "sensor_huella.json",
+    nota: "Se cruzan: TX del sensor al RX del ESP32 (IO16). Siempre a 3V3.",
+  },
+  {
+    archivo: "dfplayer", titulo: "Reproductor MP3 DFPlayer", tutoriales: ["dfplayer_mp3"], simulador: "dfplayer.json",
+    nombresPin: { "bocina.pos": "+", "bocina.neg": "−" },
+    nota: "Se cruzan: TX del DFPlayer al RX del ESP32 (IO16) y RX del DFPlayer al TX del ESP32 (IO27). Pon TX 27 y RX 16 en el bloque.",
+  },
 ];
 
 module.exports = [
   ...DEL_SIMULADOR,
-  // ── LEDs y salidas ──
-  {
-    archivo: "neopixel_matriz", titulo: "Matriz NeoPixel 5x5", tutoriales: ["neopixel_matriz"],
-    modulos: [{ id: "n", tipo: "np5x5", etiqueta: "Matriz", material: "Matriz NeoPixel 5x5" }],
-    conexiones: [["n.5v", "5V"], ["n.din", "IO5"], ["n.gnd", "GND"]],
-    nota: "Empieza con brillo bajo (20-30 %) para no gastar demasiada corriente.",
-  },
-  {
-    archivo: "neopixel_matriz_8x8", titulo: "Matriz NeoPixel 8x8", tutoriales: ["neopixel_matriz_8x8"],
-    modulos: [{ id: "n", tipo: "neopixel_matrix", etiqueta: "Matriz", material: "Matriz NeoPixel 8x8" }],
-    conexiones: [["n.vcc", "5V"], ["n.din", "IO5"], ["n.gnd", "GND"]],
-    nota: "64 LEDs consumen mucho: usa brillo bajo o una fuente de 5V externa. Si usas otro pin de datos, cámbialo en el bloque.",
-  },
-  // ── Motores ──
   // ── Sensores ──
   {
     archivo: "medidor_estatura", titulo: "Medidor de Estatura", tutoriales: ["medidor_estatura"],
@@ -160,45 +207,12 @@ module.exports = [
     nota: "El pin SW es el botón del eje: no lo usamos en este tutorial.",
   },
   {
-    archivo: "flujo_agua", titulo: "Sensor de Flujo de Agua (YF-201)", tutoriales: ["flujo_agua"],
-    modulos: [{ id: "f", tipo: "yf201", etiqueta: "YF-201", material: "Sensor de flujo YF-201" }],
-    conexiones: [["f.vcc", "5V"], ["f.gnd", "GND"], ["f.senal", "IO27", { color: "#fab005" }]],
-    nombresPin: { "f.vcc": "rojo", "f.gnd": "negro", "f.senal": "amarillo" },
-    nota: "La flecha del sensor indica hacia dónde debe correr el agua.",
-  },
-  {
     archivo: "inmp441", titulo: "Micrófono INMP441", tutoriales: ["inmp441_microfono"],
     modulos: [{ id: "m", tipo: "inmp441", etiqueta: "INMP441", material: "Micrófono INMP441 (I2S)" }],
     conexiones: [["m.sck", "IO26"], ["m.ws", "IO25"], ["m.lr", "GND"], ["m.sd", "IO32"], ["m.vdd", "3V3"], ["m.gnd", "GND"]],
     nota: "L/R a GND elige el canal izquierdo. Siempre a 3V3.",
   },
   // ── I2C ──
-  {
-    archivo: "bmp280", titulo: "Sensor de Presión BMP280", tutoriales: ["bmp280_presion"],
-    modulos: [{ id: "b", tipo: "bmp280", etiqueta: "BMP280", material: "Sensor BMP280" }],
-    conexiones: [["b.3v3", "3V3"], ["b.gnd", "GND"], ["b.scl", "IO22"], ["b.sda", "IO21"]],
-    nombresPin: { "b.3v3": "3.3V", "b.scl": "SCL", "b.sda": "SDA" },
-    nota: "Siempre a 3V3. Dirección I2C: 0x76.",
-  },
-  {
-    archivo: "bh1750", titulo: "Sensor de Luz BH1750", tutoriales: ["bh1750_luz"],
-    modulos: [{ id: "l", tipo: "bh1750", etiqueta: "BH1750", material: "Sensor de luz BH1750" }],
-    conexiones: [["l.vcc", "3V3"], ["l.gnd", "GND"], ["l.scl", "IO22"], ["l.sda", "IO21"]],
-    nota: "Siempre a 3V3. Dirección I2C: 0x23.",
-  },
-  {
-    archivo: "qmc5883l", titulo: "Brújula QMC5883L", tutoriales: ["qmc5883l_brujula"],
-    modulos: [{ id: "q", tipo: "qmc5883l", etiqueta: "QMC5883L", material: "Brújula QMC5883L" }],
-    conexiones: [["q.gnd", "GND"], ["q.vcc", "3V3"], ["q.scl", "IO22"], ["q.sda", "IO21"]],
-    nota: "Aléjala de imanes y motores: desvían la lectura.",
-  },
-  {
-    archivo: "tcs34725", titulo: "Sensor de Color TCS34725", tutoriales: ["color_tcs34725"],
-    modulos: [{ id: "c", tipo: "tcs34725", etiqueta: "TCS34725", material: "Sensor de color TCS34725" }],
-    conexiones: [["c.sda", "IO21"], ["c.scl", "IO22"], ["c.vdd", "3V3"], ["c.gnd", "GND"]],
-    nombresPin: { "c.vdd": "VIN" },
-    nota: "Pon el objeto a 1-2 cm del sensor y lejos de la luz del sol.",
-  },
   {
     archivo: "teclado_4x4_i2c", titulo: "Teclado Matricial 4x4 I2C", tutoriales: ["teclado_4x4_i2c"],
     modulos: [{ id: "k", tipo: "keypad4x4_i2c", etiqueta: "Teclado", material: "Teclado 4x4 con módulo I2C" }],
@@ -212,19 +226,6 @@ module.exports = [
     conexiones: [["t.gnd", "GND"], ["t.vcc", "3V3"], ["t.scl", "IO18"], ["t.sda", "IO23"], ["t.res", "IO22"], ["t.dc", "IO21"], ["t.blk", "t.vcc"]],
     nombresPin: { "t.scl": "SCL (SCK)", "t.sda": "SDA (MOSI)", "t.blk": "BLK (luz)" },
     nota: "Siempre a 3V3. Si tu pantalla trae CS, conéctalo a GND.",
-  },
-  {
-    archivo: "rfid_mfrc522", titulo: "RFID MFRC522", tutoriales: ["rfid_mfrc522"],
-    modulos: [{ id: "r", tipo: "rc522_real", etiqueta: "RC522", material: "Lector RFID MFRC522 + tarjeta" }],
-    conexiones: [["r.sda", "IO21"], ["r.sck", "IO18"], ["r.mosi", "IO23"], ["r.miso", "IO19"], ["r.gnd", "GND"], ["r.rst", "IO22"], ["r.vcc", "3V3"]],
-    nombresPin: { "r.sda": "SDA (SS)" },
-    nota: "Siempre a 3V3: este módulo se daña con 5V.",
-  },
-  {
-    archivo: "sdcard", titulo: "Módulo SD Card", tutoriales: ["sdcard_modulo"],
-    modulos: [{ id: "s", tipo: "sdcard", etiqueta: "SD", material: "Módulo microSD + memoria" }],
-    conexiones: [["s.gnd", "GND"], ["s.vcc", "5V"], ["s.miso", "IO19"], ["s.mosi", "IO23"], ["s.sck", "IO18"], ["s.cs", "IO5"]],
-    nota: "Formatea la memoria en FAT32 antes de usarla.",
   },
   {
     archivo: "display_7seg", titulo: "Display 7 Segmentos", tutoriales: ["display_7seg"],
@@ -250,47 +251,6 @@ module.exports = [
     ],
     nombresPin: { "d.v0": "V0 (contraste)", "d.e": "E" },
     nota: "Gira el potenciómetro hasta que se vean las letras. D0-D3 no se conectan. Luz de fondo (opcional): A a 5V y K a GND.",
-  },
-  {
-    archivo: "teclado_matricial", titulo: "Teclado Matricial 4x4", tutoriales: ["teclado_matricial"],
-    modulos: [{ id: "k", tipo: "keypad4x4", etiqueta: "Teclado", material: "Teclado matricial 4x4" }],
-    conexiones: [["k.r1", "IO13"], ["k.r2", "IO12"], ["k.r3", "IO14"], ["k.r4", "IO27"], ["k.c1", "IO16"], ["k.c2", "IO17"], ["k.c3", "IO25"], ["k.c4", "IO26"]],
-    nota: "No lleva VCC ni GND. Pon en el bloque los mismos pines que conectaste (son los que trae por defecto).",
-  },
-  {
-    archivo: "teclado_4x3", titulo: "Teclado Matricial 4x3", tutoriales: ["teclado_4x3"],
-    modulos: [{ id: "k", tipo: "keypad3x4", etiqueta: "Teclado", material: "Teclado matricial 4x3" }],
-    conexiones: [["k.r1", "IO13"], ["k.r2", "IO12"], ["k.r3", "IO14"], ["k.r4", "IO27"], ["k.c1", "IO16"], ["k.c2", "IO17"], ["k.c3", "IO25"]],
-    nota: "No lleva VCC ni GND. Pon en el bloque los mismos pines que conectaste (son los que trae por defecto).",
-  },
-  // ── Serial (UART) ──
-  {
-    archivo: "hc-06", titulo: "Bluetooth HC-06", tutoriales: ["hc06_basico"],
-    modulos: [{ id: "b", tipo: "hc-06", etiqueta: "HC-06", material: "Módulo Bluetooth HC-06" }],
-    conexiones: [["b.vcc", "3V3"], ["b.gnd", "GND"], ["b.txd", "IO16"], ["b.rxd", "IO17"]],
-    nota: "Se cruzan: TX del módulo va al RX del ESP32 (IO16) y RX al TX (IO17).",
-  },
-  {
-    archivo: "gps", titulo: "Módulo GPS", tutoriales: ["gps_modulo"],
-    modulos: [{ id: "g", tipo: "gps", etiqueta: "GPS", material: "Módulo GPS (NEO-6M)" }],
-    conexiones: [["g.vcc", "3V3"], ["g.gnd", "GND"], ["g.tx", "IO16"], ["g.rx", "IO17"]],
-    nota: "Se cruzan: TX del GPS al RX del ESP32 (IO16). Afuera y con cielo abierto encuentra satélites más rápido.",
-  },
-  {
-    archivo: "fpm383c", titulo: "Sensor de Huella FPM383C", tutoriales: ["fpm383c_huella"],
-    modulos: [{ id: "h", tipo: "fpm383c", etiqueta: "FPM383C", material: "Sensor de huella FPM383C" }],
-    conexiones: [["h.vcc", "3V3"], ["h.tx", "IO16"], ["h.rx", "IO17"], ["h.gnd", "GND"]],
-    nota: "Se cruzan: TX del sensor al RX del ESP32 (IO16). Siempre a 3V3.",
-  },
-  {
-    archivo: "dfplayer", titulo: "Reproductor MP3 DFPlayer", tutoriales: ["dfplayer_mp3"],
-    modulos: [
-      { id: "d", tipo: "dfplayer", etiqueta: "DFPlayer", material: "DFPlayer Mini + microSD con MP3" },
-      { id: "s", tipo: "bocina", etiqueta: "Bocina", material: "Bocina de 8 Ω" },
-    ],
-    conexiones: [["d.vcc", "5V"], ["d.rx", "IO17", { r: "1 kΩ" }], ["d.tx", "IO16"], ["d.gnd", "GND"], ["d.spk_1", "s.vcc"], ["d.spk_2", "s.gnd", { color: "#343a40" }]],
-    nombresPin: { "s.vcc": "+", "s.gnd": "−" },
-    nota: "Se cruzan: TX del DFPlayer al RX del ESP32 (IO16); el RX lleva una resistencia de 1 kΩ.",
   },
   // ── Inalámbrico: solo la placa ──
   {

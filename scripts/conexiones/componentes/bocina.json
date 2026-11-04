@@ -1,0 +1,22 @@
+{
+    "type": "bocina",
+    "name": "Bocina (altavoz)",
+    "category": "Actuadores",
+
+    "width": 78.48,
+    "height": 100.442,
+
+    "svgPath": "components/bocina/bocina.svg",
+
+    "pinShape": "square",
+    "pinSize": 4,
+
+    "pins": [
+        { "id": "neg", "name": "- (negativo)", "x": 35.687, "y": 76.004, "type": "signal" },
+        { "id": "pos", "name": "+ (positivo)", "x": 42.928, "y": 76.004, "type": "signal" }
+    ],
+
+    "properties": {
+        "info": "Altavoz pasivo -- se conecta a la salida SPK_1/SPK_2 del DFPlayer Mini (u otro amplificador). Es puramente pasiva, no se simula audio real."
+    }
+}

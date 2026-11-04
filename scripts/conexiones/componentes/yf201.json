@@ -1,0 +1,23 @@
+{
+    "type": "yf201",
+    "name": "YF-S201 Sensor de Flujo",
+    "category": "Sensores",
+
+    "width": 169.75,
+    "height": 116.25,
+
+    "svgPath": "components/yf201/yf201.svg",
+
+    "pinShape": "square",
+    "pinSize": 4,
+
+    "pins": [
+        { "id": "signal", "name": "Señal (amarillo)", "x": 79.37,  "y": 116.25, "type": "gpio",   "signal": "digital" },
+        { "id": "gnd",    "name": "GND (negro)",       "x": 84.29,  "y": 116.25, "type": "ground", "signal": "ground" },
+        { "id": "vcc",    "name": "VCC (rojo)",        "x": 89.33,  "y": 116.25, "type": "power",  "signal": "power" }
+    ],
+
+    "properties": {
+        "flujo_lmin": 0
+    }
+}

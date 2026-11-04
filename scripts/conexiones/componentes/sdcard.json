@@ -1,0 +1,26 @@
+{
+    "type": "sdcard",
+    "name": "Módulo Lector microSD (SPI)",
+    "category": "Comunicación",
+
+    "width": 68.03,
+    "height": 119.06,
+
+    "svg": "components/sdcard/sdcard.svg",
+
+    "pinShape": "square",
+    "pinSize": 4,
+
+    "pins": [
+        { "id": "gnd",  "name": "GND",  "x": 15.5, "y": 11.28, "type": "ground", "signal": "ground" },
+        { "id": "vcc",  "name": "VCC",  "x": 22.7, "y": 11.28, "type": "power",  "signal": "power", "voltage": 3.3 },
+        { "id": "miso", "name": "MISO", "x": 29.9, "y": 11.28, "type": "gpio",   "signal": "spi" },
+        { "id": "mosi", "name": "MOSI", "x": 37.1, "y": 11.28, "type": "gpio",   "signal": "spi" },
+        { "id": "sck",  "name": "SCK",  "x": 44.3, "y": 11.28, "type": "gpio",   "signal": "spi" },
+        { "id": "cs",   "name": "CS",   "x": 51.5, "y": 11.28, "type": "gpio",   "signal": "spi" }
+    ],
+
+    "properties": {
+        "info": "Lector de tarjetas microSD por SPI (os.mount en \"/sd\"). La comunicacion SPI real a nivel de bloques (CMD0..CMD58, CSD, etc.) no se simula -- el runtime de este simulador no trae un driver FAT compilado (no existe os.VfsFat), asi que en vez de eso los archivos de \"/sd\" se guardan de verdad en el sistema de archivos del simulador (persisten mientras dure la simulacion)."
+    }
+}

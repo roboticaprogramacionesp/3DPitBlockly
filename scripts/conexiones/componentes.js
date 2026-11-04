@@ -101,6 +101,32 @@ function matrizMax7219(c, props) {
   return s;
 }
 
+// La matriz NeoPixel el simulador también la dibuja por código
+// (neopixel_matrix.behavior.js) y su tamaño crece con filas/columnas:
+// lado = 24·√(8·n) + 2·8 y los pines VCC/DIN/GND juntos al centro del borde
+// de abajo, a 20 entre sí. Aquí los LEDs van apagados.
+function matrizNeopixel(cols, rows) {
+  const pad = 8, lado = (n) => 24 * Math.sqrt(8 * n);
+  const w = lado(cols) + pad * 2, h = lado(rows) + pad * 2, cx = w / 2;
+  return {
+    tipo: "neopixel_matrix",
+    nombre: `Matriz NeoPixel ${cols}x${rows}`,
+    w, h,
+    pines: [["vcc", "VCC", cx - 20], ["din", "DIN", cx], ["gnd", "GND", cx + 20]].map(([id, nombre, x]) => ({ id, nombre, x, y: h })),
+    dibujo() {
+      const cw = (w - pad * 2) / cols, ch = (h - pad * 2) / rows, r = Math.min(cw, ch) * 0.32;
+      let s = `<rect x="0" y="0" width="${+w.toFixed(2)}" height="${+h.toFixed(2)}" rx="6" fill="#1a1a1a" stroke="#000"/>`;
+      for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
+        s += `<circle cx="${+(pad + x * cw + cw / 2).toFixed(2)}" cy="${+(pad + y * ch + ch / 2).toFixed(2)}" r="${+r.toFixed(2)}" fill="#3b3b3b" stroke="#555" stroke-width="0.6"/>`;
+      }
+      for (const p of this.pines) s += `<text x="${+p.x.toFixed(2)}" y="${+(h - 1.8).toFixed(2)}" text-anchor="middle" font-size="5.5" font-weight="700" fill="#fff">${p.nombre}</text>`;
+      return s;
+    },
+  };
+}
+
+const RECORTAR = new Set(["dfplayer"]);
+
 function delSimulador(tipo) {
   const json = JSON.parse(fs.readFileSync(path.join(DIR, tipo + ".json"), "utf8"));
   const svg = fs.readFileSync(path.join(DIR, tipo + ".svg"), "utf8");
@@ -115,6 +141,13 @@ function delSimulador(tipo) {
       let { interior, viewBox } = limpiarSvg(svg, prefijo);
       if (tipo === "resistencia") interior = pintarBandas(interior, prefijo, props.ohms || 220);
       const sx = this.w / viewBox.w, sy = this.h / viewBox.h;
+      // Algunos dibujos exportados de Fritzing traen restos fuera de su
+      // marco (el del DFPlayer: rectángulos sueltos arriba y a la derecha):
+      // esos se recortan al viewBox.
+      if (RECORTAR.has(tipo)) {
+        const clip = `${prefijo}marco`;
+        interior = `<clipPath id="${clip}"><rect x="${viewBox.x}" y="${viewBox.y}" width="${viewBox.w}" height="${viewBox.h}"/></clipPath><g clip-path="url(#${clip})">${interior}</g>`;
+      }
       return `<g transform="scale(${+sx.toFixed(5)},${+sy.toFixed(5)}) translate(${-viewBox.x},${-viewBox.y})">${interior}</g>`;
     },
   };
@@ -149,25 +182,8 @@ function generico({ tipo, nombre, titulo, sub, color = "#1d5c9e", pines, w, h = 
 const GENERICOS = {
   ky005: () => generico({ tipo: "ky005", nombre: "Emisor IR KY-005", titulo: "KY-005", sub: "Emisor infrarrojo", pines: ["S", "+", "−"], w: 54, h: 66,
     extra: `<circle cx="27" cy="16" r="7" fill="#9fb3c8" stroke="#334" stroke-width="1"/><circle cx="27" cy="16" r="3.5" fill="#6c7a89"/>` }),
-  dfplayer: () => generico({ tipo: "dfplayer", nombre: "DFPlayer Mini", titulo: "DFPlayer Mini", sub: "MP3 + microSD", color: "#2b2f36",
-    pines: ["VCC", "RX", "TX", "DAC_R", "DAC_L", "SPK_1", "GND", "SPK_2"], h: 70 }),
-  bocina: () => generico({ tipo: "bocina", nombre: "Bocina 8 Ω", titulo: "Bocina", sub: "8 Ω · 3 W", color: "#495057", pines: ["+", "−"], w: 50, h: 54 }),
-  sdcard: () => generico({ tipo: "sdcard", nombre: "Módulo microSD", titulo: "Módulo microSD", sub: "SPI", color: "#1b4f8a",
-    pines: ["GND", "VCC", "MISO", "MOSI", "SCK", "CS"], h: 70,
-    extra: `<rect x="18" y="8" width="44" height="22" rx="2" fill="#adb5bd" stroke="#495057" stroke-width="0.8"/>` }),
-  fpm383c: () => generico({ tipo: "fpm383c", nombre: "Sensor de huella FPM383C", titulo: "FPM383C", sub: "Huella digital", color: "#343a40",
-    pines: ["VCC", "TX", "RX", "GND"], w: 60, h: 76,
-    extra: `<circle cx="30" cy="20" r="13" fill="#868e96" stroke="#212529" stroke-width="1"/><circle cx="30" cy="20" r="8" fill="none" stroke="#ced4da" stroke-width="0.8"/><circle cx="30" cy="20" r="4" fill="none" stroke="#ced4da" stroke-width="0.8"/>` }),
-  yf201: () => generico({ tipo: "yf201", nombre: "Sensor de flujo YF-201", titulo: "YF-201", sub: "Flujo de agua", color: "#212529",
-    pines: ["VCC", "GND", "SEÑAL"], w: 70, h: 66,
-    extra: `<rect x="6" y="6" width="58" height="16" rx="6" fill="#343a40" stroke="#868e96" stroke-width="0.8"/><path d="M14 14h38l-5-4m5 4l-5 4" fill="none" stroke="#4dabf7" stroke-width="2"/>` }),
   touch: () => generico({ tipo: "touch", nombre: "Papel aluminio (sensor táctil)", titulo: "Aluminio", sub: "tócalo con el dedo", color: "#adb5bd",
     pines: ["TOUCH"], w: 54, h: 48 }),
-  np5x5: () => {
-    let led = "";
-    for (let r = 0; r < 5; r++) for (let c = 0; c < 5; c++) led += `<circle cx="${12 + c * 9}" cy="${10 + r * 9}" r="3" fill="#f8f9fa" stroke="#adb5bd" stroke-width="0.6"/>`;
-    return generico({ tipo: "np5x5", nombre: "Matriz NeoPixel 5x5", titulo: "", color: "#212529", pines: ["5V", "DIN", "GND"], w: 60, h: 66, extra: led });
-  },
   // Semáforo del kit: pines G, Y, R, GND (el del simulador los trae al revés).
   semaforo_kit: () => ({
     tipo: "semaforo_kit", nombre: "Módulo semáforo", w: 50, h: 112,
@@ -193,7 +209,12 @@ const GENERICOS = {
 };
 
 const cache = {};
-function componente(tipo) {
+function componente(tipo, props = {}) {
+  if (tipo === "neopixel_matrix") {
+    const cols = props.cols || 8, rows = props.rows || 8, clave = `${tipo}_${cols}x${rows}`;
+    if (!cache[clave]) cache[clave] = matrizNeopixel(cols, rows);
+    return cache[clave];
+  }
   if (!cache[tipo]) cache[tipo] = GENERICOS[tipo] ? GENERICOS[tipo]() : delSimulador(tipo);
   return cache[tipo];
 }

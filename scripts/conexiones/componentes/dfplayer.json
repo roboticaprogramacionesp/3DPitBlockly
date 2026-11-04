@@ -1,0 +1,37 @@
+{
+    "type": "dfplayer",
+    "name": "DFPlayer Mini (reproductor MP3)",
+    "category": "Actuadores",
+
+    "width": 63.12,
+    "height": 59.04,
+
+    "svg": "components/dfplayer/dfplayer.svg",
+
+    "pinShape": "circle",
+    "pinSize": 4,
+
+    "pins": [
+        { "id": "vcc",       "name": "VCC",   "x": 4.32,  "y": 4.32,  "type": "power",  "signal": "power", "voltage": 5 },
+        { "id": "rx",        "name": "RX",    "x": 4.32,  "y": 11.52, "type": "gpio",   "signal": "uart" },
+        { "id": "tx",        "name": "TX",    "x": 4.32,  "y": 18.72, "type": "gpio",   "signal": "uart", "optional": true },
+        { "id": "dac_r",     "name": "DAC_R", "x": 4.32,  "y": 25.92, "type": "signal", "optional": true },
+        { "id": "dac_l",     "name": "DAC_L", "x": 4.32,  "y": 33.12, "type": "signal", "optional": true },
+        { "id": "spk1",      "name": "SPK1",  "x": 4.32,  "y": 40.32, "type": "signal" },
+        { "id": "gnd",       "name": "GND",   "x": 4.32,  "y": 47.52, "type": "ground", "signal": "ground" },
+        { "id": "spk2",      "name": "SPK2",  "x": 4.32,  "y": 54.72, "type": "signal" },
+
+        { "id": "busy",      "name": "BUSY",     "x": 59.914, "y": 4.32,  "type": "gpio", "signal": "digital", "optional": true },
+        { "id": "usb_minus", "name": "USB-",     "x": 59.914, "y": 11.52, "type": "signal", "optional": true },
+        { "id": "usb_plus",  "name": "USB+",     "x": 59.914, "y": 18.72, "type": "signal", "optional": true },
+        { "id": "adkey2",    "name": "ADKEY2",   "x": 59.914, "y": 25.92, "type": "gpio", "signal": "analog", "optional": true },
+        { "id": "adkey1",    "name": "ADKEY1",   "x": 59.914, "y": 33.12, "type": "gpio", "signal": "analog", "optional": true },
+        { "id": "io2",       "name": "IO2",      "x": 59.914, "y": 40.32, "type": "gpio", "signal": "digital", "optional": true },
+        { "id": "gnd2",      "name": "GND",      "x": 59.914, "y": 47.52, "type": "ground", "signal": "ground", "optional": true },
+        { "id": "io3",       "name": "IO3",      "x": 59.914, "y": 54.72, "type": "gpio", "signal": "digital", "optional": true }
+    ],
+
+    "properties": {
+        "info": "Reproductor de MP3 (lee una microSD). Se controla por UART: RX recibe lo que manda machine.UART desde el ESP32 (MP3PLAYER de mp3_player.py, siempre bus 2). SPK1/SPK2 van a una bocina. El resto de los pines (DAC_R/DAC_L, BUSY, USB+/-, ADKEY1/2, IO2/IO3) existen en el modulo real pero no se simulan."
+    }
+}

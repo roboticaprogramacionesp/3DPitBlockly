@@ -1,0 +1,223 @@
+{
+  "version": "1.0",
+  "timestamp": 1793804435401,
+  "components": [
+    {
+      "id": "esp32_wroom_pf550zu",
+      "type": "esp32_wroom",
+      "name": "ESP32 WeMos D1 R32",
+      "x": 260,
+      "y": 220,
+      "width": 276.28,
+      "height": 210,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "mcu": "ESP32-WROOM-32",
+        "voltaje_operacion": 3.3,
+        "flash_mb": 4,
+        "isPowerSource": true,
+        "macAddress": "E7:A2:32:88:F3:58"
+      },
+      "locked": false
+    },
+    {
+      "id": "dfplayer_xndtomc",
+      "type": "dfplayer",
+      "name": "DFPlayer Mini (reproductor MP3)",
+      "x": 579.7232804224608,
+      "y": 230.29001705356157,
+      "width": 63.12,
+      "height": 59.04,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "info": "Reproductor de MP3 (lee una microSD). Se controla por UART: RX recibe lo que manda machine.UART desde el ESP32 (MP3PLAYER de mp3_player.py, siempre bus 2). SPK1/SPK2 van a una bocina. El resto de los pines (DAC_R/DAC_L, BUSY, USB+/-, ADKEY1/2, IO2/IO3) existen en el modulo real pero no se simulan."
+      },
+      "locked": false
+    },
+    {
+      "id": "bocina_6z8pv69",
+      "type": "bocina",
+      "name": "Bocina (altavoz)",
+      "x": 657.4647767319619,
+      "y": 433.2373901000599,
+      "width": 78.48,
+      "height": 100.442,
+      "rotation": 180,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "info": "Altavoz pasivo -- se conecta a la salida SPK_1/SPK_2 del DFPlayer Mini (u otro amplificador). Es puramente pasiva, no se simula audio real."
+      },
+      "locked": false
+    }
+  ],
+  "wires": [
+    {
+      "id": "wire_ve0n2f9",
+      "from": {
+        "componentId": "esp32_wroom_pf550zu",
+        "pinId": "5v_2"
+      },
+      "to": {
+        "componentId": "dfplayer_xndtomc",
+        "pinId": "vcc"
+      },
+      "points": [
+        {
+          "x": 416.28,
+          "y": 448.58857358791664
+        },
+        {
+          "x": 544.7197921851766,
+          "y": 448.58857358791664
+        },
+        {
+          "x": 544.7197921851766,
+          "y": 234.61001705356156
+        }
+      ],
+      "color": "#ff5252",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_txqo1v2",
+      "from": {
+        "componentId": "esp32_wroom_pf550zu",
+        "pinId": "gnd_2"
+      },
+      "to": {
+        "componentId": "dfplayer_xndtomc",
+        "pinId": "gnd"
+      },
+      "points": [
+        {
+          "x": 436.28,
+          "y": 439.1172139503026
+        },
+        {
+          "x": 559.2462408768968,
+          "y": 439.1172139503026
+        },
+        {
+          "x": 559.2462408768968,
+          "y": 277.8100170535616
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_egs2w5b",
+      "from": {
+        "componentId": "esp32_wroom_pf550zu",
+        "pinId": "io16"
+      },
+      "to": {
+        "componentId": "dfplayer_xndtomc",
+        "pinId": "tx"
+      },
+      "points": [
+        {
+          "x": 466.28,
+          "y": 208.08448732069445
+        },
+        {
+          "x": 553.3561501726056,
+          "y": 208.08448732069445
+        },
+        {
+          "x": 553.3561501726056,
+          "y": 249.01001705356157
+        }
+      ],
+      "color": "#bb86fc",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_vtksn1l",
+      "from": {
+        "componentId": "dfplayer_xndtomc",
+        "pinId": "rx"
+      },
+      "to": {
+        "componentId": "esp32_wroom_pf550zu",
+        "pinId": "io27"
+      },
+      "points": [
+        {
+          "x": 561.133890702141,
+          "y": 241.81001705356158
+        },
+        {
+          "x": 561.133890702141,
+          "y": 199.19559223488477
+        },
+        {
+          "x": 456.28,
+          "y": 199.19559223488477
+        }
+      ],
+      "color": "#2ecc71",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_g0wa9pt",
+      "from": {
+        "componentId": "bocina_6z8pv69",
+        "pinId": "neg"
+      },
+      "to": {
+        "componentId": "dfplayer_xndtomc",
+        "pinId": "spk2"
+      },
+      "points": [
+        {
+          "x": 621.7777767319619,
+          "y": 310.0551014019102
+        },
+        {
+          "x": 569.0169592187603,
+          "y": 310.0551014019102
+        },
+        {
+          "x": 569.0169592187603,
+          "y": 285.01001705356157
+        }
+      ],
+      "color": "#ff66cc",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_2xm5x7o",
+      "from": {
+        "componentId": "bocina_6z8pv69",
+        "pinId": "pos"
+      },
+      "to": {
+        "componentId": "dfplayer_xndtomc",
+        "pinId": "spk1"
+      },
+      "points": [
+        {
+          "x": 614.5367767319619,
+          "y": 319.66787804232393
+        },
+        {
+          "x": 550.0378814015676,
+          "y": 319.66787804232393
+        },
+        {
+          "x": 550.0378814015676,
+          "y": 270.6100170535616
+        }
+      ],
+      "color": "#4da3ff",
+      "connectorType": "hembra-macho"
+    }
+  ],
+  "annotations": []
+}

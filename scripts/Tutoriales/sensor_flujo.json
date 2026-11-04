@@ -1,0 +1,122 @@
+{
+  "version": "1.0",
+  "timestamp": 1793805115869,
+  "components": [
+    {
+      "id": "esp32_wroom_6p6kyej",
+      "type": "esp32_wroom",
+      "name": "ESP32 WeMos D1 R32",
+      "x": 220,
+      "y": 180,
+      "width": 276.28,
+      "height": 210,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "mcu": "ESP32-WROOM-32",
+        "voltaje_operacion": 3.3,
+        "flash_mb": 4,
+        "isPowerSource": true,
+        "macAddress": "08:E9:AD:BD:CE:17"
+      },
+      "locked": false
+    },
+    {
+      "id": "yf201_cpy99v6",
+      "type": "yf201",
+      "name": "YF-S201 Sensor de Flujo",
+      "x": 520.6283032919947,
+      "y": 181.70960509138325,
+      "width": 169.75,
+      "height": 116.25,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "flujo_lmin": 0
+      },
+      "locked": false
+    }
+  ],
+  "wires": [
+    {
+      "id": "wire_ik1urwu",
+      "from": {
+        "componentId": "esp32_wroom_6p6kyej",
+        "pinId": "io17"
+      },
+      "to": {
+        "componentId": "yf201_cpy99v6",
+        "pinId": "signal"
+      },
+      "points": [
+        {
+          "x": 436.9083032919947,
+          "y": 169.23176764834906
+        },
+        {
+          "x": 510.50490607334217,
+          "y": 169.23176764834906
+        },
+        {
+          "x": 510.50490607334217,
+          "y": 310.2834732958866
+        },
+        {
+          "x": 599.9983032919947,
+          "y": 310.2834732958866
+        }
+      ],
+      "color": "#2ecc71",
+      "connectorType": "macho-macho"
+    },
+    {
+      "id": "wire_trspjww",
+      "from": {
+        "componentId": "esp32_wroom_6p6kyej",
+        "pinId": "gnd_2"
+      },
+      "to": {
+        "componentId": "yf201_cpy99v6",
+        "pinId": "gnd"
+      },
+      "points": [
+        {
+          "x": 396.9083032919947,
+          "y": 400.12932923847757
+        },
+        {
+          "x": 604.9183032919947,
+          "y": 400.12932923847757
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "macho-macho"
+    },
+    {
+      "id": "wire_w4y72a6",
+      "from": {
+        "componentId": "yf201_cpy99v6",
+        "pinId": "vcc"
+      },
+      "to": {
+        "componentId": "esp32_wroom_6p6kyej",
+        "pinId": "5v_2"
+      },
+      "points": [
+        {
+          "x": 609.9583032919948,
+          "y": 412.06689764990165
+        },
+        {
+          "x": 376.28,
+          "y": 412.06689764990165
+        }
+      ],
+      "color": "#ff5252",
+      "connectorType": "macho-macho"
+    }
+  ],
+  "annotations": []
+}

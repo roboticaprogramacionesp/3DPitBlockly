@@ -1,0 +1,162 @@
+{
+  "version": "1.0",
+  "timestamp": 1793739015389,
+  "components": [
+    {
+      "id": "esp32_wroom_cr83bvu",
+      "type": "esp32_wroom",
+      "name": "ESP32 WeMos D1 R32",
+      "x": 420,
+      "y": 220,
+      "width": 276.28,
+      "height": 210,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "mcu": "ESP32-WROOM-32",
+        "voltaje_operacion": 3.3,
+        "flash_mb": 4,
+        "isPowerSource": true,
+        "macAddress": "0C:7A:62:C4:3F:61"
+      },
+      "locked": false
+    },
+    {
+      "id": "qmc5883l_znswws2",
+      "type": "qmc5883l",
+      "name": "QMC5883L Magnetómetro/Brújula (I2C)",
+      "x": 716.0526103719147,
+      "y": 223.74266795510562,
+      "width": 42,
+      "height": 50.4,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "modelo": "QMC5883L (módulo GY-271): magnetómetro de 3 ejes / brújula digital, I2C dirección fija 0x2C (también se responde en 0x0D). El heading se elige desde el panel de propiedades",
+        "heading": 0
+      },
+      "locked": false
+    }
+  ],
+  "wires": [
+    {
+      "id": "wire_e9eetpm",
+      "from": {
+        "componentId": "esp32_wroom_cr83bvu",
+        "pinId": "gnd_2"
+      },
+      "to": {
+        "componentId": "qmc5883l_znswws2",
+        "pinId": "gnd"
+      },
+      "points": [
+        {
+          "x": 596.28,
+          "y": 442.7597510769152
+        },
+        {
+          "x": 724.1296103719147,
+          "y": 442.7597510769152
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_v63x7v4",
+      "from": {
+        "componentId": "esp32_wroom_cr83bvu",
+        "pinId": "3v3"
+      },
+      "to": {
+        "componentId": "qmc5883l_znswws2",
+        "pinId": "vcc"
+      },
+      "points": [
+        {
+          "x": 566.28,
+          "y": 453.0204925904082
+        },
+        {
+          "x": 731.3986103719147,
+          "y": 453.0204925904082
+        }
+      ],
+      "color": "#ff5252",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_uor1uwn",
+      "from": {
+        "componentId": "esp32_wroom_cr83bvu",
+        "pinId": "io22"
+      },
+      "to": {
+        "componentId": "qmc5883l_znswws2",
+        "pinId": "scl"
+      },
+      "points": [
+        {
+          "x": 500.28,
+          "y": 204.0441407359063
+        },
+        {
+          "x": 510.28,
+          "y": 204.0441407359063
+        },
+        {
+          "x": 775.5539819714155,
+          "y": 204.0441407359063
+        },
+        {
+          "x": 775.5539819714155,
+          "y": 286.41610946300017
+        },
+        {
+          "x": 738.4189869628867,
+          "y": 286.41610946300017
+        },
+        {
+          "x": 738.4189869628867,
+          "y": 268.0336679551056
+        }
+      ],
+      "color": "#ff66cc",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_h1uhg4t",
+      "from": {
+        "componentId": "esp32_wroom_cr83bvu",
+        "pinId": "io21"
+      },
+      "to": {
+        "componentId": "qmc5883l_znswws2",
+        "pinId": "sda"
+      },
+      "points": [
+        {
+          "x": 510.28,
+          "y": 211.95947437169127
+        },
+        {
+          "x": 764.6403133268193,
+          "y": 211.95947437169127
+        },
+        {
+          "x": 764.6403133268193,
+          "y": 277.0305916216993
+        },
+        {
+          "x": 745.9376103719147,
+          "y": 277.0305916216993
+        }
+      ],
+      "color": "#2ecc71",
+      "connectorType": "hembra-macho"
+    }
+  ],
+  "annotations": []
+}
