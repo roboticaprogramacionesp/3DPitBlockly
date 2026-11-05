@@ -2,13 +2,13 @@
   <block type="seg7_init" id="W4a6zE!4m`93#|(Zi?6U" x="90" y="230">
     <field name="NAME">display</field>
     <field name="TYPE">CC</field>
-    <field name="A">23</field>
-    <field name="B">5</field>
-    <field name="C">13</field>
-    <field name="D">12</field>
-    <field name="E">14</field>
-    <field name="F">19</field>
-    <field name="G">18</field>
+    <field name="A">26</field>
+    <field name="B">25</field>
+    <field name="C">17</field>
+    <field name="D">16</field>
+    <field name="E">27</field>
+    <field name="F">14</field>
+    <field name="G">12</field>
     <next>
       <block type="seg7_number" id="SG5aqH*NUdB%6rhW!{(`">
         <field name="NAME">display</field>

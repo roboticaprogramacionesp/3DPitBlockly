@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "timestamp": 1793804979253,
+  "timestamp": 1793897140350,
   "components": [
     {
       "id": "esp32_wroom_0krvh90",
@@ -154,6 +154,37 @@
       ],
       "color": "#2ecc71",
       "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_1fuakd6",
+      "from": {
+        "componentId": "inmp441_1f07q1t",
+        "pinId": "lr"
+      },
+      "to": {
+        "componentId": "esp32_wroom_0krvh90",
+        "pinId": "gnd_2"
+      },
+      "points": [
+        {
+          "x": 609.4142136660381,
+          "y": 303.2286850185236
+        },
+        {
+          "x": 628.7843594535409,
+          "y": 303.2286850185236
+        },
+        {
+          "x": 628.7843594535409,
+          "y": 470.950471850032
+        },
+        {
+          "x": 456.28,
+          "y": 470.950471850032
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "hembra-hembra"
     }
   ],
   "annotations": []

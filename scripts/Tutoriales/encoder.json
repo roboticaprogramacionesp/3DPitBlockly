@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "timestamp": 1793737001122,
+  "timestamp": 1793896674744,
   "components": [
     {
       "id": "esp32_wroom_lvc80em",
@@ -89,41 +89,10 @@
       "connectorType": "hembra-hembra"
     },
     {
-      "id": "wire_bbzz7ty",
+      "id": "wire_22r2xb2",
       "from": {
-        "componentId": "ky040_ojzi6d5",
-        "pinId": "dt"
-      },
-      "to": {
         "componentId": "esp32_wroom_lvc80em",
         "pinId": "io18"
-      },
-      "points": [
-        {
-          "x": 746.9890785440606,
-          "y": 264.5919418185911
-        },
-        {
-          "x": 788.4167308645667,
-          "y": 264.5919418185911
-        },
-        {
-          "x": 788.4167308645667,
-          "y": 120.74117728007113
-        },
-        {
-          "x": 520.28,
-          "y": 120.74117728007113
-        }
-      ],
-      "color": "#bb86fc",
-      "connectorType": "hembra-hembra"
-    },
-    {
-      "id": "wire_k8vx6hc",
-      "from": {
-        "componentId": "esp32_wroom_lvc80em",
-        "pinId": "io19"
       },
       "to": {
         "componentId": "ky040_ojzi6d5",
@@ -131,24 +100,55 @@
       },
       "points": [
         {
-          "x": 530.28,
-          "y": 132.83581719356684
+          "x": 520.28,
+          "y": 125.74694199731358
         },
         {
-          "x": 776.466657450211,
-          "y": 132.83581719356684
+          "x": 773.8826138754926,
+          "y": 125.74694199731358
         },
         {
-          "x": 776.466657450211,
-          "y": 253.78218073683416
+          "x": 773.8826138754926,
+          "y": 253.2019333862583
         },
         {
           "x": 754.5690785440605,
-          "y": 253.78218073683416
+          "y": 253.2019333862583
         }
       ],
       "color": "#2ecc71",
-      "connectorType": "hembra-hembra"
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_kohes23",
+      "from": {
+        "componentId": "esp32_wroom_lvc80em",
+        "pinId": "io19"
+      },
+      "to": {
+        "componentId": "ky040_ojzi6d5",
+        "pinId": "dt"
+      },
+      "points": [
+        {
+          "x": 530.28,
+          "y": 137.5305672261317
+        },
+        {
+          "x": 782.8574944491246,
+          "y": 137.5305672261317
+        },
+        {
+          "x": 782.8574944491246,
+          "y": 264.64481096949373
+        },
+        {
+          "x": 746.9890785440606,
+          "y": 264.64481096949373
+        }
+      ],
+      "color": "#bb86fc",
+      "connectorType": "hembra-macho"
     }
   ],
   "annotations": []

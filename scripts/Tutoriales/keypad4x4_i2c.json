@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "timestamp": 1793737850761,
+  "timestamp": 1793896738604,
   "components": [
     {
       "id": "esp32_wroom_txouq3u",
@@ -42,43 +42,6 @@
     }
   ],
   "wires": [
-    {
-      "id": "wire_03jw2rx",
-      "from": {
-        "componentId": "esp32_wroom_txouq3u",
-        "pinId": "io22"
-      },
-      "to": {
-        "componentId": "keypad4x4_i2c_m71atx2",
-        "pinId": "sda"
-      },
-      "points": [],
-      "color": "#bb86fc",
-      "connectorType": "hembra-hembra"
-    },
-    {
-      "id": "wire_3gze19m",
-      "from": {
-        "componentId": "keypad4x4_i2c_m71atx2",
-        "pinId": "scl"
-      },
-      "to": {
-        "componentId": "esp32_wroom_txouq3u",
-        "pinId": "io21"
-      },
-      "points": [
-        {
-          "x": 472.9788749026458,
-          "y": 261.1266577419444
-        },
-        {
-          "x": 470.28,
-          "y": 261.1266577419444
-        }
-      ],
-      "color": "#2ecc71",
-      "connectorType": "hembra-hembra"
-    },
     {
       "id": "wire_f8np95m",
       "from": {
@@ -139,6 +102,52 @@
         }
       ],
       "color": "#1a1a1a",
+      "connectorType": "hembra-hembra"
+    },
+    {
+      "id": "wire_azpbnw2",
+      "from": {
+        "componentId": "keypad4x4_i2c_m71atx2",
+        "pinId": "sda"
+      },
+      "to": {
+        "componentId": "esp32_wroom_txouq3u",
+        "pinId": "io21"
+      },
+      "points": [
+        {
+          "x": 459.64887490264584,
+          "y": 268.1046337232549
+        },
+        {
+          "x": 470.28,
+          "y": 268.1046337232549
+        }
+      ],
+      "color": "#2ecc71",
+      "connectorType": "hembra-hembra"
+    },
+    {
+      "id": "wire_hum0ytt",
+      "from": {
+        "componentId": "keypad4x4_i2c_m71atx2",
+        "pinId": "scl"
+      },
+      "to": {
+        "componentId": "esp32_wroom_txouq3u",
+        "pinId": "io22"
+      },
+      "points": [
+        {
+          "x": 472.9788749026458,
+          "y": 274.9317427537432
+        },
+        {
+          "x": 460.28,
+          "y": 274.9317427537432
+        }
+      ],
+      "color": "#bb86fc",
       "connectorType": "hembra-hembra"
     }
   ],

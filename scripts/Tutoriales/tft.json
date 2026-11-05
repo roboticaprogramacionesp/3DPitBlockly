@@ -1,0 +1,201 @@
+{
+  "version": "1.0",
+  "timestamp": 1793897360879,
+  "components": [
+    {
+      "id": "esp32_wroom_hib2i29",
+      "type": "esp32_wroom",
+      "name": "ESP32 WeMos D1 R32",
+      "x": 288.8888515111336,
+      "y": 193.33334335280074,
+      "width": 276.28,
+      "height": 210,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "mcu": "ESP32-WROOM-32",
+        "voltaje_operacion": 3.3,
+        "flash_mb": 4,
+        "isPowerSource": true,
+        "macAddress": "62:D6:67:08:43:1C"
+      },
+      "locked": false
+    },
+    {
+      "id": "tft_st7789_paj1cml",
+      "type": "tft_st7789",
+      "name": "TFT 1.54\" 240x240 (ST7789)",
+      "x": 597.7418910059686,
+      "y": 232.2891197698003,
+      "width": 90,
+      "height": 100,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "modelo": "ST7789 IPS 1.54\" 240x240 SPI",
+        "screenWidth": 240,
+        "screenHeight": 240
+      },
+      "locked": false
+    }
+  ],
+  "wires": [
+    {
+      "id": "wire_rkaxak3",
+      "from": {
+        "componentId": "esp32_wroom_hib2i29",
+        "pinId": "gnd_2"
+      },
+      "to": {
+        "componentId": "tft_st7789_paj1cml",
+        "pinId": "gnd"
+      },
+      "points": [
+        {
+          "x": 465.16885151113365,
+          "y": 412.219189180904
+        },
+        {
+          "x": 568.132258434212,
+          "y": 412.219189180904
+        },
+        {
+          "x": 568.132258434212,
+          "y": 218.5150092496588
+        },
+        {
+          "x": 604.7418910059686,
+          "y": 218.5150092496588
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "hembra-hembra"
+    },
+    {
+      "id": "wire_1dvajna",
+      "from": {
+        "componentId": "esp32_wroom_hib2i29",
+        "pinId": "3v3"
+      },
+      "to": {
+        "componentId": "tft_st7789_paj1cml",
+        "pinId": "vcc"
+      },
+      "points": [
+        {
+          "x": 435.16885151113365,
+          "y": 422.13897505368936
+        },
+        {
+          "x": 579.3759604004131,
+          "y": 422.13897505368936
+        },
+        {
+          "x": 579.3759604004131,
+          "y": 206.80592652844342
+        },
+        {
+          "x": 615.6418910059685,
+          "y": 206.80592652844342
+        }
+      ],
+      "color": "#ff5252",
+      "connectorType": "hembra-hembra"
+    },
+    {
+      "id": "wire_8809r4n",
+      "from": {
+        "componentId": "esp32_wroom_hib2i29",
+        "pinId": "io18"
+      },
+      "to": {
+        "componentId": "tft_st7789_paj1cml",
+        "pinId": "scl"
+      },
+      "points": [
+        {
+          "x": 409.16885151113365,
+          "y": 170.91948049197939
+        },
+        {
+          "x": 626.4418910059686,
+          "y": 170.91948049197939
+        }
+      ],
+      "color": "#4da3ff",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_fn0tmwh",
+      "from": {
+        "componentId": "esp32_wroom_hib2i29",
+        "pinId": "io23"
+      },
+      "to": {
+        "componentId": "tft_st7789_paj1cml",
+        "pinId": "sda"
+      },
+      "points": [
+        {
+          "x": 429.16885151113365,
+          "y": 182.5429101998379
+        },
+        {
+          "x": 637.3418910059686,
+          "y": 182.5429101998379
+        }
+      ],
+      "color": "#ff66cc",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_uy67m1t",
+      "from": {
+        "componentId": "esp32_wroom_hib2i29",
+        "pinId": "io22"
+      },
+      "to": {
+        "componentId": "tft_st7789_paj1cml",
+        "pinId": "res"
+      },
+      "points": [
+        {
+          "x": 369.16885151113365,
+          "y": 146.73021143678133
+        },
+        {
+          "x": 648.1418910059685,
+          "y": 146.73021143678133
+        }
+      ],
+      "color": "#2ecc71",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_6e0kmqx",
+      "from": {
+        "componentId": "esp32_wroom_hib2i29",
+        "pinId": "io21"
+      },
+      "to": {
+        "componentId": "tft_st7789_paj1cml",
+        "pinId": "dc"
+      },
+      "points": [
+        {
+          "x": 379.16885151113365,
+          "y": 157.4111926778636
+        },
+        {
+          "x": 659.0418910059685,
+          "y": 157.4111926778636
+        }
+      ],
+      "color": "#bb86fc",
+      "connectorType": "hembra-macho"
+    }
+  ],
+  "annotations": []
+}

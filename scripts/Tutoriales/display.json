@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "timestamp": 1793739069877,
+  "timestamp": 1793896880261,
   "components": [
     {
       "id": "esp32_wroom_k43jq9c",
@@ -37,32 +37,25 @@
         "commonType": "cathode"
       },
       "locked": false
+    },
+    {
+      "id": "resistencia_xcxjgw8",
+      "type": "resistencia",
+      "name": "Resistencia",
+      "x": 522.8824577908388,
+      "y": 353.7689996738542,
+      "width": 49,
+      "height": 10.79,
+      "rotation": 0,
+      "scale": 1,
+      "flipX": false,
+      "properties": {
+        "ohms": 220
+      },
+      "locked": false
     }
   ],
   "wires": [
-    {
-      "id": "wire_9onsype",
-      "from": {
-        "componentId": "display7_tjdk0li",
-        "pinId": "com2"
-      },
-      "to": {
-        "componentId": "esp32_wroom_k43jq9c",
-        "pinId": "gnd_2"
-      },
-      "points": [
-        {
-          "x": 609.96,
-          "y": 366.6183415542366
-        },
-        {
-          "x": 436.28,
-          "y": 366.6183415542366
-        }
-      ],
-      "color": "#1a1a1a",
-      "connectorType": "hembra-macho"
-    },
     {
       "id": "wire_p3lzhuf",
       "from": {
@@ -246,6 +239,47 @@
         }
       ],
       "color": "#8d6e63",
+      "connectorType": "hembra-hembra"
+    },
+    {
+      "id": "wire_5anpy2f",
+      "from": {
+        "componentId": "resistencia_xcxjgw8",
+        "pinId": "term2"
+      },
+      "to": {
+        "componentId": "display7_tjdk0li",
+        "pinId": "com2"
+      },
+      "points": [
+        {
+          "x": 570.7524577908388,
+          "y": 359.4188606458197
+        },
+        {
+          "x": 609.7414759826055,
+          "y": 359.4188606458197
+        },
+        {
+          "x": 609.7414759826055,
+          "y": 281.3
+        }
+      ],
+      "color": "#1a1a1a",
+      "connectorType": "hembra-hembra"
+    },
+    {
+      "id": "wire_bj6hxdx",
+      "from": {
+        "componentId": "resistencia_xcxjgw8",
+        "pinId": "term1"
+      },
+      "to": {
+        "componentId": "esp32_wroom_k43jq9c",
+        "pinId": "gnd_2"
+      },
+      "points": [],
+      "color": "#1a1a1a",
       "connectorType": "hembra-hembra"
     }
   ],

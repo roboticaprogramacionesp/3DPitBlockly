@@ -76,11 +76,11 @@ const DEL_SIMULADOR = [
   {
     archivo: "carrito", titulo: "Carrito Esquiva Obstáculos", tutoriales: ["carrito_esquiva_obstaculos"], simulador: "carro_esquiva_obstaculos.json",
     nombresPin: { "l298n.power_gnd": "GND", "l298n.power_12v": "+12V", "battery_18650.vcc": "+", "battery_18650.gnd": "−" },
-    nota: "Los motores se alimentan de las pilas (con su interruptor); une el GND de las pilas, del L298N y del ESP32. El HC-SR04 va a 3V3: si no mide bien, pásalo a 5V.",
+    nota: "Los motores se alimentan de las pilas (con su interruptor); une el GND de las pilas, del L298N y del ESP32. El HC-SR04 va a 3V3.",
   },
   {
     archivo: "ultrasonico", titulo: "Sensor Ultrasónico (HC-SR04)", tutoriales: ["ultrasonico"], simulador: "ultrasonico.json",
-    nota: "TRIG manda el pulso y ECHO lo recibe: no los inviertas. Con 3V3 el ECHO es seguro para el ESP32; si tu sensor no mide bien, pásalo a 5V.",
+    nota: "TRIG manda el pulso y ECHO lo recibe: no los inviertas. Siempre a 3V3: así el ECHO es seguro para el ESP32.",
   },
   {
     archivo: "adkeypad", titulo: "Teclado Analógico (ADKey)", tutoriales: ["analogico_adkey"], simulador: "adkey.json",
@@ -185,6 +185,29 @@ const DEL_SIMULADOR = [
     nombresPin: { "bocina.pos": "+", "bocina.neg": "−" },
     nota: "Se cruzan: TX del DFPlayer al RX del ESP32 (IO16) y RX del DFPlayer al TX del ESP32 (IO27). Pon TX 27 y RX 16 en el bloque.",
   },
+  {
+    archivo: "encoder_ky040", titulo: "Encoder Rotatorio (KY-040)", tutoriales: ["encoder_rotatorio"], simulador: "encoder.json",
+    nombresPin: { "ky040.vcc": "+" },
+    nota: "CLK al 18 y DT al 19 (los del bloque por defecto). El pin SW es el botón del eje: no lo usamos en este tutorial.",
+  },
+  {
+    archivo: "inmp441", titulo: "Micrófono INMP441", tutoriales: ["inmp441_microfono"], simulador: "microfono_inmp441.json",
+    nota: "L/R a GND elige el canal izquierdo. Siempre a 3V3.",
+  },
+  {
+    archivo: "teclado_4x4_i2c", titulo: "Teclado Matricial 4x4 I2C", tutoriales: ["teclado_4x4_i2c"], simulador: "keypad4x4_i2c.json",
+    nota: "Dirección I2C: 0x20. Solo usa 2 pines de datos: SDA 21 y SCL 22.",
+  },
+  {
+    archivo: "display_7seg", titulo: "Display 7 Segmentos", tutoriales: ["display_7seg"], simulador: "display.json",
+    nombresPin: { "display7.com2": "común" },
+    nota: "La resistencia de 220 Ω va entre el común y GND. Pon en el bloque los mismos pines: A26 B25 C17 D16 E27 F14 G12.",
+  },
+  {
+    archivo: "tft_display", titulo: "Pantalla TFT a color (ST7789)", tutoriales: ["tft_display"], simulador: "tft.json",
+    nombresPin: { "tft_st7789.scl": "SCL (SCK)", "tft_st7789.sda": "SDA (MOSI)" },
+    nota: "Siempre a 3V3. Si tu pantalla trae CS, conéctalo a GND.",
+  },
 ];
 
 module.exports = [
@@ -196,47 +219,10 @@ module.exports = [
       { id: "u", tipo: "hcsr04", etiqueta: "HC-SR04", material: "Sensor ultrasónico HC-SR04" },
       { id: "t", tipo: "touch", etiqueta: "Aluminio", material: "Cable con papel aluminio (botón táctil)" },
     ],
-    conexiones: [["u.vcc", "5V"], ["u.trig", "IO12"], ["u.echo", "IO13"], ["u.gnd", "GND"], ["t.touch", "IO4"]],
+    conexiones: [["u.vcc", "3V3"], ["u.trig", "IO12"], ["u.echo", "IO13"], ["u.gnd", "GND"], ["t.touch", "IO4"]],
     nota: "Pon el sensor arriba mirando hacia el piso. Toca el aluminio para medir.",
   },
-  {
-    archivo: "encoder_ky040", titulo: "Encoder Rotatorio (KY-040)", tutoriales: ["encoder_rotatorio"],
-    modulos: [{ id: "e", tipo: "ky040", etiqueta: "KY-040", material: "Encoder rotatorio KY-040" }],
-    conexiones: [["e.gnd", "GND"], ["e.vcc", "3V3"], ["e.dt", "IO19"], ["e.clk", "IO18"]],
-    nombresPin: { "e.vcc": "+" },
-    nota: "El pin SW es el botón del eje: no lo usamos en este tutorial.",
-  },
-  {
-    archivo: "inmp441", titulo: "Micrófono INMP441", tutoriales: ["inmp441_microfono"],
-    modulos: [{ id: "m", tipo: "inmp441", etiqueta: "INMP441", material: "Micrófono INMP441 (I2S)" }],
-    conexiones: [["m.sck", "IO26"], ["m.ws", "IO25"], ["m.lr", "GND"], ["m.sd", "IO32"], ["m.vdd", "3V3"], ["m.gnd", "GND"]],
-    nota: "L/R a GND elige el canal izquierdo. Siempre a 3V3.",
-  },
-  // ── I2C ──
-  {
-    archivo: "teclado_4x4_i2c", titulo: "Teclado Matricial 4x4 I2C", tutoriales: ["teclado_4x4_i2c"],
-    modulos: [{ id: "k", tipo: "keypad4x4_i2c", etiqueta: "Teclado", material: "Teclado 4x4 con módulo I2C" }],
-    conexiones: [["k.sda", "IO21"], ["k.scl", "IO22"], ["k.vcc", "5V"], ["k.gnd", "GND"]],
-    nota: "Dirección I2C: 0x20. Solo usa 2 pines de datos.",
-  },
   // ── Pantallas y SPI ──
-  {
-    archivo: "tft_display", titulo: "Pantalla TFT a color (ST7789)", tutoriales: ["tft_display"],
-    modulos: [{ id: "t", tipo: "tft_st7789", etiqueta: "TFT", material: "Pantalla TFT ST7789 240x240" }],
-    conexiones: [["t.gnd", "GND"], ["t.vcc", "3V3"], ["t.scl", "IO18"], ["t.sda", "IO23"], ["t.res", "IO22"], ["t.dc", "IO21"], ["t.blk", "t.vcc"]],
-    nombresPin: { "t.scl": "SCL (SCK)", "t.sda": "SDA (MOSI)", "t.blk": "BLK (luz)" },
-    nota: "Siempre a 3V3. Si tu pantalla trae CS, conéctalo a GND.",
-  },
-  {
-    archivo: "display_7seg", titulo: "Display 7 Segmentos", tutoriales: ["display_7seg"],
-    modulos: [{ id: "d", tipo: "display7", etiqueta: "Display", material: "Display 7 segmentos (cátodo común)" }],
-    conexiones: [
-      ["d.a", "IO23", { r: "220 Ω" }], ["d.b", "IO5", { r: "220 Ω" }], ["d.c", "IO13", { r: "220 Ω" }], ["d.d", "IO12", { r: "220 Ω" }],
-      ["d.e", "IO14", { r: "220 Ω" }], ["d.f", "IO19", { r: "220 Ω" }], ["d.g", "IO18", { r: "220 Ω" }], ["d.com1", "GND"],
-    ],
-    nombresPin: { "d.com1": "común" },
-    nota: "Si tu display es de ánodo común, el común va a 3V3 y eliges 'ánodo común' en el bloque.",
-  },
   {
     archivo: "lcd_paralelo", titulo: "LCD 16x2 (paralelo)", tutoriales: ["lcd_paralelo"],
     modulos: [
@@ -250,7 +236,7 @@ module.exports = [
       ["p.vcc", "5V"], ["p.gnd", "GND"],
     ],
     nombresPin: { "d.v0": "V0 (contraste)", "d.e": "E" },
-    nota: "Gira el potenciómetro hasta que se vean las letras. D0-D3 no se conectan. Luz de fondo (opcional): A a 5V y K a GND.",
+    nota: "Gira el potenciómetro hasta que se vean las letras. D0-D3 no se conectan. Luz de fondo: A con resistencia de 220 Ω a 5V y K a GND.",
   },
   // ── Inalámbrico: solo la placa ──
   {

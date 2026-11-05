@@ -562,7 +562,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Conexión física del HC-SR04",
-        desc: "Conecta el sensor HC-SR04 al ESP32 así:<br>⚡ <b>VCC</b> → 3.3V (si tu sensor no mide bien, pásalo a 5V)<br>⏚ <b>GND</b> → GND<br>📌 <b>TRIG</b> → pin <b>12</b> (envía el pulso)<br>📌 <b>ECHO</b> → pin <b>13</b> (recibe el rebote)<br><br>El sensor tiene un rango de detección de <b>2 cm a 400 cm</b>.",
+        desc: "Conecta el sensor HC-SR04 al ESP32 así:<br>⚡ <b>VCC</b> → <b>3.3V</b> (no lo conectes a 5V: el ECHO le regresaría 5V al ESP32)<br>⏚ <b>GND</b> → GND<br>📌 <b>TRIG</b> → pin <b>12</b> (envía el pulso)<br>📌 <b>ECHO</b> → pin <b>13</b> (recibe el rebote)<br><br>El sensor tiene un rango de detección de <b>2 cm a 400 cm</b>.",
         highlightCat: null, bloque: null
       },
       {
@@ -656,7 +656,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Conexión física",
-        desc: "📡 <b>HC-SR04</b> (mirando hacia abajo, a una altura fija que vas a medir con una cinta métrica -- por ejemplo <b>200 cm</b> desde el piso):<br>⚡ VCC → 5V &nbsp; ⏚ GND → GND<br>📌 TRIG → pin <b>12</b> &nbsp; 📌 ECHO → pin <b>13</b><br><br>👆 <b>TouchPad</b> (el \"botón\"): no hace falta ningún módulo, alcanza con un cable pelado o un trocito de papel aluminio conectado al pin <b>4</b> del ESP32 -- vas a tocarlo con el dedo para activar la medición.<br><br>⚠️ Medí con cinta métrica la altura real a la que quedó el sensor: ese número es el que vas a usar en el bloque <em>altura_sensor</em> más adelante. Si el sensor no está exactamente ahí, la estatura calculada sale mal.",
+        desc: "📡 <b>HC-SR04</b> (mirando hacia abajo, a una altura fija que vas a medir con una cinta métrica -- por ejemplo <b>200 cm</b> desde el piso):<br>⚡ VCC → 3.3V &nbsp; ⏚ GND → GND<br>📌 TRIG → pin <b>12</b> &nbsp; 📌 ECHO → pin <b>13</b><br><br>👆 <b>TouchPad</b> (el \"botón\"): no hace falta ningún módulo, alcanza con un cable pelado o un trocito de papel aluminio conectado al pin <b>4</b> del ESP32 -- vas a tocarlo con el dedo para activar la medición.<br><br>⚠️ Medí con cinta métrica la altura real a la que quedó el sensor: ese número es el que vas a usar en el bloque <em>altura_sensor</em> más adelante. Si el sensor no está exactamente ahí, la estatura calculada sale mal.",
         highlightCat: null, bloque: null
       },
       {
@@ -4436,7 +4436,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Conexión física",
-        desc: "El teclado 4x4 I2C se conecta con solo 4 pines:<br>⚡ <b>VCC</b> → <b>5V</b> (o 3.3V, revisa tu módulo)<br>⏚ <b>GND</b> → GND<br>📌 <b>SDA</b> → pin <b>21</b><br>📌 <b>SCL</b> → pin <b>22</b>",
+        desc: "El teclado 4x4 I2C se conecta con solo 4 pines:<br>⚡ <b>VCC</b> → <b>3.3V</b><br>⏚ <b>GND</b> → GND<br>📌 <b>SDA</b> → pin <b>21</b><br>📌 <b>SCL</b> → pin <b>22</b>",
         highlightCat: null, bloque: null
       },
       {
@@ -4722,7 +4722,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Conexión física",
-        desc: "El display tiene 7 segmentos (A-G) + un pin común:<br>📌 <b>A, B, C, D, E, F, G</b> → 7 pines digitales cualquiera, cada uno con resistencia de <b>220Ω</b><br>⚡/⏚ El pin <b>común</b> va a <b>GND</b> (cátodo común) o <b>3.3V</b> (ánodo común) según tu display.",
+        desc: "El display tiene 7 segmentos (A-G) + un pin común:<br>📌 <b>A</b> → pin <b>26</b>, <b>B</b> → pin <b>25</b>, <b>C</b> → pin <b>17</b>, <b>D</b> → pin <b>16</b><br>📌 <b>E</b> → pin <b>27</b>, <b>F</b> → pin <b>14</b>, <b>G</b> → pin <b>12</b><br>⏚ El pin <b>común</b> → una resistencia de <b>220Ω</b> → <b>GND</b> (cátodo común)<br><br>⚠️ No te saltes la resistencia: limita la corriente para no quemar los segmentos ni el ESP32.",
         highlightCat: null, bloque: null
       },
       {
@@ -4737,7 +4737,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Arrastra: Inicializar display",
-        desc: "Arrastra el bloque <em>Inicializar</em> al área de trabajo. Elige el tipo (<b>cátodo común</b> o <b>ánodo común</b>, según tu display) y asigna los 7 pines A-G. Este bloque va <b>una sola vez</b> al inicio.",
+        desc: "Arrastra el bloque <em>Inicializar</em> al área de trabajo. Elige <b>cátodo común</b> y revisa que los pines sean los mismos que conectaste (A <b>26</b>, B <b>25</b>, C <b>17</b>, D <b>16</b>, E <b>27</b>, F <b>14</b>, G <b>12</b>). Este bloque va <b>una sola vez</b> al inicio.",
         highlightCat: "DISPLAY 7 SEG", expandCat: "Pantallas",
         bloque: "seg7_init", bloqueLabel: "Inicializar display 7 seg"
       },
@@ -4781,7 +4781,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Conexión física",
-        desc: "El LCD paralelo necesita 6 pines de datos + alimentación:<br>⚡ <b>VDD</b> → <b>5V</b>, <b>VSS</b> → GND<br>🎚️ <b>V0</b> (contraste) → potenciómetro de 10kΩ entre 5V y GND<br>📌 <b>RS</b> → pin <b>12</b>, <b>EN</b> → pin <b>13</b><br>📌 <b>D4</b> → pin <b>5</b>, <b>D5</b> → pin <b>23</b>, <b>D6</b> → pin <b>19</b>, <b>D7</b> → pin <b>18</b><br>⏚ <b>RW</b> → GND",
+        desc: "El LCD paralelo necesita 6 pines de datos + alimentación:<br>⚡ <b>VDD</b> → <b>5V</b>, <b>VSS</b> → GND<br>🎚️ <b>V0</b> (contraste) → potenciómetro de 10kΩ entre 5V y GND<br>📌 <b>RS</b> → pin <b>12</b>, <b>EN</b> → pin <b>13</b><br>📌 <b>D4</b> → pin <b>5</b>, <b>D5</b> → pin <b>23</b>, <b>D6</b> → pin <b>19</b>, <b>D7</b> → pin <b>18</b><br>⏚ <b>RW</b> → GND<br>💡 Luz de fondo: <b>A</b> → resistencia de <b>220Ω</b> → 5V, <b>K</b> → GND",
         highlightCat: null, bloque: null
       },
       {
