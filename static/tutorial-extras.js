@@ -39,6 +39,10 @@
     quiz:      ['❓', 'Quiz']
   };
 
+  // Miniatura de la portada: solo el recuadro del circuito de los
+  // diagramas (1200x800, ver scripts/conexiones/generar.js), completo.
+  var RECORTE_CIRCUITO = '16 88 776 696';
+
   function base() {
     return (typeof TS_STATIC_URL !== 'undefined') ? TS_STATIC_URL : '/static/';
   }
@@ -248,7 +252,8 @@
     if (logro) h += '<div class="tx-caja tx-ya">🏅 Ya ganaste esta insignia el ' + fechaBonita(logro) + '. ¡Puedes repetirlo cuando quieras!</div>';
     if (tut.diagram && tut.diagram.indexOf('solo_placa') < 0) {
       h += '<button type="button" class="tx-mini" data-tx="diagrama" title="Ver las conexiones en grande">' +
-        '<img alt="Diagrama de conexiones" src="' + base() + tut.diagram + '"><span>🔍 Ver conexiones</span></button>';
+        '<svg viewBox="' + RECORTE_CIRCUITO + '" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Diagrama de conexiones">' +
+        '<image href="' + base() + tut.diagram + '" x="0" y="0" width="1200" height="800"/></svg><span>🔍 Ver conexiones</span></button>';
     }
     h += '<div class="tx-sub">🧰 Material</div><ul class="tx-lista" id="tx-material"><li class="tx-cargando">Cargando…</li></ul>';
     h += '<div class="tx-sub">🗺️ Tu ruta</div><div class="tx-ruta">' + ruta + '</div></div>';

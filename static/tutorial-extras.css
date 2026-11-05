@@ -127,9 +127,11 @@
   background: #fff;
   cursor: zoom-in;
 }
-.tx-mini { height: 200px; }
-/* Solo el circuito: el diagrama mide 1500 de ancho y el circuito ocupa ~990 */
-.tx-mini img { display: block; width: 152%; max-width: none; height: auto; margin-top: -7%; }
+/* Circuito completo, reducido para que quepa (sin recortar piezas) */
+.tx-mini { background: #f4f6fb; }
+/* Mismo ancho/alto que el recuadro del circuito (776x696): así no se ve
+   nada de la tabla que está a su derecha. */
+.tx-mini svg { display: block; height: 230px; width: 256px; max-width: 100%; margin: 0 auto; overflow: hidden; }
 .tx-mini span {
   position: absolute;
   right: 6px;
