@@ -213,12 +213,8 @@
   }
 
   function htmlPortada(ts, step) {
+    // (Las secciones Aprende › … › Reta ya se ven en la barra de arriba.)
     var tut = ts.tutorial, d = tut._extras, id = step._id;
-    var secs = secciones(tut.steps), vistas = [];
-    secs.forEach(function (s) { if (vistas.indexOf(s) < 0) vistas.push(s); });
-    var ruta = SECCIONES.filter(function (s) { return vistas.indexOf(s[0]) >= 0; })
-      .map(function (s) { return '<span class="tx-ruta-chip">' + s[1] + ' ' + s[2] + '</span>'; })
-      .join('<span class="tx-ruta-sep">›</span>');
     var logro = leerLogros()[id];
     var h = '<div class="tx-portada">' +
       '<div class="tx-hero"><span class="tx-hero-icon">' + tut.icon + '</span><div>' +
@@ -232,8 +228,7 @@
       if (d.retos.length) tiene.push('🏆 ' + d.retos.length + (d.retos.length > 1 ? ' retos' : ' reto'));
       if (d.quiz.length) tiene.push('❓ quiz de ' + d.quiz.length + (d.quiz.length > 1 ? ' preguntas' : ' pregunta'));
       h += '<div class="tx-caja tx-docente">👩‍🏫 Tutorial creado por tu docente · huella <b>' + htmlSeguro(tut.huella || '') + '</b>' +
-        (tiene.length ? '<br>Al final: ' + tiene.join(' y ') + '.' : '') + '</div>';
-      h += '<div class="tx-sub">🗺️ Tu ruta</div><div class="tx-ruta">' + ruta + '</div></div>';
+        (tiene.length ? '<br>Al final: ' + tiene.join(' y ') + '.' : '') + '</div></div>';
       return h;
     }
     if (logro) h += '<div class="tx-caja tx-ya">🏅 Ya ganaste esta insignia el ' + fechaBonita(logro) + '. ¡Puedes repetirlo cuando quieras!</div>';
@@ -242,7 +237,7 @@
         '<svg viewBox="' + RECORTE_CIRCUITO + '" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Diagrama de conexiones">' +
         '<image href="' + base() + tut.diagram + '" x="0" y="0" width="1200" height="800"/></svg><span>🔍 Ver conexiones</span></button>';
     }
-    h += '<div class="tx-sub">🗺️ Tu ruta</div><div class="tx-ruta">' + ruta + '</div></div>';
+    h += '</div>';
     return h;
   }
 

@@ -144,16 +144,6 @@
   background: rgba(18, 21, 42, .85);
 }
 .tx-mini:hover { border-color: #3454d1; }
-.tx-ruta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
-.tx-ruta-chip {
-  padding: 2px 7px;
-  border-radius: 999px;
-  background: #1a2048;
-  border: 1px solid #2a3570;
-  color: #c8d8ff;
-  font-size: .9em;
-}
-.tx-ruta-sep { color: #4a5590; }
 
 /* ── Concepto: diagrama animado ─────────────────────────────────── */
 .tx-concepto { background: #0a0d1c; border-color: #2a3570; padding: 4px; }
