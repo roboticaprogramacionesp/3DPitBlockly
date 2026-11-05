@@ -815,10 +815,18 @@ function desdeSimulador(def) {
   return { def: def2, piezas, trazo: { cables, costo: 0, fallas: 0 } };
 }
 
+// Lista de material por tutorial (la portada de cada tutorial la muestra).
+const MATERIAL_JSON = path.join(SALIDA, "material.json");
+const MATERIAL = (() => { try { return JSON.parse(fs.readFileSync(MATERIAL_JSON, "utf8")); } catch (e) { return {}; } })();
+function guardarMaterial(def, lista) {
+  for (const t of def.tutoriales || []) MATERIAL[t] = lista;
+}
+
 // ── Principal ──
 function generar(def) {
   if (def.simulador) {
     const r = desdeSimulador(def);
+    guardarMaterial(def, material(r.def, r.piezas, r.trazo));
     const svg = dibujar(r.def, r.piezas, r.trazo, []);
     fs.writeFileSync(path.join(SALIDA, def.archivo + ".svg"), svg);
     return { kb: Math.round(svg.length / 1024), cables: r.trazo.cables.length, fallas: 0 };
@@ -830,6 +838,7 @@ function generar(def) {
   if (process.env.POSICIONES) for (const p of piezas) if (!p.fija) console.log(`   ${p.clave}: pos: [${f(p.x - BX)}, ${f(p.y - BY)}]`);
   const trazo = mejorTrazo(G, piezas, cons, def.intentos || 40, 11) || { cables: [], costo: 0, fallas: 0 };
   if (trazo.fallas) console.warn(`⚠ ${def.archivo}: ${trazo.fallas} cable(s) sin trazar`);
+  guardarMaterial(def, material(def, piezas, trazo));
   const svg = dibujar(def, piezas, trazo, cons);
   fs.writeFileSync(path.join(SALIDA, def.archivo + ".svg"), svg);
   return { kb: Math.round(svg.length / 1024), cables: trazo.cables.length, fallas: trazo.fallas };
@@ -848,6 +857,8 @@ if (require.main === module) {
       console.error(`✗ ${def.archivo}: ${e.stack}`);
     }
   }
+  const orden = Object.fromEntries(Object.keys(MATERIAL).sort().map((k) => [k, MATERIAL[k]]));
+  fs.writeFileSync(MATERIAL_JSON, JSON.stringify(orden, null, 1) + "\n");
 }
 
 module.exports = { generar };

@@ -5443,6 +5443,8 @@ var TutorialSteps = {
     if (!id) { this.cerrar(); return; }
     var tut = TUTORIALS[id];
     if (!tut) return;
+    // Portada, conceptos, retos y quiz (static/tutorial-extras.js)
+    if (window.TutorialExtras) tut = TutorialExtras.aumentar(id, tut);
     // Siempre regresar a la vista de bloques al cambiar de tutorial
     if (typeof showView === 'function') showView('viewBlocks');
     this.tutorial = tut;
@@ -5555,7 +5557,7 @@ var TutorialSteps = {
     if (tut.compartido) {
       TutorialDocente.renderTexto(document.getElementById('ts-step-desc'), step.desc);
     } else {
-      document.getElementById('ts-step-desc').innerHTML = step.desc;
+      document.getElementById('ts-step-desc').innerHTML = step.desc || '';
     }
 
     this._actualizarBotonWiring();
@@ -5652,6 +5654,9 @@ var TutorialSteps = {
       this._currentBloques = [];
     }
 
+    // Etiqueta del tipo de paso, secciones y pasos extra (tutorial-extras.js)
+    if (window.TutorialExtras) TutorialExtras.alRenderizar(this, step);
+
     this._actualizarCheck();
   },
 
@@ -5668,6 +5673,7 @@ var TutorialSteps = {
     var step = tut.steps[this.paso];
     if (!step) return false;
     var self = this;
+    if (step.extra && window.TutorialExtras) return TutorialExtras.completo(step);
 
     // Paso pide arrastrar uno o más bloques al workspace principal.
     //
@@ -6304,6 +6310,8 @@ var TutorialSteps = {
     // Ya no hay un "paso de conexión" activo -- ocultar el botón de
     // conexiones (antes quedaba visible incluso en la pantalla de fin).
     this._actualizarBotonWiring();
+    // Insignia, confeti y aplicaciones reales (tutorial-extras.js)
+    if (window.TutorialExtras) TutorialExtras.alTerminar(this);
   },
 
   _reiniciar: function () {

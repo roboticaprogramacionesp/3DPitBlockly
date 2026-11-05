@@ -1,0 +1,338 @@
+/* ================================================================
+   tutorial-extras.css — Extras de los tutoriales ESP32
+   (static/tutorial-extras.js): secciones, tarjeta por tipo de paso,
+   portada, conceptos animados, retos, quiz, insignia y "Mis logros".
+   Mismo tema oscuro que tutorial-steps.css.
+================================================================ */
+
+/* ── Barra de secciones ─────────────────────────────────────────── */
+.tx-secciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 6px 10px 2px;
+}
+.tx-sec {
+  flex: 1 1 auto;
+  font: inherit;
+  font-size: 10px;
+  padding: 4px 6px;
+  border-radius: 999px;
+  border: 1px solid #2a3570;
+  background: #161b36;
+  color: #6878c0;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .15s, color .15s, border-color .15s;
+}
+.tx-sec:hover { color: #c8d8ff; border-color: #3454d1; }
+.tx-sec.tx-sec-hecha { color: #00e676; border-color: rgba(0, 230, 118, .35); background: rgba(0, 230, 118, .06); }
+.tx-sec.tx-sec-actual {
+  color: #fff;
+  background: #3454d1;
+  border-color: #6b83ff;
+  box-shadow: 0 0 0 2px rgba(52, 84, 209, .35);
+}
+
+/* ── Tarjeta por tipo de paso ───────────────────────────────────── */
+.ts-body[data-tx-tipo] {
+  border-left: 4px solid var(--tx-color, #3454d1);
+  transition: border-color .2s;
+}
+.ts-body[data-tx-tipo="portada"]   { --tx-color: #7c6af7; --tx-fondo: rgba(124, 106, 247, .14); }
+.ts-body[data-tx-tipo="concepto"],
+.ts-body[data-tx-tipo="glosario"],
+.ts-body[data-tx-tipo="explica"]   { --tx-color: #b388ff; --tx-fondo: rgba(179, 136, 255, .14); }
+.ts-body[data-tx-tipo="info"]      { --tx-color: #7986cb; --tx-fondo: rgba(121, 134, 203, .14); }
+.ts-body[data-tx-tipo="archivo"]   { --tx-color: #90a4ae; --tx-fondo: rgba(144, 164, 174, .14); }
+.ts-body[data-tx-tipo="conexion"]  { --tx-color: #ff9100; --tx-fondo: rgba(255, 145, 0, .14); }
+.ts-body[data-tx-tipo="bloque"]    { --tx-color: #40c4ff; --tx-fondo: rgba(64, 196, 255, .14); }
+.ts-body[data-tx-tipo="probar"]    { --tx-color: #00e676; --tx-fondo: rgba(0, 230, 118, .12); }
+.ts-body[data-tx-tipo="problemas"] { --tx-color: #ff5252; --tx-fondo: rgba(255, 82, 82, .14); }
+.ts-body[data-tx-tipo="retos"],
+.ts-body[data-tx-tipo="quiz"],
+.ts-body[data-tx-tipo="fin"]       { --tx-color: #ffb300; --tx-fondo: rgba(255, 179, 0, .14); }
+
+.tx-etiqueta {
+  display: inline-block;
+  margin-bottom: 7px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--tx-color, #3454d1);
+  background: var(--tx-fondo, rgba(52, 84, 209, .14));
+  border: 1px solid var(--tx-color, #3454d1);
+}
+.ts-body[data-tx-tipo] .ts-step-num { background: var(--tx-color, #3454d1); color: #0e1120; }
+
+/* ── Cajas y textos comunes ─────────────────────────────────────── */
+.tx-p { margin: 0 0 10px; }
+.tx-caja {
+  margin: 10px 0 4px;
+  padding: 9px 11px;
+  border-radius: 7px;
+  line-height: 1.55;
+  border: 1px solid;
+}
+.tx-dato     { background: rgba(179, 136, 255, .1); border-color: rgba(179, 136, 255, .4); color: #d9c8ff; }
+.tx-dato b   { color: #ece4ff; }
+.tx-ya       { background: rgba(255, 179, 0, .1); border-color: rgba(255, 179, 0, .4); color: #ffd36b; }
+.tx-problema { background: rgba(255, 82, 82, .08); border-color: rgba(255, 82, 82, .35); color: #ffc9c9; }
+.tx-problema b { color: #ff8a80; }
+.tx-sub {
+  margin: 12px 0 5px;
+  font-size: .95em;
+  font-weight: 700;
+  color: #c8d8ff;
+}
+.tx-lista { margin: 0; padding-left: 18px; }
+.tx-lista li { margin: 2px 0; }
+.tx-cargando { color: #4a5590; font-style: italic; }
+
+/* ── Portada ───────────────────────────────────────────────────── */
+.tx-hero {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(124, 106, 247, .28), rgba(52, 84, 209, .12));
+  border: 1px solid rgba(124, 106, 247, .4);
+}
+.tx-hero-icon {
+  font-size: 2.6em;
+  line-height: 1;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .5));
+  animation: tx-flota 3s ease-in-out infinite;
+}
+@keyframes tx-flota { 50% { transform: translateY(-4px); } }
+.tx-hero-title { font-size: 1.15em; font-weight: 700; color: #fff; line-height: 1.3; }
+.tx-meta { display: flex; flex-wrap: wrap; gap: 4px 10px; margin-top: 4px; font-size: .9em; color: #aab6ec; }
+.tx-nivel { font-weight: 700; }
+.tx-nivel-1 { color: #00e676; }
+.tx-nivel-2 { color: #ffb300; }
+.tx-nivel-3 { color: #ff5252; }
+.tx-mini {
+  display: block;
+  position: relative;
+  width: 100%;
+  margin: 10px 0 0;
+  padding: 0;
+  border: 1px solid #2a3570;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+  cursor: zoom-in;
+}
+.tx-mini { height: 200px; }
+/* Solo el circuito: el diagrama mide 1500 de ancho y el circuito ocupa ~990 */
+.tx-mini img { display: block; width: 152%; max-width: none; height: auto; margin-top: -7%; }
+.tx-mini span {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font: inherit;
+  font-size: 10px;
+  color: #fff;
+  background: rgba(18, 21, 42, .85);
+}
+.tx-mini:hover { border-color: #3454d1; }
+.tx-ruta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+.tx-ruta-chip {
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: #1a2048;
+  border: 1px solid #2a3570;
+  color: #c8d8ff;
+  font-size: .9em;
+}
+.tx-ruta-sep { color: #4a5590; }
+
+/* ── Concepto: diagrama animado ─────────────────────────────────── */
+.tx-concepto { background: #0a0d1c; border-color: #2a3570; padding: 4px; }
+.tx-diagrama { display: block; width: 100%; height: auto; overflow: visible; }
+.tx-nodo circle { fill: #1a2048; stroke: #3454d1; stroke-width: 2; }
+.tx-nodo-emoji { font-size: 22px; text-anchor: middle; }
+.tx-nodo-txt { font-size: 10px; text-anchor: middle; fill: #c8d8ff; font-family: 'Segoe UI', Roboto, sans-serif; }
+.tx-enlace { fill: none; stroke: #3454d1; stroke-width: 2.5; stroke-dasharray: 5 4; animation: tx-flujo 1s linear infinite; }
+@keyframes tx-flujo { to { stroke-dashoffset: -9; } }
+.tx-enlace-off { stroke: #4a5590; animation: none; opacity: .6; }
+.tx-tache { font-size: 16px; font-weight: 700; fill: #ff5252; text-anchor: middle; }
+.tx-enlace-txt { font-size: 9px; text-anchor: middle; fill: #8fa0e8; font-family: 'Segoe UI', Roboto, sans-serif; }
+.tx-paquete { fill: #00e676; }
+.tx-paquete-2 { fill: #ffb300; }
+
+/* ── Glosario ──────────────────────────────────────────────────── */
+.tx-glosario { margin: 0; }
+.tx-glosario dt { margin-top: 8px; font-weight: 700; color: #d9c8ff; }
+.tx-glosario dt::before { content: "▸ "; color: #b388ff; }
+.tx-glosario dd { margin: 2px 0 0 14px; }
+
+/* ── Retos ─────────────────────────────────────────────────────── */
+.tx-reto {
+  margin: 8px 0;
+  padding: 9px 11px;
+  border-radius: 8px;
+  background: rgba(255, 179, 0, .06);
+  border: 1px solid rgba(255, 179, 0, .3);
+}
+.tx-reto-tit { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.tx-reto-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: #ffb300; color: #12152a; font-weight: 700; font-size: 11px;
+}
+.tx-reto-dif { font-size: .8em; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
+.tx-dif-0 { color: #00e676; }
+.tx-dif-1 { color: #ffb300; }
+.tx-dif-2 { color: #ff5252; }
+.tx-pista { margin-top: 6px; color: #aab6ec; }
+.tx-pista summary { cursor: pointer; color: #ffd36b; font-weight: 600; }
+.tx-pista[open] summary { margin-bottom: 4px; }
+
+/* ── Quiz ──────────────────────────────────────────────────────── */
+.tx-pregunta { margin: 10px 0 12px; }
+.tx-preg-txt { margin-bottom: 6px; color: #e8eeff; font-weight: 600; }
+.tx-opcion {
+  display: block;
+  width: 100%;
+  margin: 4px 0;
+  padding: 7px 10px;
+  text-align: left;
+  font: inherit;
+  color: #c8d8ff;
+  background: #161b36;
+  border: 1px solid #2a3570;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background .12s, border-color .12s;
+}
+.tx-opcion:hover:not(:disabled) { border-color: #3454d1; background: #1d2550; }
+.tx-opcion:disabled { cursor: default; opacity: .5; }
+.tx-opcion.tx-bien { opacity: 1; color: #fff; background: rgba(0, 230, 118, .18); border-color: #00e676; }
+.tx-opcion.tx-mal { background: rgba(255, 82, 82, .15); border-color: #ff5252; animation: tx-sacude .35s; }
+@keyframes tx-sacude { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+.tx-retro { font-size: .92em; }
+.tx-retro-bien { color: #00e676; margin-top: 4px; }
+.tx-retro-mal { color: #ff8a80; margin-top: 4px; }
+#ts-btn-next:disabled { opacity: .45; cursor: not-allowed; }
+
+/* ── Fin: insignia ─────────────────────────────────────────────── */
+.tx-fin { text-align: center; }
+.tx-medalla {
+  width: 86px; height: 86px;
+  margin: 4px auto 10px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(circle at 35% 30%, #ffe082, #ffb300 60%, #c77c00);
+  box-shadow: 0 0 0 5px rgba(255, 179, 0, .25), 0 0 26px rgba(255, 179, 0, .55);
+  animation: tx-medalla .9s cubic-bezier(.2, 1.6, .4, 1) both;
+}
+.tx-medalla span { font-size: 40px; }
+@keyframes tx-medalla { from { transform: scale(0) rotate(-200deg); } to { transform: scale(1) rotate(0); } }
+.tx-fin h3 { color: #ffd36b; }
+.tx-cuenta { margin: 10px 0 4px; font-size: .92em; color: #c8d8ff; }
+.tx-cuenta-barra { height: 6px; margin: 0 0 6px; border-radius: 3px; background: #1e2a5a; overflow: hidden; }
+.tx-cuenta-barra > div { height: 100%; background: linear-gradient(90deg, #ffb300, #00e676); border-radius: 3px; }
+.tx-fin .tx-sub, .tx-fin .tx-usos { text-align: left; }
+.tx-fin-btns { display: flex; gap: 8px; justify-content: center; margin-top: 14px; }
+
+/* Confeti (sobre el panel) */
+.tx-confeti { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 5; }
+.tx-confeti i {
+  position: absolute;
+  top: -12px;
+  width: 7px; height: 11px;
+  border-radius: 2px;
+  animation-name: tx-cae;
+  animation-timing-function: cubic-bezier(.3, .6, .6, 1);
+  animation-fill-mode: forwards;
+}
+@keyframes tx-cae { to { top: 105%; transform: translateX(30px) rotate(540deg); opacity: .2; } }
+
+/* ── Mis logros ────────────────────────────────────────────────── */
+.tx-logros-fondo {
+  position: fixed; inset: 0; z-index: 10000;
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px;
+  background: rgba(5, 7, 18, .7);
+}
+.tx-logros {
+  width: min(760px, 100%);
+  max-height: 86vh;
+  overflow-y: auto;
+  padding: 16px;
+  border-radius: 12px;
+  background: #12152a;
+  border: 1px solid #3454d1;
+  color: #c8d8ff;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, .6);
+}
+.tx-logros-cab { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+.tx-logros-cab h3 { margin: 0; color: #ffd36b; font-size: 20px; }
+.tx-logros-cab p { margin: 3px 0 0; font-size: 12px; color: #8898d8; }
+.tx-logros-x {
+  font-size: 16px; line-height: 1;
+  padding: 6px 9px;
+  color: #c8d8ff; background: #1a2048;
+  border: 1px solid #2a3570; border-radius: 6px; cursor: pointer;
+}
+.tx-logros-x:hover { background: #3454d1; color: #fff; }
+.tx-logros-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+.tx-insignia {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 10px 6px;
+  font: inherit;
+  color: #6878c0;
+  background: #161b36;
+  border: 1px solid #232b5c;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform .12s, border-color .12s;
+}
+.tx-insignia:hover { transform: translateY(-2px); border-color: #3454d1; }
+.tx-ins-icon {
+  width: 46px; height: 46px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px;
+  background: #1e2550;
+  filter: grayscale(1);
+  opacity: .5;
+}
+.tx-ins-nom { font-size: 11.5px; text-align: center; line-height: 1.25; }
+.tx-ins-niv { font-size: 10.5px; }
+.tx-insignia.tx-ganada { color: #e8eeff; border-color: rgba(255, 179, 0, .55); background: linear-gradient(180deg, rgba(255, 179, 0, .1), #161b36); }
+.tx-insignia.tx-ganada .tx-ins-icon {
+  filter: none; opacity: 1;
+  background: radial-gradient(circle at 35% 30%, #ffe082, #ffb300 60%, #c77c00);
+  box-shadow: 0 0 12px rgba(255, 179, 0, .45);
+}
+.tx-insignia.tx-ganada .tx-ins-niv { color: #ffd36b; }
+
+/* Menú de tutoriales: insignia ganada y entrada "Mis logros" */
+#tut-dropdown .tut-option.tx-hecho::after { content: "🏅"; margin-left: auto; font-size: 12px; }
+.tx-menu-logros { font-weight: 600; color: #ffd36b !important; }
+.tx-menu-cuenta {
+  margin-left: auto;
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-size: 11px;
+  background: rgba(255, 179, 0, .15);
+  color: #ffd36b;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tx-hero-icon, .tx-enlace, .tx-medalla, .tx-opcion.tx-mal { animation: none; }
+  .tx-paquete { display: none; }
+}
