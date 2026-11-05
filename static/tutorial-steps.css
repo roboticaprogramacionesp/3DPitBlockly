@@ -10,7 +10,9 @@
   width: 400px;
   max-width: calc(100vw - 40px);
   max-height: 88vh;
-  overflow-y: auto;
+  /* Sin scroll en la ventana: el encabezado y los botones quedan fijos y
+     solo el contenido (.ts-body) se desplaza, como el monitor serial. */
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   background: #12152a;
@@ -478,10 +480,20 @@
 }
 
 /* ── Scrollbar ───────────────────────────────────────────────── */
-#ts-panel::-webkit-scrollbar { width: 6px; }
-#ts-panel::-webkit-scrollbar-track { background: transparent; }
-#ts-panel::-webkit-scrollbar-thumb { background: #2a3560; border-radius: 3px; }
-#ts-panel::-webkit-scrollbar-thumb:hover { background: #3454d1; }
+/* Solo el contenido se desplaza (mismo scroll que el monitor serial). */
+#ts-collapsible { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
+#ts-collapsible > * { flex-shrink: 0; }
+#ts-collapsible > .ts-body {
+  flex: 1 1 auto;
+  min-height: min(180px, 30vh);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #2a3560 transparent;
+}
+#ts-collapsible > .ts-body::-webkit-scrollbar { width: 6px; }
+#ts-collapsible > .ts-body::-webkit-scrollbar-track { background: transparent; }
+#ts-collapsible > .ts-body::-webkit-scrollbar-thumb { background: #2a3560; border-radius: 3px; }
+#ts-collapsible > .ts-body::-webkit-scrollbar-thumb:hover { background: #3454d1; }
 
 /* ════════════════════════════════════════════════════════════════
    HIGHLIGHT — TOOLBOX

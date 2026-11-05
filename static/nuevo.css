@@ -133,7 +133,7 @@
   width: 400px;
   max-width: calc(100vw - 40px);
   max-height: 88vh;
-  overflow-y: auto;
+  overflow: hidden; /* solo el contenido se desplaza (ver abajo) */
   display: flex;
   flex-direction: column;
   background: #12152a;
@@ -151,8 +151,21 @@
 #coco-panel[data-minimized="1"], #reto-panel[data-minimized="1"], #cartas-panel[data-minimized="1"] { max-height: unset; overflow: hidden; }
 #coco-panel[data-minimized="1"] .ts-header, #reto-panel[data-minimized="1"] .ts-header, #cartas-panel[data-minimized="1"] .ts-header { border-radius: 8px; border-bottom: none; }
 #coco-panel[data-minimized="1"] .ts-drag-hint, #reto-panel[data-minimized="1"] .ts-drag-hint, #cartas-panel[data-minimized="1"] .ts-drag-hint { display: none; }
-#coco-panel::-webkit-scrollbar, #reto-panel::-webkit-scrollbar, #cartas-panel::-webkit-scrollbar { width: 6px; }
-#coco-panel::-webkit-scrollbar-thumb, #reto-panel::-webkit-scrollbar-thumb, #cartas-panel::-webkit-scrollbar-thumb { background: #2a3560; border-radius: 3px; }
+/* Encabezado y botones fijos; solo el contenido se desplaza, con la
+   misma barra delgada que el monitor serial. */
+#coco-collapsible, #reto-collapsible, #cartas-collapsible { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
+#coco-collapsible > *, #reto-collapsible > *, #cartas-collapsible > * { flex-shrink: 0; }
+#coco-collapsible > .ts-body, #reto-collapsible > .ts-body, #cartas-collapsible > .ts-body {
+  flex: 1 1 auto;
+  min-height: min(180px, 30vh);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #2a3560 transparent;
+}
+#coco-collapsible > .ts-body::-webkit-scrollbar, #reto-collapsible > .ts-body::-webkit-scrollbar, #cartas-collapsible > .ts-body::-webkit-scrollbar { width: 6px; }
+#coco-collapsible > .ts-body::-webkit-scrollbar-track, #reto-collapsible > .ts-body::-webkit-scrollbar-track, #cartas-collapsible > .ts-body::-webkit-scrollbar-track { background: transparent; }
+#coco-collapsible > .ts-body::-webkit-scrollbar-thumb, #reto-collapsible > .ts-body::-webkit-scrollbar-thumb, #cartas-collapsible > .ts-body::-webkit-scrollbar-thumb { background: #2a3560; border-radius: 3px; }
+#coco-collapsible > .ts-body::-webkit-scrollbar-thumb:hover, #reto-collapsible > .ts-body::-webkit-scrollbar-thumb:hover, #cartas-collapsible > .ts-body::-webkit-scrollbar-thumb:hover { background: #3454d1; }
 /* Posición propia del reto (después de la regla compartida para que gane). */
 #reto-panel {
   top: 60px;
