@@ -7,7 +7,9 @@
   position: fixed;
   bottom: 20px;
   right: 20px;
-  width: 400px;
+  /* Ancho para que la ruta del tutorial (Aprende › … › Reta) quepa en
+     una línea; S, L y XL tienen su propio ancho más abajo. */
+  width: 470px;
   max-width: calc(100vw - 40px);
   max-height: 88vh;
   /* Sin scroll en la ventana: el encabezado y los botones quedan fijos y
@@ -584,7 +586,7 @@
 /* ════════════════════════════════════════════════════════════════
    ESCALAS DE TAMAÑO DE TEXTO
 ════════════════════════════════════════════════════════════════ */
-#ts-panel[data-fs="S"] { font-size: 12px; }
+#ts-panel[data-fs="S"] { font-size: 12px; width: 440px; }
 #ts-panel[data-fs="S"] .ts-title       { font-size: 11px; }
 #ts-panel[data-fs="S"] .ts-step-title  { font-size: 11px; }
 #ts-panel[data-fs="S"] .ts-step-desc   { font-size: 11px; }
@@ -592,7 +594,7 @@
 
 #ts-panel[data-fs="M"] { font-size: 14px; }
 
-#ts-panel[data-fs="L"] { font-size: 16px; width: 440px; }
+#ts-panel[data-fs="L"] { font-size: 16px; width: 550px; }
 #ts-panel[data-fs="L"] .ts-title       { font-size: 14px; }
 #ts-panel[data-fs="L"] .ts-step-title  { font-size: 15px; }
 #ts-panel[data-fs="L"] .ts-step-desc   { font-size: 15px; }
@@ -600,7 +602,7 @@
 #ts-panel[data-fs="L"] .ts-btn         { font-size: 13px; padding: 9px 14px; }
 #ts-panel[data-fs="L"] .ts-bloque-chip { font-size: 12px; }
 
-#ts-panel[data-fs="XL"] { font-size: 19px; width: 500px; }
+#ts-panel[data-fs="XL"] { font-size: 19px; width: 630px; }
 #ts-panel[data-fs="XL"] .ts-title       { font-size: 16px; }
 #ts-panel[data-fs="XL"] .ts-step-title  { font-size: 18px; }
 #ts-panel[data-fs="XL"] .ts-step-desc   { font-size: 18px; line-height: 1.7; }
