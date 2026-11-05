@@ -8,7 +8,9 @@
      _isPasoCompleto() → TutorialExtras.completo(step)
      _mostrarFin()     → TutorialExtras.alTerminar(ts)
    El contenido viene de tutorial-extras-datos.js (oficial, confiable).
-   Los tutoriales compartidos por docentes NO se aumentan.
+   Los tutoriales compartidos por docentes usan su "repaso" (ver
+   tutorial-docente.js): ese texto NO es confiable y se escapa con
+   htmlSeguro() antes de armar cualquier HTML.
 ================================================================ */
 (function () {
   'use strict';
@@ -42,6 +44,35 @@
   }
   function datos(id) {
     return (typeof TUTORIAL_EXTRAS !== 'undefined' && TUTORIAL_EXTRAS[id]) || null;
+  }
+
+  /* Texto de un docente → HTML seguro: primero se escapa TODO y luego
+     solo se agregan etiquetas fijas (**negrita**, *cursiva*, saltos). */
+  function htmlSeguro(t) {
+    return String(t == null ? '' : t)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;')
+      .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>')
+      .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+      .replace(/\n/g, '<br>');
+  }
+
+  /* Repaso de un tutorial compartido (ya validado por sanitizar) →
+     mismo formato que TUTORIAL_EXTRAS, con todo el texto escapado. */
+  function datosCompartido(tut) {
+    var r = tut.repaso || {};
+    return {
+      compartido: true,
+      n: r.nivel || 0,
+      t: r.minutos || 0,
+      dato: r.dato ? htmlSeguro(r.dato) : null,
+      exp: r.explica ? htmlSeguro(r.explica) : null,
+      usos: [],
+      retos: (r.retos || []).map(function (x) { return [htmlSeguro(x.texto), x.pista ? htmlSeguro(x.pista) : '']; }),
+      quiz: (r.quiz || []).map(function (q) {
+        return [htmlSeguro(q.pregunta), q.opciones.map(htmlSeguro), q.correcta, q.porque ? htmlSeguro(q.porque) : ''];
+      })
+    };
   }
 
   /* ── Logros (por navegador; puede fallar en modo privado) ──────── */
@@ -145,8 +176,9 @@
 
   /* ── Construcción de los pasos aumentados ─────────────────────── */
   function aumentar(id, tut) {
-    var d = datos(id);
-    if (!tut || tut.compartido || !d) return tut;
+    if (!tut) return tut;
+    var d = tut.compartido ? datosCompartido(tut) : datos(id);
+    if (!d) return tut;
     var con = d.con && typeof TUTORIAL_CONCEPTOS !== 'undefined' ? TUTORIAL_CONCEPTOS[d.con] : null;
     var orig = tut.steps.slice();
     var pasos = [{ extra: 'portada', titulo: '¡Comencemos!', _id: id }];
@@ -162,14 +194,14 @@
       if (i === iRun && d.dato) {
         var copia = {};
         for (var k in orig[i]) copia[k] = orig[i][k];
-        copia.desc = orig[i].desc + '<div class="tx-caja tx-dato"><b>💡 ¿Sabías que…?</b><br>' + d.dato + '</div>';
+        copia._dato = d.dato;
         pasos.push(copia);
       } else {
         pasos.push(orig[i]);
       }
     }
     if (con) pasos.push({ extra: 'problemas', titulo: 'Si algo no funcionó', _con: con });
-    pasos.push({ extra: 'explica', titulo: '¿Qué está pasando?', _d: d, _dato: iRun < 0 ? d.dato : null });
+    if (d.exp || (iRun < 0 && d.dato)) pasos.push({ extra: 'explica', titulo: d.exp ? '¿Qué está pasando?' : '¿Sabías que…?', _d: d, _dato: iRun < 0 ? d.dato : null });
     if (d.retos && d.retos.length) pasos.push({ extra: 'retos', titulo: 'Retos para ti', _d: d });
     if (d.quiz && d.quiz.length) pasos.push({ extra: 'quiz', titulo: 'Demuestra lo que aprendiste', _d: d });
     var nuevo = {};
@@ -181,9 +213,11 @@
   }
 
   /* ── HTML de cada tipo de paso extra ──────────────────────────── */
+  // Las estrellas vacías se dibujan como ★ tenue: con la fuente del
+  // panel (monoespaciada) el ☆ se ve igual que una llena.
   function estrellas(n) {
     var s = '';
-    for (var i = 1; i <= 3; i++) s += i <= n ? '★' : '☆';
+    for (var i = 1; i <= 3; i++) s += i <= n ? '★' : '<span class="tx-star-off">★</span>';
     return s;
   }
 
@@ -198,8 +232,19 @@
     var h = '<div class="tx-portada">' +
       '<div class="tx-hero"><span class="tx-hero-icon">' + tut.icon + '</span><div>' +
       '<div class="tx-hero-title"></div>' +
-      '<div class="tx-meta"><span class="tx-nivel tx-nivel-' + d.n + '">' + estrellas(d.n) + ' ' + NIVELES[d.n] + '</span>' +
-      '<span>⏱️ ' + d.t + ' min</span><span>👣 ' + tut.steps.length + ' pasos</span></div></div></div>';
+      '<div class="tx-meta">' +
+      (d.n ? '<span class="tx-nivel tx-nivel-' + d.n + '">' + estrellas(d.n) + ' ' + NIVELES[d.n] + '</span>' : '') +
+      (d.t ? '<span>⏱️ ' + d.t + ' min</span>' : '') +
+      '<span>👣 ' + tut.steps.length + ' pasos</span></div></div></div>';
+    if (d.compartido) {
+      var tiene = [];
+      if (d.retos.length) tiene.push('🏆 ' + d.retos.length + (d.retos.length > 1 ? ' retos' : ' reto'));
+      if (d.quiz.length) tiene.push('❓ quiz de ' + d.quiz.length + (d.quiz.length > 1 ? ' preguntas' : ' pregunta'));
+      h += '<div class="tx-caja tx-docente">👩‍🏫 Tutorial creado por tu docente · huella <b>' + htmlSeguro(tut.huella || '') + '</b>' +
+        (tiene.length ? '<br>Al final: ' + tiene.join(' y ') + '.' : '') + '</div>';
+      h += '<div class="tx-sub">🗺️ Tu ruta</div><div class="tx-ruta">' + ruta + '</div></div>';
+      return h;
+    }
     if (logro) h += '<div class="tx-caja tx-ya">🏅 Ya ganaste esta insignia el ' + fechaBonita(logro) + '. ¡Puedes repetirlo cuando quieras!</div>';
     if (tut.diagram && tut.diagram.indexOf('solo_placa') < 0) {
       h += '<button type="button" class="tx-mini" data-tx="diagrama" title="Ver las conexiones en grande">' +
@@ -226,7 +271,7 @@
   }
   function htmlExplica(step) {
     var d = step._d;
-    var h = '<p class="tx-p">' + d.exp + '</p>';
+    var h = d.exp ? '<p class="tx-p">' + d.exp + '</p>' : '';
     if (step._dato) h += '<div class="tx-caja tx-dato"><b>💡 ¿Sabías que…?</b><br>' + step._dato + '</div>';
     return h;
   }
@@ -360,9 +405,12 @@
     var btnNext = document.getElementById('ts-btn-next');
     if (btnNext) { btnNext.disabled = false; btnNext.title = ''; }
 
-    if (!step.extra) return;
     var desc = document.getElementById('ts-step-desc');
     if (!desc) return;
+    if (!step.extra) {
+      if (step._dato) desc.insertAdjacentHTML('beforeend', '<div class="tx-caja tx-dato"><b>💡 ¿Sabías que…?</b><br>' + step._dato + '</div>');
+      return;
+    }
     var html = '';
     if (step.extra === 'portada') html = htmlPortada(ts, step);
     else if (step.extra === 'concepto') html = htmlConcepto(step._con);
@@ -382,6 +430,7 @@
         if (b) b.click();
       });
       var id = step._id;
+      if (!document.getElementById('tx-material')) return;
       cargarMaterial().then(function (m) {
         var ul = document.getElementById('tx-material');
         if (!ul || ts.tutorial._id !== id) return;
@@ -426,6 +475,7 @@
     var tut = ts.tutorial;
     confeti();
     if (!tut || !tut._extras) return;
+    if (tut._extras.compartido) { finCompartido(tut); return; }
     var logros = guardarLogro(tut._id);
     marcarMenu();
     var total = idsEsp32().length;
@@ -448,6 +498,28 @@
       '    <button class="ts-btn ts-btn-primary" onclick="TutorialExtras.abrirLogros()">🏆 Mis logros</button>' +
       '  </div>' +
       '</div>';
+    document.getElementById('ts-fin-titulo').textContent = tut.title;
+    var cont = document.getElementById('tx-secciones');
+    if (cont) cont.querySelectorAll('.tx-sec').forEach(function (b) { b.className = 'tx-sec tx-sec-hecha'; });
+  }
+
+  function finCompartido(tut) {
+    var body = document.getElementById('ts-body');
+    body.setAttribute('data-tx-tipo', 'fin');
+    var et = document.getElementById('tx-etiqueta');
+    if (et) et.remove();
+    var d = tut._extras;
+    body.innerHTML =
+      '<div class="ts-fin tx-fin">' +
+      '  <div class="tx-medalla"><span></span></div>' +
+      '  <h3>' + (d.quiz.length ? '¡Insignia desbloqueada!' : '¡Tutorial completado!') + '</h3>' +
+      '  <p>Terminaste <strong id="ts-fin-titulo"></strong>, el tutorial de tu docente.</p>' +
+      (d.quiz.length ? '  <div class="tx-cuenta">✅ Respondiste bien las ' + d.quiz.length + ' preguntas del quiz.</div>' : '') +
+      '  <div class="tx-fin-btns">' +
+      '    <button class="ts-btn ts-btn-sec" onclick="TutorialSteps._reiniciar()">↺ Repetir</button>' +
+      '  </div>' +
+      '</div>';
+    body.querySelector('.tx-medalla span').textContent = tut.icon;
     document.getElementById('ts-fin-titulo').textContent = tut.title;
     var cont = document.getElementById('tx-secciones');
     if (cont) cont.querySelectorAll('.tx-sec').forEach(function (b) { b.className = 'tx-sec tx-sec-hecha'; });
@@ -493,7 +565,8 @@
       nom.textContent = t.title;
       var niv = document.createElement('span');
       niv.className = 'tx-ins-niv';
-      niv.textContent = logros[id] ? '🏅 ' + fechaBonita(logros[id]) : estrellas(d.n);
+      if (logros[id]) niv.textContent = '🏅 ' + fechaBonita(logros[id]);
+      else niv.innerHTML = estrellas(d.n); // solo números del contenido oficial
       b.appendChild(ic); b.appendChild(nom); b.appendChild(niv);
       b.addEventListener('click', function () {
         fondo.remove();
@@ -554,6 +627,7 @@
     alTerminar: alTerminar,
     abrirLogros: abrirLogros,
     _diagrama: diagrama,
+    _htmlSeguro: htmlSeguro,
     _secciones: secciones,
     _tipoDe: tipoDe
   };

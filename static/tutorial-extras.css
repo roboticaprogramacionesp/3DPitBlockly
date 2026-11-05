@@ -336,3 +336,9 @@
   .tx-hero-icon, .tx-enlace, .tx-medalla, .tx-opcion.tx-mal { animation: none; }
   .tx-paquete { display: none; }
 }
+
+/* Tutorial compartido por un docente */
+.tx-docente { background: rgba(64, 196, 255, .08); border-color: rgba(64, 196, 255, .35); color: #b3e5ff; }
+.tx-docente b { color: #e1f5ff; }
+
+.tx-star-off { opacity: .28; }

@@ -39,7 +39,15 @@
     titulo: 80,
     texto: 800,
     etiqueta: 60,
-    variables: 30
+    variables: 30,
+    // Repaso (opcional): retos y quiz al final del tutorial
+    retos: 3,
+    reto: 300,
+    preguntas: 5,
+    pregunta: 200,
+    opciones: 4,
+    opcion: 120,
+    porque: 200
   };
   var RE_NOMBRE = /^[A-Za-z_][A-Za-z0-9_]{0,39}$/;
   var ICONOS = ['📘', '💡', '🤖', '🎮', '📶', '🌡️', '🚦', '🔊', '🧮', '📐', '🧪', '⭐'];
@@ -120,12 +128,58 @@
     });
   }
 
+  /* ── Repaso (opcional): nivel, explicación, dato, retos y quiz ──
+     Se reconstruye desde cero con solo los campos conocidos. Lo que no
+     cumple se DESCARTA en silencio (el editor avisa antes de exportar,
+     ver normalizarRepaso); así un borrador a medias no se pierde. */
+  function textoOk(v, max) { return typeof v === 'string' && !!v.trim() && v.length <= max; }
+  function enteroEntre(v, a, b) { return typeof v === 'number' && Math.floor(v) === v && v >= a && v <= b; }
+  function sanitizarRepaso(r) {
+    if (!r || typeof r !== 'object' || Array.isArray(r)) return null;
+    var out = {};
+    if (enteroEntre(r.nivel, 1, 3)) out.nivel = r.nivel;
+    if (enteroEntre(r.minutos, 1, 180)) out.minutos = r.minutos;
+    if (textoOk(r.explica, LIM.texto)) out.explica = limpiarTexto(r.explica, LIM.texto).trim();
+    if (textoOk(r.dato, LIM.texto)) out.dato = limpiarTexto(r.dato, LIM.texto).trim();
+    if (Array.isArray(r.retos)) {
+      var retos = [];
+      r.retos.slice(0, LIM.retos).forEach(function (x) {
+        if (!x || typeof x !== 'object' || !textoOk(x.texto, LIM.reto)) return;
+        var reto = { texto: limpiarTexto(x.texto, LIM.reto).trim() };
+        if (textoOk(x.pista, LIM.reto)) reto.pista = limpiarTexto(x.pista, LIM.reto).trim();
+        retos.push(reto);
+      });
+      if (retos.length) out.retos = retos;
+    }
+    if (Array.isArray(r.quiz)) {
+      var quiz = [];
+      r.quiz.slice(0, LIM.preguntas).forEach(function (q) {
+        if (!q || typeof q !== 'object' || !textoOk(q.pregunta, LIM.pregunta)) return;
+        if (!Array.isArray(q.opciones) || q.opciones.length < 2 || q.opciones.length > LIM.opciones) return;
+        if (!q.opciones.every(function (o) { return textoOk(o, LIM.opcion); })) return;
+        if (!enteroEntre(q.correcta, 0, q.opciones.length - 1)) return;
+        var pq = {
+          pregunta: limpiarTexto(q.pregunta, LIM.pregunta).trim(),
+          opciones: q.opciones.map(function (o) { return limpiarTexto(o, LIM.opcion).trim(); }),
+          correcta: q.correcta
+        };
+        if (textoOk(q.porque, LIM.porque)) pq.porque = limpiarTexto(q.porque, LIM.porque).trim();
+        quiz.push(pq);
+      });
+      if (quiz.length) out.quiz = quiz;
+    }
+    return Object.keys(out).length ? out : null;
+  }
+
   /* ── Validación del formato compartido ─────────────────────────
      Devuelve { tutorial, errores }. Si hay errores, tutorial es null.
      Formato externo (lo que viaja en el archivo / enlace):
      { formato, version, titulo, icono, pasos: [ { titulo, texto,
        categoria?, bloque?: { tipo, variable? }, etiqueta?,
-       variables?: [..], boton?, accion? } ] }                         */
+       variables?: [..], boton?, accion? } ],
+       repaso?: { nivel?, minutos?, explica?, dato?, retos?: [ { texto,
+       pista? } ], quiz?: [ { pregunta, opciones: [..], correcta,
+       porque? } ] } }                                                  */
   function sanitizar(obj) {
     var errores = [];
     if (!obj || typeof obj !== 'object' || Array.isArray(obj)) {
@@ -198,6 +252,8 @@
       }
       limpio.pasos.push(paso);
     });
+    var repaso = sanitizarRepaso(obj.repaso);
+    if (repaso) limpio.repaso = repaso;
 
     return errores.length ? { tutorial: null, errores: errores } : { tutorial: limpio, errores: [] };
   }
@@ -211,6 +267,7 @@
       diagram: '',
       compartido: true,
       huella: huella,
+      repaso: ext.repaso || null,
       steps: ext.pasos.map(function (p) {
         var s = { titulo: p.titulo, desc: p.texto, highlightCat: p.categoria || null, expandCat: null, bloque: null };
         if (p.categoria && tb.porNombre[p.categoria] && tb.porNombre[p.categoria].padres.length) {
@@ -456,13 +513,64 @@
     return { pasos: pasos.slice(0, LIM.pasos), sinCategoria: sinCategoria, recortado: pasos.length > LIM.pasos };
   }
 
+  /* Repaso del editor → formato de exportación: quita lo vacío y
+     reacomoda la respuesta correcta; devuelve los errores a corregir. */
+  function normalizarRepaso(r) {
+    var errores = [];
+    if (!r || typeof r !== 'object') return { repaso: undefined, errores: errores };
+    function t(v) { return typeof v === 'string' ? v.trim() : ''; }
+    var out = {};
+    if (r.nivel) out.nivel = +r.nivel;
+    if (r.minutos !== undefined && r.minutos !== null && String(r.minutos).trim() !== '') {
+      var m = +r.minutos;
+      if (enteroEntre(m, 1, 180)) out.minutos = m;
+      else errores.push('Repaso: el tiempo debe ser un número entero de minutos entre 1 y 180.');
+    }
+    if (t(r.explica)) out.explica = t(r.explica);
+    if (t(r.dato)) out.dato = t(r.dato);
+    out.retos = (r.retos || []).map(function (x, i) {
+      if (!x || (!t(x.texto) && !t(x.pista))) return null;
+      if (!t(x.texto)) { errores.push('Reto ' + (i + 1) + ': escribe el reto (la pista sola no basta).'); return null; }
+      return t(x.pista) ? { texto: t(x.texto), pista: t(x.pista) } : { texto: t(x.texto) };
+    }).filter(Boolean);
+    out.quiz = (r.quiz || []).map(function (q, i) {
+      if (!q) return null;
+      var n = 'Pregunta ' + (i + 1) + ': ';
+      var opciones = [], correcta = -1;
+      (q.opciones || []).forEach(function (o, j) {
+        if (!t(o)) return;
+        if (j === q.correcta) correcta = opciones.length;
+        opciones.push(t(o));
+      });
+      if (!t(q.pregunta) && !opciones.length) return null; // vacía: se ignora
+      if (!t(q.pregunta)) { errores.push(n + 'falta la pregunta.'); return null; }
+      if (opciones.length < 2) { errores.push(n + 'necesita al menos 2 opciones.'); return null; }
+      if (correcta < 0) { errores.push(n + 'marca cuál es la respuesta correcta (en una opción con texto).'); return null; }
+      var pq = { pregunta: t(q.pregunta), opciones: opciones, correcta: correcta };
+      if (t(q.porque)) pq.porque = t(q.porque);
+      return pq;
+    }).filter(Boolean);
+    if (!out.retos.length) delete out.retos;
+    if (!out.quiz.length) delete out.quiz;
+    return { repaso: Object.keys(out).length ? out : undefined, errores: errores };
+  }
+
+  function borradorParaExportar() {
+    var n = normalizarRepaso(borrador.repaso);
+    var copia = {};
+    Object.keys(borrador).forEach(function (k) { if (k !== 'repaso') copia[k] = borrador[k]; });
+    if (n.repaso) copia.repaso = n.repaso;
+    return { borrador: copia, errores: n.errores };
+  }
+
   /* Validación completa antes de compartir: formato + que cada paso con
      bloque quede ✓ con el programa del docente cargado (misma regla que
      TutorialSteps._isPasoCompleto: cantidad acumulada por tipo/variable). */
   function validarBorrador() {
-    var r = sanitizar(borrador);
-    if (!r.tutorial) return r.errores;
-    var errores = [];
+    var exp = borradorParaExportar();
+    var r = sanitizar(exp.borrador);
+    if (!r.tutorial) return r.errores.concat(exp.errores);
+    var errores = exp.errores.slice();
     var interno = aInterno(r.tutorial, '');
     var todos = ws().getAllBlocks(false);
     var pedidos = {};
@@ -537,6 +645,109 @@
     });
   }
 
+  /* ── Pestaña "Repaso y quiz" ─────────────────────────────────── */
+  var repasoPanel = null, tabPasos = null, tabRepaso = null;
+
+  function repasoEditable() {
+    if (!borrador.repaso || typeof borrador.repaso !== 'object') borrador.repaso = {};
+    var r = borrador.repaso;
+    if (!Array.isArray(r.retos)) r.retos = [];
+    if (!Array.isArray(r.quiz)) r.quiz = [];
+    r.quiz.forEach(function (q) {
+      if (!Array.isArray(q.opciones)) q.opciones = [];
+      while (q.opciones.length < LIM.opciones) q.opciones.push('');
+      if (typeof q.correcta !== 'number') q.correcta = 0;
+    });
+    return r;
+  }
+
+  function campo(etiqueta, input) {
+    return el('label', { clase: 'tdoc-campo' }, [el('span', { clase: 'tdoc-lbl', texto: etiqueta }), input]);
+  }
+  function entrada(tipo, max, valor, alCambiar, extra) {
+    var e = el(tipo === 'area' ? 'textarea' : 'input', extra || {});
+    if (tipo !== 'area') e.type = tipo;
+    if (max) e.maxLength = max;
+    e.className = 'tdoc-in';
+    e.value = valor == null ? '' : valor;
+    e.addEventListener('input', function () { alCambiar(e.value); guardarBorrador(); });
+    return e;
+  }
+
+  function dibujarRepaso() {
+    var r = repasoEditable();
+    repasoPanel.textContent = '';
+    repasoPanel.appendChild(el('div', { clase: 'tdoc-info', texto: 'Todo es opcional. Aparece al final del tutorial: explicación, retos y un quiz que el estudiante debe contestar bien para terminar y ganar su insignia.' }));
+
+    var nivel = el('select', { clase: 'tdoc-in' });
+    [['', '—'], ['1', '★☆☆ Básico'], ['2', '★★☆ Intermedio'], ['3', '★★★ Avanzado']].forEach(function (o) {
+      nivel.appendChild(el('option', { value: o[0], texto: o[1] }));
+    });
+    nivel.value = r.nivel ? String(r.nivel) : '';
+    nivel.addEventListener('change', function () { r.nivel = nivel.value ? +nivel.value : undefined; guardarBorrador(); });
+    var minutos = entrada('number', null, r.minutos, function (v) { r.minutos = v; }, { min: '1', max: '180', style: 'width:90px' });
+    repasoPanel.appendChild(el('div', { clase: 'tdoc-fila tdoc-sinpad' }, [campo('Nivel', nivel), campo('Minutos', minutos)]));
+
+    repasoPanel.appendChild(campo('🔍 ¿Qué está pasando? (cómo funciona por dentro)',
+      entrada('area', LIM.texto, r.explica, function (v) { r.explica = v; }, { rows: '3' })));
+    repasoPanel.appendChild(campo('💡 ¿Sabías que…? (aparece al ejecutar el programa)',
+      entrada('area', LIM.texto, r.dato, function (v) { r.dato = v; }, { rows: '2' })));
+
+    repasoPanel.appendChild(el('h4', { texto: '🏆 Retos (máximo ' + LIM.retos + ')' }));
+    r.retos.forEach(function (x, i) {
+      repasoPanel.appendChild(el('div', { clase: 'tdoc-tarjeta' }, [
+        el('div', { clase: 'tdoc-tarj-cab' }, [
+          el('b', { texto: 'Reto ' + (i + 1) }),
+          el('button', { texto: '✕', title: 'Quitar reto', click: function () { r.retos.splice(i, 1); guardarBorrador(); dibujarRepaso(); } })
+        ]),
+        campo('Reto', entrada('text', LIM.reto, x.texto, function (v) { x.texto = v; })),
+        campo('Pista (opcional)', entrada('text', LIM.reto, x.pista, function (v) { x.pista = v; }))
+      ]));
+    });
+    if (r.retos.length < LIM.retos) {
+      repasoPanel.appendChild(el('button', { texto: '+ Agregar reto', click: function () { r.retos.push({ texto: '', pista: '' }); guardarBorrador(); dibujarRepaso(); } }));
+    }
+
+    repasoPanel.appendChild(el('h4', { texto: '❓ Quiz (máximo ' + LIM.preguntas + ' preguntas)' }));
+    r.quiz.forEach(function (q, i) {
+      var grupo = 'tdoc-correcta-' + i;
+      var ops = q.opciones.map(function (o, j) {
+        var radio = el('input', { type: 'radio', name: grupo, title: 'Respuesta correcta' });
+        radio.checked = q.correcta === j;
+        radio.addEventListener('change', function () { if (radio.checked) { q.correcta = j; guardarBorrador(); } });
+        return el('div', { clase: 'tdoc-opcion' }, [radio,
+          entrada('text', LIM.opcion, o, function (v) { q.opciones[j] = v; }, { placeholder: 'Opción ' + String.fromCharCode(65 + j) + (j > 1 ? ' (opcional)' : '') })]);
+      });
+      repasoPanel.appendChild(el('div', { clase: 'tdoc-tarjeta' }, [
+        el('div', { clase: 'tdoc-tarj-cab' }, [
+          el('b', { texto: 'Pregunta ' + (i + 1) }),
+          el('button', { texto: '✕', title: 'Quitar pregunta', click: function () { r.quiz.splice(i, 1); guardarBorrador(); dibujarRepaso(); } })
+        ]),
+        campo('Pregunta', entrada('text', LIM.pregunta, q.pregunta, function (v) { q.pregunta = v; })),
+        el('div', { clase: 'tdoc-info', texto: 'Marca con el círculo la respuesta correcta:' })
+      ].concat(ops, [
+        campo('¿Por qué? (se muestra al acertar, opcional)', entrada('text', LIM.porque, q.porque, function (v) { q.porque = v; }))
+      ])));
+    });
+    if (r.quiz.length < LIM.preguntas) {
+      repasoPanel.appendChild(el('button', {
+        texto: '+ Agregar pregunta', click: function () {
+          r.quiz.push({ pregunta: '', opciones: ['', '', '', ''], correcta: 0, porque: '' });
+          guardarBorrador(); dibujarRepaso();
+        }
+      }));
+    }
+  }
+
+  function verPestana(cual) {
+    var repaso = cual === 'repaso';
+    lista.style.display = repaso ? 'none' : '';
+    repasoPanel.style.display = repaso ? '' : 'none';
+    tabPasos.classList.toggle('tdoc-tab-on', !repaso);
+    tabRepaso.classList.toggle('tdoc-tab-on', repaso);
+    if (repaso) dibujarRepaso();
+  }
+
   function nuevoBorrador() {
     return { formato: FORMATO, version: VERSION, titulo: 'Mi tutorial', icono: ICONOS[0], pasos: [] };
   }
@@ -546,7 +757,7 @@
     borrador.icono = selIcono.value;
     var errores = validarBorrador();
     if (errores.length) { mostrarEstado(['Corrige esto antes de compartir:'].concat(errores.slice(0, 10)), 'error'); return null; }
-    return JSON.stringify(sanitizar(borrador).tutorial);
+    return JSON.stringify(sanitizar(borradorParaExportar().borrador).tutorial);
   }
 
   function abrirEditor() {
@@ -556,6 +767,7 @@
     inTitulo.value = borrador.titulo;
     selIcono.value = ICONOS.indexOf(borrador.icono) !== -1 ? borrador.icono : ICONOS[0];
     dibujarPasos();
+    verPestana('pasos');
     mostrarEstado('Arma tu programa con bloques y presiona "Generar pasos desde mis bloques".');
     modal.style.display = 'flex';
   }
@@ -580,6 +792,18 @@
       '#tdoc-modal .tdoc-estado{flex-shrink:0;padding:8px 16px;font-size:13px;color:#b8b8e0;max-height:120px;overflow:auto}' +
       '#tdoc-modal .tdoc-estado.error{color:#ff8a8a}#tdoc-modal .tdoc-estado.ok{color:#7be08a}' +
       '#tdoc-modal footer{display:flex;flex-wrap:wrap;gap:8px;padding:12px 16px;border-top:1px solid #2e2e50}' +
+      '#tdoc-modal .tdoc-tabs{display:flex;gap:6px;padding:0 16px 8px}' +
+      '#tdoc-modal .tdoc-tabs button.tdoc-tab-on{background:#7c6af7;border-color:#9d8fff}' +
+      '#tdoc-modal .tdoc-repaso{overflow:auto;padding:0 16px 10px;flex:1;min-height:120px;display:flex;flex-direction:column;gap:8px}' +
+      '#tdoc-modal .tdoc-repaso h4{margin:10px 0 0;font-size:14px;color:#ffd36b}' +
+      '#tdoc-modal .tdoc-repaso > button{align-self:flex-start}' +
+      '#tdoc-modal .tdoc-campo{display:flex;flex-direction:column;gap:3px}' +
+      '#tdoc-modal .tdoc-lbl{font-size:12px;color:#b8b8e0}' +
+      '#tdoc-modal .tdoc-sinpad{padding:0}' +
+      '#tdoc-modal .tdoc-tarjeta{display:flex;flex-direction:column;gap:6px;padding:10px;border:1px solid #3a3a66;border-radius:8px;background:#191932}' +
+      '#tdoc-modal .tdoc-tarj-cab{display:flex;justify-content:space-between;align-items:center}' +
+      '#tdoc-modal .tdoc-opcion{display:flex;align-items:center;gap:8px}' +
+      '#tdoc-modal .tdoc-opcion input[type=radio]{width:18px;height:18px;accent-color:#00e676;flex-shrink:0}' +
       '.tut-option-docente{display:flex;align-items:center;gap:9px;padding:8px 14px;font-size:13px;color:#aaaace;cursor:pointer}' +
       '.tut-option-docente:hover{background:rgba(124,106,247,.15);color:#fff}';
     document.head.appendChild(css);
@@ -592,6 +816,9 @@
     var chkPlaca = el('input', { type: 'checkbox' }); chkPlaca.checked = true;
     var chkJuego = el('input', { type: 'checkbox' });
     lista = el('div', { clase: 'tdoc-lista' });
+    repasoPanel = el('div', { clase: 'tdoc-repaso', style: 'display:none' });
+    tabPasos = el('button', { texto: '📋 Pasos', click: function () { verPestana('pasos'); } });
+    tabRepaso = el('button', { texto: '🧠 Repaso y quiz', click: function () { verPestana('repaso'); } });
     estado = el('div', { clase: 'tdoc-estado' });
 
     modal = el('div', { id: 'tdoc-modal' }, [
@@ -625,7 +852,9 @@
           })
         ]),
         el('div', { clase: 'tdoc-info', style: 'padding:0 16px 6px', texto: 'Formato del texto: **negrita**, *cursiva*. No se permite HTML.' }),
+        el('div', { clase: 'tdoc-tabs' }, [tabPasos, tabRepaso]),
         lista,
+        repasoPanel,
         estado,
         el('footer', null, [
           el('button', {
@@ -710,6 +939,7 @@
     abrirTexto: abrirTexto,
     abrirEditor: abrirEditor,
     _aInterno: aInterno,
+    _normalizarRepaso: normalizarRepaso,
     _generarPasos: generarPasos,
     _validarBorrador: function (b) { borrador = b; return validarBorrador(); },
     _huella: huella
