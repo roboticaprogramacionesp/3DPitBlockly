@@ -751,11 +751,18 @@ const NOMBRES_SIM = {
   fingerprint: ["Huella", "Sensor de huella FPM383C"], dfplayer: ["DFPlayer", "DFPlayer Mini + microSD con MP3"], bocina: ["Bocina", "Bocina de 8 Ω"],
   ky040: ["KY-040", "Encoder rotatorio KY-040"], keypad3x4: ["Teclado", "Teclado matricial 4x3"], keypad4x4: ["Teclado", "Teclado matricial 4x4"],
   rc522_real: ["RC522", "Lector RFID MFRC522 + tarjeta"], sdcard: ["SD", "Módulo microSD + memoria"], yf201: ["YF-201", "Sensor de flujo YF-201"],
+  touch: ["Aluminio", "Pedazo de papel aluminio"],
 };
 
 function desdeSimulador(def) {
   const proy = JSON.parse(fs.readFileSync(path.join(TUTORIALES_SIM, def.simulador), "utf8"));
   const placa = proy.components.find((c) => c.type === "esp32_wroom");
+  // Piezas y cables extra sobre el archivo del simulador ("esp" = la placa).
+  if (def.agregar) {
+    proy.components.push(...(def.agregar.components || []).map((c) => ({ rotation: 0, scale: 1, flipX: false, properties: {}, name: c.type, ...c })));
+    const id = (x) => (x === "esp" ? placa.id : x);
+    proy.wires.push(...(def.agregar.wires || []).map((w) => ({ ...w, from: { ...w.from, componentId: id(w.from.componentId) }, to: { ...w.to, componentId: id(w.to.componentId) } })));
+  }
   const piezas = proy.components.map((c) => {
     const esPlaca = c === placa;
     return { clave: esPlaca ? "esp" : c.id, comp: componente(c.type, c.properties || {}), s: c.scale || 1, x: c.x, y: c.y, rot: c.rotation || 0, flip: !!c.flipX, esPlaca, fija: true, props: c.properties || {} };

@@ -656,7 +656,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Conexión física",
-        desc: "📡 <b>HC-SR04</b> (mirando hacia abajo, a una altura fija que vas a medir con una cinta métrica -- por ejemplo <b>200 cm</b> desde el piso):<br>⚡ VCC → 3.3V &nbsp; ⏚ GND → GND<br>📌 TRIG → pin <b>12</b> &nbsp; 📌 ECHO → pin <b>13</b><br><br>👆 <b>TouchPad</b> (el \"botón\"): no hace falta ningún módulo, alcanza con un cable pelado o un trocito de papel aluminio conectado al pin <b>4</b> del ESP32 -- vas a tocarlo con el dedo para activar la medición.<br><br>⚠️ Medí con cinta métrica la altura real a la que quedó el sensor: ese número es el que vas a usar en el bloque <em>altura_sensor</em> más adelante. Si el sensor no está exactamente ahí, la estatura calculada sale mal.",
+        desc: "📡 <b>HC-SR04</b> (mirando hacia abajo, a una altura fija que vas a medir con una cinta métrica -- por ejemplo <b>200 cm</b> desde el piso):<br>⚡ VCC → 3.3V &nbsp; ⏚ GND → GND<br>📌 TRIG → pin <b>12</b> &nbsp; 📌 ECHO → pin <b>13</b><br><br>👆 <b>TouchPad</b> (el \"botón\"): no hace falta ningún módulo: enrolla un pedazo de <b>papel aluminio</b> en la punta de un <b>cable macho-macho</b> y conecta la otra punta al pin <b>4</b> del ESP32 -- vas a tocarlo con el dedo para activar la medición.<br><br>⚠️ Medí con cinta métrica la altura real a la que quedó el sensor: ese número es el que vas a usar en el bloque <em>altura_sensor</em> más adelante. Si el sensor no está exactamente ahí, la estatura calculada sale mal.",
         highlightCat: null, bloque: null
       },
       {

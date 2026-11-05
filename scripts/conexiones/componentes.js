@@ -183,7 +183,7 @@ const GENERICOS = {
   ky005: () => generico({ tipo: "ky005", nombre: "Emisor IR KY-005", titulo: "KY-005", sub: "Emisor infrarrojo", pines: ["S", "+", "−"], w: 54, h: 66,
     extra: `<circle cx="27" cy="16" r="7" fill="#9fb3c8" stroke="#334" stroke-width="1"/><circle cx="27" cy="16" r="3.5" fill="#6c7a89"/>` }),
   touch: () => generico({ tipo: "touch", nombre: "Papel aluminio (sensor táctil)", titulo: "Aluminio", sub: "tócalo con el dedo", color: "#adb5bd",
-    pines: ["TOUCH"], w: 54, h: 48 }),
+    pines: ["TOUCH"], w: 54, h: 66 }),
   // Semáforo del kit: pines G, Y, R, GND (el del simulador los trae al revés).
   semaforo_kit: () => ({
     tipo: "semaforo_kit", nombre: "Módulo semáforo", w: 50, h: 112,

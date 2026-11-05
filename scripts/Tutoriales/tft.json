@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "timestamp": 1793897360879,
+  "timestamp": 1793898281841,
   "components": [
     {
       "id": "esp32_wroom_hib2i29",
@@ -194,6 +194,29 @@
         }
       ],
       "color": "#bb86fc",
+      "connectorType": "hembra-macho"
+    },
+    {
+      "id": "wire_b5f9il7",
+      "from": {
+        "componentId": "tft_st7789_paj1cml",
+        "pinId": "blk"
+      },
+      "to": {
+        "componentId": "tft_st7789_paj1cml",
+        "pinId": "vcc"
+      },
+      "points": [
+        {
+          "x": 680.7418910059686,
+          "y": 207.00521245732185
+        },
+        {
+          "x": 615.6418910059685,
+          "y": 207.00521245732185
+        }
+      ],
+      "color": "#ff5252",
       "connectorType": "hembra-macho"
     }
   ],

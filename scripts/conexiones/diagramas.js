@@ -208,20 +208,20 @@ const DEL_SIMULADOR = [
     nombresPin: { "tft_st7789.scl": "SCL (SCK)", "tft_st7789.sda": "SDA (MOSI)" },
     nota: "Siempre a 3V3. Si tu pantalla trae CS, conéctalo a GND.",
   },
+  {
+    // El mismo armado del tutorial de ultrasónico + el aluminio en el pin 4.
+    archivo: "medidor_estatura", titulo: "Medidor de Estatura", tutoriales: ["medidor_estatura"], simulador: "ultrasonico.json",
+    agregar: {
+      components: [{ id: "aluminio", type: "touch", x: 640, y: 282 }],
+      wires: [{ from: { componentId: "aluminio", pinId: "touch" }, to: { componentId: "esp", pinId: "io4" },
+        points: [{ x: 667, y: 414 }, { x: 434.28, y: 414 }], color: "#9e9e9e", connectorType: "macho-macho" }],
+    },
+    nota: "El HC-SR04 se conecta igual que en el tutorial de ultrasónico. El aluminio es un pedazo de papel aluminio enrollado en la punta de un cable macho-macho: tócalo para medir. Pon el sensor arriba mirando hacia el piso.",
+  },
 ];
 
 module.exports = [
   ...DEL_SIMULADOR,
-  // ── Sensores ──
-  {
-    archivo: "medidor_estatura", titulo: "Medidor de Estatura", tutoriales: ["medidor_estatura"],
-    modulos: [
-      { id: "u", tipo: "hcsr04", etiqueta: "HC-SR04", material: "Sensor ultrasónico HC-SR04" },
-      { id: "t", tipo: "touch", etiqueta: "Aluminio", material: "Cable con papel aluminio (botón táctil)" },
-    ],
-    conexiones: [["u.vcc", "3V3"], ["u.trig", "IO12"], ["u.echo", "IO13"], ["u.gnd", "GND"], ["t.touch", "IO4"]],
-    nota: "Pon el sensor arriba mirando hacia el piso. Toca el aluminio para medir.",
-  },
   // ── Pantallas y SPI ──
   {
     archivo: "lcd_paralelo", titulo: "LCD 16x2 (paralelo)", tutoriales: ["lcd_paralelo"],
