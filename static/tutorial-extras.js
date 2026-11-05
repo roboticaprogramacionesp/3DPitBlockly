@@ -98,19 +98,6 @@
     return p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : iso;
   }
 
-  /* ── Material (lo genera scripts/conexiones/generar.js) ───────── */
-  var material = null, materialPromesa = null;
-  function cargarMaterial() {
-    if (material) return Promise.resolve(material);
-    if (!materialPromesa) {
-      materialPromesa = fetch(base() + 'img/conexiones/material.json')
-        .then(function (r) { return r.ok ? r.json() : {}; })
-        .catch(function () { return {}; })
-        .then(function (m) { material = m || {}; return material; });
-    }
-    return materialPromesa;
-  }
-
   /* ── Clasificación de pasos ───────────────────────────────────── */
   function tipoDe(step) {
     if (step.extra) return step.extra;
@@ -255,7 +242,6 @@
         '<svg viewBox="' + RECORTE_CIRCUITO + '" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Diagrama de conexiones">' +
         '<image href="' + base() + tut.diagram + '" x="0" y="0" width="1200" height="800"/></svg><span>🔍 Ver conexiones</span></button>';
     }
-    h += '<div class="tx-sub">🧰 Material</div><ul class="tx-lista" id="tx-material"><li class="tx-cargando">Cargando…</li></ul>';
     h += '<div class="tx-sub">🗺️ Tu ruta</div><div class="tx-ruta">' + ruta + '</div></div>';
     return h;
   }
@@ -433,19 +419,6 @@
       if (mini) mini.addEventListener('click', function () {
         var b = document.getElementById('btnWiring');
         if (b) b.click();
-      });
-      var id = step._id;
-      if (!document.getElementById('tx-material')) return;
-      cargarMaterial().then(function (m) {
-        var ul = document.getElementById('tx-material');
-        if (!ul || ts.tutorial._id !== id) return;
-        var lista = m[id] || ['1 ESP32 + cable USB'];
-        ul.textContent = '';
-        lista.forEach(function (x) {
-          var li = document.createElement('li');
-          li.textContent = x;
-          ul.appendChild(li);
-        });
       });
     }
     if (step.extra === 'quiz') enlazarQuiz(ts, step, desc);
