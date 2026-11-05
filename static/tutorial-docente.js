@@ -43,7 +43,7 @@
     // Repaso (opcional): retos y quiz al final del tutorial
     retos: 3,
     reto: 300,
-    preguntas: 5,
+    preguntas: 3,
     pregunta: 200,
     opciones: 4,
     opcion: 120,
@@ -647,6 +647,8 @@
 
   /* ── Pestaña "Repaso y quiz" ─────────────────────────────────── */
   var repasoPanel = null, tabPasos = null, tabRepaso = null;
+  // Mismo orden que los tutoriales oficiales: el 1.º fácil, el 2.º medio y el 3.º difícil.
+  var NIVEL_REPASO = ['fácil', 'medio', 'difícil'];
 
   function repasoEditable() {
     if (!borrador.repaso || typeof borrador.repaso !== 'object') borrador.repaso = {};
@@ -693,11 +695,11 @@
     repasoPanel.appendChild(campo('💡 ¿Sabías que…? (aparece al ejecutar el programa)',
       entrada('area', LIM.texto, r.dato, function (v) { r.dato = v; }, { rows: '2' })));
 
-    repasoPanel.appendChild(el('h4', { texto: '🏆 Retos (máximo ' + LIM.retos + ')' }));
+    repasoPanel.appendChild(el('h4', { texto: '🏆 Retos: uno fácil, uno medio y uno difícil' }));
     r.retos.forEach(function (x, i) {
       repasoPanel.appendChild(el('div', { clase: 'tdoc-tarjeta' }, [
         el('div', { clase: 'tdoc-tarj-cab' }, [
-          el('b', { texto: 'Reto ' + (i + 1) }),
+          el('b', { texto: 'Reto ' + (i + 1) + (NIVEL_REPASO[i] ? ' · ' + NIVEL_REPASO[i] : '') }),
           el('button', { texto: '✕', title: 'Quitar reto', click: function () { r.retos.splice(i, 1); guardarBorrador(); dibujarRepaso(); } })
         ]),
         campo('Reto', entrada('text', LIM.reto, x.texto, function (v) { x.texto = v; })),
@@ -708,7 +710,7 @@
       repasoPanel.appendChild(el('button', { texto: '+ Agregar reto', click: function () { r.retos.push({ texto: '', pista: '' }); guardarBorrador(); dibujarRepaso(); } }));
     }
 
-    repasoPanel.appendChild(el('h4', { texto: '❓ Quiz (máximo ' + LIM.preguntas + ' preguntas)' }));
+    repasoPanel.appendChild(el('h4', { texto: '❓ Quiz: una pregunta fácil, una media y una difícil' }));
     r.quiz.forEach(function (q, i) {
       var grupo = 'tdoc-correcta-' + i;
       var ops = q.opciones.map(function (o, j) {
@@ -720,7 +722,7 @@
       });
       repasoPanel.appendChild(el('div', { clase: 'tdoc-tarjeta' }, [
         el('div', { clase: 'tdoc-tarj-cab' }, [
-          el('b', { texto: 'Pregunta ' + (i + 1) }),
+          el('b', { texto: 'Pregunta ' + (i + 1) + (NIVEL_REPASO[i] ? ' · ' + NIVEL_REPASO[i] : '') }),
           el('button', { texto: '✕', title: 'Quitar pregunta', click: function () { r.quiz.splice(i, 1); guardarBorrador(); dibujarRepaso(); } })
         ]),
         campo('Pregunta', entrada('text', LIM.pregunta, q.pregunta, function (v) { q.pregunta = v; })),

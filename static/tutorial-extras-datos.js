@@ -7,8 +7,8 @@
      dato  "¿Sabías que…?" (se muestra al probar el programa)
      exp   "¿Qué está pasando?" (cómo funciona por dentro)
      usos  aplicaciones reales (pantalla final)
-     retos [reto, pista]
-     quiz  [pregunta, [opciones], índice correcto, por qué]
+     retos [reto, pista]  — 3 por tutorial: fácil, medio y difícil
+     quiz  [pregunta, [opciones], índice correcto, por qué]  — 3: fácil, medio y difícil
      con   clave de TUTORIAL_CONCEPTOS (solo los inalámbricos)
    Es contenido oficial (HTML confiable), no de tutoriales compartidos.
 ================================================================ */
@@ -22,11 +22,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Indicadores de encendido en aparatos", "Luces de aviso en tableros de autos", "Señales de estado en robots"],
     retos: [
       ["Cambia el programa para que el LED quede <b>apagado</b>.", "Usa el mismo bloque, pero elige <b>Apagar</b>."],
-      ["Conecta un LED externo en otro pin (por ejemplo el 4) y enciéndelo.", "Cambia el pin en <em>Preparar LED</em> y no olvides la resistencia de 220 Ω."]
+      ["Conecta un LED externo en otro pin (por ejemplo el 4) y enciéndelo.", "Cambia el pin en <em>Preparar LED</em> y no olvides la resistencia de 220 Ω."],
+      ["Enciende el LED integrado y uno externo <b>alternados</b>: cuando uno prende, el otro se apaga.", "Prepara dos LEDs (pin 2 y pin 4) y usa un ciclo con esperas."]
     ],
     quiz: [
       ["¿Qué voltaje pone el ESP32 en el pin cuando enciende el LED?", ["0 V", "3.3 V", "127 V"], 1, "El ESP32 trabaja a 3.3 V: un 1 lógico son 3.3 V."],
-      ["¿Para qué sirve la resistencia de 220 Ω con un LED externo?", ["Para que brille más", "Para limitar la corriente y no quemarlo", "Para que parpadee"], 1, "Sin resistencia pasa demasiada corriente y el LED (o el pin) se puede dañar."]
+      ["¿Para qué sirve la resistencia de 220 Ω con un LED externo?", ["Para que brille más", "Para limitar la corriente y no quemarlo", "Para que parpadee"], 1, "Sin resistencia pasa demasiada corriente y el LED (o el pin) se puede dañar."],
+      ["Si el LED externo no enciende, ¿qué revisas primero?", ["Que la pata larga vaya al pin y la corta a GND", "Que el WiFi esté conectado", "Que el monitor serial esté abierto"], 0, "Un LED es un diodo: solo deja pasar corriente en un sentido."]
     ]
   },
 
@@ -42,7 +44,8 @@ var TUTORIAL_EXTRAS = {
     ],
     quiz: [
       ["¿Qué pasa si quitas los bloques <em>esperar</em>?", ["El LED parpadea tan rápido que parece fijo", "El ESP32 se apaga", "El LED se queda apagado"], 0, "Cambia miles de veces por segundo y tu ojo lo ve encendido."],
-      ["¿Cuántas veces se repite un ciclo <em>mientras Verdadero</em>?", ["Una vez", "10 veces", "Para siempre"], 2, "La condición siempre es verdadera, así que nunca termina."]
+      ["¿Cuántas veces se repite un ciclo <em>mientras Verdadero</em>?", ["Una vez", "10 veces", "Para siempre"], 2, "La condición siempre es verdadera, así que nunca termina."],
+      ["Para que el LED dure 1 s encendido y 3 s apagado, ¿qué cambias?", ["Solo la primera espera", "Las dos esperas: 1 s después de encender y 3 s después de apagar", "El pin del LED"], 1, "Cada espera decide cuánto dura el estado anterior."]
     ]
   },
 
@@ -53,11 +56,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Control de tráfico", "Semáforos peatonales", "Señales de \"pase / espere\" en estacionamientos"],
     retos: [
       ["Haz que el verde dure el doble que el rojo.", "Cambia el número del <em>esperar</em> que va después del verde."],
-      ["Agrega un <b>verde parpadeante</b> antes del amarillo, como en muchas calles.", "Usa un ciclo <em>repetir 3 veces</em> que prenda y apague el verde."]
+      ["Agrega un <b>verde parpadeante</b> antes del amarillo, como en muchas calles.", "Usa un ciclo <em>repetir 3 veces</em> que prenda y apague el verde."],
+      ["Agrega un <b>botón peatonal</b>: al presionarlo, el semáforo pasa a rojo antes de tiempo.", "Lee el botón dentro del ciclo y usa un <em>si</em> para saltar al rojo."]
     ],
     quiz: [
       ["¿Qué bloque decide cuánto tiempo dura cada luz?", ["Preparar semáforo", "esperar", "repetir mientras"], 1, "La luz se queda así hasta que termina el <em>esperar</em>."],
-      ["¿Por qué el semáforo se repite solo?", ["Porque está dentro de un ciclo infinito", "Porque el ESP32 se reinicia", "Porque lo vuelves a ejecutar"], 0, "El ciclo <em>mientras Verdadero</em> repite la secuencia para siempre."]
+      ["¿Por qué el semáforo se repite solo?", ["Porque está dentro de un ciclo infinito", "Porque el ESP32 se reinicia", "Porque lo vuelves a ejecutar"], 0, "El ciclo <em>mientras Verdadero</em> repite la secuencia para siempre."],
+      ["¿Por qué el amarillo dura menos que el verde y el rojo?", ["Solo avisa que la luz va a cambiar", "Porque gasta más energía", "Por un error del programa"], 0, "Es una advertencia corta para que los autos frenen."]
     ]
   },
 
@@ -68,11 +73,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Tiras decorativas y luces de ambiente", "Indicadores de nivel (batería, volumen)", "Disfraces y wearables que cambian de color"],
     retos: [
       ["Pinta los primeros 3 LEDs de rojo, verde y azul.", "Un bloque <em>Establecer color</em> por LED (0, 1 y 2) y al final <em>Actualizar</em>."],
-      ["Haz un <b>arcoíris</b> que recorra la tira.", "Usa un ciclo <em>contar</em> para el número de LED y cambia el color en cada vuelta."]
+      ["Haz un <b>arcoíris</b> que recorra la tira.", "Usa un ciclo <em>contar</em> para el número de LED y cambia el color en cada vuelta."],
+      ["Haz un efecto de <b>carrera</b>: un LED encendido que avance por toda la tira y regrese.", "Ciclo <em>contar</em>: apaga todos, enciende el LED i, actualiza y espera poco."]
     ],
     quiz: [
       ["¿Qué pasa si olvidas el bloque <em>Actualizar LEDs</em>?", ["Los LEDs no cambian", "Se queman", "Se ponen blancos"], 0, "Los colores se guardan en memoria y solo se envían al actualizar."],
-      ["¿Qué colores se mezclan para formar los demás?", ["Rojo, amarillo y azul", "Rojo, verde y azul", "Blanco y negro"], 1, "Es el modelo <b>RGB</b>: Red, Green, Blue."]
+      ["¿Qué colores se mezclan para formar los demás?", ["Rojo, amarillo y azul", "Rojo, verde y azul", "Blanco y negro"], 1, "Es el modelo <b>RGB</b>: Red, Green, Blue."],
+      ["¿Qué color se forma con rojo 255, verde 255 y azul 0?", ["Amarillo", "Morado", "Blanco"], 0, "Rojo + verde de luz = amarillo."]
     ]
   },
 
@@ -84,11 +91,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Contadores de personas o piezas", "Timbres y botones de pánico", "Controles de videojuegos"],
     retos: [
       ["Haz que el contador vuelva a 0 al llegar a 10.", "Agrega un <em>si contador = 10</em> que lo regrese a 0."],
-      ["Enciende el LED del pin 2 cuando el contador sea par.", "Usa el bloque de <b>residuo</b> (contador ÷ 2) y compara con 0."]
+      ["Enciende el LED del pin 2 cuando el contador sea par.", "Usa el bloque de <b>residuo</b> (contador ÷ 2) y compara con 0."],
+      ["Agrega un <b>segundo botón</b> que reste 1 al contador.", "Prepara otro botón en otro pin y repite la detección de cambio, pero restando."]
     ],
     quiz: [
       ["Con PULL_UP, ¿qué lee el pin al presionar el botón?", ["1", "0", "3.3"], 1, "El botón une el pin con GND, por eso lee 0."],
-      ["¿Por qué se usa una pequeña espera en el ciclo?", ["Para evitar contar los rebotes", "Para ahorrar batería", "Para que el LED brille"], 0, "Los rebotes del contacto duran milésimas de segundo."]
+      ["¿Por qué se usa una pequeña espera en el ciclo?", ["Para evitar contar los rebotes", "Para ahorrar batería", "Para que el LED brille"], 0, "Los rebotes del contacto duran milésimas de segundo."],
+      ["¿Por qué el programa compara el estado actual con el anterior?", ["Para contar una sola vez por pulsación", "Para que el botón dure más", "Para ahorrar memoria"], 0, "Si solo revisara si está presionado, sumaría muchas veces mientras lo mantienes."]
     ]
   },
 
@@ -99,11 +108,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Robots seguidores de línea", "Contadores de objetos en bandas", "Detectores de borde para que un robot no se caiga de la mesa"],
     retos: [
       ["Enciende el LED del pin 2 cuando el sensor vea negro.", "Usa <em>si ir_valor = 0</em> → encender, si no → apagar."],
-      ["Cuenta cuántas veces pasa una línea negra por debajo del sensor.", "Como en el botón: suma solo cuando cambie de 1 a 0."]
+      ["Cuenta cuántas veces pasa una línea negra por debajo del sensor.", "Como en el botón: suma solo cuando cambie de 1 a 0."],
+      ["Con <b>dos sensores</b>, imprime \"izquierda\", \"derecha\" o \"centrado\" según cuál vea la línea.", "Prepara los dos sensores y compara sus valores con <em>si / si no si</em>."]
     ],
     quiz: [
       ["¿Por qué el sensor lee 0 sobre negro?", ["El negro absorbe la luz infrarroja", "El negro está más frío", "El negro es metálico"], 0, "No regresa luz al receptor."],
-      ["¿Para qué sirve el potenciómetro del módulo?", ["Para cambiar el color", "Para ajustar la sensibilidad", "Para encenderlo"], 1, "Ajusta a partir de cuánta luz reflejada cambia la salida."]
+      ["¿Para qué sirve el potenciómetro del módulo?", ["Para cambiar el color", "Para ajustar la sensibilidad", "Para encenderlo"], 1, "Ajusta a partir de cuánta luz reflejada cambia la salida."],
+      ["En un seguidor de línea, si solo el sensor izquierdo ve negro, ¿hacia dónde gira?", ["Hacia la izquierda", "Hacia la derecha", "Sigue derecho"], 0, "La línea quedó de ese lado: gira hacia ella para centrarte."]
     ]
   },
 
@@ -114,11 +125,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Controles de volante en autos", "Menús de aparatos con pocos pines", "Paneles de control de robots"],
     retos: [
       ["Enciende el LED del pin 2 solo con el primer botón.", "Usa el mismo rango que ya tienes para ese botón."],
-      ["Haz que cada botón toque una nota distinta con el buzzer.", "Combina este tutorial con el de Buzzer."]
+      ["Haz que cada botón toque una nota distinta con el buzzer.", "Combina este tutorial con el de Buzzer."],
+      ["Controla un <b>servo</b>: un botón suma 10° y otro resta 10°.", "Guarda el ángulo en una variable y limítalo entre 0 y 180."]
     ],
     quiz: [
       ["¿Qué rango de números da el ADC del ESP32?", ["0 a 1", "0 a 100", "0 a 4095"], 2, "Es un ADC de 12 bits: 2¹² = 4096 valores."],
-      ["¿Por qué se comparan rangos y no un número exacto?", ["Porque la lectura varía un poco", "Porque es más rápido", "Porque el ADC solo da pares"], 0, "Siempre hay pequeñas variaciones de voltaje."]
+      ["¿Por qué se comparan rangos y no un número exacto?", ["Porque la lectura varía un poco", "Porque es más rápido", "Porque el ADC solo da pares"], 0, "Siempre hay pequeñas variaciones de voltaje."],
+      ["¿Qué es un divisor de voltaje?", ["Resistencias que reparten el voltaje", "Un tipo de batería", "Un cable que corta la corriente"], 0, "Por eso cada botón entrega un voltaje distinto."]
     ]
   },
 
@@ -130,11 +143,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Alarmas y despertadores", "Avisos de microondas y lavadoras", "Sensores de reversa en autos"],
     retos: [
       ["Toca <b>Do-Re-Mi</b> (262, 294 y 330 Hz).", "Un bloque <em>tono</em> + <em>esperar</em> por nota."],
-      ["Haz una <b>sirena</b> que suba y baje de tono.", "Usa un ciclo <em>contar de 400 a 1000</em> y usa la variable como frecuencia."]
+      ["Haz una <b>sirena</b> que suba y baje de tono.", "Usa un ciclo <em>contar de 400 a 1000</em> y usa la variable como frecuencia."],
+      ["Toca una <b>melodía</b> usando dos listas: una de notas y otra de duraciones.", "Recorre las listas con un ciclo usando el mismo índice para las dos."]
     ],
     quiz: [
       ["¿Qué pasa si subes la frecuencia?", ["El sonido es más grave", "El sonido es más agudo", "Suena más fuerte"], 1, "Más vibraciones por segundo = sonido más agudo."],
-      ["¿Qué hace el bloque <em>Detener buzzer</em>?", ["Apaga el sonido", "Reinicia el ESP32", "Baja el volumen"], 0, "Deja de mandar la señal PWM."]
+      ["¿Qué hace el bloque <em>Detener buzzer</em>?", ["Apaga el sonido", "Reinicia el ESP32", "Baja el volumen"], 0, "Deja de mandar la señal PWM."],
+      ["¿Qué hace el ESP32 con el pin para que el buzzer suene (PWM)?", ["Lo prende y apaga muy rápido", "Le da 127 V", "Lo deja siempre encendido"], 0, "Cada cambio hace vibrar la placa del buzzer."]
     ]
   },
 
@@ -145,11 +160,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Brazos robóticos", "Timones y alerones de aviones a escala", "Plumas de estacionamiento y compuertas"],
     retos: [
       ["Haz que el servo vaya de 0° a 180° y regrese.", "Dos bloques <em>Mover</em> con un <em>esperar</em> de 1 s entre ellos."],
-      ["Haz un <b>limpiaparabrisas</b> suave, de grado en grado.", "Ciclo <em>contar de 0 a 180</em> con una espera corta, y otro de 180 a 0."]
+      ["Haz un <b>limpiaparabrisas</b> suave, de grado en grado.", "Ciclo <em>contar de 0 a 180</em> con una espera corta, y otro de 180 a 0."],
+      ["Controla el servo con un <b>potenciómetro</b>: que su ángulo siga a la perilla.", "Lee el valor analógico (0-4095) y conviértelo a 0-180 con una regla de tres."]
     ],
     quiz: [
       ["¿Cuántos grados puede girar un servo SG90?", ["90°", "180°", "360° sin parar"], 1, "Se mueve a posiciones entre 0° y 180°."],
-      ["¿Qué indica al servo a qué ángulo ir?", ["El voltaje de alimentación", "El ancho del pulso", "El color del cable"], 1, "Pulsos más anchos = ángulos más grandes."]
+      ["¿Qué indica al servo a qué ángulo ir?", ["El voltaje de alimentación", "El ancho del pulso", "El color del cable"], 1, "Pulsos más anchos = ángulos más grandes."],
+      ["Si el servo vibra sin moverse, ¿qué ayuda?", ["Alimentarlo con 5 V externos y unir los GND", "Cambiar el cable USB por uno más largo", "Escribir el ángulo dos veces"], 0, "Al moverse, el motor pide picos de corriente que el ESP32 no siempre da."]
     ]
   },
 
@@ -160,11 +177,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Impresoras 3D y CNC", "Relojes y cámaras que giran", "Dispensadores de comida para mascotas"],
     retos: [
       ["Gira una vuelta completa (360°) y luego regresa.", "Usa <em>girar grados</em> con 360 y luego con -360."],
-      ["Haz un <b>reloj</b>: avanza 6° cada segundo.", "Ciclo infinito con <em>girar 6 grados</em> y <em>esperar 1 s</em>."]
+      ["Haz un <b>reloj</b>: avanza 6° cada segundo.", "Ciclo infinito con <em>girar 6 grados</em> y <em>esperar 1 s</em>."],
+      ["Haz una <b>base giratoria</b> que avance 45° cada 2 segundos y regrese al inicio tras una vuelta.", "<em>Repetir 8 veces</em>: girar 45° y esperar; al final, girar -360°."]
     ],
     quiz: [
       ["¿Qué ventaja tiene un motor paso a paso?", ["Gira muy rápido", "Se mueve en pasos exactos", "No necesita energía"], 1, "Ideal cuando importa la precisión."],
-      ["¿Para qué sirve el driver ULN2003?", ["Da la corriente que el ESP32 no puede dar a las bobinas", "Mide la temperatura", "Guarda el programa"], 0, "Los pines del ESP32 no aguantan la corriente del motor."]
+      ["¿Para qué sirve el driver ULN2003?", ["Da la corriente que el ESP32 no puede dar a las bobinas", "Mide la temperatura", "Guarda el programa"], 0, "Los pines del ESP32 no aguantan la corriente del motor."],
+      ["Si una vuelta son 2048 pasos, ¿cuántos pasos son 90°?", ["512", "1024", "90"], 0, "90° es un cuarto de vuelta: 2048 ÷ 4 = 512."]
     ]
   },
 
@@ -175,11 +194,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Carritos y robots con ruedas", "Puertas y persianas eléctricas", "Bandas transportadoras"],
     retos: [
       ["Haz que el carrito gire sobre su eje (una rueda adelante, otra atrás).", "Motor A adelante y motor B atrás al mismo tiempo."],
-      ["Programa una ruta: adelante 2 s, gira, adelante 2 s.", "Encadena los movimientos con bloques <em>esperar</em>."]
+      ["Programa una ruta: adelante 2 s, gira, adelante 2 s.", "Encadena los movimientos con bloques <em>esperar</em>."],
+      ["Agrega el <b>sensor ultrasónico</b> para que el carrito se detenga a 15 cm de un obstáculo.", "Es la idea del tutorial Carrito Esquiva Obstáculos."]
     ],
     quiz: [
       ["¿Cómo se cambia el sentido de giro de un motor DC?", ["Invirtiendo la corriente", "Subiendo el voltaje", "Con un servo"], 0, "El puente H invierte la polaridad."],
-      ["¿Por qué los motores usan las pilas y no el ESP32?", ["Porque consumen mucha más corriente", "Porque el ESP32 no tiene GND", "Porque es más bonito"], 0, "Un motor puede pedir cientos de mA; un pin del ESP32, unos 20 mA."]
+      ["¿Por qué los motores usan las pilas y no el ESP32?", ["Porque consumen mucha más corriente", "Porque el ESP32 no tiene GND", "Porque es más bonito"], 0, "Un motor puede pedir cientos de mA; un pin del ESP32, unos 20 mA."],
+      ["¿Qué pasa si IN1 e IN2 están los dos en 0?", ["El motor se detiene", "Gira al máximo", "Cambia de sentido"], 0, "Sin diferencia de voltaje entre sus terminales, el motor no gira."]
     ]
   },
 
@@ -190,11 +211,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Domótica: prender luces y ventiladores", "Bombas de agua y riego automático", "Cerraduras eléctricas"],
     retos: [
       ["Haz que el foco prenda 5 s cada minuto.", "Ciclo infinito: encender, esperar 5, apagar, esperar 55."],
-      ["Prende el foco solo cuando presiones un botón.", "Combina con el tutorial del Botón."]
+      ["Prende el foco solo cuando presiones un botón.", "Combina con el tutorial del Botón."],
+      ["Prende el foco <b>automáticamente al oscurecer</b> con el sensor de luz BH1750.", "<em>si luz &lt; 50</em> → activar el relevador, si no → desactivarlo."]
     ],
     quiz: [
       ["¿Qué hay dentro de un relevador?", ["Un electroimán y un interruptor", "Una batería", "Un LED"], 0, "El imán mueve el contacto: de ahí el clic."],
-      ["¿Por qué hay que armarlo desconectado y con un adulto?", ["Porque 127 V es peligroso", "Porque el ESP32 se calienta", "Porque el foco es frágil"], 0, "La corriente de la casa puede causar descargas graves."]
+      ["¿Por qué hay que armarlo desconectado y con un adulto?", ["Porque 127 V es peligroso", "Porque el ESP32 se calienta", "Porque el foco es frágil"], 0, "La corriente de la casa puede causar descargas graves."],
+      ["En el relevador, ¿qué significa NO?", ["Normalmente abierto: conecta solo al activarse", "Que no funciona", "Normalmente cerrado"], 0, "Con NO el foco prende solo cuando el relevador se activa."]
     ]
   },
 
@@ -206,11 +229,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Controles de TV y aire acondicionado", "Robots controlados a distancia", "Encender luces con un control viejo"],
     retos: [
       ["Enciende el LED del pin 2 con un botón y apágalo con otro.", "Compara <em>codigo_ir</em> con los códigos que anotaste."],
-      ["Mueve un servo a 0°, 90° o 180° con tres botones.", "Combina con el tutorial del Servo."]
+      ["Mueve un servo a 0°, 90° o 180° con tres botones.", "Combina con el tutorial del Servo."],
+      ["Haz un <b>menú</b>: cada botón del control imprime un mensaje distinto y uno desconocido imprime \"Botón no asignado\".", "Usa <em>si / si no si</em> para cada código y un <em>si no</em> al final."]
     ],
     quiz: [
       ["¿Por qué el receptor no se confunde con la luz del sol?", ["Solo hace caso a luz que parpadea a 38 kHz", "Porque el sol no tiene infrarrojo", "Porque tiene un filtro de colores"], 0, "El sol da luz constante, no a 38 kHz."],
-      ["¿Qué necesita el control para funcionar?", ["Internet", "Apuntar hacia el receptor", "Estar emparejado"], 1, "La luz viaja en línea recta: necesita línea de vista."]
+      ["¿Qué necesita el control para funcionar?", ["Internet", "Apuntar hacia el receptor", "Estar emparejado"], 1, "La luz viaja en línea recta: necesita línea de vista."],
+      ["Un botón da un código distinto cada vez o un número muy raro. ¿Qué pasa?", ["Ese control usa otro protocolo o hubo interferencia", "El ESP32 está roto", "Falta conectarse al WiFi"], 0, "Prueba de cerca y lejos de la luz del sol; algunos controles no usan NEC."]
     ]
   },
 
@@ -221,11 +246,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Controles remotos universales", "Apagar la TV desde un horario", "Comunicación entre robots"],
     retos: [
       ["Envía un comando distinto cada 2 segundos.", "Ciclo infinito con dos bloques <em>IR NEC</em> y esperas."],
-      ["Con un receptor KY-022 en otro ESP32, haz que el comando prenda un LED.", "El receptor compara el código que llega."]
+      ["Con un receptor KY-022 en otro ESP32, haz que el comando prenda un LED.", "El receptor compara el código que llega."],
+      ["Arma un <b>control remoto</b> con botones: cada botón físico manda un comando distinto.", "Lee dos botones y envía un <em>IR NEC</em> diferente con cada uno."]
     ],
     quiz: [
       ["¿Cómo puedes ver si el KY-005 está emitiendo?", ["Con la cámara del celular", "A simple vista", "Con un imán"], 0, "Las cámaras captan el infrarrojo."],
-      ["¿Qué indican la dirección y el comando en NEC?", ["El aparato y el botón", "La hora y la fecha", "El color y el brillo"], 0, "Dirección = qué aparato, comando = qué botón."]
+      ["¿Qué indican la dirección y el comando en NEC?", ["El aparato y el botón", "La hora y la fecha", "El color y el brillo"], 0, "Dirección = qué aparato, comando = qué botón."],
+      ["¿Qué necesita el receptor para recibir lo que manda el KY-005?", ["Estar de frente, con línea de vista", "Estar en la misma red WiFi", "Estar emparejado por Bluetooth"], 0, "La luz infrarroja viaja en línea recta."]
     ]
   },
 
@@ -237,11 +264,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Sensores de reversa de los autos", "Medidores de nivel de agua en tinacos", "Robots que esquivan obstáculos"],
     retos: [
       ["Enciende el LED del pin 2 cuando algo esté a menos de 20 cm.", "<em>si distancia &lt; 20</em> → encender, si no → apagar."],
-      ["Haz un <b>sensor de reversa</b>: el buzzer pita más rápido mientras más cerca estés.", "Usa la distancia para calcular la espera entre pitidos."]
+      ["Haz un <b>sensor de reversa</b>: el buzzer pita más rápido mientras más cerca estés.", "Usa la distancia para calcular la espera entre pitidos."],
+      ["Haz un <b>semáforo de distancia</b>: verde lejos, amarillo a media distancia y rojo muy cerca.", "Combina con el tutorial del Semáforo y usa dos límites."]
     ],
     quiz: [
       ["¿Por qué se divide entre 2 en el cálculo?", ["Porque el sonido va y regresa", "Porque hay 2 bocinas", "Para redondear"], 0, "El tiempo medido es de ida y vuelta."],
-      ["¿Qué animal usa el mismo principio?", ["El murciélago", "El gato", "La tortuga"], 0, "Se llama ecolocalización."]
+      ["¿Qué animal usa el mismo principio?", ["El murciélago", "El gato", "La tortuga"], 0, "Se llama ecolocalización."],
+      ["Si el eco tarda 0.002 s en volver, ¿a qué distancia está el objeto? (sonido: 343 m/s)", ["Unos 34 cm", "Unos 69 cm", "Unos 3 m"], 0, "0.002 × 343 = 0.686 m de ida y vuelta; ÷ 2 ≈ 0.34 m."]
     ]
   },
 
@@ -252,11 +281,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Básculas con medidor de estatura en clínicas", "Control de acceso en juegos mecánicos", "Medir crecimiento de plantas"],
     retos: [
       ["Muestra la estatura en metros (por ejemplo 1.52 m).", "Divide la estatura entre 100."],
-      ["Haz que el buzzer pite al terminar de medir.", "Agrega un tono corto después de imprimir."]
+      ["Haz que el buzzer pite al terminar de medir.", "Agrega un tono corto después de imprimir."],
+      ["Toma <b>5 mediciones</b> seguidas y muestra el promedio para un resultado más preciso.", "Suma las 5 distancias en una variable y divide entre 5."]
     ],
     quiz: [
       ["¿Cómo se calcula la estatura?", ["Altura del sensor − distancia medida", "Distancia × 2", "Altura + distancia"], 0, "El sensor mide lo que hay entre él y tu cabeza."],
-      ["¿Por qué el aluminio funciona como botón?", ["Tu cuerpo cambia la capacitancia del pin", "Porque es metal brillante", "Porque genera electricidad"], 0, "El TouchPad detecta ese cambio."]
+      ["¿Por qué el aluminio funciona como botón?", ["Tu cuerpo cambia la capacitancia del pin", "Porque es metal brillante", "Porque genera electricidad"], 0, "El TouchPad detecta ese cambio."],
+      ["Si el sensor está a 200 cm del piso y mide 48 cm, ¿cuál es la estatura?", ["152 cm", "248 cm", "48 cm"], 0, "200 − 48 = 152."]
     ]
   },
 
@@ -267,11 +298,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Aspiradoras robot", "Autos con frenado automático", "Robots de almacén"],
     retos: [
       ["Haz que gire a un lado distinto cada vez (izquierda, luego derecha).", "Usa una variable que cambie entre 0 y 1."],
-      ["Agrega un buzzer que pite cuando detecte un obstáculo.", "Pon el tono dentro del <em>si distancia &lt; …</em>."]
+      ["Agrega un buzzer que pite cuando detecte un obstáculo.", "Pon el tono dentro del <em>si distancia &lt; …</em>."],
+      ["Si el carrito se topa con obstáculos <b>3 veces seguidas</b>, que dé media vuelta.", "Cuenta los obstáculos seguidos en una variable y regrésala a 0 cuando avance libre."]
     ],
     quiz: [
       ["¿Qué hace el carrito cuando detecta un obstáculo cerca?", ["Se detiene, retrocede y gira", "Acelera", "Se apaga"], 0, "Así lo esquiva."],
-      ["¿Cómo se llama el ciclo mide → decide → mueve?", ["Lazo de control", "Ciclo de carga", "Bucle de color"], 0, "Es la base de los robots autónomos."]
+      ["¿Cómo se llama el ciclo mide → decide → mueve?", ["Lazo de control", "Ciclo de carga", "Bucle de color"], 0, "Es la base de los robots autónomos."],
+      ["¿Por qué el carrito retrocede antes de girar?", ["Para tener espacio y girar sin chocar", "Para cargar la batería", "Para medir mejor"], 0, "Si gira pegado a la pared, se puede atorar."]
     ]
   },
 
@@ -282,11 +315,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Estaciones meteorológicas", "Invernaderos automáticos", "Termostatos de aire acondicionado"],
     retos: [
       ["Enciende el LED del pin 2 si la temperatura pasa de 30 °C.", "<em>si temp &gt; 30</em> → encender."],
-      ["Calcula la temperatura en Fahrenheit.", "°F = °C × 1.8 + 32."]
+      ["Calcula la temperatura en Fahrenheit.", "°F = °C × 1.8 + 32."],
+      ["Avisa <b>\"Mucho calor\"</b> solo cuando la temperatura pase de 30 °C <b>y</b> la humedad de 70 %.", "Une las dos condiciones con el bloque <em>y</em>."]
     ],
     quiz: [
       ["¿Cada cuánto conviene leer el DHT11?", ["Cada 2 segundos o más", "1000 veces por segundo", "Una vez al día"], 0, "Es un sensor lento: necesita tiempo entre lecturas."],
-      ["¿Qué mide el DHT11 además de la temperatura?", ["La presión", "La humedad", "La luz"], 1, "Humedad relativa, en porcentaje."]
+      ["¿Qué mide el DHT11 además de la temperatura?", ["La presión", "La humedad", "La luz"], 1, "Humedad relativa, en porcentaje."],
+      ["¿Qué significa una humedad relativa de 100 %?", ["El aire ya no puede contener más vapor de agua", "Que está lloviendo", "Que hace 100 °C"], 0, "A partir de ahí el vapor se condensa: rocío o niebla."]
     ]
   },
 
@@ -297,11 +332,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Termómetros de alberca y acuario", "Control de temperatura en cocinas", "Monitoreo de refrigeradores"],
     retos: [
       ["Avisa con el buzzer si la temperatura baja de 20 °C.", "<em>si temperatura &lt; 20</em> → tono."],
-      ["Guarda la temperatura más alta que se haya medido.", "Variable <em>maxima</em> que se actualiza si la nueva es mayor."]
+      ["Guarda la temperatura más alta que se haya medido.", "Variable <em>maxima</em> que se actualiza si la nueva es mayor."],
+      ["Haz un <b>termostato</b>: prende un LED (calefacción) bajo 22 °C y apágalo sobre 24 °C.", "Dos límites distintos evitan que el LED prenda y apague a cada rato."]
     ],
     quiz: [
       ["¿Cuántos cables de datos usa OneWire?", ["1", "2", "4"], 0, "De ahí su nombre."],
-      ["¿Por qué se puede tener varios sensores en el mismo pin?", ["Cada uno tiene un número único", "Porque miden distinto", "No se puede"], 0, "El ESP32 les habla por su número."]
+      ["¿Por qué se puede tener varios sensores en el mismo pin?", ["Cada uno tiene un número único", "Porque miden distinto", "No se puede"], 0, "El ESP32 les habla por su número."],
+      ["¿Por qué hay que esperar después de <em>convertir</em> antes de leer?", ["El sensor necesita tiempo para medir", "Para que se enfríe", "Para ahorrar WiFi"], 0, "Con máxima precisión tarda hasta 0.75 s."]
     ]
   },
 
@@ -312,11 +349,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Alarmas y despertadores", "Registradores de datos con fecha", "Riego automático por horario"],
     retos: [
       ["Enciende el LED cuando los segundos sean múltiplo de 10.", "Usa el residuo de segundos ÷ 10."],
-      ["Haz una alarma: que suene el buzzer a una hora fija.", "Compara hora y minuto con los que elijas."]
+      ["Haz una alarma: que suene el buzzer a una hora fija.", "Compara hora y minuto con los que elijas."],
+      ["Haz un <b>horario escolar</b>: imprime \"Recreo\" de 10:30 a 11:00 y \"Clase\" el resto del tiempo.", "Convierte la hora a minutos (hora × 60 + minuto) para comparar rangos."]
     ],
     quiz: [
       ["¿Por qué el RTC no pierde la hora al desconectar el ESP32?", ["Tiene su propia pila", "La guarda en internet", "No es cierto, sí la pierde"], 0, "La pila CR2032 lo mantiene funcionando."],
-      ["¿Por qué protocolo se comunica?", ["I2C", "WiFi", "Bluetooth"], 0, "Usa SDA y SCL."]
+      ["¿Por qué protocolo se comunica?", ["I2C", "WiFi", "Bluetooth"], 0, "Usa SDA y SCL."],
+      ["¿Por qué el RTC es más preciso que contar con <em>esperar</em>?", ["Tiene un cristal de cuarzo que solo cuenta el tiempo", "Porque se conecta a internet", "No lo es"], 0, "Las esperas se atrasan con lo que tarda cada instrucción."]
     ]
   },
 
@@ -327,11 +366,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Drones que se estabilizan solos", "Controles de videojuegos", "Contadores de pasos"],
     retos: [
       ["Enciende el LED cuando inclines el sensor hacia un lado.", "Compara la aceleración X con un número."],
-      ["Haz un detector de sacudidas que pite con el buzzer.", "Si la aceleración cambia mucho de golpe → tono."]
+      ["Haz un detector de sacudidas que pite con el buzzer.", "Si la aceleración cambia mucho de golpe → tono."],
+      ["Haz un <b>nivel de burbuja</b>: prende un LED distinto si se inclina a la izquierda, está derecho o se inclina a la derecha.", "Usa la aceleración X con dos límites."]
     ],
     quiz: [
       ["¿Qué mide el giroscopio?", ["La velocidad de giro", "La temperatura", "La distancia"], 0, "En grados por segundo."],
-      ["¿Qué fuerza mide siempre el acelerómetro aunque esté quieto?", ["La gravedad", "El magnetismo", "Ninguna"], 0, "Por eso sabe hacia dónde está \"abajo\"."]
+      ["¿Qué fuerza mide siempre el acelerómetro aunque esté quieto?", ["La gravedad", "El magnetismo", "Ninguna"], 0, "Por eso sabe hacia dónde está \"abajo\"."],
+      ["Con el sensor quieto y plano, ¿qué marca el eje Z del acelerómetro?", ["Cerca de 1 g (la gravedad, 9.8 m/s²)", "Exactamente 0", "100"], 0, "Aunque no se mueva, siente la gravedad."]
     ]
   },
 
@@ -342,11 +383,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Navegación en autos y celulares", "Rastreo de mascotas y paquetes", "Drones que regresan solos"],
     retos: [
       ["Imprime un enlace de Google Maps con tu posición.", "Une el texto <em>https://maps.google.com/?q=</em> con latitud, coma y longitud."],
-      ["Imprime la hora que da el GPS.", "El GPS trae la hora exacta de los satélites."]
+      ["Imprime la hora que da el GPS.", "El GPS trae la hora exacta de los satélites."],
+      ["Revisa si estás <b>dentro de tu escuela</b> comparando latitud y longitud con un rango.", "Anota las coordenadas de dos esquinas y revisa que tu posición quede entre ellas."]
     ],
     quiz: [
       ["¿Por qué el GPS funciona mal dentro de un edificio?", ["Las paredes bloquean la señal de los satélites", "Necesita WiFi", "Porque está oscuro"], 0, "Necesita cielo abierto."],
-      ["¿Cuántos satélites necesita como mínimo?", ["1", "4", "30"], 1, "Tres para la posición y uno más para corregir la hora."]
+      ["¿Cuántos satélites necesita como mínimo?", ["1", "4", "30"], 1, "Tres para la posición y uno más para corregir la hora."],
+      ["¿Qué indica la latitud?", ["Qué tan al norte o al sur estás", "La altura sobre el mar", "La hora local"], 0, "La longitud indica qué tan al este u oeste."]
     ]
   },
 
@@ -357,11 +400,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Perillas de volumen", "Menús de impresoras 3D", "Medir cuánto gira una rueda"],
     retos: [
       ["Usa el encoder para mover un servo.", "Usa el valor (limitado de 0 a 180) como ángulo."],
-      ["Enciende el LED solo cuando el valor sea mayor a 10.", "<em>si valor &gt; 10</em>."]
+      ["Enciende el LED solo cuando el valor sea mayor a 10.", "<em>si valor &gt; 10</em>."],
+      ["Haz un <b>menú de 3 opciones</b> que se elijan girando el encoder.", "Usa el residuo de valor ÷ 3 para saber qué opción está seleccionada."]
     ],
     quiz: [
       ["¿Cómo sabe el ESP32 hacia dónde giras?", ["Por cuál señal cambia primero", "Por la fuerza", "Por el color"], 0, "CLK y DT van desfasadas."],
-      ["¿En qué se diferencia de un potenciómetro?", ["Gira sin tope", "Mide temperatura", "Es más caro"], 0, "El potenciómetro tiene un inicio y un fin."]
+      ["¿En qué se diferencia de un potenciómetro?", ["Gira sin tope", "Mide temperatura", "Es más caro"], 0, "El potenciómetro tiene un inicio y un fin."],
+      ["Si el valor baja al girar, ¿qué significa?", ["Giraste en el otro sentido", "Se descompuso", "Se acabó la pila"], 0, "Un sentido suma y el otro resta."]
     ]
   },
 
@@ -372,11 +417,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Tarjetas del transporte público", "Control de acceso en oficinas", "Inventario de libros en bibliotecas"],
     retos: [
       ["Prende el LED solo con <b>tu</b> tarjeta.", "Compara el UID con el que anotaste."],
-      ["Cuenta cuántas veces se ha pasado una tarjeta.", "Suma 1 cada vez que haya tarjeta presente."]
+      ["Cuenta cuántas veces se ha pasado una tarjeta.", "Suma 1 cada vez que haya tarjeta presente."],
+      ["Haz un <b>control de acceso</b> con 2 tarjetas permitidas: LED verde si pasa y buzzer si no.", "Guarda los UID permitidos en una lista y usa <em>lista contiene</em>."]
     ],
     quiz: [
       ["¿De dónde saca energía la tarjeta?", ["Del campo del lector", "De una pila", "Del sol"], 0, "Por inducción, como un cargador inalámbrico."],
-      ["¿Qué es el UID?", ["El número único de la tarjeta", "La contraseña de WiFi", "El color de la tarjeta"], 0, "Cada tarjeta tiene uno distinto."]
+      ["¿Qué es el UID?", ["El número único de la tarjeta", "La contraseña de WiFi", "El color de la tarjeta"], 0, "Cada tarjeta tiene uno distinto."],
+      ["¿A qué distancia lee normalmente el MFRC522?", ["Pocos centímetros", "10 metros", "Un kilómetro"], 0, "Funciona por inducción: hay que acercar la tarjeta."]
     ]
   },
 
@@ -387,11 +434,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Cerraduras con contraseña", "Cajeros automáticos", "Calculadoras y teléfonos"],
     retos: [
       ["Haz una cerradura: enciende el LED si se presiona la tecla 'A'.", "<em>si tecla = 'A'</em>."],
-      ["Arma una contraseña de 4 dígitos.", "Junta las teclas en un texto y compáralo con el tuyo."]
+      ["Arma una contraseña de 4 dígitos.", "Junta las teclas en un texto y compáralo con el tuyo."],
+      ["Haz una <b>calculadora</b>: un número, 'A' para sumar, otro número y '#' para el resultado.", "Guarda el primer número en una variable al presionar 'A'."]
     ],
     quiz: [
       ["¿Cuántos pines usa el teclado 4x4?", ["4", "8", "16"], 1, "4 filas + 4 columnas."],
-      ["¿Cómo sabe el ESP32 qué tecla presionaste?", ["Por el cruce de fila y columna", "Por el sonido", "Por la presión"], 0, "Revisa fila por fila."]
+      ["¿Cómo sabe el ESP32 qué tecla presionaste?", ["Por el cruce de fila y columna", "Por el sonido", "Por la presión"], 0, "Revisa fila por fila."],
+      ["¿Por qué se imprime vacío si no presionas nada?", ["No encontró ningún cruce de fila y columna", "El teclado está roto", "Falta el WiFi"], 0, "Ninguna tecla unió una fila con una columna."]
     ]
   },
 
@@ -402,11 +451,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Teléfonos y porteros eléctricos", "Cajas fuertes", "Máquinas expendedoras"],
     retos: [
       ["Imprime \"Correcto\" al presionar '#'.", "<em>si tecla = '#'</em>."],
-      ["Suma los números que vayas presionando.", "Convierte la tecla a número y súmala a una variable."]
+      ["Suma los números que vayas presionando.", "Convierte la tecla a número y súmala a una variable."],
+      ["Haz una <b>contraseña de 4 dígitos</b> que se confirme con '#' y se borre con '*'.", "Junta las teclas en un texto; con '*' vacíalo y con '#' compáralo."]
     ],
     quiz: [
       ["¿Cuántos pines usa el teclado 4x3?", ["7", "12", "3"], 0, "4 filas + 3 columnas."],
-      ["¿Necesita VCC y GND?", ["Sí", "No", "Solo GND"], 1, "Son solo interruptores entre filas y columnas."]
+      ["¿Necesita VCC y GND?", ["Sí", "No", "Solo GND"], 1, "Son solo interruptores entre filas y columnas."],
+      ["¿Qué tecla queda en el cruce de la fila 2 y la columna 3?", ["6", "5", "9"], 0, "La fila 2 es 4 5 6, y la columna 3 es la del 6."]
     ]
   },
 
@@ -417,11 +468,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Paneles de control con pantalla", "Sistemas de alarma", "Proyectos con muchos sensores"],
     retos: [
       ["Muestra la tecla presionada en una pantalla OLED.", "La OLED también usa I2C: comparte SDA y SCL."],
-      ["Enciende el LED con 'A' y apágalo con 'B'.", "Dos bloques <em>si</em>."]
+      ["Enciende el LED con 'A' y apágalo con 'B'.", "Dos bloques <em>si</em>."],
+      ["Muestra en la OLED la contraseña como <b>asteriscos</b> (****) mientras la escribes.", "Por cada tecla agrega '*' a un texto y escríbelo en la pantalla."]
     ],
     quiz: [
       ["¿Cuántos pines de datos usa con I2C?", ["2", "8", "16"], 0, "SDA y SCL."],
-      ["¿Puedes conectar otro módulo I2C en los mismos pines?", ["Sí, cada uno tiene su dirección", "No", "Solo si es igual"], 0, "I2C es un bus compartido."]
+      ["¿Puedes conectar otro módulo I2C en los mismos pines?", ["Sí, cada uno tiene su dirección", "No", "Solo si es igual"], 0, "I2C es un bus compartido."],
+      ["¿Qué es la dirección I2C (como 0x20)?", ["El número que identifica a cada módulo en el bus", "El voltaje", "El color del cable"], 0, "Así el ESP32 sabe a qué módulo le habla."]
     ]
   },
 
@@ -432,11 +485,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Estaciones meteorológicas", "Drones que mantienen la altura", "Relojes de montañismo"],
     retos: [
       ["Mide la diferencia de presión entre el piso y lo alto de un mueble.", "Guarda la primera lectura y resta las siguientes."],
-      ["Muestra la presión en hectopascales (hPa).", "Divide entre 100."]
+      ["Muestra la presión en hectopascales (hPa).", "Divide entre 100."],
+      ["Haz un <b>altímetro</b>: guarda la presión al inicio y muestra cuántos metros subiste.", "Cada 12 Pa de diferencia son aproximadamente 1 metro."]
     ],
     quiz: [
       ["¿Qué pasa con la presión al subir una montaña?", ["Baja", "Sube", "No cambia"], 0, "Hay menos aire encima."],
-      ["¿En qué unidad la da el sensor?", ["Pascales", "Grados", "Lux"], 0, "1 hPa = 100 Pa."]
+      ["¿En qué unidad la da el sensor?", ["Pascales", "Grados", "Lux"], 0, "1 hPa = 100 Pa."],
+      ["Si la presión baja rápido durante el día, ¿qué suele indicar?", ["Que se acerca mal tiempo", "Que es mediodía", "Nada"], 0, "Una baja de presión suele traer nubes y lluvia."]
     ]
   },
 
@@ -447,11 +502,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Brillo automático de pantallas", "Luces que se prenden al anochecer", "Medir la luz para plantas"],
     retos: [
       ["Enciende el LED cuando haya poca luz (menos de 50 lux).", "<em>si luz &lt; 50</em>."],
-      ["Clasifica: \"oscuro\", \"normal\" o \"brillante\".", "Usa <em>si / si no si</em> con dos límites."]
+      ["Clasifica: \"oscuro\", \"normal\" o \"brillante\".", "Usa <em>si / si no si</em> con dos límites."],
+      ["Controla el <b>brillo de un LED</b>: más brillante mientras más oscuro esté.", "Usa PWM e invierte el valor: brillo = máximo − luz (limitado)."]
     ],
     quiz: [
       ["¿Qué mide el lux?", ["La iluminación", "El sonido", "La temperatura"], 0, "Cuánta luz llega a una superficie."],
-      ["¿Qué pasa con el valor si tapas el sensor?", ["Baja", "Sube", "No cambia"], 0, "Le llega menos luz."]
+      ["¿Qué pasa con el valor si tapas el sensor?", ["Baja", "Sube", "No cambia"], 0, "Le llega menos luz."],
+      ["¿Cuántos lux hay aproximadamente en un salón de clases?", ["Unos 500", "Unos 100,000", "Menos de 1"], 0, "100,000 es pleno sol y menos de 1, una noche de luna."]
     ]
   },
 
@@ -462,11 +519,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Brújula del celular", "Drones y robots que se orientan", "Detectores de metales sencillos"],
     retos: [
       ["Acerca un imán y observa cómo cambian los valores.", "Prueba con distintas distancias."],
-      ["Enciende el LED cuando el sensor apunte al norte.", "Busca el valor de X cuando apuntas al norte y compáralo."]
+      ["Enciende el LED cuando el sensor apunte al norte.", "Busca el valor de X cuando apuntas al norte y compáralo."],
+      ["Calcula el <b>rumbo en grados</b> con atan2(Y, X) e imprime N, E, S u O.", "Usa el bloque de arcotangente y convierte de radianes a grados."]
     ],
     quiz: [
       ["¿Qué mide este sensor?", ["El campo magnético", "La luz", "La humedad"], 0, "En 3 ejes."],
-      ["¿Qué cosas alteran la lectura?", ["Imanes y motores", "La música", "El color de la mesa"], 0, "Tienen sus propios campos magnéticos."]
+      ["¿Qué cosas alteran la lectura?", ["Imanes y motores", "La música", "El color de la mesa"], 0, "Tienen sus propios campos magnéticos."],
+      ["¿Hacia dónde apunta el norte de una brújula?", ["Al polo norte magnético de la Tierra", "Siempre al sol", "Hacia abajo"], 0, "Está cerca del polo norte geográfico, pero no es el mismo punto."]
     ]
   },
 
@@ -477,11 +536,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Máquinas que separan frutas o dulces por color", "Calibración de pantallas", "Robots que siguen colores"],
     retos: [
       ["Imprime \"ROJO\" cuando el canal rojo sea el más alto.", "Compara rojo &gt; verde y rojo &gt; azul."],
-      ["Copia el color leído a un NeoPixel.", "Usa los tres valores como color RGB."]
+      ["Copia el color leído a un NeoPixel.", "Usa los tres valores como color RGB."],
+      ["Haz un <b>clasificador</b>: imprime ROJO, VERDE o AZUL según el canal más alto, u \"otro\" si son parecidos.", "Si la diferencia entre el mayor y los demás es pequeña, es \"otro\"."]
     ],
     quiz: [
       ["¿Qué canales mide el sensor?", ["Rojo, verde y azul", "Blanco y negro", "Solo rojo"], 0, "Más la luz total."],
-      ["¿Por qué conviene alejarlo del sol?", ["La luz del sol altera la medición", "Se derrite", "No importa"], 0, "Mide la luz que le llega."]
+      ["¿Por qué conviene alejarlo del sol?", ["La luz del sol altera la medición", "Se derrite", "No importa"], 0, "Mide la luz que le llega."],
+      ["¿Para qué tiene el sensor un LED blanco?", ["Para iluminar el objeto de forma pareja", "Para avisar que está prendido", "Para calentar"], 0, "Así el color medido depende menos de la luz del cuarto."]
     ]
   },
 
@@ -492,11 +553,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Asistentes de voz", "Medidores de ruido en salones", "Luces que bailan con la música"],
     retos: [
       ["Enciende el LED si hay mucho ruido.", "<em>si nivel &gt; …</em> (prueba aplaudiendo para elegir el número)."],
-      ["Haz un <b>aplausómetro</b> con un NeoPixel que cambie de color.", "Verde = poco ruido, rojo = mucho."]
+      ["Haz un <b>aplausómetro</b> con un NeoPixel que cambie de color.", "Verde = poco ruido, rojo = mucho."],
+      ["Haz un <b>detector de aplausos</b>: prende el LED con 2 aplausos seguidos.", "Detecta picos que pasen un límite y cuenta los que llegan en menos de 1 segundo."]
     ],
     quiz: [
       ["¿Qué protocolo usa para mandar el audio?", ["I2S", "I2C", "WiFi"], 0, "I2S está hecho para sonido."],
-      ["¿Para qué sirve conectar L/R a GND?", ["Elige el canal izquierdo", "Sube el volumen", "Lo apaga"], 0, "Con dos micrófonos se puede hacer estéreo."]
+      ["¿Para qué sirve conectar L/R a GND?", ["Elige el canal izquierdo", "Sube el volumen", "Lo apaga"], 0, "Con dos micrófonos se puede hacer estéreo."],
+      ["¿Qué significa que el micrófono sea digital?", ["Entrega el sonido ya convertido en números", "Que funciona con pilas", "Que solo graba voces"], 0, "El ESP32 no tiene que convertirlo."]
     ]
   },
 
@@ -507,11 +570,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Medidores de consumo de agua", "Riego automático", "Dispensadores de bebidas"],
     retos: [
       ["Enciende el LED mientras pase agua.", "<em>si flujo &gt; 0</em>."],
-      ["Calcula los litros totales que han pasado.", "Suma flujo ÷ 60 cada segundo."]
+      ["Calcula los litros totales que han pasado.", "Suma flujo ÷ 60 cada segundo."],
+      ["Haz un <b>medidor de consumo</b>: cuando pasen 2 litros, prende un LED de aviso.", "Acumula los litros (flujo ÷ 60 cada segundo) y compara con 2."]
     ],
     quiz: [
       ["¿Qué gira dentro del sensor?", ["Una turbina", "Un motor", "Nada"], 0, "La mueve el agua."],
-      ["¿Qué cuenta el ESP32 para calcular el flujo?", ["Pulsos", "Gotas", "Grados"], 0, "Más pulsos por segundo = más flujo."]
+      ["¿Qué cuenta el ESP32 para calcular el flujo?", ["Pulsos", "Gotas", "Grados"], 0, "Más pulsos por segundo = más flujo."],
+      ["Si pasan 6 L/min durante 30 segundos, ¿cuántos litros pasaron?", ["3 litros", "6 litros", "180 litros"], 0, "30 s es medio minuto: 6 × 0.5 = 3 L."]
     ]
   },
 
@@ -522,11 +587,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Desbloqueo de celulares", "Control de asistencia", "Cerraduras inteligentes"],
     retos: [
       ["Registra tu huella con el bloque <em>registrar ID</em>.", "Usa un ID libre, por ejemplo 1."],
-      ["Enciende el LED solo si la huella es la tuya.", "Compara el resultado de <em>verificar</em> con tu ID."]
+      ["Enciende el LED solo si la huella es la tuya.", "Compara el resultado de <em>verificar</em> con tu ID."],
+      ["Haz una <b>cerradura</b>: LED verde con huella válida y buzzer después de 3 intentos fallidos.", "Cuenta los intentos fallidos en una variable y regrésala a 0 al acertar."]
     ],
     quiz: [
       ["¿Qué compara el sensor para reconocer una huella?", ["Puntos característicos", "El color de la piel", "La temperatura"], 0, "Donde las líneas terminan o se dividen."],
-      ["¿Qué hay que hacer antes de verificar?", ["Registrar la huella", "Conectar WiFi", "Nada"], 0, "Si no está guardada, no la reconoce."]
+      ["¿Qué hay que hacer antes de verificar?", ["Registrar la huella", "Conectar WiFi", "Nada"], 0, "Si no está guardada, no la reconoce."],
+      ["¿Para qué se guarda un ID con cada huella?", ["Para saber de quién es la huella reconocida", "Para darle color", "No se guarda nada"], 0, "El sensor responde con el ID de la huella que coincide."]
     ]
   },
 
@@ -538,11 +605,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Relojes inteligentes", "Pantallas de impresoras 3D", "Indicadores en robots"],
     retos: [
       ["Escribe tu nombre en la línea de abajo.", "Usa Y = 50."],
-      ["Muestra un contador que suba cada segundo.", "Limpia, escribe el número y espera 1 s dentro de un ciclo."]
+      ["Muestra un contador que suba cada segundo.", "Limpia, escribe el número y espera 1 s dentro de un ciclo."],
+      ["Haz una <b>pelota que rebote</b> de lado a lado de la pantalla.", "Cambia X en un ciclo; al llegar a 0 o a 120, invierte la dirección."]
     ],
     quiz: [
       ["¿Cuántos píxeles tiene de ancho?", ["64", "128", "1080"], 1, "Es de 128 × 64."],
-      ["¿Hacia dónde crece la Y?", ["Hacia abajo", "Hacia arriba", "Hacia la derecha"], 0, "El 0 está arriba."]
+      ["¿Hacia dónde crece la Y?", ["Hacia abajo", "Hacia arriba", "Hacia la derecha"], 0, "El 0 está arriba."],
+      ["¿Por qué hay que limpiar la pantalla antes de volver a escribir?", ["Para que no se encime lo anterior", "Para ahorrar energía", "No hace falta"], 0, "Lo dibujado se queda hasta que lo borras."]
     ]
   },
 
@@ -553,11 +622,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Pantallas de menú en proyectos", "Termómetros digitales", "Mini consolas de juego"],
     retos: [
       ["Dibuja un marco alrededor de la pantalla.", "Busca el bloque de rectángulo."],
-      ["Muestra la temperatura del DHT11.", "Combina con el tutorial del DHT11."]
+      ["Muestra la temperatura del DHT11.", "Combina con el tutorial del DHT11."],
+      ["Dibuja una <b>barra de carga</b> que crezca de 0 a 128 píxeles.", "Dibuja un rectángulo relleno cuyo ancho aumente en un ciclo."]
     ],
     quiz: [
       ["¿Cómo se comunica con el ESP32?", ["I2C", "Bluetooth", "Por el USB"], 0, "Usa SDA y SCL."],
-      ["¿Para qué sirve el bloque <em>rotar</em>?", ["Voltear la imagen", "Cambiar el color", "Apagarla"], 0, "Útil si la pantalla quedó de cabeza."]
+      ["¿Para qué sirve el bloque <em>rotar</em>?", ["Voltear la imagen", "Cambiar el color", "Apagarla"], 0, "Útil si la pantalla quedó de cabeza."],
+      ["Si tu OLED sale corrida o con puntos raros a un lado, ¿qué pruebas?", ["El tutorial de SH1106 en lugar del SSD1306", "Cambiar el cable USB", "Subir el volumen"], 0, "Son chips distintos aunque se vean iguales."]
     ]
   },
 
@@ -568,11 +639,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Máquinas expendedoras", "Equipos de laboratorio", "Paneles de alarma"],
     retos: [
       ["Escribe algo en el segundo renglón.", "Cambia la fila a 1."],
-      ["Muestra la distancia del sensor ultrasónico.", "Limpia y escribe dentro de un ciclo."]
+      ["Muestra la distancia del sensor ultrasónico.", "Limpia y escribe dentro de un ciclo."],
+      ["Haz un texto que se desplace como <b>marquesina</b>.", "Cambia la columna de inicio en un ciclo, limpiando antes de escribir."]
     ],
     quiz: [
       ["¿Cuántos caracteres caben en total?", ["16", "32", "64"], 1, "2 renglones × 16."],
-      ["Si no se ve nada, ¿qué ajustas primero?", ["El potenciómetro de contraste", "El WiFi", "El volumen"], 0, "Está atrás, en el módulo I2C."]
+      ["Si no se ve nada, ¿qué ajustas primero?", ["El potenciómetro de contraste", "El WiFi", "El volumen"], 0, "Está atrás, en el módulo I2C."],
+      ["¿Para qué sirve el módulo I2C de atrás?", ["Reduce los cables a solo 4", "Le da colores", "La hace táctil"], 0, "Convierte 2 cables de datos en los muchos pines de la LCD."]
     ]
   },
 
@@ -583,11 +656,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Relojes y termómetros", "Equipos industriales", "Proyectos sin módulo I2C"],
     retos: [
       ["Escribe tu nombre centrado.", "Cuenta las letras y empieza en la columna (16 − letras) ÷ 2."],
-      ["Haz un contador que suba cada segundo.", "Ciclo con escribir y esperar."]
+      ["Haz un contador que suba cada segundo.", "Ciclo con escribir y esperar."],
+      ["Muestra la <b>temperatura del DHT11</b> en el renglón de abajo, actualizándose cada 2 s.", "Escribe en la fila 1 y limpia solo ese renglón escribiendo espacios."]
     ],
     quiz: [
       ["¿Para qué sirve el potenciómetro?", ["Ajustar el contraste", "Subir volumen", "Mover el texto"], 0, "Va al pin V0."],
-      ["¿Cuántos pines de datos usamos?", ["4", "8", "2"], 0, "Modo de 4 bits: D4-D7."]
+      ["¿Cuántos pines de datos usamos?", ["4", "8", "2"], 0, "Modo de 4 bits: D4-D7."],
+      ["¿Qué indica el pin RS?", ["Si lo que llega es un comando o una letra", "El brillo", "La velocidad"], 0, "RS significa Register Select."]
     ]
   },
 
@@ -598,11 +673,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Relojes inteligentes", "Pantallas de termostatos", "Mini videojuegos"],
     retos: [
       ["Pinta el fondo de tu color favorito y escribe tu nombre.", "Cambia el color de fondo y el texto."],
-      ["Haz un semáforo: fondo rojo, amarillo y verde cada 2 s.", "Ciclo con tres colores de fondo."]
+      ["Haz un semáforo: fondo rojo, amarillo y verde cada 2 s.", "Ciclo con tres colores de fondo."],
+      ["Dibuja una <b>bandera de 3 franjas</b> de colores.", "Usa rectángulos rellenos de 80 píxeles de ancho cada uno."]
     ],
     quiz: [
       ["¿Qué protocolo usa la TFT?", ["SPI", "I2C", "Bluetooth"], 0, "Es más rápido, útil para tantos píxeles."],
-      ["¿Qué colores forman todos los demás?", ["Rojo, verde y azul", "Cian y magenta", "Blanco y negro"], 0, "RGB."]
+      ["¿Qué colores forman todos los demás?", ["Rojo, verde y azul", "Cian y magenta", "Blanco y negro"], 0, "RGB."],
+      ["¿Qué indica el pin DC?", ["Si llega un comando o un dato de color", "La corriente", "El brillo"], 0, "DC significa Data/Command."]
     ]
   },
 
@@ -613,11 +690,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Relojes de pared", "Marcadores deportivos", "Temporizadores de cocina"],
     retos: [
       ["Haz una cuenta regresiva de 10 a 0.", "Ciclo <em>contar de 10 a 0</em> con esperar 1 s."],
-      ["Muestra la temperatura del DHT11.", "Combina con el tutorial del DHT11."]
+      ["Muestra la temperatura del DHT11.", "Combina con el tutorial del DHT11."],
+      ["Haz un <b>cronómetro</b> MM:SS que avance solo.", "Muestra minutos × 100 + segundos para usar los 4 dígitos."]
     ],
     quiz: [
       ["¿Cuántos dígitos tiene el TM1637?", ["2", "4", "8"], 1, "Como un reloj: 12:34."],
-      ["¿Cuántos cables de datos usa?", ["2", "7", "28"], 0, "CLK y DIO."]
+      ["¿Cuántos cables de datos usa?", ["2", "7", "28"], 0, "CLK y DIO."],
+      ["Para mostrar 12:34, ¿qué número envías?", ["1234", "12.34", "46"], 0, "Los dos puntos del centro se encienden aparte."]
     ]
   },
 
@@ -628,11 +707,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Relojes y despertadores", "Elevadores", "Básculas y marcadores"],
     retos: [
       ["Haz una cuenta del 0 al 9.", "Ciclo <em>contar de 0 a 9</em> con el bloque número (variable)."],
-      ["Muestra un dado: un número al azar del 1 al 6.", "Usa el bloque de número aleatorio."]
+      ["Muestra un dado: un número al azar del 1 al 6.", "Usa el bloque de número aleatorio."],
+      ["Haz un <b>contador con botón</b>: cada pulsación sube el número y del 9 regresa al 0.", "Combina con el tutorial del Botón y usa el bloque <em>número</em> con variable."]
     ],
     quiz: [
       ["¿Qué segmentos usa el número 1?", ["b y c", "a y d", "Todos"], 0, "Las dos rayas verticales de la derecha."],
-      ["¿Por qué el 8 se ve más tenue con una sola resistencia?", ["La corriente se reparte entre 7 segmentos", "Porque el 8 es más grande", "Por error del ESP32"], 0, "La resistencia del común limita la corriente total."]
+      ["¿Por qué el 8 se ve más tenue con una sola resistencia?", ["La corriente se reparte entre 7 segmentos", "Porque el 8 es más grande", "Por error del ESP32"], 0, "La resistencia del común limita la corriente total."],
+      ["¿Qué segmento NO se enciende para el 0?", ["g (el del centro)", "a (el de arriba)", "d (el de abajo)"], 0, "El 0 usa todos menos el del centro."]
     ]
   },
 
@@ -643,11 +724,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Letreros de mensajes", "Marcadores", "Caritas y animaciones en robots"],
     retos: [
       ["Haz que tu nombre se desplace.", "Usa el bloque <em>scroll texto</em>."],
-      ["Muestra una cuenta regresiva.", "Ciclo con el número y esperar 1 s."]
+      ["Muestra una cuenta regresiva.", "Ciclo con el número y esperar 1 s."],
+      ["Dibuja una <b>carita</b> y haz que parpadee.", "Usa el bloque de píxel y alterna entre dibujarla y limpiar."]
     ],
     quiz: [
       ["¿Cuántos LEDs tiene la matriz?", ["8", "16", "64"], 2, "8 × 8."],
-      ["¿Qué es el multiplexado?", ["Encender filas muy rápido por turnos", "Usar dos matrices", "Cambiar colores"], 0, "Tu ojo lo ve todo encendido."]
+      ["¿Qué es el multiplexado?", ["Encender filas muy rápido por turnos", "Usar dos matrices", "Cambiar colores"], 0, "Tu ojo lo ve todo encendido."],
+      ["¿Por qué el MAX7219 solo necesita 3 cables de datos?", ["Recibe los datos en serie, uno tras otro (SPI)", "Porque la matriz tiene 3 LEDs", "Porque usa WiFi"], 0, "Los bits llegan uno tras otro por el mismo cable."]
     ]
   },
 
@@ -658,11 +741,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Pantallas de pixel art", "Indicadores de clima", "Lámparas de ambiente"],
     retos: [
       ["Dibuja una diagonal de esquina a esquina.", "x y y iguales: (0,0), (1,1), (2,2)…"],
-      ["Dibuja una carita feliz.", "Ojos en la fila 1 y la boca en la 3."]
+      ["Dibuja una carita feliz.", "Ojos en la fila 1 y la boca en la 3."],
+      ["Haz una animación de <b>lluvia</b>: puntos azules que bajen por las columnas.", "Usa un ciclo para y; apaga el punto anterior antes de dibujar el nuevo."]
     ],
     quiz: [
       ["¿Cuántos LEDs tiene la matriz 5x5?", ["10", "25", "55"], 1, "5 × 5."],
-      ["¿Por qué conviene un brillo bajo?", ["Para no gastar demasiada corriente", "Para que dure más el programa", "Para cambiar el color"], 0, "Y para no encandilarte."]
+      ["¿Por qué conviene un brillo bajo?", ["Para no gastar demasiada corriente", "Para que dure más el programa", "Para cambiar el color"], 0, "Y para no encandilarte."],
+      ["En una cuadrícula de 5x5, ¿cuál es el píxel del centro?", ["(2, 2)", "(3, 3)", "(5, 5)"], 0, "Se cuenta desde 0: 0, 1, 2, 3, 4."]
     ]
   },
 
@@ -673,11 +758,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Letreros de pixel art", "Visualizadores de música", "Juegos como la viborita"],
     retos: [
       ["Dibuja un marco en los bordes.", "Usa ciclos para x = 0 y x = 7, y para y = 0 y y = 7."],
-      ["Haz un punto que recorra toda la matriz.", "Dos ciclos anidados: uno para y, otro para x."]
+      ["Haz un punto que recorra toda la matriz.", "Dos ciclos anidados: uno para y, otro para x."],
+      ["Haz un <b>arcoíris diagonal</b> que se mueva.", "Calcula el color con (x + y + paso) y aumenta <em>paso</em> en cada vuelta."]
     ],
     quiz: [
       ["¿Cuántos LEDs tiene la matriz 8x8?", ["16", "64", "88"], 1, "8 × 8."],
-      ["¿Qué pasa si pones todo en blanco a brillo máximo?", ["Puede pedir demasiada corriente", "Nada", "Cambia a rojo"], 0, "Usa brillo bajo o fuente externa."]
+      ["¿Qué pasa si pones todo en blanco a brillo máximo?", ["Puede pedir demasiada corriente", "Nada", "Cambia a rojo"], 0, "Usa brillo bajo o fuente externa."],
+      ["En una fila de la 8x8, ¿cuál es el último índice?", ["7", "8", "63"], 0, "Son 8 píxeles contados desde 0."]
     ]
   },
 
@@ -689,11 +776,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Juguetes y peluches que hablan", "Avisos de voz en elevadores", "Timbres con canciones"],
     retos: [
       ["Reproduce la pista 2 al presionar un botón.", "Combina con el tutorial del Botón."],
-      ["Haz un timbre que suene cuando el ultrasónico detecte a alguien.", "Reproduce si la distancia es menor a 50 cm."]
+      ["Haz un timbre que suene cuando el ultrasónico detecte a alguien.", "Reproduce si la distancia es menor a 50 cm."],
+      ["Haz una <b>rocola</b>: un botón cambia a la siguiente pista y otro sube el volumen.", "Guarda el número de pista y el volumen en variables."]
     ],
     quiz: [
       ["¿Cómo se llaman los archivos en la microSD?", ["0001.mp3, 0002.mp3…", "cancion.mp3", "Da igual"], 0, "Dentro de la carpeta /mp3."],
-      ["¿Por dónde recibe órdenes el DFPlayer?", ["UART (TX/RX)", "WiFi", "I2C"], 0, "TX y RX van cruzados."]
+      ["¿Por dónde recibe órdenes el DFPlayer?", ["UART (TX/RX)", "WiFi", "I2C"], 0, "TX y RX van cruzados."],
+      ["¿Qué rango de volumen tiene el DFPlayer?", ["0 a 30", "0 a 100", "1 a 5"], 0, "30 es el volumen máximo."]
     ]
   },
 
@@ -704,11 +793,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Registradores de datos (dataloggers)", "Cámaras y grabadoras", "Guardar configuraciones"],
     retos: [
       ["Guarda tu nombre en un archivo y léelo.", "Cambia el texto del bloque <em>escribir</em>."],
-      ["Guarda una lectura del DHT11 cada 10 segundos.", "Escribe la temperatura en un ciclo."]
+      ["Guarda una lectura del DHT11 cada 10 segundos.", "Escribe la temperatura en un ciclo."],
+      ["Haz un <b>registro</b>: guarda \"hora, temperatura\" cada minuto en un archivo CSV.", "Agrega una línea al archivo (no lo reescribas) en cada lectura."]
     ],
     quiz: [
       ["¿En qué formato debe estar la microSD?", ["FAT32", "NTFS", "MP3"], 0, "Es el que entiende MicroPython."],
-      ["¿Qué protocolo usa?", ["SPI", "Bluetooth", "OneWire"], 0, "SCK, MOSI, MISO y CS."]
+      ["¿Qué protocolo usa?", ["SPI", "Bluetooth", "OneWire"], 0, "SCK, MOSI, MISO y CS."],
+      ["¿Qué ventaja tiene guardar en formato CSV?", ["Se abre directo en una hoja de cálculo", "Ocupa 0 bytes", "Se cifra solo"], 0, "Cada línea es un registro y las comas separan columnas."]
     ]
   },
 
@@ -720,11 +811,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Sensores que mandan datos a internet", "Casas inteligentes", "Relojes que se ponen en hora solos"],
     retos: [
       ["Conéctate a la red del celular (hotspot) y compara la IP.", "Cambia SSID y contraseña; el hotspot debe estar en 2.4 GHz."],
-      ["Enciende el LED del pin 2 cuando se conecte.", "Pon el bloque de encender después de conectar."]
+      ["Enciende el LED del pin 2 cuando se conecte.", "Pon el bloque de encender después de conectar."],
+      ["Si no se conecta en <b>10 segundos</b>, imprime \"Sin WiFi\" y prende el LED como alarma.", "Revisa si está conectado dentro de un ciclo que cuente los segundos."]
     ],
     quiz: [
       ["¿Qué banda de WiFi usa el ESP32?", ["2.4 GHz", "5 GHz", "Las dos"], 0, "No se conecta a redes solo de 5 GHz."],
-      ["¿Quién le da la dirección IP al ESP32?", ["El router", "El ESP32 la inventa", "Google"], 0, "El router reparte las IP de su red."]
+      ["¿Quién le da la dirección IP al ESP32?", ["El router", "El ESP32 la inventa", "Google"], 0, "El router reparte las IP de su red."],
+      ["¿Qué tienen en común las IP 192.168.1.20 y 192.168.1.35?", ["Están en la misma red local", "Son del mismo país", "Son la misma"], 0, "Los primeros números indican la red y el último, el aparato."]
     ]
   },
 
@@ -735,11 +828,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Abrir el portón desde el celular", "Prender el aire acondicionado antes de llegar", "Recibir alertas de un sensor en el celular"],
     retos: [
       ["Agrega el mensaje <b>parpadea</b> que haga parpadear el LED 5 veces.", "Otro <em>si msg = \"parpadea\"</em> con un ciclo <em>repetir 5</em>."],
-      ["Controla también el buzzer con los mensajes <b>sonar</b> y <b>silencio</b>.", "Igual que el LED, con bloques del buzzer."]
+      ["Controla también el buzzer con los mensajes <b>sonar</b> y <b>silencio</b>.", "Igual que el LED, con bloques del buzzer."],
+      ["Agrega el mensaje <b>estado</b>: el ESP32 imprime si el LED está prendido o apagado.", "Guarda el estado en una variable cada vez que prendas o apagues."]
     ],
     quiz: [
       ["¿Qué hace el ESP32 cada 2 segundos?", ["Pregunta a ntfy.sh si hay mensajes", "Se reinicia", "Manda una foto"], 0, "Eso se llama <b>polling</b>."],
-      ["¿Por qué tu canal debe tener un nombre único?", ["Cualquiera que sepa el nombre puede mandar mensajes", "Porque es más rápido", "No importa"], 0, "Los canales de ntfy.sh son públicos."]
+      ["¿Por qué tu canal debe tener un nombre único?", ["Cualquiera que sepa el nombre puede mandar mensajes", "Porque es más rápido", "No importa"], 0, "Los canales de ntfy.sh son públicos."],
+      ["¿Para qué sirve la lista <em>visto</em>?", ["Para no repetir mensajes ya atendidos", "Para guardar contraseñas", "Para contar segundos"], 0, "ntfy.sh devuelve los mensajes recientes cada vez que preguntas."]
     ]
   },
 
@@ -750,11 +845,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Servidores web", "Control de robots desde la computadora", "Comunicación entre máquinas en una fábrica"],
     retos: [
       ["Cambia el nombre de la red a tu nombre.", "Modifica el SSID en <em>Configurar Access Point</em>."],
-      ["Enciende el LED si el mensaje recibido es \"on\".", "Compara la respuesta (decodificada) con \"on\"."]
+      ["Enciende el LED si el mensaje recibido es \"on\".", "Compara la respuesta (decodificada) con \"on\"."],
+      ["<b>Responde al cliente</b>: envía \"Recibido: \" + su mensaje antes de cerrar.", "Usa enviar en la conexión aceptada, antes de cerrarla."]
     ],
     quiz: [
       ["¿Qué bloque se queda esperando a que llegue un cliente?", ["accept", "bind", "close"], 0, "Se detiene ahí hasta que alguien se conecta."],
-      ["¿Qué IP tiene el ESP32 cuando es Access Point?", ["192.168.4.1", "8.8.8.8", "127.0.0.1"], 0, "Es la IP por defecto del AP."]
+      ["¿Qué IP tiene el ESP32 cuando es Access Point?", ["192.168.4.1", "8.8.8.8", "127.0.0.1"], 0, "Es la IP por defecto del AP."],
+      ["¿Qué hace el bloque <em>bind</em>?", ["Amarra el socket a un puerto", "Borra la red", "Apaga el WiFi"], 0, "Así los clientes saben a qué puerto llegar."]
     ]
   },
 
@@ -765,11 +862,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Apps que hablan con un servidor", "Sensores que reportan a una central", "Chats y videojuegos en red"],
     retos: [
       ["Manda un mensaje distinto cada 5 segundos.", "Llama a <em>enviar_msg</em> dentro de un ciclo con esperar."],
-      ["Manda la distancia del sensor ultrasónico.", "Convierte la distancia a texto antes de enviarla."]
+      ["Manda la distancia del sensor ultrasónico.", "Convierte la distancia a texto antes de enviarla."],
+      ["Manda la <b>temperatura del DHT11</b> al servidor cada 10 segundos.", "Arma el texto con <em>crear texto con</em> antes de enviarlo."]
     ],
     quiz: [
       ["¿Qué necesita el cliente para encontrar al servidor?", ["Su IP y su puerto", "Su color", "Su MAC"], 0, "Como dirección y número de departamento."],
-      ["¿Qué pasa si el servidor no está encendido?", ["La conexión falla", "El mensaje se guarda", "Se manda por Bluetooth"], 0, "Enciende primero el servidor."]
+      ["¿Qué pasa si el servidor no está encendido?", ["La conexión falla", "El mensaje se guarda", "Se manda por Bluetooth"], 0, "Enciende primero el servidor."],
+      ["¿Por qué se cierra el socket después de enviar?", ["Para liberar la conexión", "Para borrar el mensaje", "Nunca es necesario"], 0, "Cada conexión abierta ocupa memoria en los dos ESP32."]
     ]
   },
 
@@ -780,11 +879,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["WiFi de hoteles y aeropuertos", "Configurar aparatos sin app", "Juegos y encuestas sin internet"],
     retos: [
       ["Cambia el nombre de la red.", "Modifica el SSID del Access Point."],
-      ["Imprime cuántas veces se conectó alguien.", "Suma 1 a un contador en la función que atiende."]
+      ["Imprime cuántas veces se conectó alguien.", "Suma 1 a un contador en la función que atiende."],
+      ["Prende el <b>LED del pin 2</b> cada vez que alguien visite el portal.", "Pon el bloque de encender dentro de la función que atiende al visitante."]
     ],
     quiz: [
       ["¿Qué hace el DNS del ESP32?", ["Responde que todas las páginas son él", "Bloquea internet", "Cambia la contraseña"], 0, "Así redirige al portal."],
-      ["¿El portal necesita internet?", ["No, todo vive en el ESP32", "Sí, siempre", "Solo de noche"], 0, "Funciona sin router ni internet."]
+      ["¿El portal necesita internet?", ["No, todo vive en el ESP32", "Sí, siempre", "Solo de noche"], 0, "Funciona sin router ni internet."],
+      ["¿Por qué hay que apagar los datos móviles para ver el portal?", ["El celular usaría internet por datos y no la red del ESP32", "Para ahorrar pila", "No es necesario"], 0, "Con datos encendidos, el celular ignora la red sin internet."]
     ]
   },
 
@@ -795,11 +896,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Controles remotos para carritos", "Sensores en distintos salones", "Timbres inalámbricos"],
     retos: [
       ["Enciende el LED cuando llegue el mensaje \"on\".", "<em>si msg = \"on\"</em> (decodifica el mensaje)."],
-      ["Cuenta cuántos mensajes han llegado.", "Suma 1 a una variable cada vez que llegue uno."]
+      ["Cuenta cuántos mensajes han llegado.", "Suma 1 a una variable cada vez que llegue uno."],
+      ["Muestra los mensajes recibidos en una <b>pantalla OLED</b>.", "Escribe el mensaje decodificado en la OLED dentro del <em>si</em>."]
     ],
     quiz: [
       ["¿Necesita router ESP-NOW?", ["No", "Sí", "Solo para recibir"], 0, "Los ESP32 se hablan directo."],
-      ["¿Qué identifica a cada ESP32 en ESP-NOW?", ["Su dirección MAC", "Su nombre", "Su color"], 0, "Es como su número de teléfono."]
+      ["¿Qué identifica a cada ESP32 en ESP-NOW?", ["Su dirección MAC", "Su nombre", "Su color"], 0, "Es como su número de teléfono."],
+      ["¿Por qué el receptor imprime su MAC al iniciar?", ["Para copiarla en el programa del emisor", "Para conectarse a internet", "Para cambiar la contraseña"], 0, "El emisor necesita esa MAC para saber a quién mandar."]
     ]
   },
 
@@ -810,11 +913,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Botón inalámbrico", "Control de luces sin internet", "Juegos entre dos placas"],
     retos: [
       ["Manda un mensaje cada segundo.", "Envuelve el <em>Enviar</em> en un ciclo con esperar 1 s."],
-      ["Manda \"on\" al presionar un botón y \"off\" al soltarlo.", "Combina con el tutorial del Botón."]
+      ["Manda \"on\" al presionar un botón y \"off\" al soltarlo.", "Combina con el tutorial del Botón."],
+      ["Manda la <b>distancia del sensor ultrasónico</b> cada segundo.", "Convierte el número a texto antes de enviarlo."]
     ],
     quiz: [
       ["¿Qué MAC escribes en el emisor?", ["La del receptor", "La del emisor", "La del router"], 0, "Es a quién le mandas el mensaje."],
-      ["¿Qué tamaño máximo tiene un mensaje?", ["250 bytes", "1 GB", "10 letras"], 0, "Suficiente para textos cortos y lecturas."]
+      ["¿Qué tamaño máximo tiene un mensaje?", ["250 bytes", "1 GB", "10 letras"], 0, "Suficiente para textos cortos y lecturas."],
+      ["¿Qué pasa si escribes mal un número de la MAC?", ["El mensaje no llega", "Llega a todos", "Se corrige solo"], 0, "Cada MAC es única: con un número distinto es otra placa."]
     ]
   },
 
@@ -825,11 +930,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Walkie-talkies de texto", "Robots que cooperan", "Sistemas de alarma con varias placas"],
     retos: [
       ["Responde automáticamente \"recibido\" a cada mensaje.", "Dentro de la función de recibir, envía \"recibido\" al otro."],
-      ["Prende el LED del otro ESP32 escribiendo \"luz\".", "En la función de recibir, compara el texto con \"luz\"."]
+      ["Prende el LED del otro ESP32 escribiendo \"luz\".", "En la función de recibir, compara el texto con \"luz\"."],
+      ["Agrega <b>tu nombre</b> a cada mensaje para saber quién escribió.", "Usa <em>crear texto con</em> para unir tu nombre y el mensaje."]
     ],
     quiz: [
       ["¿Qué ventaja tiene <em>al recibir llamar</em>?", ["No hay que preguntar todo el tiempo", "Hace los mensajes más largos", "Apaga el WiFi"], 0, "Es una interrupción: se activa sola."],
-      ["¿Por qué el programa \"termina\" pero sigue escuchando?", ["La escucha queda activa en segundo plano", "Es un error", "Porque se reinicia"], 0, "La función quedó registrada."]
+      ["¿Por qué el programa \"termina\" pero sigue escuchando?", ["La escucha queda activa en segundo plano", "Es un error", "Porque se reinicia"], 0, "La función quedó registrada."],
+      ["¿Qué es una interrupción?", ["Algo que se ejecuta solo cuando ocurre un evento", "Un error del programa", "Apagar el ESP32"], 0, "Aquí, el evento es que llegue un mensaje."]
     ]
   },
 
@@ -840,11 +947,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Robots controlados con el celular", "Apps para prender luces", "Recibir datos de sensores en el celular"],
     retos: [
       ["Enciende el LED al recibir \"1\" y apágalo con \"0\".", "Compara lo leído con \"1\" y \"0\"."],
-      ["Manda al celular la distancia del sensor ultrasónico.", "Usa <em>Enviar texto HC-06</em> dentro de un ciclo."]
+      ["Manda al celular la distancia del sensor ultrasónico.", "Usa <em>Enviar texto HC-06</em> dentro de un ciclo."],
+      ["Controla un <b>carrito</b> desde el celular: w adelante, s atrás, a y d para girar.", "Combina con el tutorial del Puente H."]
     ],
     quiz: [
       ["¿Cómo van conectados TX y RX?", ["Cruzados", "Iguales", "Los dos a GND"], 0, "Lo que uno habla (TX), el otro lo escucha (RX)."],
-      ["¿Funciona el HC-06 con iPhone?", ["No, usa Bluetooth clásico", "Sí, siempre", "Solo con WiFi"], 0, "Los iPhone no aceptan este tipo de módulo; usa BLE."]
+      ["¿Funciona el HC-06 con iPhone?", ["No, usa Bluetooth clásico", "Sí, siempre", "Solo con WiFi"], 0, "Los iPhone no aceptan este tipo de módulo; usa BLE."],
+      ["¿A qué velocidad viene el HC-06?", ["9600 baudios", "115200 baudios", "1 baudio"], 0, "Es la velocidad de fábrica del módulo."]
     ]
   },
 
@@ -855,11 +964,13 @@ var TUTORIAL_EXTRAS = {
     usos: ["Pulseras y relojes inteligentes", "Básculas y termómetros que mandan datos al celular", "Llaveros localizadores"],
     retos: [
       ["Cambia el nombre BLE por tu nombre.", "Bloque <em>Establecer nombre BLE</em>."],
-      ["Enciende el LED cuando llegue \"on\".", "Compara <em>rx_buffer</em> con \"on\"."]
+      ["Enciende el LED cuando llegue \"on\".", "Compara <em>rx_buffer</em> con \"on\"."],
+      ["<b>Responde desde el ESP32</b>: cuando llegue \"hola\", envía \"hola celular\".", "Usa el bloque de enviar BLE dentro de la función al recibir."]
     ],
     quiz: [
       ["¿Qué significa la L de BLE?", ["Low (bajo consumo)", "Large (grande)", "Light (luz)"], 0, "Bluetooth Low Energy."],
-      ["¿Cómo encuentra el celular al ESP32?", ["Por el nombre que anuncia", "Por su IP", "Por el cable USB"], 0, "Eso se llama advertising."]
+      ["¿Cómo encuentra el celular al ESP32?", ["Por el nombre que anuncia", "Por su IP", "Por el cable USB"], 0, "Eso se llama advertising."],
+      ["¿Por qué hay que decodificar los datos que llegan?", ["Llegan como bytes y hay que convertirlos a texto", "Porque vienen cifrados", "No hace falta"], 0, "Sin decodificar verías algo como b'hola'."]
     ]
   }
 };

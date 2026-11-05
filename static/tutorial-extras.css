@@ -338,3 +338,6 @@
 /* La ventana nunca muestra barra propia: el scroll va solo en el contenido. */
 #ts-panel, #coco-panel, #reto-panel, #cartas-panel { scrollbar-width: none; }
 #ts-panel::-webkit-scrollbar, #coco-panel::-webkit-scrollbar, #reto-panel::-webkit-scrollbar, #cartas-panel::-webkit-scrollbar { width: 0; height: 0; }
+
+/* Nivel de cada pregunta del quiz (mismas etiquetas que los retos) */
+.tx-pregunta > .tx-reto-dif { display: inline-block; margin-bottom: 3px; }

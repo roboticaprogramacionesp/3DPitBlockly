@@ -275,7 +275,9 @@
   function htmlQuiz(step) {
     return '<p class="tx-p">Responde bien para ganar tu insignia 🏅</p>' +
       step._d.quiz.map(function (q, i) {
-        return '<div class="tx-pregunta" data-q="' + i + '"><div class="tx-preg-txt">' + (i + 1) + '. ' + q[0] + '</div>' +
+        return '<div class="tx-pregunta" data-q="' + i + '">' +
+          (DIFICULTAD[i] ? '<span class="tx-reto-dif tx-dif-' + i + '">' + DIFICULTAD[i] + '</span>' : '') +
+          '<div class="tx-preg-txt">' + (i + 1) + '. ' + q[0] + '</div>' +
           q[1].map(function (o, j) {
             return '<button type="button" class="tx-opcion" data-q="' + i + '" data-o="' + j + '">' + o + '</button>';
           }).join('') +
