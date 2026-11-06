@@ -229,4 +229,200 @@ const RETOS = [
       { inLoop: RETO_SERVO_MOVE, text: "Mover el servo dentro del ciclo", hint: "El bloque del servo va DENTRO del ciclo para que siga a la perilla." },
     ],
   },
+
+  // ── Retos agregados (tercera tanda): sensores, módulos y comunicación ──
+  {
+    id: "distance", level: 1, icon: "📏", title: "Medidor de distancia",
+    desc: "Con el sensor ultrasónico HC-SR04, muestra en el monitor serial la distancia a la que está tu mano, una y otra vez.",
+    checks: [
+      { has: ["init_ultrasonic_hcsr04"], text: "Iniciar el sensor ultrasónico", hint: "Ve a Sensores → Sensores Digitales → Ultrasónico y usa 'Preparar sensor ultrasónico'." },
+      { forever: true, text: "Un ciclo que mide para siempre", hint: "Usa 'repetir mientras verdadero'." },
+      { inLoop: ["read_ultrasonic_hcsr04"], text: "Leer la distancia dentro del ciclo", hint: "Usa 'leer distancia (cm)' dentro del ciclo (puedes guardarla en una variable)." },
+      { inLoop: ["text_print"], text: "Imprimir la distancia", hint: "En Textos usa 'imprimir' con la distancia." },
+      { inLoop: ["time_sleep"], text: "Esperar entre lecturas", hint: "Agrega 'esperar 0.5 segundos' para poder leer los números." },
+    ],
+  },
+  {
+    id: "parking", level: 2, icon: "🚗", title: "Sensor de reversa",
+    desc: "Haz que el buzzer suene cuando algo esté cerca del sensor ultrasónico, como en los autos al estacionarse.",
+    checks: [
+      { has: ["init_ultrasonic_hcsr04"], text: "Iniciar el sensor ultrasónico", hint: "Ve a Sensores → Sensores Digitales → Ultrasónico." },
+      { forever: true, text: "Un ciclo que mide para siempre", hint: "Usa 'repetir mientras verdadero'." },
+      { inLoop: ["read_ultrasonic_hcsr04"], text: "Leer la distancia dentro del ciclo", hint: "Guarda 'leer distancia (cm)' en una variable dentro del ciclo." },
+      { inCond: ["logic_compare"], text: "Comparar la distancia en un 'si'", hint: "En Lógica usa 'si' con una comparación, por ejemplo distancia < 20." },
+      { inIf: RETO_BUZZER, text: "Hacer sonar el buzzer dentro del 'si'", hint: "Ve a Sensores → Sensores Digitales → Buzzer (KY-006) y pon un tono dentro del 'si'." },
+    ],
+  },
+  {
+    id: "weather", level: 1, icon: "🌤️", title: "Estación del clima",
+    desc: "Con el sensor DHT11, muestra la temperatura y la humedad en el monitor serial cada 2 segundos.",
+    checks: [
+      { has: ["dht_init"], text: "Iniciar el sensor DHT", hint: "Ve a Sensores → Sensores Digitales → DHT11 / DHT22." },
+      { forever: true, text: "Un ciclo que mide para siempre", hint: "Usa 'repetir mientras verdadero'." },
+      { inLoop: ["dht_measure"], text: "Medir dentro del ciclo", hint: "Antes de leer hay que usar 'medir DHT' dentro del ciclo." },
+      { inLoop: ["text_print"], min: 2, text: "Imprimir dos datos (temperatura y humedad)", hint: "Usa dos 'imprimir': uno con la temperatura y otro con la humedad." },
+      { inLoop: ["time_sleep"], text: "Esperar 2 segundos entre lecturas", hint: "El DHT necesita unos 2 segundos entre medidas." },
+    ],
+  },
+  {
+    id: "heat_alarm", level: 2, icon: "🔥", title: "Alarma de calor",
+    desc: "Enciende un LED cuando la temperatura pase de 30 °C y apágalo cuando baje.",
+    checks: [
+      { has: ["dht_init"], text: "Iniciar el sensor DHT", hint: "Ve a Sensores → Sensores Digitales → DHT11 / DHT22." },
+      { has: ["led_init"], text: "Iniciar un LED", hint: "Ve a LEDs y crea el LED." },
+      { forever: true, text: "Un ciclo que mide para siempre", hint: "Usa 'repetir mientras verdadero'." },
+      { inLoop: ["dht_measure"], text: "Medir dentro del ciclo", hint: "Usa 'medir DHT' dentro del ciclo." },
+      { anyOf: [{ inCond: ["dht_temperature"] }, { inCond: ["logic_compare"] }], text: "Comparar la temperatura en un 'si'", hint: "Usa 'si' con 'temperatura DHT > 30'." },
+      { inIfField: { type: "set_led", name: "STATE", value: "1" }, text: "Encender el LED si hace calor", hint: "Dentro del 'si' pon el LED en 'on'." },
+      { inIfField: { type: "set_led", name: "STATE", value: "0" }, text: "Apagar el LED si no ('si no')", hint: "Agrega 'si no' con el engranaje y ahí pon el LED en 'off'." },
+    ],
+  },
+  {
+    id: "strip_colors", level: 1, icon: "🌈", title: "Tira de colores",
+    desc: "Enciende los primeros 3 LEDs de una tira NeoPixel, cada uno de un color distinto.",
+    checks: [
+      { has: RETO_NEOPIXEL_INIT, text: "Preparar la tira NeoPixel", hint: "Ve a Pantallas → NeoPixel y usa 'Preparar tira NeoPixel'." },
+      { has: ["neopixel_pixel_x"], min: 3, text: "Dar color a 3 LEDs", hint: "Usa 'establecer color de LED' tres veces, con los LEDs 0, 1 y 2." },
+      { has: ["neopixel_write"], text: "Actualizar los LEDs", hint: "Sin 'actualizar LEDs' los colores no se ven: agrégalo al final." },
+    ],
+  },
+  {
+    id: "servo_smooth", level: 3, icon: "🦾", title: "Servo suave",
+    desc: "Mueve el servo de 0° a 180° poco a poco, de 10 en 10 grados, usando un ciclo 'contar'.",
+    checks: [
+      { has: ["init_servo"], text: "Iniciar el servo", hint: "Ve a Actuadores → Servo." },
+      { has: ["controls_for"], text: "Un ciclo 'contar con … de … a … de a …'", hint: "En Ciclos usa 'contar con i de 0 a 180 de a 10'." },
+      { inside: ["variables_get"], of: ["move_servo_var", "servo_move_pulse"], text: "El ángulo del servo es la variable del ciclo", hint: "Usa 'servo mover a' con hueco y pon ahí la variable i." },
+      { inLoop: ["time_sleep"], text: "Esperar un poco en cada paso", hint: "Pon 'esperar 0.1 segundos' dentro del ciclo." },
+    ],
+  },
+  {
+    id: "dice", level: 2, icon: "🎲", title: "Dado electrónico",
+    desc: "Cada vez que presiones el botón, muestra un número al azar del 1 al 6.",
+    checks: [
+      { has: ["interruptor_init"], text: "Iniciar el botón", hint: "Ve a Interruptores y crea el botón con su pin." },
+      { forever: true, text: "Un ciclo que revisa el botón", hint: "Usa 'repetir mientras verdadero'." },
+      { inCond: ["interruptor_read"], text: "Leer el botón en la condición de un 'si'", hint: "Pon 'leer Pin' del botón en la condición de un 'si'." },
+      { inIf: ["math_random_int"], text: "Un número al azar dentro del 'si'", hint: "En Matemáticas usa 'entero aleatorio de 1 a 6'." },
+      { inIf: ["text_print", "tm1637_number", "oled_text", "seg7_number_var"], text: "Mostrar el número", hint: "Imprímelo o muéstralo en un display, dentro del 'si'." },
+      { inLoop: ["time_sleep"], text: "Una pequeña espera", hint: "Agrega 'esperar 0.3 segundos' para que una presión no tire muchos dados." },
+    ],
+  },
+  {
+    id: "countdown", level: 2, icon: "⏳", title: "Cuenta regresiva",
+    desc: "Haz una cuenta regresiva de 10 a 0 en el display TM1637, un número por segundo.",
+    checks: [
+      { has: ["tm1637_init"], text: "Iniciar el TM1637", hint: "Ve a Pantallas → TM1637 y usa 'iniciar CLK DIO brillo'." },
+      { has: ["controls_for"], text: "Un ciclo 'contar de 10 a 0'", hint: "En Ciclos usa 'contar con i de 10 a 0 de a 1'." },
+      { inside: ["variables_get"], of: ["tm1637_number"], text: "Mostrar la variable del ciclo", hint: "En 'mostrar valor' pon la variable i." },
+      { inLoop: ["time_sleep"], text: "Esperar 1 segundo en cada número", hint: "Pon 'esperar 1 segundo' dentro del ciclo." },
+    ],
+  },
+  {
+    id: "robot_dance", level: 2, icon: "🕺", title: "Baile del robot",
+    desc: "Con el puente H, haz que el robot avance, retroceda y gire, una y otra vez.",
+    checks: [
+      { has: ["init_dc_motor"], text: "Preparar los motores (L298N)", hint: "Ve a Actuadores → Motor DC y usa 'Preparar Motor DC'." },
+      { forever: true, text: "Un ciclo que se repite para siempre", hint: "Usa 'repetir mientras verdadero'." },
+      { inLoop: ["move_dc_motor1_on_off"], min: 4, text: "Al menos 4 movimientos de motor", hint: "Usa 'Controlar Motor DC' varias veces: adelante, atrás y girar." },
+      { inLoop: ["time_sleep"], min: 2, text: "Esperas entre movimientos", hint: "Cada movimiento necesita su tiempo: pon un 'esperar' después de cada uno." },
+    ],
+  },
+  {
+    id: "relay_timer", level: 1, icon: "⏲️", title: "Temporizador con relevador",
+    desc: "Activa el relevador, espera 3 segundos y desactívalo (por ejemplo, para prender un foco un momento).",
+    checks: [
+      { has: ["actuador_init"], text: "Preparar el relevador", hint: "Ve a Actuadores → Relevador y usa el bloque con su pin." },
+      { has: ["actuador_on_off"], min: 2, text: "Activarlo y desactivarlo", hint: "Usa el bloque de valor dos veces: primero encendido y luego apagado." },
+      { has: ["time_sleep"], text: "Esperar entre los dos", hint: "Pon 'esperar 3 segundos' entre encender y apagar." },
+    ],
+  },
+  {
+    id: "line_led", level: 2, icon: "⬛", title: "Detector de línea",
+    desc: "Con el sensor infrarrojo, enciende el LED cuando esté sobre una línea negra.",
+    checks: [
+      { has: ["init_infrarrojo"], text: "Preparar el sensor infrarrojo", hint: "Ve a Sensores → Sensores Digitales → Sensores IR y usa 'Preparar sensor infrarrojo'." },
+      { has: ["led_init"], text: "Iniciar un LED", hint: "Ve a LEDs y crea el LED." },
+      { forever: true, text: "Un ciclo que lee el sensor", hint: "Usa 'repetir mientras verdadero'." },
+      { anyOf: [{ inCond: ["read_infrarrojo"] }, { allOf: [{ inLoop: ["read_infrarrojo"] }, { inCond: ["logic_compare"] }] }], text: "Revisar el sensor en un 'si'", hint: "Usa 'si leer sensor infrarrojo = 0' (0 es negro)." },
+      { inIfField: { type: "set_led", name: "STATE", value: "1" }, text: "Encender el LED sobre negro", hint: "Dentro del 'si' pon el LED en 'on'." },
+      { inIfField: { type: "set_led", name: "STATE", value: "0" }, text: "Apagarlo sobre blanco ('si no')", hint: "Agrega 'si no' y ahí pon el LED en 'off'." },
+    ],
+  },
+  {
+    id: "touch_lamp", level: 2, icon: "👆", title: "Lámpara táctil",
+    desc: "Usa un cable con papel aluminio como botón táctil: al tocarlo se enciende el LED.",
+    checks: [
+      { has: ["touch_init"], text: "Preparar el TouchPad", hint: "Ve a Machine → TouchPad y elige un pin táctil (como el 4)." },
+      { has: ["led_init"], text: "Iniciar un LED", hint: "Ve a LEDs y crea el LED." },
+      { forever: true, text: "Un ciclo que revisa el toque", hint: "Usa 'repetir mientras verdadero'." },
+      { anyOf: [{ inCond: ["touch_read"] }, { allOf: [{ inLoop: ["touch_read"] }, { inCond: ["logic_compare"] }] }], text: "Comparar la lectura táctil en un 'si'", hint: "Al tocarlo el número baja: usa 'si leer TouchPad < 200'." },
+      { inIfField: { type: "set_led", name: "STATE", value: "1" }, text: "Encender el LED al tocar", hint: "Dentro del 'si' pon el LED en 'on'." },
+      { inIfField: { type: "set_led", name: "STATE", value: "0" }, text: "Apagarlo al soltar ('si no')", hint: "Agrega 'si no' y ahí pon el LED en 'off'." },
+    ],
+  },
+  {
+    id: "wifi_ip", level: 1, icon: "📶", title: "Conéctate al WiFi",
+    desc: "Conecta el ESP32 a una red WiFi de 2.4 GHz y muestra en el monitor la dirección IP que le dieron.",
+    checks: [
+      { has: ["wifi_connect"], text: "Conectarse a la red", hint: "Ve a Comunicación Inalámbrica → WiFi y usa 'conectar SSID contraseña'." },
+      { inside: ["wifi_current_ip"], of: ["text_print", "text_join"], text: "Imprimir la IP", hint: "Usa 'imprimir' con el bloque 'WiFi IP actual'." },
+    ],
+  },
+  {
+    id: "espnow_beacon", level: 3, icon: "📡", title: "Faro ESP-NOW",
+    desc: "Haz que un ESP32 mande un mensaje por ESP-NOW a otro cada segundo, sin router.",
+    checks: [
+      { has: ["wifi_init"], text: "Activar el WiFi", hint: "ESP-NOW usa la radio del WiFi: en Comunicación Inalámbrica → WiFi usa 'Inicializar WiFi'." },
+      { has: ["init_espnow_simple"], text: "Iniciar ESP-NOW", hint: "Ve a Comunicación Inalámbrica → ESP-NOW y usa 'Iniciar ESP-NOW'." },
+      { has: ["espnow_add_peer"], text: "Agregar al receptor (su MAC)", hint: "Usa 'Agregar receptor ESP-NOW' con la MAC del otro ESP32." },
+      { forever: true, text: "Un ciclo que se repite para siempre", hint: "Usa 'repetir mientras verdadero'." },
+      { inLoop: ["espnow_send_peer"], text: "Enviar el mensaje dentro del ciclo", hint: "Pon 'Enviar mensaje ESP-NOW' dentro del ciclo." },
+      { inLoop: ["time_sleep"], text: "Esperar 1 segundo entre mensajes", hint: "Agrega 'esperar 1 segundo'." },
+    ],
+  },
+  {
+    id: "rfid_reader", level: 3, icon: "💳", title: "Lector de tarjetas",
+    desc: "Cuando acerques una tarjeta RFID, muestra su número (UID) en el monitor serial.",
+    checks: [
+      { has: ["rfid_mfrc522_init"], text: "Iniciar el lector RFID", hint: "Ve a Periféricos → Modulos SPI → RFID MFRC522 y usa 'Inicializar RFID'." },
+      { forever: true, text: "Un ciclo que busca tarjetas", hint: "Usa 'repetir mientras verdadero'." },
+      { inCond: ["rfid_mfrc522_detect"], text: "Revisar si hay tarjeta en un 'si'", hint: "Pon 'tarjeta presente' en la condición de un 'si'." },
+      { inside: ["rfid_mfrc522_uid"], of: ["text_print", "text_join"], text: "Imprimir el UID", hint: "Dentro del 'si' usa 'imprimir' con 'obtener UID'." },
+      { inLoop: ["time_sleep"], text: "Una pequeña espera", hint: "Agrega 'esperar 0.5 segundos' para que no repita la misma tarjeta muchas veces." },
+    ],
+  },
+  {
+    id: "matrix_name", level: 1, icon: "🟥", title: "Tu nombre en la matriz",
+    desc: "Escribe tu nombre (o tus iniciales) en la matriz de LEDs 8x8.",
+    checks: [
+      { has: ["matrix8_init"], text: "Iniciar la matriz 8x8", hint: "Ve a Pantallas → Matrix 8x8 y usa 'Inicializar Matrix 8x8'." },
+      { has: ["matrix8_text", "matrix8_scroll_text"], text: "Escribir un texto", hint: "Usa el bloque 'texto' (o 'scroll texto' para que se desplace)." },
+    ],
+  },
+  {
+    id: "oled_counter", level: 3, icon: "🖥️", title: "Contador en pantalla",
+    desc: "Muestra en la pantalla OLED un número que suba de 1 en 1 cada segundo.",
+    checks: [
+      { has: ["oled_init", "sh1106_init"], text: "Iniciar la pantalla OLED", hint: "Ve a Pantallas → OLED y usa 'Inicializar OLED'." },
+      { has: ["variables_set"], text: "Una variable que empiece en 0", hint: "En Variables crea 'contador' y ponla en 0 antes del ciclo." },
+      { forever: true, text: "Un ciclo que se repite para siempre", hint: "Usa 'repetir mientras verdadero'." },
+      { inLoop: ["math_change"], text: "Sumar 1 dentro del ciclo", hint: "Usa 'cambiar contador por 1'." },
+      { inLoop: ["oled_clear"], text: "Limpiar la pantalla en cada vuelta", hint: "Sin limpiar, los números se enciman: usa 'limpiar' antes de escribir." },
+      { inside: ["variables_get"], of: ["oled_text", "oled_text20", "text_join", "text"], text: "Escribir el contador en la pantalla", hint: "En el 'texto' de la OLED pon la variable (si hace falta, únela con 'crear texto con')." },
+      { inLoop: ["time_sleep"], text: "Esperar 1 segundo", hint: "Agrega 'esperar 1 segundo' dentro del ciclo." },
+    ],
+  },
+  {
+    id: "night_light", level: 2, icon: "💡", title: "Luz nocturna",
+    desc: "Con el sensor BH1750, enciende el LED cuando haya menos de 50 lux.",
+    checks: [
+      { has: ["bh1750_init"], text: "Iniciar el sensor de luz BH1750", hint: "Ve a Periféricos → Modulos I2C → Sensor Luz BH1750 y usa 'Inicializar BH1750'." },
+      { has: ["led_init"], text: "Iniciar un LED", hint: "Ve a LEDs y crea el LED." },
+      { forever: true, text: "Un ciclo que mide la luz", hint: "Usa 'repetir mientras verdadero'." },
+      { anyOf: [{ inCond: ["bh1750_read_lux"] }, { allOf: [{ inLoop: ["bh1750_read_lux"] }, { inCond: ["logic_compare"] }] }], text: "Comparar la luz en un 'si'", hint: "Usa 'si leer luz (lux) < 50'." },
+      { inIfField: { type: "set_led", name: "STATE", value: "1" }, text: "Encender el LED si está oscuro", hint: "Dentro del 'si' pon el LED en 'on'." },
+      { inIfField: { type: "set_led", name: "STATE", value: "0" }, text: "Apagarlo si hay luz ('si no')", hint: "Agrega 'si no' y ahí pon el LED en 'off'." },
+    ],
+  },
 ];

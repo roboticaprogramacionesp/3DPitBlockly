@@ -312,3 +312,19 @@
 .cartas-num.con-error { text-decoration: line-through; opacity: 0.6; }
 .cartas-num.actual { border-color: #ffd43b; font-weight: 700; }
 .cartas-num:hover { border-color: #4466e8; }
+
+/* ── Ventana del reto: tamaño de texto (barra 🔠, igual que el tutorial) ── */
+#reto-panel[data-fs="S"]  { width: 380px; }
+#reto-panel[data-fs="S"] .ts-title, #reto-panel[data-fs="S"] .ts-step-desc, #reto-panel[data-fs="S"] .reto-checks { font-size: 11px; }
+#reto-panel[data-fs="M"]  { width: 420px; }
+#reto-panel[data-fs="M"] .ts-step-desc, #reto-panel[data-fs="M"] .reto-checks { font-size: 13px; }
+#reto-panel[data-fs="L"]  { width: 520px; }
+#reto-panel[data-fs="L"] .ts-title { font-size: 14px; }
+#reto-panel[data-fs="L"] .ts-step-desc, #reto-panel[data-fs="L"] .reto-checks { font-size: 16px; line-height: 1.55; }
+#reto-panel[data-fs="L"] .reto-checks small, #reto-panel[data-fs="XL"] .reto-checks small { font-size: .9em; }
+#reto-panel[data-fs="L"] .reto-win, #reto-panel[data-fs="L"] .ts-btn { font-size: 13px; }
+#reto-panel[data-fs="XL"] { width: 620px; }
+#reto-panel[data-fs="XL"] .ts-title { font-size: 16px; }
+#reto-panel[data-fs="XL"] .ts-step-desc, #reto-panel[data-fs="XL"] .reto-checks { font-size: 19px; line-height: 1.6; }
+#reto-panel[data-fs="XL"] .reto-win, #reto-panel[data-fs="XL"] .ts-btn { font-size: 15px; }
+#reto-panel[data-fs="XL"] .ts-progress-txt { font-size: 11px; }
