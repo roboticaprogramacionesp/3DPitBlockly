@@ -125,6 +125,8 @@ const Cartas = (() => {
       // Igual que el tutorial guiado: □ para restaurar, − para minimizar.
       panel.querySelector("#cartas-min").textContent = min ? "−" : "□";
     };
+    // Tamaño de texto, igual que en el tutorial guiado (S, M, L, XL).
+    if (typeof _tsBarraTamano === "function") _tsBarraTamano(panel, panel.querySelector("#cartas-collapsible"), "cartas-font-size");
     if (typeof _tsMakeDraggable === "function") _tsMakeDraggable(panel);
   }
 

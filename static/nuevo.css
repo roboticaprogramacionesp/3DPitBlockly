@@ -328,3 +328,33 @@
 #reto-panel[data-fs="XL"] .ts-step-desc, #reto-panel[data-fs="XL"] .reto-checks { font-size: 19px; line-height: 1.6; }
 #reto-panel[data-fs="XL"] .reto-win, #reto-panel[data-fs="XL"] .ts-btn { font-size: 15px; }
 #reto-panel[data-fs="XL"] .ts-progress-txt { font-size: 11px; }
+
+/* ── Tamaño de texto (barra 🔠) de ¡Échale coco! y de las cartas ──
+   M es el tamaño de siempre; S, L y XL cambian el ancho y las letras. */
+#coco-panel[data-fs="S"]  { width: 360px; }
+#coco-panel[data-fs="L"]  { width: 500px; }
+#coco-panel[data-fs="XL"] { width: 600px; }
+#cartas-panel[data-fs="S"]  { width: 620px; }
+#cartas-panel[data-fs="L"]  { width: 900px; }
+#cartas-panel[data-fs="XL"] { width: 1040px; }
+
+:is(#coco-panel, #cartas-panel)[data-fs="S"] .coco-q { font-size: 12px; }
+:is(#coco-panel, #cartas-panel)[data-fs="S"] :is(.coco-opt, .coco-item, .coco-feedback, .coco-input, .ts-step-desc) { font-size: 11.5px; }
+:is(#coco-panel, #cartas-panel)[data-fs="S"] :is(.coco-code, .coco-review, .ts-btn) { font-size: 10.5px; }
+
+:is(#coco-panel, #cartas-panel)[data-fs="L"] .ts-title { font-size: 14px; }
+:is(#coco-panel, #cartas-panel)[data-fs="L"] .coco-q { font-size: 17px; line-height: 1.55; }
+:is(#coco-panel, #cartas-panel)[data-fs="L"] :is(.coco-opt, .coco-item, .coco-feedback, .coco-input, .ts-step-desc) { font-size: 15px; }
+:is(#coco-panel, #cartas-panel)[data-fs="L"] :is(.coco-code, .coco-review, .coco-item-best) { font-size: 14px; }
+:is(#coco-panel, #cartas-panel)[data-fs="L"] .ts-btn { font-size: 13px; }
+:is(#coco-panel, #cartas-panel)[data-fs="L"] .coco-item-icon { font-size: 21px; }
+#cartas-panel[data-fs="L"] .carta-letra { font-size: 23px; }
+
+:is(#coco-panel, #cartas-panel)[data-fs="XL"] .ts-title { font-size: 16px; }
+:is(#coco-panel, #cartas-panel)[data-fs="XL"] .coco-q { font-size: 20px; line-height: 1.6; }
+:is(#coco-panel, #cartas-panel)[data-fs="XL"] :is(.coco-opt, .coco-item, .coco-feedback, .coco-input, .ts-step-desc) { font-size: 17.5px; }
+:is(#coco-panel, #cartas-panel)[data-fs="XL"] :is(.coco-code, .coco-review, .coco-item-best) { font-size: 16px; }
+:is(#coco-panel, #cartas-panel)[data-fs="XL"] .ts-btn { font-size: 15px; }
+:is(#coco-panel, #cartas-panel)[data-fs="XL"] :is(.ts-label, .ts-progress-txt) { font-size: 11px; }
+:is(#coco-panel, #cartas-panel)[data-fs="XL"] .coco-item-icon { font-size: 24px; }
+#cartas-panel[data-fs="XL"] .carta-letra { font-size: 26px; }

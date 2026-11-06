@@ -141,14 +141,6 @@ const Retos = (() => {
       '  <button class="ts-close" id="reto-close" title="Cerrar">✕</button>' +
       "</div>" +
       '<div id="reto-collapsible">' +
-      // Tamaño de texto, igual que en el tutorial guiado (S, M, L, XL).
-      '  <div class="ts-size-bar">' +
-      '    <span class="ts-size-label">🔠</span>' +
-      '    <button class="ts-size-btn" id="reto-size-down" title="Reducir texto">−</button>' +
-      '    <span class="ts-size-display" id="reto-size-display">M</span>' +
-      '    <div class="ts-size-track" id="reto-size-track"><div class="ts-size-fill" id="reto-size-fill"></div></div>' +
-      '    <button class="ts-size-btn" id="reto-size-up" title="Aumentar texto">+</button>' +
-      '  </div>' +
       '  <div class="ts-progress-bar"><div class="ts-progress-fill" id="reto-fill"></div></div>' +
       '  <p class="ts-progress-txt" id="reto-progress"></p>' +
       '  <div class="ts-body reto-body">' +
@@ -168,40 +160,14 @@ const Retos = (() => {
       // Igual que el tutorial guiado: □ para restaurar, − para minimizar.
       panel.querySelector("#reto-min").textContent = min ? "−" : "□";
     };
-    prepararTamano();
+    // Tamaño de texto, igual que en el tutorial guiado (S, M, L, XL).
+    if (typeof _tsBarraTamano === "function") _tsBarraTamano(panel, panel.querySelector("#reto-collapsible"), "reto-font-size");
     if (typeof _tsMakeDraggable === "function") _tsMakeDraggable(panel);
     Code.workspace.addChangeListener((e) => {
       if (!current || !live || e.isUiEvent || e.type === Blockly.Events.UI) return;
       clearTimeout(timer);
       timer = setTimeout(() => comprobar(false), 300);
     });
-  }
-
-  // ── Tamaño de texto (se recuerda en este navegador) ──
-  const TAMANOS = ["S", "M", "L", "XL"];
-  const CLAVE_TAMANO = "reto-font-size";
-  function prepararTamano() {
-    let idx = 1;
-    try {
-      const guardado = parseInt(localStorage.getItem(CLAVE_TAMANO), 10);
-      if (guardado >= 0 && guardado < TAMANOS.length) idx = guardado;
-    } catch (_) {}
-    const aplicar = () => {
-      panel.setAttribute("data-fs", TAMANOS[idx]);
-      panel.querySelector("#reto-size-display").textContent = TAMANOS[idx];
-      panel.querySelector("#reto-size-fill").style.width = (idx / (TAMANOS.length - 1)) * 100 + "%";
-      try {
-        localStorage.setItem(CLAVE_TAMANO, idx);
-      } catch (_) {}
-    };
-    panel.querySelector("#reto-size-up").onclick = () => { if (idx < TAMANOS.length - 1) { idx++; aplicar(); } };
-    panel.querySelector("#reto-size-down").onclick = () => { if (idx > 0) { idx--; aplicar(); } };
-    panel.querySelector("#reto-size-track").onclick = (e) => {
-      const r = e.currentTarget.getBoundingClientRect();
-      idx = Math.max(0, Math.min(TAMANOS.length - 1, Math.round(((e.clientX - r.left) / r.width) * (TAMANOS.length - 1))));
-      aplicar();
-    };
-    aplicar();
   }
 
   function boton(texto, clase, onclick) {

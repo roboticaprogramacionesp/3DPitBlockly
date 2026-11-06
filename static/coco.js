@@ -81,6 +81,8 @@ const EchaleCoco = (() => {
       // Igual que el tutorial guiado: □ para restaurar, − para minimizar.
       panel.querySelector("#coco-min").textContent = min ? "−" : "□";
     };
+    // Tamaño de texto, igual que en el tutorial guiado (S, M, L, XL).
+    if (typeof _tsBarraTamano === "function") _tsBarraTamano(panel, panel.querySelector("#coco-collapsible"), "coco-font-size");
     if (typeof _tsMakeDraggable === "function") _tsMakeDraggable(panel);
   }
 

@@ -6383,6 +6383,44 @@ var TutorialSteps = {
   },
 };
 
+/* ─── Barra 🔠 de tamaño de texto para las otras ventanas flotantes ─── */
+// La usan el reto, ¡Échale coco! y las cartas: pone data-fs="S|M|L|XL" en el
+// panel (el CSS de cada ventana decide anchos y letras) y lo recuerda en
+// localStorage[clave]. La barra se pone al principio de `contenedor`.
+function _tsBarraTamano(panel, contenedor, clave) {
+  var TAM = ['S', 'M', 'L', 'XL'];
+  var idx = 1;
+  try {
+    var g = parseInt(localStorage.getItem(clave), 10);
+    if (g >= 0 && g < TAM.length) idx = g;
+  } catch (e) {}
+  var bar = document.createElement('div');
+  bar.className = 'ts-size-bar';
+  bar.innerHTML =
+    '<span class="ts-size-label">🔠</span>' +
+    '<button class="ts-size-btn" data-tam="-" title="Reducir texto">−</button>' +
+    '<span class="ts-size-display"></span>' +
+    '<div class="ts-size-track"><div class="ts-size-fill"></div></div>' +
+    '<button class="ts-size-btn" data-tam="+" title="Aumentar texto">+</button>';
+  contenedor.insertBefore(bar, contenedor.firstChild);
+  function aplicar(porUsuario) {
+    panel.setAttribute('data-fs', TAM[idx]);
+    bar.querySelector('.ts-size-display').textContent = TAM[idx];
+    bar.querySelector('.ts-size-fill').style.width = (idx / (TAM.length - 1)) * 100 + '%';
+    // Si la ventana se estiró a mano desde la esquina, el tamaño elegido manda.
+    if (porUsuario) { panel.style.width = ''; panel.style.height = ''; }
+    try { localStorage.setItem(clave, idx); } catch (e) {}
+  }
+  bar.querySelector('[data-tam="+"]').onclick = function () { if (idx < TAM.length - 1) { idx++; aplicar(true); } };
+  bar.querySelector('[data-tam="-"]').onclick = function () { if (idx > 0) { idx--; aplicar(true); } };
+  bar.querySelector('.ts-size-track').onclick = function (e) {
+    var r = this.getBoundingClientRect();
+    idx = Math.max(0, Math.min(TAM.length - 1, Math.round(((e.clientX - r.left) / r.width) * (TAM.length - 1))));
+    aplicar(true);
+  };
+  aplicar(false);
+}
+
 /* ─── DRAG (mouse + touch) ───────────────────────────────────── */
 function _tsMakeDraggable(panel) {
   var header = panel.querySelector('.ts-header');
