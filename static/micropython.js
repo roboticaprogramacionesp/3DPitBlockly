@@ -1125,6 +1125,29 @@ Blockly.Python["toggle_led"] = function (block) {
   return code;
 }
 
+/* ======================== LED CON BRILLO (PWM) ======================== */
+Blockly.Python["led_pwm_init"] = function (block) {
+  const name = block.getFieldValue("NAME");
+  const pin = block.getFieldValue("PIN");
+  const freq = block.getFieldValue("FREQ");
+  const duty = block.getFieldValue("DUTY");
+  Blockly.Python.definitions_["import_pwm"] = "from machine import Pin, PWM";
+  return `${name} = PWM(Pin(${pin}), freq=${freq}, duty=${duty})\n`;
+};
+
+Blockly.Python["led_pwm_duty"] = function (block) {
+  return `${block.getFieldValue("NAME")}.duty(${block.getFieldValue("DUTY")})\n`;
+};
+
+Blockly.Python["led_pwm_duty_var"] = function (block) {
+  const v = _pyVar(block, "DUTY");
+  return `${block.getFieldValue("NAME")}.duty(min(1023, max(0, int(${v}))))\n`;
+};
+
+Blockly.Python["led_pwm_freq"] = function (block) {
+  return `${block.getFieldValue("NAME")}.freq(${block.getFieldValue("FREQ")})\n`;
+};
+
 /* ======================== LED BICOLOR RG ======================== */
 Blockly.Python["rg_init"] = function (block) {
   const name = block.getFieldValue("NAME");

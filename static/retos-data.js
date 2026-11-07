@@ -592,9 +592,9 @@ const RETOS = [
     id: "breathing_led", level: 2, icon: "🫁", title: "LED que respira",
     desc: "Haz que un LED se encienda y se apague suavemente, como si respirara, usando PWM.",
     checks: [
-      { has: ["pwm_init"], text: "Preparar el PWM", hint: "Ve a Machine → PWM y usa 'PWM(Pin(2), freq=1000, duty=0)'." },
+      { has: ["led_pwm_init", "pwm_init"], text: "Preparar el LED con brillo (PWM)", hint: "Ve a LEDs → LED → LED con brillo (PWM) y usa el bloque de inicio (pin 2, freq 1000, duty 0)." },
       { has: ["controls_for"], min: 2, text: "Dos ciclos 'contar': uno sube y otro baja", hint: "Usa 'contar con i desde 0 hasta 1023 de a 10' y otro 'desde 1023 hasta 0'." },
-      { inside: ["variables_get"], of: ["pwm_duty_var"], text: "El brillo es la variable del ciclo", hint: "Usa 'pwm .duty( )' (el que tiene hueco) y pon la variable i." },
+      { inside: ["variables_get"], of: ["led_pwm_duty_var", "pwm_duty_var"], text: "El brillo es la variable del ciclo", hint: "Usa 'brillo (duty)' (el que tiene hueco) y pon la variable i." },
       { inLoop: ["time_sleep"], min: 2, text: "Una espera corta en cada paso", hint: "Pon 'esperar 10 milisegundos' dentro de cada ciclo." },
     ],
   },
@@ -792,10 +792,10 @@ const RETOS = [
     desc: "Con un potenciómetro controla el brillo de un LED: mientras más giras, más brilla.",
     checks: [
       { has: ["analog_sensor_init", "adc_pin"], text: "Preparar la lectura del potenciómetro", hint: "En Sensores → Sensores Analogicos usa el bloque de la perilla (pin 34)." },
-      { has: ["pwm_init"], text: "Preparar el PWM del LED", hint: "En Machine → PWM usa 'PWM(Pin(2), freq=1000, duty=0)'." },
+      { has: ["led_pwm_init", "pwm_init"], text: "Preparar el LED con brillo (PWM)", hint: "Ve a LEDs → LED → LED con brillo (PWM) y usa el bloque de inicio (pin 2, freq 1000, duty 0)." },
       { forever: true, text: "Un ciclo que lee la perilla", hint: "Usa 'repetir mientras verdadero'." },
-      { inside: ["analog_sensor_read", "adc_read", "adc_read_u16"], of: ["pwm_duty_var"], text: "La lectura manda el brillo", hint: "Usa 'pwm .duty( )' con hueco y pon ahí 'perilla Leer'. Con width 10BIT la perilla da 0 a 1023, igual que el duty." },
-      { inLoop: ["pwm_duty_var"], text: "Cambiar el brillo dentro del ciclo", hint: "El bloque del duty va DENTRO del ciclo." },
+      { inside: ["analog_sensor_read", "adc_read", "adc_read_u16"], of: ["led_pwm_duty_var", "pwm_duty_var"], text: "La lectura manda el brillo", hint: "Usa 'brillo (duty)' con hueco y pon ahí 'perilla Leer'. Con width 10BIT la perilla da 0 a 1023, igual que el duty." },
+      { inLoop: ["led_pwm_duty_var", "pwm_duty_var"], text: "Cambiar el brillo dentro del ciclo", hint: "El bloque 'brillo (duty)' va DENTRO del ciclo." },
     ],
   },
   {

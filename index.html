@@ -2902,6 +2902,26 @@
             </value>
           </block>
           <block type="toggle_led"></block>
+          <sep gap="24"></sep>
+          <label text="LED con brillo (PWM)"></label>
+          <block type="led_pwm_init">
+            <field name="PIN">2</field>
+            <field name="FREQ">1000</field>
+            <field name="DUTY">0</field>
+          </block>
+          <block type="led_pwm_duty">
+            <field name="DUTY">512</field>
+          </block>
+          <block type="led_pwm_duty_var">
+            <value name="DUTY">
+              <shadow type="math_number">
+                <field name="NUM">512</field>
+              </shadow>
+            </value>
+          </block>
+          <block type="led_pwm_freq">
+            <field name="FREQ">1000</field>
+          </block>
         </category>
         <category name="LED RG">
           <block type="rg_init">
