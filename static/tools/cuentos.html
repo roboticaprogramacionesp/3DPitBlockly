@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mini cuentos</title>
+  <link rel="stylesheet" href="tools.css">
+  <style>
+    /* Tamaño de letra del cuento: lo elige el lector (A− / A+). */
+    body { --fs: 17px; }
+    .barra { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 4px 0 14px; }
+    .barra .espacio { flex: 1; }
+    .filtros button { border-radius: 999px; }
+    .lista { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+    .cuento {
+      display: flex; flex-direction: column; gap: 6px; text-align: left;
+      background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px;
+      color: var(--text); font: inherit; cursor: pointer;
+    }
+    .cuento:hover { border-color: var(--accent-2); background: var(--panel-2); }
+    .cuento .icono { font-size: 30px; }
+    .cuento h3 { margin: 0; font-size: 16px; }
+    .cuento p { margin: 0; font-size: 13px; color: var(--muted); }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chip { font-size: 11px; padding: 2px 8px; border-radius: 999px; background: var(--panel-2); color: var(--muted); border: 1px solid var(--line); }
+    .chip.real { color: #ffd479; border-color: #7a6326; }
+    .chip.ficcion { color: #9fe3ff; border-color: #2f6b80; }
+    .chip.leido { color: var(--ok); border-color: #1f7a47; }
+
+    .lector { max-width: 760px; }
+    .lector h2 { margin: 0 0 4px; font-size: calc(var(--fs) + 5px); }
+    .avance { height: 6px; background: var(--panel-2); border-radius: 3px; overflow: hidden; margin: 10px 0 16px; }
+    .avance div { height: 100%; background: var(--accent); transition: width .3s; }
+    .escena { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; }
+    .escena.error { border-color: #a2573b; background: #2b2140; }
+    .escena p { font-size: var(--fs); line-height: 1.6; margin: 0 0 12px; }
+    .escena .aviso { font-weight: 700; color: #ffb38a; margin-bottom: 8px; font-size: var(--fs); }
+    .dato { margin: 6px 0 12px; padding: 10px 14px; border-left: 4px solid #f1c40f; background: #2a2a3f; border-radius: 6px; font-size: calc(var(--fs) - 1px); line-height: 1.5; }
+    .dato b.t { display: block; color: #f1c40f; margin-bottom: 2px; }
+    .pregunta { font-weight: 700; font-size: var(--fs); margin: 14px 0 8px; }
+    .opciones { display: flex; flex-direction: column; gap: 8px; }
+    .opciones button { text-align: left; font-size: calc(var(--fs) - 1px); padding: 10px 14px; line-height: 1.4; }
+    .acciones { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .acciones button { font-size: calc(var(--fs) - 2px); }
+
+    .quiz .q { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; }
+    .quiz .q p { margin: 0 0 8px; font-weight: 700; font-size: var(--fs); }
+    .quiz .q button { display: block; width: 100%; text-align: left; margin-top: 6px; font-size: calc(var(--fs) - 1px); }
+    .quiz .q button.bien { background: #1f6f45; border-color: var(--ok); }
+    .quiz .q button.mal { background: #7a2e2e; border-color: #e74c3c; }
+    .quiz .q .exp { margin-top: 8px; font-size: calc(var(--fs) - 2px); color: var(--muted); }
+    .palabras dt { font-weight: 700; font-size: var(--fs); margin-top: 8px; }
+    .palabras dd { margin: 2px 0 0 0; color: var(--muted); font-size: calc(var(--fs) - 1px); }
+    .puntaje { font-size: 34px; font-weight: 800; margin: 4px 0; }
+  </style>
+</head>
+<body>
+  <a class="back" href="index.html">← Herramientas</a>
+  <h1>📚 Mini cuentos</h1>
+  <p class="subtitle">Historias cortas de electrónica y programación, unas reales y otras inventadas. En algunas partes tú decides qué pasa.</p>
+  <div id="app"></div>
+
+  <script src="tools.js"></script>
+  <script src="cuentos-data.js"></script>
+  <script>
+    const app = document.getElementById("app");
+    const GUARDADO = "3dpit-cuentos";
+    const LETRA = "3dpit-cuentos-letra";
+    const TAMANOS = [14, 16, 17, 19, 22];
+
+    let leidos = {};
+    try { leidos = JSON.parse(localStorage.getItem(GUARDADO) || "{}") || {}; } catch (_) {}
+    function guardar() { try { localStorage.setItem(GUARDADO, JSON.stringify(leidos)); } catch (_) {} }
+
+    let letra = 2;
+    try { const g = parseInt(localStorage.getItem(LETRA), 10); if (g >= 0 && g < TAMANOS.length) letra = g; } catch (_) {}
+    function aplicarLetra() {
+      document.body.style.setProperty("--fs", TAMANOS[letra] + "px");
+      try { localStorage.setItem(LETRA, letra); } catch (_) {}
+    }
+    aplicarLetra();
+
+    function el(tag, attrs, ...hijos) {
+      const n = document.createElement(tag);
+      Object.entries(attrs || {}).forEach(([k, v]) => {
+        if (k === "class") n.className = v;
+        else if (k === "html") n.innerHTML = v;
+        else if (k.startsWith("on")) n[k] = v;
+        else if (k === "text") n.textContent = v;
+        else n.setAttribute(k, v);
+      });
+      hijos.flat().forEach((c) => c != null && n.append(c));
+      return n;
+    }
+
+    // ── Leer en voz alta (si el navegador lo permite) ──
+    const voz = "speechSynthesis" in window;
+    function callar() { if (voz) speechSynthesis.cancel(); }
+    function leerEnVoz(textos) {
+      if (!voz) return;
+      callar();
+      const tmp = document.createElement("div");
+      tmp.innerHTML = textos.join(" ").replace(/<br>/g, ". ");
+      const u = new SpeechSynthesisUtterance(tmp.textContent);
+      u.lang = "es-MX";
+      const v = speechSynthesis.getVoices().find((x) => x.lang === "es-MX") || speechSynthesis.getVoices().find((x) => x.lang.startsWith("es"));
+      if (v) u.voice = v;
+      u.rate = 0.95;
+      speechSynthesis.speak(u);
+    }
+
+    // Las opciones salen en otro orden cada vez, para que no se adivine por el lugar.
+    function revolver(lista) {
+      const a = lista.slice();
+      for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+      return a;
+    }
+
+    function barraLetra() {
+      return [
+        el("button", { title: "Letra más chica", onclick: () => { if (letra > 0) { letra--; aplicarLetra(); } } }, "A−"),
+        el("button", { title: "Letra más grande", onclick: () => { if (letra < TAMANOS.length - 1) { letra++; aplicarLetra(); } } }, "A+"),
+      ];
+    }
+
+    // ── Lista de cuentos ──
+    let filtro = "todos";
+    function lista() {
+      callar();
+      app.innerHTML = "";
+      const nombres = { todos: "Todos", real: "Historias reales", ficcion: "Ficción" };
+      app.append(el("div", { class: "barra" },
+        el("div", { class: "row filtros" }, Object.entries(nombres).map(([k, t]) =>
+          el("button", { class: filtro === k ? "active" : "", onclick: () => { filtro = k; lista(); } }, t))),
+        el("span", { class: "espacio" }),
+        el("span", { class: "hint", text: `Leídos: ${CUENTOS.filter((c) => leidos[c.id]).length} de ${CUENTOS.length}` })));
+      app.append(el("div", { class: "lista" }, CUENTOS.filter((c) => filtro === "todos" || c.tipo === filtro).map((c) => {
+        const l = leidos[c.id];
+        return el("button", { class: "cuento", onclick: () => leer(c) },
+          el("div", { class: "icono", text: c.icono }),
+          el("h3", { text: c.titulo }),
+          el("p", { text: c.resumen }),
+          el("div", { class: "chips" },
+            el("span", { class: "chip " + c.tipo, text: c.tipo === "real" ? "⭐ Pasó de verdad" : "✨ Ficción" }),
+            el("span", { class: "chip", text: c.tema }),
+            el("span", { class: "chip", text: `⏱ ${c.minutos} min` }),
+            l ? el("span", { class: "chip leido", text: `✓ ${l.aciertos}/${l.total}` }) : null));
+      })));
+    }
+
+    // ── Leer un cuento ──
+    function leer(c) {
+      const total = Object.values(c.escenas).filter((e) => !e.error).length;
+      const vistas = new Set();
+      let errores = 0;
+
+      function mostrar(id) {
+        callar();
+        const e = c.escenas[id];
+        if (!e.error) vistas.add(id);
+        app.innerHTML = "";
+        app.append(el("div", { class: "lector" },
+          el("div", { class: "barra" },
+            el("button", { onclick: lista }, "← Cuentos"),
+            el("span", { class: "espacio" }),
+            voz ? el("button", { title: "Escuchar esta parte", onclick: () => leerEnVoz((e.pregunta ? e.texto.concat(e.pregunta) : e.texto)) }, "🔊 Escuchar") : null,
+            barraLetra()),
+          el("h2", { text: c.icono + " " + c.titulo }),
+          el("div", { class: "chips" },
+            el("span", { class: "chip " + c.tipo, text: c.tipo === "real" ? "⭐ Pasó de verdad" : "✨ Ficción" }),
+            el("span", { class: "chip", text: c.tema })),
+          el("div", { class: "avance" }, el("div", { style: `width:${Math.round((vistas.size / total) * 100)}%` })),
+          escena(e)));
+        app.querySelector(".lector").scrollIntoView({ block: "start" });
+      }
+
+      function escena(e) {
+        const caja = el("div", { class: "escena" + (e.error ? " error" : "") });
+        if (e.error) caja.append(el("div", { class: "aviso", text: "🤔 Mmm... eso no funcionó" }));
+        e.texto.forEach((t) => caja.append(el("p", { html: t })));
+        if (e.dato) caja.append(el("div", { class: "dato", html: `<b class="t">💡 ¿Sabías que...?</b>${e.dato}` }));
+        if (e.opciones) {
+          caja.append(el("div", { class: "pregunta", text: "👉 " + e.pregunta }));
+          caja.append(el("div", { class: "opciones" }, revolver(e.opciones).map((o) =>
+            el("button", { onclick: () => { if (c.escenas[o.ir].error) errores++; mostrar(o.ir); } }, o.t))));
+        } else if (e.fin) {
+          caja.append(el("div", { class: "acciones" },
+            el("button", { class: "primary", onclick: preguntas }, "Terminar y contestar preguntas →")));
+        } else {
+          caja.append(el("div", { class: "acciones" },
+            el("button", { class: "primary", onclick: () => mostrar(e.sig) }, e.error ? "↩ Intentar otra vez" : "Continuar →")));
+        }
+        return caja;
+      }
+
+      // ── Preguntas de comprensión y palabras nuevas ──
+      function preguntas() {
+        callar();
+        let contestadas = 0, aciertos = 0;
+        app.innerHTML = "";
+        const final = el("div", { class: "panel", hidden: "" });
+        const quiz = el("div", { class: "quiz" }, c.preguntas.map((q, i) => {
+          const caja = el("div", { class: "q" }, el("p", { text: `${i + 1}. ${q.p}` }));
+          const botones = q.o.map((t, k) => el("button", {
+            onclick: () => {
+              botones.forEach((b) => (b.disabled = true));
+              botones[q.c].classList.add("bien");
+              if (k === q.c) aciertos++; else botones[k].classList.add("mal");
+              caja.append(el("div", { class: "exp", text: (k === q.c ? "✅ ¡Correcto! " : "❌ ") + q.e }));
+              if (++contestadas === c.preguntas.length) terminar();
+            },
+          }, t));
+          caja.append(...revolver(botones));
+          return caja;
+        }));
+
+        function terminar() {
+          const antes = leidos[c.id];
+          if (!antes || aciertos >= antes.aciertos) leidos[c.id] = { aciertos, total: c.preguntas.length };
+          guardar();
+          final.hidden = false;
+          final.append(
+            el("div", { class: "puntaje", text: `${aciertos} de ${c.preguntas.length}` }),
+            el("p", { class: "hint", text: aciertos === c.preguntas.length ? "¡Entendiste todo el cuento! 🎉" : "Puedes leerlo otra vez y volver a intentarlo." }),
+            el("p", { class: "hint", text: errores
+              ? `En el cuento tomaste ${errores === 1 ? "un camino que no funcionó" : errores + " caminos que no funcionaron"} y lo volviste a intentar. ¡Así se aprende!`
+              : "Elegiste bien a la primera en todas las decisiones. 👏" }),
+            el("div", { class: "acciones" },
+              el("button", { onclick: () => leer(c) }, "📖 Leer otra vez"),
+              el("button", { class: "primary", onclick: lista }, "Otros cuentos")));
+          final.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+
+        app.append(el("div", { class: "lector" },
+          el("div", { class: "barra" }, el("button", { onclick: lista }, "← Cuentos"), el("span", { class: "espacio" }), barraLetra()),
+          el("h2", { text: "✏️ ¿Qué entendiste?" }),
+          el("p", { class: "hint", text: c.titulo }),
+          el("br"),
+          quiz,
+          el("div", { class: "panel" },
+            el("div", { class: "section-title", text: "📖 Palabras nuevas" }),
+            el("dl", { class: "palabras" }, c.palabras.flatMap(([p, s]) => [el("dt", { text: p }), el("dd", { text: s })])),
+            c.relacion ? el("p", { class: "hint", text: "🔗 Para practicarlo en 3DPit: " + c.relacion }) : null),
+          el("br"),
+          final));
+        app.querySelector(".lector").scrollIntoView({ block: "start" });
+      }
+
+      mostrar(c.inicio);
+    }
+
+    if (voz) speechSynthesis.getVoices();
+    window.addEventListener("pagehide", callar);
+    lista();
+  </script>
+</body>
+</html>
