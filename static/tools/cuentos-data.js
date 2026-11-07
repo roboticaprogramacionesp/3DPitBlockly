@@ -19,7 +19,7 @@ const CUENTOS = [
     escenas: {
       a: {
         texto: [
-          "Universidad de Harvard, Estados Unidos, <b>1947</b>. En un cuarto enorme trabaja la <b>Mark II</b>, una de las primeras computadoras. No tiene pantalla ni ratón: es un muro de gabinetes con miles de <b>relevadores</b> que hacen <i>clic-clac, clic-clac</i> cada vez que la máquina hace una cuenta.",
+          "Universidad de Harvard, Estados Unidos, <b>1947</b>. En un cuarto enorme trabaja la <b>Mark II</b>, una de las primeras computadoras. No tiene pantalla ni mouse: es un muro de gabinetes con miles de <b>relevadores</b> que hacen <i>clic-clac, clic-clac</i> cada vez que la máquina hace una cuenta.",
           "En el equipo está <b>Grace Hopper</b>, una matemática que además es oficial de la Marina. A ella le encanta encontrar por qué las cosas no funcionan.",
         ],
         dato: "Un relevador es un interruptor que se mueve con un electroimán. Es el mismo componente del tutorial del relevador, solo que la Mark II tenía miles.",
@@ -80,7 +80,7 @@ const CUENTOS = [
     ],
     palabras: [
       ["Relevador", "Interruptor que se abre o se cierra con un electroimán."],
-      ["Bitácora", "Cuaderno donde se anota lo que pasa día a día."],
+      ["Bitácora", "Cuaderno donde se anota, con fecha y hora, todo lo que pasa en un trabajo o en un viaje."],
       ["Depurar", "Buscar y corregir los errores de un programa."],
     ],
   },
@@ -156,7 +156,7 @@ const CUENTOS = [
     palabras: [
       ["Algoritmo", "Lista de pasos ordenados para resolver un problema."],
       ["Ciclo", "Instrucciones que se repiten varias veces."],
-      ["Tarjeta perforada", "Tarjeta con agujeros que guarda instrucciones o datos."],
+      ["Tarjeta perforada", "Tarjeta de cartón con agujeros; según dónde estén los agujeros, la máquina sabe qué hacer."],
     ],
   },
 
@@ -177,7 +177,7 @@ const CUENTOS = [
       b: {
         texto: [
           "Un día encuentra un libro llamado <i>Using Energy</i> («Usar la energía»). En la portada hay <b>molinos de viento</b>. William lee que el viento puede hacer girar unas aspas y que ese giro puede convertirse en <b>electricidad</b>.",
-          "En su casa no hay luz eléctrica: de noche usan lámparas de queroseno que echan humo. «¿Y si yo construyo un molino?», piensa.",
+          "En su casa no hay luz eléctrica: de noche usan lámparas de petróleo que echan humo. «¿Y si yo construyo un molino?», piensa.",
         ],
         sig: "c",
       },
@@ -187,7 +187,7 @@ const CUENTOS = [
         ],
         pregunta: "¿Qué pieza le sirve para eso?",
         opciones: [
-          { t: "El dinamo de una bicicleta, el que prende su faro al pedalear", ir: "d" },
+          { t: "El dínamo de una bicicleta, el que prende su faro al pedalear", ir: "d" },
           { t: "Una pila", ir: "c1" },
           { t: "Un foco más grande", ir: "c2" },
         ],
@@ -208,7 +208,7 @@ const CUENTOS = [
       },
       d: {
         texto: [
-          "¡Exacto! Un <b>dinamo</b> es un pequeño <b>generador</b>: cuando su eje gira, produce electricidad. William busca en un tiradero de chatarra y junta piezas: el cuadro de una bicicleta vieja, el ventilador de un tractor y tubos de plástico que calienta y aplana para hacer las aspas.",
+          "¡Exacto! Un <b>dínamo</b> es un pequeño <b>generador</b>: cuando su eje gira, produce electricidad. William busca en un tiradero de chatarra y junta piezas: el cuadro de una bicicleta vieja, el ventilador de un tractor y tubos de plástico que calienta y aplana para hacer las aspas.",
           "Con troncos de eucalipto arma una torre de varios metros.",
         ],
         dato: "Un motor DC, como los del carrito del tutorial, también funciona al revés: si giras su eje con la mano, genera un poco de voltaje. Motores y generadores son casi la misma máquina.",
@@ -230,13 +230,13 @@ const CUENTOS = [
       },
     },
     preguntas: [
-      { p: "¿Qué pieza convierte el giro de las aspas en electricidad?", o: ["La pila", "El dinamo o generador", "El foco"], c: 1, e: "El dinamo es un generador: al girar produce electricidad." },
+      { p: "¿Qué pieza convierte el giro de las aspas en electricidad?", o: ["La pila", "El dínamo o generador", "El foco"], c: 1, e: "El dínamo es un generador: al girar produce electricidad." },
       { p: "¿Dónde aprendió William cómo funcionan los molinos?", o: ["En un libro de la biblioteca", "En la televisión", "En la escuela"], c: 0, e: "Ya no iba a la escuela: aprendió leyendo un libro en la biblioteca de su pueblo." },
       { p: "¿Qué otro uso le dio a la energía del viento?", o: ["Hacer helados", "Volar un avión", "Bombear agua para los cultivos"], c: 2, e: "Construyó otro molino para bombear agua y regar." },
     ],
     palabras: [
-      ["Generador", "Máquina que convierte movimiento en electricidad."],
-      ["Sequía", "Tiempo largo sin lluvia."],
+      ["Generador", "Máquina que convierte el movimiento, como un giro, en electricidad."],
+      ["Sequía", "Mucho tiempo sin lluvia, que deja secos los campos y sin agua a la gente."],
       ["Aspas", "Las «paletas» que el viento hace girar en un molino."],
     ],
   },
@@ -244,20 +244,20 @@ const CUENTOS = [
   {
     id: "semaforo", icono: "🚦", tipo: "ficcion", tema: "Secuencias y tiempos", minutos: 4,
     titulo: "Pit y el semáforo despistado",
-    resumen: "Los coches de juguete chocan en la maqueta de la escuela. El robot Pit tiene que descubrir qué le pasa al semáforo.",
+    resumen: "Los carritos de juguete chocan en la maqueta de la escuela. El robot Pit tiene que descubrir qué le pasa al semáforo.",
     relacion: "Tutorial del semáforo",
     inicio: "a",
     escenas: {
       a: {
         texto: [
           "En el laboratorio de la escuela hay una ciudad de cartón con calles, casas y un <b>semáforo</b> hecho con un módulo de tres luces y una placa ESP32. Los alumnos de 2.º B lo programaron ayer.",
-          "Pero hoy algo anda mal: los coches de juguete que controla la maqueta <b>chocan</b> en la esquina. <b>Pit</b>, el robot ayudante del laboratorio, enciende sus ojos azules. «Investigaré», dice con su voz de lata.",
+          "Pero hoy algo anda mal: los carritos de juguete que controla la maqueta <b>chocan</b> en la esquina. <b>Pit</b>, el robot ayudante del laboratorio, enciende sus ojos azules. «Investigaré», dice con su voz de lata.",
         ],
         sig: "b",
       },
       b: {
         texto: [
-          "Pit observa el semáforo: se pone <b>verde</b>... y de pronto, <b>rojo</b>. Los coches que venían no alcanzan a frenar.",
+          "Pit observa el semáforo: se pone <b>verde</b>... y de pronto, <b>rojo</b>. Los carritos que venían no alcanzan a frenar.",
         ],
         pregunta: "¿Qué debería revisar Pit primero?",
         opciones: [
@@ -287,7 +287,7 @@ const CUENTOS = [
       c1: {
         error: true,
         texto: [
-          "Pit lo prueba así: verde, rojo, amarillo... ¡y los coches siguen chocando! El amarillo sirve para <b>avisar</b> que va a cambiar a rojo, así que tiene que ir <b>antes</b> del rojo.",
+          "Pit lo prueba así: verde, rojo, amarillo... ¡y los carritos siguen chocando! El amarillo sirve para <b>avisar</b> que va a cambiar a rojo, así que tiene que ir <b>antes</b> del rojo.",
         ],
         sig: "c",
       },
@@ -302,7 +302,7 @@ const CUENTOS = [
       e: {
         fin: true,
         texto: [
-          "Ahora el semáforo hace verde, amarillo, rojo... y los coches de juguete frenan a tiempo. Los alumnos de 2.º B aplauden.",
+          "Ahora el semáforo hace verde, amarillo, rojo... y los carritos de juguete frenan a tiempo. Los alumnos de 2.º B aplauden.",
           "Pit guarda una nota en su memoria: <b>«Las computadoras hacen exactamente lo que les dices, en el orden en que se lo dices. No lo que quisiste decir»</b>.",
         ],
       },
@@ -314,7 +314,7 @@ const CUENTOS = [
     ],
     palabras: [
       ["Secuencia", "Pasos que se hacen uno después de otro, en orden."],
-      ["Programa", "Instrucciones que le dicen a la placa qué hacer."],
+      ["Programa", "Lista de instrucciones que le dice a una computadora o a la placa qué hacer y en qué orden."],
     ],
   },
 
@@ -397,7 +397,7 @@ const CUENTOS = [
       { p: "¿Qué es el umbral en esta historia?", o: ["El nombre de la planta", "El cable del buzzer", "El número que separa «tiene sed» de «está bien»"], c: 2, e: "El umbral (2500) decide cuándo avisar." },
     ],
     palabras: [
-      ["Analógico", "Que puede tener muchos valores, no solo encendido o apagado."],
+      ["Analógico", "Que puede tener muchos valores intermedios, no solo encendido o apagado; por ejemplo, de 0 a 4095."],
       ["Umbral", "Valor límite que hace que algo cambie o se active."],
       ["Humedad", "Cantidad de agua que hay en algo, como la tierra o el aire."],
     ],
@@ -412,7 +412,7 @@ const CUENTOS = [
     escenas: {
       a: {
         texto: [
-          "En <b>agosto de 2012</b> el robot <b>Curiosity</b>, de la NASA, aterriza en Marte, en un lugar llamado el cráter Gale. Es del tamaño de un coche, tiene seis ruedas, cámaras, un brazo robótico y hasta un láser para estudiar las rocas.",
+          "En <b>agosto de 2012</b> el robot <b>Curiosity</b>, de la NASA, aterriza en Marte, en un lugar llamado el cráter Gale. Es del tamaño de un carro, tiene seis ruedas, cámaras, un brazo robótico y hasta un láser para estudiar las rocas.",
         ],
         sig: "b",
       },
@@ -463,9 +463,9 @@ const CUENTOS = [
       { p: "¿Qué tutorial se parece a cómo Curiosity evita chocar?", o: ["El del LED", "El del reloj RTC", "El del carrito esquiva obstáculos"], c: 2, e: "En los dos, un sensor detecta el obstáculo y el programa decide qué hacer." },
     ],
     palabras: [
-      ["Frecuencia", "Cuántas veces por segundo vibra o se repite algo. Se mide en hercios (Hz)."],
+      ["Frecuencia", "Cuántas veces por segundo vibra o se repite algo. Se mide en hertz (Hz)."],
       ["Autónomo", "Que puede decidir y moverse por sí mismo."],
-      ["Órbita", "Camino que recorre un planeta alrededor del Sol."],
+      ["Órbita", "Camino curvo que sigue un planeta o un satélite alrededor de otro, como la Tierra alrededor del Sol."],
     ],
   },
 
@@ -485,7 +485,7 @@ const CUENTOS = [
       },
       b: {
         texto: [
-          "Una señal de radio viaja en una <b>frecuencia</b>, como una estación en el radio del coche. Si el enemigo descubre cuál es, puede llenarla de ruido y la señal se pierde.",
+          "Una señal de radio viaja en una <b>frecuencia</b>, como una estación en el radio del carro. Si el enemigo descubre cuál es, puede llenarla de ruido y la señal se pierde.",
         ],
         pregunta: "¿Cómo harías para que el enemigo no pudiera bloquear la señal?",
         opciones: [
@@ -538,9 +538,9 @@ const CUENTOS = [
       { p: "¿Qué tecnología de hoy usa una idea parecida?", o: ["La linterna", "El reloj de pared", "El Bluetooth"], c: 2, e: "El Bluetooth salta de frecuencia para evitar interferencias." },
     ],
     palabras: [
-      ["Frecuencia", "En la radio, el «canal» por el que viaja una señal."],
+      ["Frecuencia", "Cuántas veces por segundo vibra una onda. En la radio, cada estación transmite en su propia frecuencia."],
       ["Interferir", "Meter ruido o estorbar una señal para que no llegue bien."],
-      ["Patente", "Documento que dice quién inventó algo."],
+      ["Patente", "Documento oficial que reconoce a alguien como inventor y, por un tiempo, le da el derecho de decidir quién puede fabricar o vender su invento."],
     ],
   },
 
@@ -606,9 +606,9 @@ const CUENTOS = [
       { p: "¿Qué hicieron cuando la computadora se trabó?", o: ["Se rindieron", "Tiraron la computadora", "Buscaron el problema, lo corrigieron y lo lograron una hora después"], c: 2, e: "Corrigieron el error y mandaron la palabra completa." },
     ],
     palabras: [
-      ["Red", "Aparatos conectados que pueden mandarse información."],
+      ["Red", "Grupo de aparatos conectados entre sí que pueden mandarse información."],
       ["Paquete", "Pedacito de información que viaja por Internet."],
-      ["Trabarse", "Cuando una computadora deja de responder."],
+      ["Trabarse", "Cuando una computadora se queda congelada y deja de responder."],
     ],
   },
 
@@ -676,8 +676,8 @@ const CUENTOS = [
     ],
     palabras: [
       ["Prioridad", "Lo que es más importante y se hace primero."],
-      ["Software", "Los programas de una computadora."],
-      ["Abortar", "En una misión espacial, cancelarla y regresar."],
+      ["Software", "Los programas de una computadora o aparato. Lo que sí se puede tocar, como los cables y las piezas, es el hardware."],
+      ["Abortar", "En una misión espacial, suspenderla antes de terminarla, por seguridad."],
     ],
   },
 
@@ -749,7 +749,7 @@ const CUENTOS = [
     ],
     palabras: [
       ["RGB", "Rojo, verde y azul (en inglés: red, green, blue)."],
-      ["Tricromático", "Que usa tres colores."],
+      ["Tricromático", "Que usa tres colores para formar todos los demás."],
       ["Transmisor", "Aparato que manda señales de radio o televisión."],
     ],
   },
@@ -826,7 +826,7 @@ const CUENTOS = [
     ],
     palabras: [
       ["Código", "Forma de escribir un mensaje con señales o símbolos."],
-      ["Telégrafo", "Aparato antiguo que mandaba mensajes por cable con pulsos eléctricos."],
+      ["Telégrafo", "Aparato antiguo que mandaba mensajes por cable con pulsos de electricidad, usando el código Morse."],
       ["Señal", "Algo que se manda para comunicar, como una luz o un sonido."],
     ],
   },
@@ -904,7 +904,418 @@ const CUENTOS = [
     palabras: [
       ["Variable", "Un lugar con nombre donde el programa guarda un dato que puede cambiar."],
       ["Condición", "Pregunta de sí o no que decide qué hace el programa."],
-      ["Ultrasonido", "Sonido tan agudo que las personas no lo oyen."],
+      ["Ultrasonido", "Sonido tan agudo (más de 20 000 vibraciones por segundo) que las personas no lo podemos oír."],
+    ],
+  },
+
+  {
+    id: "neri", icono: "🌮", tipo: "real", tema: "Satélites y comunicación", minutos: 5,
+    titulo: "Tortillas en el espacio",
+    resumen: "En 1985 un ingeniero de Guerrero se convierte en el primer astronauta mexicano... y se lleva tortillas a la nave.",
+    relacion: "Comunicación inalámbrica (WiFi y Bluetooth)",
+    inicio: "a",
+    escenas: {
+      a: {
+        texto: [
+          "<b>Rodolfo Neri Vela</b> nació en Chilpancingo, Guerrero, en 1952. De niño miraba el cielo y se preguntaba cómo viajaban por el aire las voces del radio y las imágenes de la televisión.",
+          "Estudió ingeniería y se volvió experto en <b>telecomunicaciones</b>: cómo mandar señales de un lugar a otro, muy lejos y sin cables.",
+        ],
+        sig: "b",
+      },
+      b: {
+        texto: [
+          "En esos años, México tenía un problema: en muchos pueblos de la sierra no llegaba la señal de teléfono ni de televisión. Las montañas estorbaban y poner antenas y cables hasta allá era carísimo.",
+          "La solución fueron los <b>satélites Morelos</b>: aparatos que giran alrededor de la Tierra y rebotan las señales desde allá arriba. Uno de ellos se iba a lanzar desde el transbordador espacial <b>Atlantis</b>, y México podía mandar a un astronauta.",
+        ],
+        dato: "Un satélite de comunicaciones funciona como un espejo muy alto: recibe la señal desde un lugar de la Tierra y la vuelve a mandar a otro, aunque haya montañas en medio.",
+        sig: "c",
+      },
+      c: {
+        texto: [
+          "Rodolfo fue elegido entre muchos candidatos. Entrenó en Estados Unidos y en <b>noviembre de 1985</b> despegó en el Atlantis. ¡Era el primer mexicano en viajar al espacio!",
+          "Antes del viaje le preguntaron qué comida mexicana quería llevar. En la nave no hay gravedad: todo flota, hasta las migajas.",
+        ],
+        pregunta: "¿Qué crees que era mejor llevar?",
+        opciones: [
+          { t: "Tortillas, porque no sueltan migajas", ir: "d" },
+          { t: "Bolillos, porque llenan mucho", ir: "c1" },
+        ],
+      },
+      c1: {
+        error: true,
+        texto: [
+          "El bolillo suelta muchas migajas, y en el espacio las migajas no caen al piso: <b>flotan</b>. Se pueden meter en los ojos de los astronautas o en los aparatos electrónicos de la nave. ¡Peligroso!",
+        ],
+        sig: "c",
+      },
+      d: {
+        texto: [
+          "¡Exacto! Rodolfo pidió <b>tortillas</b>, y los astronautas descubrieron que eran perfectas: no sueltan migajas, aguantan varios días y se puede envolver cualquier cosa en ellas. Desde entonces las tortillas se volvieron comida común en las misiones espaciales.",
+          "Durante el viaje, el Atlantis puso en órbita el satélite <b>Morelos II</b>, y Rodolfo hizo experimentos y tomó fotos de México desde el espacio.",
+        ],
+        sig: "e",
+      },
+      e: {
+        fin: true,
+        texto: [
+          "Gracias a los satélites Morelos, más pueblos de México pudieron tener teléfono, televisión y radio.",
+          "Al regresar, Rodolfo se dedicó a enseñar y a escribir libros para que más niñas y niños mexicanos se animaran a estudiar ciencia. Él dice que el espacio no es solo para otros países: también es para nosotros.",
+        ],
+        dato: "Tu placa ESP32 también manda señales sin cables, por WiFi y Bluetooth. Funcionan con ondas de radio, como las que rebotan los satélites, solo que llegan mucho más cerca.",
+      },
+    },
+    preguntas: [
+      { p: "¿Para qué servían los satélites Morelos?", o: ["Para llevar señal de teléfono y televisión a lugares lejanos", "Para tomar fotos de la Luna", "Para medir la lluvia"], c: 0, e: "Rebotaban las señales desde el espacio para llegar a pueblos lejanos." },
+      { p: "¿Por qué las tortillas son buena comida para el espacio?", o: ["Porque son dulces", "Porque no sueltan migajas que floten", "Porque no pesan nada"], c: 1, e: "Las migajas flotan y pueden dañar a los astronautas o a los aparatos." },
+      { p: "¿De qué estado de México es Rodolfo Neri Vela?", o: ["Jalisco", "Yucatán", "Guerrero"], c: 2, e: "Nació en Chilpancingo, Guerrero." },
+    ],
+    palabras: [
+      ["Satélite", "Aparato que gira alrededor de la Tierra; los de comunicaciones reciben señales y las vuelven a mandar."],
+      ["Telecomunicaciones", "Todo lo que sirve para mandar información lejos: teléfono, radio, televisión, Internet."],
+      ["Gravedad", "Fuerza que jala las cosas hacia la Tierra; por eso lo que sueltas cae al piso."],
+    ],
+  },
+
+  {
+    id: "papalote", icono: "🪁", tipo: "real", tema: "Electricidad y seguridad", minutos: 5,
+    titulo: "Un papalote en la tormenta",
+    resumen: "Benjamin Franklin sospecha que los rayos son electricidad. Para probarlo, sale a volar un papalote en plena tormenta.",
+    relacion: "Voltaje y cuidados con la electricidad",
+    inicio: "a",
+    escenas: {
+      a: {
+        texto: [
+          "Filadelfia, Estados Unidos, <b>1752</b>. <b>Benjamin Franklin</b> es escritor, impresor e inventor. Le fascina la electricidad, que en esa época era casi un truco de magia: frotando un tubo de vidrio podían sacarse chispitas.",
+          "Franklin nota algo: las chispas hacen un pequeño chasquido y una luz... igual que un <b>rayo</b>, pero en chiquito. «¿Y si los rayos son electricidad?», se pregunta.",
+        ],
+        sig: "b",
+      },
+      b: {
+        texto: [
+          "Para probarlo necesita acercar algo a las nubes de tormenta. Arma un <b>papalote</b> de seda, le pone un alambre puntiagudo arriba y, en la punta del hilo, amarra una <b>llave de metal</b>. Lo acompaña su hijo William.",
+        ],
+        pregunta: "¿Dónde crees que debía quedarse Franklin mientras volaba el papalote?",
+        opciones: [
+          { t: "Bajo un techo, sosteniendo el papalote con un listón seco de seda", ir: "c" },
+          { t: "En medio del campo, agarrando el hilo mojado con las manos", ir: "b1" },
+        ],
+      },
+      b1: {
+        error: true,
+        texto: [
+          "¡Muy peligroso! El hilo mojado <b>conduce</b> la electricidad, y estar en medio del campo durante una tormenta es de lo más arriesgado. Franklin lo sabía: buscó un lugar techado y se agarró de algo seco.",
+        ],
+        sig: "b",
+      },
+      c: {
+        texto: [
+          "Franklin se queda bajo un cobertizo y sostiene el papalote con un listón de seda seco, porque la seda seca casi no deja pasar la electricidad.",
+          "Empieza a llover y el hilo se moja. De pronto, los pelitos del hilo <b>se levantan</b> solos. Franklin acerca el nudillo a la llave y... <b>¡zas!</b>, salta una chispa. ¡Los rayos sí eran electricidad!",
+        ],
+        dato: "El experimento era muy peligroso. Un año después, en 1753, el científico Georg Richmann murió en Rusia al hacer una prueba parecida. Nunca vueles papalotes cerca de cables ni con tormenta.",
+        sig: "d",
+      },
+      d: {
+        fin: true,
+        texto: [
+          "Con lo que aprendió, Franklin inventó el <b>pararrayos</b>: una varilla de metal en lo alto de los edificios, conectada con un cable hasta la tierra. Cuando cae un rayo, la electricidad se va por el cable y no quema la casa.",
+          "Hoy casi todos los edificios altos tienen uno. Y en 3DPit seguimos la misma idea de Franklin: la electricidad es muy útil, pero <b>hay que respetarla</b>. Por eso tu placa trabaja con 3.3 volts y no con la corriente de la casa.",
+        ],
+      },
+    },
+    preguntas: [
+      { p: "¿Qué quería probar Franklin?", o: ["Que los rayos son electricidad", "Que los papalotes vuelan con lluvia", "Que la seda es resistente"], c: 0, e: "Sospechaba que los rayos y las chispas eran lo mismo." },
+      { p: "¿Por qué usó un listón de seda seco?", o: ["Porque era bonito", "Porque la seda seca casi no deja pasar la electricidad", "Porque pesaba menos"], c: 1, e: "Un material que no deja pasar la electricidad se llama aislante." },
+      { p: "¿Qué invento salió de este experimento?", o: ["El foco", "La pila", "El pararrayos"], c: 2, e: "El pararrayos lleva la electricidad del rayo hasta la tierra." },
+    ],
+    palabras: [
+      ["Conductor", "Material que deja pasar la electricidad, como el metal o el agua con sal."],
+      ["Aislante", "Material que casi no deja pasar la electricidad, como el plástico, el vidrio o la seda seca."],
+      ["Pararrayos", "Varilla de metal conectada a la tierra que protege los edificios de los rayos."],
+    ],
+  },
+
+  {
+    id: "volta", icono: "🔋", tipo: "real", tema: "Pilas y voltaje", minutos: 5,
+    titulo: "Ranas, metales y la primera pila",
+    resumen: "Unas patas de rana se mueven solas y dos científicos discuten por qué. La respuesta fue la primera pila del mundo.",
+    relacion: "Voltaje, pilas y la placa ESP32",
+    inicio: "a",
+    escenas: {
+      a: {
+        texto: [
+          "Italia, años <b>1780</b>. El doctor <b>Luigi Galvani</b> estudia cómo funcionan los músculos de las ranas. Un día toca las patas de una rana con dos metales distintos, y las patas <b>se mueven</b>, como si estuvieran vivas.",
+          "Galvani piensa que la rana tiene una «electricidad animal» guardada adentro.",
+        ],
+        sig: "b",
+      },
+      b: {
+        texto: [
+          "Otro científico italiano, <b>Alessandro Volta</b>, lee sobre el experimento y no está tan seguro. Se fija en un detalle: las patas solo se mueven cuando se tocan con <b>dos metales diferentes</b>.",
+        ],
+        pregunta: "Si fueras Volta, ¿qué probarías para saber de dónde sale la electricidad?",
+        opciones: [
+          { t: "Juntar dos metales distintos sin la rana, con algo húmedo en medio", ir: "c" },
+          { t: "Buscar ranas más grandes", ir: "b1" },
+        ],
+      },
+      b1: {
+        error: true,
+        texto: [
+          "Una rana más grande no responde la duda. Para saber si la electricidad viene de la rana o de los metales, hay que <b>cambiar una sola cosa</b> a la vez: por ejemplo, quitar la rana y ver si todavía hay electricidad.",
+        ],
+        sig: "b",
+      },
+      c: {
+        texto: [
+          "Volta pone un disco de <b>zinc</b> y uno de <b>cobre</b>, con un pedazo de cartón mojado en agua con sal entre ellos. ¡Y aparece electricidad, sin ninguna rana! Los metales distintos con algo húmedo en medio producen corriente.",
+          "Para tener más fuerza, apila muchos: zinc, cartón, cobre; zinc, cartón, cobre... una torre de discos.",
+        ],
+        dato: "Por eso se llama «pila»: ¡era literalmente una pila de discos! Volta la presentó en el año 1800 y fue la primera fuente de electricidad que daba corriente sin parar.",
+        sig: "d",
+      },
+      d: {
+        texto: [
+          "Con la pila, por primera vez los científicos tuvieron electricidad constante para sus experimentos. Gracias a eso, en los años siguientes se inventaron el electroimán, el telégrafo y muchas cosas más.",
+          "Galvani tampoco estaba del todo equivocado: hoy sabemos que los nervios sí usan pequeñas señales eléctricas para mover los músculos.",
+        ],
+        sig: "e",
+      },
+      e: {
+        fin: true,
+        texto: [
+          "En honor a Volta, la fuerza con la que la electricidad empuja se mide en <b>volts</b> (V). Tu placa ESP32 trabaja con <b>3.3 V</b>, una pila 18650 da unos <b>3.7 V</b> y un contacto de la casa en México da <b>127 V</b>, ¡muchísimo más!",
+          "Cada vez que conectas tu placa, usas una palabra que viene de un científico que se preguntó: «¿y si no es la rana?».",
+        ],
+      },
+    },
+    preguntas: [
+      { p: "¿Qué descubrió Volta?", o: ["Que dos metales distintos con algo húmedo en medio producen electricidad", "Que las ranas guardan electricidad", "Que el cobre es mágico"], c: 0, e: "La electricidad venía de los metales, no de la rana." },
+      { p: "¿Por qué el invento se llama «pila»?", o: ["Porque era de color pila", "Porque era una pila de discos de metal y cartón", "Por el nombre de un pueblo"], c: 1, e: "Volta apiló muchos discos para tener más fuerza." },
+      { p: "¿Con cuántos volts trabaja la placa ESP32?", o: ["127 V", "1 000 V", "3.3 V"], c: 2, e: "La placa usa 3.3 volts; la casa usa 127 V." },
+    ],
+    palabras: [
+      ["Volt", "Unidad que mide la fuerza con la que la electricidad empuja. Su símbolo es V."],
+      ["Pila", "Aparato que guarda energía química y la entrega como electricidad."],
+      ["Corriente", "La electricidad que va pasando por un cable."],
+    ],
+  },
+
+  {
+    id: "katherine", icono: "🧮", tipo: "real", tema: "Revisar resultados", minutos: 5,
+    titulo: "Que la revise ella",
+    resumen: "Un astronauta está listo para dar vueltas a la Tierra, pero antes pide algo: que una matemática revise las cuentas de la computadora.",
+    relacion: "Probar y revisar tus programas",
+    inicio: "a",
+    escenas: {
+      a: {
+        texto: [
+          "Estados Unidos, años <b>1950</b>. En un centro de la NASA trabaja <b>Katherine Johnson</b>, una matemática brillante. En esa época, a las personas que hacían cálculos a mano les decían <b>«computadoras»</b>, ¡antes de que existieran las computadoras como las conocemos!",
+          "Katherine era una mujer afroamericana en un tiempo en que la discriminación era muy fuerte. Aun así, preguntaba, insistía y se ganó un lugar en las reuniones importantes.",
+        ],
+        sig: "b",
+      },
+      b: {
+        texto: [
+          "En <b>1962</b>, el astronauta <b>John Glenn</b> se prepara para ser el primer estadounidense en dar vueltas completas a la Tierra en la nave Friendship 7. Para calcular su camino, la NASA usa por primera vez una computadora electrónica nueva y enorme.",
+          "Pero Glenn no confía del todo en esa máquina nueva.",
+        ],
+        pregunta: "¿Qué crees que pidió John Glenn?",
+        opciones: [
+          { t: "Que Katherine revisara a mano las cuentas de la computadora", ir: "c" },
+          { t: "Despegar sin revisar nada: la computadora nunca se equivoca", ir: "b1" },
+        ],
+      },
+      b1: {
+        error: true,
+        texto: [
+          "Las computadoras hacen exactamente lo que les dicen. Si alguien escribió un dato mal o el programa tiene un error, el resultado sale mal aunque la máquina «trabaje bien». Por eso <b>se revisa</b>.",
+        ],
+        sig: "b",
+      },
+      c: {
+        texto: [
+          "Glenn dijo algo así como: <b>«Que la muchacha revise los números. Si ella dice que están bien, estoy listo»</b>. Se refería a Katherine.",
+          "Katherine pasó día y medio haciendo las cuentas a mano, con lápiz, papel y una calculadora de escritorio. Al final, sus resultados <b>coincidieron</b> con los de la computadora.",
+        ],
+        dato: "Cuando dos formas distintas de calcular dan el mismo resultado, puedes confiar más en él. Los ingenieros todavía hacen eso: comprueban los cálculos importantes de dos maneras.",
+        sig: "d",
+      },
+      d: {
+        fin: true,
+        texto: [
+          "El 20 de febrero de 1962, John Glenn dio <b>tres vueltas</b> a la Tierra y regresó sano y salvo. Después, Katherine también hizo cálculos para la misión que llevó a los primeros humanos a la Luna.",
+          "Vivió 101 años y en 2015 recibió una de las medallas más importantes de su país. Su historia se contó en la película <i>Talentos ocultos</i>.",
+          "Cuando tu programa de 3DPit da un número, haz como Katherine: pregúntate <b>«¿tiene sentido?»</b> y compruébalo de otra forma.",
+        ],
+      },
+    },
+    preguntas: [
+      { p: "¿Qué significaba «computadora» en la época de Katherine?", o: ["Una persona que hacía cálculos", "Un teléfono", "Un tipo de nave"], c: 0, e: "Así les decían a las personas que hacían cálculos a mano." },
+      { p: "¿Por qué Glenn pidió que Katherine revisara las cuentas?", o: ["Porque la computadora estaba apagada", "Porque la computadora era nueva y quería estar seguro", "Porque ella era su amiga"], c: 1, e: "Quería comprobar los resultados de otra forma." },
+      { p: "¿Qué pasó cuando Katherine terminó de revisar?", o: ["Encontró que todo estaba mal", "Cancelaron la misión", "Sus resultados coincidieron con los de la computadora"], c: 2, e: "Coincidieron, y Glenn despegó tranquilo." },
+    ],
+    palabras: [
+      ["Comprobar", "Revisar algo de otra forma para estar seguro de que está bien."],
+      ["Discriminación", "Tratar a alguien peor por su color de piel, su origen, su género u otra razón."],
+      ["Coincidir", "Dar el mismo resultado o ser iguales."],
+    ],
+  },
+
+  {
+    id: "loteria", icono: "🎴", tipo: "ficcion", tema: "Números al azar y listas", minutos: 5,
+    titulo: "¡Lotería! en la posada",
+    resumen: "El que canta la lotería se quedó sin voz en plena posada. Majo y su primo programan la placa para que la cante.",
+    relacion: "Números al azar, listas y buzzer",
+    inicio: "a",
+    escenas: {
+      a: {
+        texto: [
+          "Es diciembre y en casa de la abuela Lupita hay <b>posada</b>: piñata, ponche, tamales... y la <b>lotería</b>, que es lo que más les gusta a todos.",
+          "Pero el tío Beto, que siempre canta las cartas con su vozarrón, amaneció <b>ronco</b>. «Sin cantor no hay lotería», dice triste la abuela.",
+          "<b>Majo</b> y su primo <b>Toño</b> se miran. Traen en la mochila su placa ESP32, una pantalla OLED y un buzzer. «¡Nosotros la hacemos cantar!».",
+        ],
+        sig: "b",
+      },
+      b: {
+        texto: [
+          "Hacen una <b>lista</b> con los nombres de las cartas: «El gallo», «El diablito», «La dama», «El catrín», «La sirena», «La luna», «El corazón», «La rana»... hasta tener las <b>54</b>.",
+        ],
+        pregunta: "¿Cómo debe escoger la placa qué carta cantar?",
+        opciones: [
+          { t: "Con un número al azar del 1 al 54", ir: "c" },
+          { t: "Siempre en el mismo orden de la lista", ir: "b1" },
+        ],
+      },
+      b1: {
+        error: true,
+        texto: [
+          "En el segundo juego, la tía Chela ya se sabe el orden y grita «¡Lotería!» antes que nadie. ¡Así no tiene chiste! Las cartas tienen que salir <b>revueltas</b>.",
+        ],
+        sig: "b",
+      },
+      c: {
+        texto: [
+          "Toño usa el bloque de <b>número al azar</b> entre 1 y 54. La pantalla muestra el nombre de la carta y el buzzer hace <i>¡tirirí!</i> cada vez.",
+          "Todo va bien hasta que la pantalla dice: «<b>El gallo</b>»... y dos cartas después, otra vez: «<b>El gallo</b>». «¡Ese ya salió!», reclama el abuelo.",
+        ],
+        pregunta: "¿Cómo evitan que una carta se repita?",
+        opciones: [
+          { t: "Quitar de la lista cada carta que ya salió", ir: "d" },
+          { t: "Pedirle a la placa que «no repita» y esperar que obedezca", ir: "c1" },
+        ],
+      },
+      c1: {
+        error: true,
+        texto: [
+          "La placa no sabe que una carta ya salió si nadie se lo dice. Un número al azar puede repetirse, igual que cuando tiras un dado y sale dos veces el mismo número. Hay que <b>guardar</b> qué cartas ya salieron.",
+        ],
+        sig: "c",
+      },
+      d: {
+        texto: [
+          "Majo cambia el programa: después de cantar una carta, la <b>quita de la lista</b>. Ahora el número al azar va del 1 hasta las cartas que quedan. Así cada carta sale una sola vez, como cuando el cantor va sacando las cartas del mazo.",
+          "De paso le agregan los versos que decía el tío Beto: «<i>El que le cantó a San Pedro no le volverá a cantar</i>»... ¡el gallo!",
+        ],
+        dato: "Las computadoras no pueden adivinar como las personas: usan fórmulas que dan números que parecen al azar. Por eso se llaman números «pseudoaleatorios».",
+        sig: "e",
+      },
+      e: {
+        fin: true,
+        texto: [
+          "La lotería sigue hasta la medianoche. La abuela Lupita llena su tabla, golpea la mesa y grita: <b>«¡Lotería!»</b>. Todos aplauden.",
+          "El tío Beto, todavía ronco, les da un abrazo y les dice con voz de silbido: «El año que entra, la placa canta y yo nomás grito “¡Buena!”».",
+        ],
+      },
+    },
+    preguntas: [
+      { p: "¿Por qué no sirve cantar las cartas siempre en el mismo orden?", o: ["Porque los jugadores se aprenden el orden y ya no tiene chiste", "Porque la placa se cansa", "Porque la pantalla se apaga"], c: 0, e: "Las cartas deben salir revueltas para que el juego sea justo." },
+      { p: "¿Por qué salió dos veces «El gallo»?", o: ["Porque la pantalla falló", "Porque un número al azar puede repetirse", "Porque había dos gallos en la lista"], c: 1, e: "Como en un dado, el mismo número puede salir otra vez." },
+      { p: "¿Cómo lo arreglaron?", o: ["Apagando el buzzer", "Comprando otra placa", "Quitando de la lista cada carta que ya había salido"], c: 2, e: "Así cada carta sale una sola vez." },
+    ],
+    palabras: [
+      ["Al azar", "Que sale sin un orden que se pueda adivinar, como un dado."],
+      ["Lista", "Varios datos guardados en orden con un solo nombre, como las 54 cartas."],
+      ["Posada", "Fiesta mexicana de diciembre, con piñatas, ponche y villancicos, antes de Navidad."],
+    ],
+  },
+
+  {
+    id: "huerto", icono: "🥬", tipo: "ficcion", tema: "Horarios y relevador", minutos: 5,
+    titulo: "El huerto que se inundó",
+    resumen: "La secundaria arma un riego automático para su huerto. El primer día, ¡el agua no deja de salir!",
+    relacion: "Reloj RTC y relevador",
+    inicio: "a",
+    escenas: {
+      a: {
+        texto: [
+          "En la secundaria técnica hay un <b>huerto</b> con lechugas, rábanos y cilantro. En vacaciones nadie va a regarlo, así que el grupo de 2.º A decide hacer un <b>riego automático</b>.",
+          "Usan una placa ESP32, un <b>relevador</b> que prende y apaga una bombita de agua, y un <b>reloj RTC</b> que sabe la hora aunque se vaya la luz. Don Chuy, el conserje, les presta una manguera.",
+        ],
+        sig: "b",
+      },
+      b: {
+        texto: [
+          "Quieren regar <b>todos los días a las 7 de la mañana</b>, cuando todavía no hace calor. Andrea escribe el programa:",
+          "<b>repetir para siempre:</b><br>· leer la hora del reloj<br>· <b>si</b> la hora es 7: encender la bomba",
+          "A la mañana siguiente, Don Chuy les llama: «¡Muchachos, el huerto parece alberca!».",
+        ],
+        pregunta: "¿Qué salió mal?",
+        opciones: [
+          { t: "Nunca le dijeron a la bomba cuándo apagarse", ir: "c" },
+          { t: "El reloj RTC estaba descompuesto", ir: "b1" },
+        ],
+      },
+      b1: {
+        error: true,
+        texto: [
+          "Revisan el reloj y marca la hora perfecta. El problema no está en las piezas: está en lo que le <b>dijeron</b> a la placa que hiciera. Lean otra vez el programa con calma...",
+        ],
+        sig: "b",
+      },
+      c: {
+        texto: [
+          "¡Eso! El programa encendía la bomba, pero <b>nunca la apagaba</b>. Andrea agrega: encender la bomba, <b>esperar 2 minutos</b> y apagarla.",
+          "Al otro día, Don Chuy vuelve a llamar: «Ya no se inunda... ¡pero la bomba prende y apaga a cada rato!».",
+        ],
+        pregunta: "¿Por qué crees que pasó eso?",
+        opciones: [
+          { t: "Porque la hora es 7 durante 60 minutos, y en cada vuelta del ciclo vuelve a regar", ir: "d" },
+          { t: "Porque la bomba es muy pequeña", ir: "c1" },
+        ],
+      },
+      c1: {
+        error: true,
+        texto: [
+          "El tamaño de la bomba no cambia cuántas veces se prende. Piensen: de las 7:00 a las 7:59, ¿la hora sigue siendo 7?",
+        ],
+        sig: "c",
+      },
+      d: {
+        texto: [
+          "¡Claro! De las 7:00 a las 7:59 la hora <b>sigue siendo 7</b>, así que cada vez que el ciclo pregunta «¿es la hora 7?», la respuesta es sí, y vuelve a regar.",
+          "Andrea crea una variable llamada <b>ya_regue</b>. Cuando riega, la pone en verdadero, y solo riega si todavía es falso. A medianoche la regresa a falso para el día siguiente.",
+        ],
+        dato: "A una variable que solo dice sí o no, como «ya_regue», los programadores le dicen bandera: se levanta cuando algo ya pasó.",
+        sig: "e",
+      },
+      e: {
+        fin: true,
+        texto: [
+          "Ahora el huerto se riega <b>una sola vez</b> cada mañana, dos minutos exactos. Al regresar de vacaciones, las lechugas están enormes y el cilantro huele hasta el salón.",
+          "Don Chuy les dice: «Ese aparatito trabajó mejor que yo». Y el grupo aprendió que un programa no solo debe hacer lo correcto, sino hacerlo <b>las veces correctas</b>.",
+        ],
+      },
+    },
+    preguntas: [
+      { p: "¿Por qué se inundó el huerto la primera vez?", o: ["Porque el programa nunca apagaba la bomba", "Porque llovió mucho", "Porque la manguera estaba rota"], c: 0, e: "Encendía la bomba, pero no tenía la instrucción de apagarla." },
+      { p: "¿Por qué la bomba prendía y apagaba a cada rato?", o: ["Porque el relevador estaba suelto", "Porque la hora es 7 durante una hora entera y el ciclo volvía a regar", "Porque el reloj se adelantaba"], c: 1, e: "La condición «la hora es 7» se cumple de las 7:00 a las 7:59." },
+      { p: "¿Para qué sirve la variable «ya_regue»?", o: ["Para medir el agua", "Para prender la luz", "Para recordar si ya se regó ese día"], c: 2, e: "Funciona como una bandera que se levanta cuando ya se regó." },
+    ],
+    palabras: [
+      ["Relevador", "Interruptor que la placa puede encender o apagar para controlar algo más grande, como una bomba de agua."],
+      ["RTC", "Reloj de tiempo real: un módulo que lleva la hora, aunque la placa se apague, gracias a su pila."],
+      ["Bandera", "Variable que solo vale sí o no y avisa si algo ya pasó."],
     ],
   },
 ];
