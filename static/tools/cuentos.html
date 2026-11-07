@@ -8,71 +8,101 @@
   <style>
     /* Tamaño de letra del cuento: lo elige el lector (A− / A+). */
     body { --fs: 17px; }
+    .back { font-size: 16px; display: inline-flex; align-items: center; gap: 6px; padding: 6px 0; }
+    .portada, .lista-wrap { max-width: 1100px; margin: 0 auto; }
     .barra { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 4px 0 14px; }
     .barra .espacio { flex: 1; }
     .filtros button { border-radius: 999px; }
-    .lista { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+    .lista { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
     .cuento {
       display: flex; flex-direction: column; gap: 6px; text-align: left;
-      background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px;
-      color: var(--text); font: inherit; cursor: pointer;
+      background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px;
+      color: var(--text); font: inherit; cursor: pointer; transition: transform .15s, border-color .15s;
     }
-    .cuento:hover { border-color: var(--accent-2); background: var(--panel-2); }
-    .cuento .icono { font-size: 30px; }
+    .cuento:hover { border-color: var(--accent-2); background: var(--panel-2); transform: translateY(-3px); }
+    .cuento .icono { font-size: 36px; }
     .cuento h3 { margin: 0; font-size: 16px; }
     .cuento p { margin: 0; font-size: 13px; color: var(--muted); }
     .chips { display: flex; flex-wrap: wrap; gap: 6px; }
-    .chip { font-size: 11px; padding: 2px 8px; border-radius: 999px; background: var(--panel-2); color: var(--muted); border: 1px solid var(--line); }
+    .chip { font-size: 12px; padding: 2px 9px; border-radius: 999px; background: var(--panel-2); color: var(--muted); border: 1px solid var(--line); }
     .chip.real { color: #ffd479; border-color: #7a6326; }
     .chip.ficcion { color: #9fe3ff; border-color: #2f6b80; }
     .chip.leido { color: var(--ok); border-color: #1f7a47; }
 
-    .lector { max-width: 760px; }
-    .lector h2 { margin: 0 0 4px; font-size: calc(var(--fs) + 5px); }
-    .avance { height: 6px; background: var(--panel-2); border-radius: 3px; overflow: hidden; margin: 10px 0 16px; }
-    .avance div { height: 100%; background: var(--accent); transition: width .3s; }
-    .escena { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; }
+    /* ── Lector ── */
+    .lector { max-width: 860px; margin: 0 auto; }
+    .volver { font-size: 16px; font-weight: 700; padding: 10px 16px; border-radius: 10px; }
+    .volver .flecha { font-size: 20px; line-height: 1; margin-right: 4px; }
+    .herr button { font-size: 15px; padding: 9px 14px; border-radius: 10px; }
+    .herr button.hablando { background: #a2573b; border-color: #e67e22; }
+    .cabeza {
+      display: flex; align-items: center; gap: 18px; padding: 16px 20px; border-radius: 14px; margin-bottom: 14px;
+      background: linear-gradient(120deg, #2c2566, #1f2447 70%); border: 1px solid var(--line);
+    }
+    .cabeza.ficcion { background: linear-gradient(120deg, #17485a, #1f2447 70%); }
+    .cabeza .grande { font-size: 64px; line-height: 1; animation: flotar 3s ease-in-out infinite; }
+    @keyframes flotar { 0%, 100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-6px) rotate(3deg); } }
+    .cabeza h2 { margin: 0 0 6px; font-size: calc(var(--fs) + 6px); }
+    .cabeza .parte { font-size: 13px; color: var(--muted); margin-top: 8px; }
+    .avance { height: 8px; background: var(--panel-2); border-radius: 4px; overflow: hidden; margin-top: 6px; }
+    .avance div { height: 100%; background: linear-gradient(90deg, var(--accent), #f1c40f); transition: width .4s; }
+    .escena { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px 26px; }
     .escena.error { border-color: #a2573b; background: #2b2140; }
-    .escena p { font-size: var(--fs); line-height: 1.6; margin: 0 0 12px; }
-    .escena .aviso { font-weight: 700; color: #ffb38a; margin-bottom: 8px; font-size: var(--fs); }
-    .dato { margin: 6px 0 12px; padding: 10px 14px; border-left: 4px solid #f1c40f; background: #2a2a3f; border-radius: 6px; font-size: calc(var(--fs) - 1px); line-height: 1.5; }
+    .escena p { font-size: var(--fs); line-height: 1.65; margin: 0 0 14px; animation: aparecer .5s both; }
+    @keyframes aparecer { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+    .escena .aviso { font-weight: 700; color: #ffb38a; margin-bottom: 10px; font-size: calc(var(--fs) + 1px); }
+    .dato { position: relative; margin: 8px 0 14px; padding: 12px 56px 12px 16px; border-left: 4px solid #f1c40f; background: #2a2a3f; border-radius: 8px; font-size: calc(var(--fs) - 1px); line-height: 1.55; animation: aparecer .5s .2s both; }
     .dato b.t { display: block; color: #f1c40f; margin-bottom: 2px; }
-    .pregunta { font-weight: 700; font-size: var(--fs); margin: 14px 0 8px; }
-    .opciones { display: flex; flex-direction: column; gap: 8px; }
-    .opciones button { text-align: left; font-size: calc(var(--fs) - 1px); padding: 10px 14px; line-height: 1.4; }
-    .acciones { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
-    .acciones button { font-size: calc(var(--fs) - 2px); }
+    .dato button { position: absolute; top: 10px; right: 10px; font-size: 18px; padding: 4px 9px; }
+    .pregunta { font-weight: 700; font-size: calc(var(--fs) + 1px); margin: 16px 0 10px; }
+    .opciones { display: grid; gap: 10px; }
+    .opciones button {
+      display: flex; gap: 12px; align-items: center; text-align: left; font-size: var(--fs); padding: 12px 16px; line-height: 1.4;
+      border-radius: 12px; transition: transform .12s, border-color .12s;
+    }
+    .opciones button:hover { transform: translateX(4px); }
+    .opciones .letra { flex: none; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: var(--accent); font-weight: 800; }
+    .acciones { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+    .acciones button { font-size: var(--fs); padding: 10px 18px; border-radius: 10px; }
 
-    .quiz .q { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; }
+    .quiz .q { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; margin-bottom: 12px; }
     .quiz .q p { margin: 0 0 8px; font-weight: 700; font-size: var(--fs); }
-    .quiz .q button { display: block; width: 100%; text-align: left; margin-top: 6px; font-size: calc(var(--fs) - 1px); }
+    .quiz .q button { display: block; width: 100%; text-align: left; margin-top: 8px; font-size: calc(var(--fs) - 1px); padding: 10px 14px; border-radius: 10px; }
     .quiz .q button.bien { background: #1f6f45; border-color: var(--ok); }
     .quiz .q button.mal { background: #7a2e2e; border-color: #e74c3c; }
     .quiz .q .exp { margin-top: 8px; font-size: calc(var(--fs) - 2px); color: var(--muted); }
     .palabras dt { font-weight: 700; font-size: var(--fs); margin-top: 8px; }
     .palabras dd { margin: 2px 0 0 0; color: var(--muted); font-size: calc(var(--fs) - 1px); }
-    .puntaje { font-size: 34px; font-weight: 800; margin: 4px 0; }
+    .puntaje { font-size: 40px; font-weight: 800; margin: 4px 0; }
+    @media (max-width: 560px) {
+      .cabeza { flex-direction: column; text-align: center; }
+      .cabeza .chips { justify-content: center; }
+      .escena { padding: 16px; }
+    }
   </style>
 </head>
 <body>
-  <a class="back" href="index.html">← Herramientas</a>
-  <h1>📚 Mini cuentos</h1>
-  <p class="subtitle">Historias cortas de electrónica y programación, unas reales y otras inventadas. En algunas partes tú decides qué pasa.</p>
+  <div class="portada" id="portada">
+    <a class="back" href="index.html">⬅ Herramientas</a>
+    <h1>📚 Mini cuentos</h1>
+    <p class="subtitle">Historias cortas de electrónica y programación, unas reales y otras inventadas. En algunas partes tú decides qué pasa.</p>
+  </div>
   <div id="app"></div>
 
   <script src="tools.js"></script>
   <script src="cuentos-data.js"></script>
   <script>
     const app = document.getElementById("app");
+    const portada = document.getElementById("portada");
     const GUARDADO = "3dpit-cuentos";
     const LETRA = "3dpit-cuentos-letra";
-    const TAMANOS = [14, 16, 17, 19, 22];
+    const TAMANOS = [15, 17, 19, 21, 24];
 
     let leidos = {};
     try { leidos = JSON.parse(localStorage.getItem(GUARDADO) || "{}") || {}; } catch (_) {}
     function guardar() { try { localStorage.setItem(GUARDADO, JSON.stringify(leidos)); } catch (_) {} }
 
-    let letra = 2;
+    let letra = 1;
     try { const g = parseInt(localStorage.getItem(LETRA), 10); if (g >= 0 && g < TAMANOS.length) letra = g; } catch (_) {}
     function aplicarLetra() {
       document.body.style.setProperty("--fs", TAMANOS[letra] + "px");
@@ -93,27 +123,51 @@
       return n;
     }
 
-    // ── Leer en voz alta (si el navegador lo permite) ──
-    const voz = "speechSynthesis" in window;
-    function callar() { if (voz) speechSynthesis.cancel(); }
-    function leerEnVoz(textos) {
-      if (!voz) return;
-      callar();
-      const tmp = document.createElement("div");
-      tmp.innerHTML = textos.join(" ").replace(/<br>/g, ". ");
-      const u = new SpeechSynthesisUtterance(tmp.textContent);
-      u.lang = "es-MX";
-      const v = speechSynthesis.getVoices().find((x) => x.lang === "es-MX") || speechSynthesis.getVoices().find((x) => x.lang.startsWith("es"));
-      if (v) u.voice = v;
-      u.rate = 0.95;
-      speechSynthesis.speak(u);
-    }
-
     // Las opciones salen en otro orden cada vez, para que no se adivine por el lugar.
     function revolver(lista) {
       const a = lista.slice();
       for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
       return a;
+    }
+
+    // ── Leer en voz alta (si el navegador lo permite) ──
+    const voz = "speechSynthesis" in window;
+    let botonHablando = null;
+    function callar() {
+      if (voz) speechSynthesis.cancel();
+      marcar(null);
+    }
+    // El botón que está leyendo cambia a "Detener".
+    function marcar(boton) {
+      if (botonHablando) { botonHablando.classList.remove("hablando"); botonHablando.innerHTML = botonHablando.dataset.normal; }
+      botonHablando = boton;
+      if (boton) { boton.classList.add("hablando"); boton.innerHTML = boton.dataset.detener; }
+    }
+    function sinEtiquetas(html) {
+      const tmp = document.createElement("div");
+      tmp.innerHTML = html.replace(/<br>/g, ". ");
+      return tmp.textContent;
+    }
+    function hablar(partes, boton) {
+      if (!voz) return;
+      if (botonHablando === boton) { callar(); return; }
+      callar();
+      const u = new SpeechSynthesisUtterance(partes.map(sinEtiquetas).join(" "));
+      u.lang = "es-MX";
+      const voces = speechSynthesis.getVoices();
+      const v = voces.find((x) => x.lang === "es-MX") || voces.find((x) => x.lang.startsWith("es"));
+      if (v) u.voice = v;
+      u.rate = 0.95;
+      u.onend = () => { if (botonHablando === boton) marcar(null); };
+      marcar(boton);
+      speechSynthesis.speak(u);
+    }
+    function botonVoz(normal, detener, partes, titulo) {
+      const b = el("button", { title: titulo, html: normal });
+      b.dataset.normal = normal;
+      b.dataset.detener = detener;
+      b.onclick = () => hablar(partes, b);
+      return b;
     }
 
     function barraLetra() {
@@ -122,30 +176,37 @@
         el("button", { title: "Letra más grande", onclick: () => { if (letra < TAMANOS.length - 1) { letra++; aplicarLetra(); } } }, "A+"),
       ];
     }
+    const etiquetaTipo = (c) => el("span", { class: "chip " + c.tipo, text: c.tipo === "real" ? "⭐ Pasó de verdad" : "✨ Ficción" });
+    function volver() {
+      return el("button", { class: "volver", onclick: lista, html: '<span class="flecha">⬅</span> Volver a los cuentos' });
+    }
 
     // ── Lista de cuentos ──
     let filtro = "todos";
     function lista() {
       callar();
+      portada.hidden = false;
       app.innerHTML = "";
-      const nombres = { todos: "Todos", real: "Historias reales", ficcion: "Ficción" };
-      app.append(el("div", { class: "barra" },
-        el("div", { class: "row filtros" }, Object.entries(nombres).map(([k, t]) =>
-          el("button", { class: filtro === k ? "active" : "", onclick: () => { filtro = k; lista(); } }, t))),
-        el("span", { class: "espacio" }),
-        el("span", { class: "hint", text: `Leídos: ${CUENTOS.filter((c) => leidos[c.id]).length} de ${CUENTOS.length}` })));
-      app.append(el("div", { class: "lista" }, CUENTOS.filter((c) => filtro === "todos" || c.tipo === filtro).map((c) => {
-        const l = leidos[c.id];
-        return el("button", { class: "cuento", onclick: () => leer(c) },
-          el("div", { class: "icono", text: c.icono }),
-          el("h3", { text: c.titulo }),
-          el("p", { text: c.resumen }),
-          el("div", { class: "chips" },
-            el("span", { class: "chip " + c.tipo, text: c.tipo === "real" ? "⭐ Pasó de verdad" : "✨ Ficción" }),
-            el("span", { class: "chip", text: c.tema }),
-            el("span", { class: "chip", text: `⏱ ${c.minutos} min` }),
-            l ? el("span", { class: "chip leido", text: `✓ ${l.aciertos}/${l.total}` }) : null));
-      })));
+      const nombres = { todos: "Todos", real: "⭐ Historias reales", ficcion: "✨ Ficción" };
+      app.append(el("div", { class: "lista-wrap" },
+        el("div", { class: "barra" },
+          el("div", { class: "row filtros" }, Object.entries(nombres).map(([k, t]) =>
+            el("button", { class: filtro === k ? "active" : "", onclick: () => { filtro = k; lista(); } }, t))),
+          el("span", { class: "espacio" }),
+          el("span", { class: "hint", text: `Leídos: ${CUENTOS.filter((c) => leidos[c.id]).length} de ${CUENTOS.length}` })),
+        el("div", { class: "lista" }, CUENTOS.filter((c) => filtro === "todos" || c.tipo === filtro).map((c) => {
+          const l = leidos[c.id];
+          return el("button", { class: "cuento", onclick: () => leer(c) },
+            el("div", { class: "icono", text: c.icono }),
+            el("h3", { text: c.titulo }),
+            el("p", { text: c.resumen }),
+            el("div", { class: "chips" },
+              etiquetaTipo(c),
+              el("span", { class: "chip", text: c.tema }),
+              el("span", { class: "chip", text: `⏱ ${c.minutos} min` }),
+              l ? el("span", { class: "chip leido", text: `✓ ${l.aciertos}/${l.total}` }) : null));
+        }))));
+      window.scrollTo(0, 0);
     }
 
     // ── Leer un cuento ──
@@ -154,35 +215,51 @@
       const vistas = new Set();
       let errores = 0;
 
-      function mostrar(id) {
-        callar();
-        const e = c.escenas[id];
-        if (!e.error) vistas.add(id);
-        app.innerHTML = "";
-        app.append(el("div", { class: "lector" },
-          el("div", { class: "barra" },
-            el("button", { onclick: lista }, "← Cuentos"),
-            el("span", { class: "espacio" }),
-            voz ? el("button", { title: "Escuchar esta parte", onclick: () => leerEnVoz((e.pregunta ? e.texto.concat(e.pregunta) : e.texto)) }, "🔊 Escuchar") : null,
-            barraLetra()),
-          el("h2", { text: c.icono + " " + c.titulo }),
-          el("div", { class: "chips" },
-            el("span", { class: "chip " + c.tipo, text: c.tipo === "real" ? "⭐ Pasó de verdad" : "✨ Ficción" }),
-            el("span", { class: "chip", text: c.tema })),
-          el("div", { class: "avance" }, el("div", { style: `width:${Math.round((vistas.size / total) * 100)}%` })),
-          escena(e)));
-        app.querySelector(".lector").scrollIntoView({ block: "start" });
+      function cabeza(texto) {
+        return el("div", { class: "cabeza " + c.tipo },
+          el("div", { class: "grande", text: c.icono }),
+          el("div", { style: "flex:1" },
+            el("h2", { text: c.titulo }),
+            el("div", { class: "chips" }, etiquetaTipo(c), el("span", { class: "chip", text: c.tema })),
+            el("div", { class: "parte", text: texto }),
+            el("div", { class: "avance" }, el("div", { style: `width:${Math.round((vistas.size / total) * 100)}%` }))));
       }
 
-      function escena(e) {
+      function mostrar(id) {
+        callar();
+        portada.hidden = true;
+        const e = c.escenas[id];
+        if (!e.error) vistas.add(id);
+        const opciones = e.opciones ? revolver(e.opciones) : null;
+        // Lo que lee el botón 🔊: el texto, el dato y la pregunta con sus opciones.
+        const todo = e.texto.slice();
+        if (e.dato) todo.push("¿Sabías que? " + e.dato);
+        if (e.pregunta) todo.push(e.pregunta, ...opciones.map((o, i) => `Opción ${"ABC"[i]}: ${o.t}.`));
+        app.innerHTML = "";
+        app.append(el("div", { class: "lector" },
+          el("div", { class: "barra herr" },
+            volver(),
+            el("span", { class: "espacio" }),
+            voz ? botonVoz("🔊 Escuchar", "⏹ Detener", todo, "Escuchar esta parte") : null,
+            barraLetra()),
+          cabeza(e.error ? "Un camino que no funcionó" : `Parte ${vistas.size} de ${total}`),
+          escena(e, opciones)));
+        window.scrollTo(0, 0);
+      }
+
+      function escena(e, opciones) {
         const caja = el("div", { class: "escena" + (e.error ? " error" : "") });
         if (e.error) caja.append(el("div", { class: "aviso", text: "🤔 Mmm... eso no funcionó" }));
-        e.texto.forEach((t) => caja.append(el("p", { html: t })));
-        if (e.dato) caja.append(el("div", { class: "dato", html: `<b class="t">💡 ¿Sabías que...?</b>${e.dato}` }));
-        if (e.opciones) {
+        e.texto.forEach((t, i) => caja.append(el("p", { html: t, style: `animation-delay:${i * 0.15}s` })));
+        if (e.dato) {
+          caja.append(el("div", { class: "dato", html: `<b class="t">💡 ¿Sabías que...?</b>${e.dato}` },
+            voz ? botonVoz("🔊", "⏹", ["¿Sabías que? " + e.dato], "Escuchar el dato") : null));
+        }
+        if (opciones) {
           caja.append(el("div", { class: "pregunta", text: "👉 " + e.pregunta }));
-          caja.append(el("div", { class: "opciones" }, revolver(e.opciones).map((o) =>
-            el("button", { onclick: () => { if (c.escenas[o.ir].error) errores++; mostrar(o.ir); } }, o.t))));
+          caja.append(el("div", { class: "opciones" }, opciones.map((o, i) =>
+            el("button", { onclick: () => { if (c.escenas[o.ir].error) errores++; mostrar(o.ir); } },
+              el("span", { class: "letra", text: "ABC"[i] }), el("span", { text: o.t })))));
         } else if (e.fin) {
           caja.append(el("div", { class: "acciones" },
             el("button", { class: "primary", onclick: preguntas }, "Terminar y contestar preguntas →")));
@@ -232,10 +309,8 @@
         }
 
         app.append(el("div", { class: "lector" },
-          el("div", { class: "barra" }, el("button", { onclick: lista }, "← Cuentos"), el("span", { class: "espacio" }), barraLetra()),
-          el("h2", { text: "✏️ ¿Qué entendiste?" }),
-          el("p", { class: "hint", text: c.titulo }),
-          el("br"),
+          el("div", { class: "barra herr" }, volver(), el("span", { class: "espacio" }), barraLetra()),
+          cabeza("✏️ ¿Qué entendiste? Contesta las preguntas"),
           quiz,
           el("div", { class: "panel" },
             el("div", { class: "section-title", text: "📖 Palabras nuevas" }),
@@ -243,7 +318,7 @@
             c.relacion ? el("p", { class: "hint", text: "🔗 Para practicarlo en 3DPit: " + c.relacion }) : null),
           el("br"),
           final));
-        app.querySelector(".lector").scrollIntoView({ block: "start" });
+        window.scrollTo(0, 0);
       }
 
       mostrar(c.inicio);

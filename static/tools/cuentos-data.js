@@ -468,4 +468,443 @@ const CUENTOS = [
       ["Órbita", "Camino que recorre un planeta alrededor del Sol."],
     ],
   },
+
+  {
+    id: "hedy", icono: "🎹", tipo: "real", tema: "Comunicación inalámbrica", minutos: 5,
+    titulo: "La actriz que inventó saltar de frecuencia",
+    resumen: "Una estrella de cine y un pianista inventan una forma secreta de mandar señales de radio. Hoy la usa el Bluetooth.",
+    relacion: "Bluetooth y comunicación inalámbrica",
+    inicio: "a",
+    escenas: {
+      a: {
+        texto: [
+          "Hollywood, <b>1940</b>. <b>Hedy Lamarr</b> es una de las actrices más famosas del mundo. Pero cuando termina de filmar, no se va de fiesta: se encierra a <b>inventar</b>. Tiene una mesa de trabajo llena de cables, dibujos y ideas.",
+          "En Europa hay guerra, y Hedy se entera de un problema: los barcos lanzan torpedos guiados por <b>radio</b>, pero el enemigo puede <b>interferir</b> la señal y mandarlos por otro lado.",
+        ],
+        sig: "b",
+      },
+      b: {
+        texto: [
+          "Una señal de radio viaja en una <b>frecuencia</b>, como una estación en el radio del coche. Si el enemigo descubre cuál es, puede llenarla de ruido y la señal se pierde.",
+        ],
+        pregunta: "¿Cómo harías para que el enemigo no pudiera bloquear la señal?",
+        opciones: [
+          { t: "Cambiar de frecuencia muchas veces por segundo, en un orden secreto", ir: "c" },
+          { t: "Mandar la señal mucho más fuerte por la misma frecuencia", ir: "b1" },
+          { t: "Usar una sola frecuencia y esperar que no la encuentren", ir: "b2" },
+        ],
+      },
+      b1: {
+        error: true,
+        texto: [
+          "Más fuerte gasta mucha energía, y el enemigo también puede hacer su ruido más fuerte. Mientras la señal se quede en un solo lugar, es fácil encontrarla.",
+        ],
+        sig: "b",
+      },
+      b2: {
+        error: true,
+        texto: [
+          "Tarde o temprano la encontrarían, porque basta con buscar en todas hasta dar con la buena. Hay que hacerlo más difícil...",
+        ],
+        sig: "b",
+      },
+      c: {
+        texto: [
+          "¡Esa fue la idea de Hedy! Si el emisor y el receptor <b>saltan juntos</b> de una frecuencia a otra siguiendo el mismo orden secreto, el enemigo nunca sabe dónde buscar. A esto se le llama <b>salto de frecuencia</b>.",
+          "Pero había un problema: ¿cómo lograr que dos aparatos, uno en el barco y otro en el torpedo, cambien al mismo tiempo?",
+        ],
+        sig: "d",
+      },
+      d: {
+        texto: [
+          "Hedy conoce a <b>George Antheil</b>, un compositor que había hecho música con varias <b>pianolas</b> tocando juntas. Las pianolas son pianos que tocan solos leyendo un rollo de papel perforado.",
+          "Juntos piensan: si dos rollos iguales giran al mismo tiempo, pueden marcar los saltos. ¡Y el piano tiene <b>88 teclas</b>, así que usan <b>88 frecuencias</b>!",
+        ],
+        dato: "En 1942 Hedy y George recibieron la patente de su «Sistema de comunicación secreta». Otra vez aparecen los rollos perforados, como las tarjetas de los telares del cuento de Ada.",
+        sig: "e",
+      },
+      e: {
+        fin: true,
+        texto: [
+          "La Marina no usó el invento en esa guerra: pensó que era demasiado complicado. Pero años después, cuando la electrónica creció, los ingenieros retomaron la idea.",
+          "Hoy el <b>Bluetooth</b> salta entre decenas de frecuencias más de mil veces por segundo para que las señales no choquen entre sí. Cuando conectas tu ESP32 por Bluetooth, usas una idea que nació de una actriz y un pianista.",
+          "En 1997, ya mayor, Hedy recibió un premio por ser pionera de la comunicación inalámbrica. Por fin la reconocieron como lo que siempre fue: <b>inventora</b>.",
+        ],
+      },
+    },
+    preguntas: [
+      { p: "¿Qué problema quería resolver Hedy?", o: ["Que el enemigo no pudiera bloquear la señal de radio", "Que las películas se vieran a color", "Que los pianos tocaran solos"], c: 0, e: "Quería que la señal no se pudiera interferir." },
+      { p: "¿Por qué usaron 88 frecuencias?", o: ["Porque era el número de la suerte", "Porque el piano tiene 88 teclas", "Porque había 88 barcos"], c: 1, e: "Su sistema se inspiró en las pianolas, que tienen 88 teclas." },
+      { p: "¿Qué tecnología de hoy usa una idea parecida?", o: ["La linterna", "El reloj de pared", "El Bluetooth"], c: 2, e: "El Bluetooth salta de frecuencia para evitar interferencias." },
+    ],
+    palabras: [
+      ["Frecuencia", "En la radio, el «canal» por el que viaja una señal."],
+      ["Interferir", "Meter ruido o estorbar una señal para que no llegue bien."],
+      ["Patente", "Documento que dice quién inventó algo."],
+    ],
+  },
+
+  {
+    id: "internet", icono: "💻", tipo: "real", tema: "Redes e Internet", minutos: 5,
+    titulo: "LO: el primer mensaje de Internet",
+    resumen: "En 1969 dos computadoras muy lejanas intentan hablarse por primera vez. El mensaje sale... a medias.",
+    relacion: "WiFi y comunicación por red",
+    inicio: "a",
+    escenas: {
+      a: {
+        texto: [
+          "Estados Unidos, <b>29 de octubre de 1969</b>, de noche. En la Universidad de California en Los Ángeles (UCLA), un estudiante llamado <b>Charley Kline</b> está sentado frente a una computadora del tamaño de un refrigerador.",
+          "A más de <b>500 kilómetros</b>, en otro laboratorio llamado SRI, otro joven, <b>Bill Duvall</b>, espera junto a otra computadora. Están conectados por una línea telefónica y por una red nueva llamada <b>ARPANET</b>.",
+        ],
+        sig: "b",
+      },
+      b: {
+        texto: [
+          "Su misión: que una computadora le mande un mensaje a la otra. Charley tiene que escribir la palabra <b>LOGIN</b> (entrar) para conectarse a la computadora lejana.",
+          "Para estar seguros de que todo funciona, hablan por teléfono al mismo tiempo.",
+        ],
+        pregunta: "¿Cómo crees que deberían mandar la palabra?",
+        opciones: [
+          { t: "Letra por letra, confirmando por teléfono que cada una llegó", ir: "c" },
+          { t: "Mandar un texto enorme de una vez, para ganar tiempo", ir: "b1" },
+        ],
+      },
+      b1: {
+        error: true,
+        texto: [
+          "Si mandas mucho de golpe y algo falla, no sabes <b>dónde</b> falló. Cuando pruebas algo por primera vez, es mejor ir poco a poco, como cuando pruebas tu programa por partes.",
+        ],
+        sig: "b",
+      },
+      c: {
+        texto: [
+          "Charley escribe la <b>L</b>. «¿Te llegó la L?», pregunta por teléfono. «¡Sí, llegó la L!», contesta Bill.",
+          "Escribe la <b>O</b>. «¿Te llegó la O?». «¡Sí, llegó la O!».",
+          "Escribe la <b>G</b>... y silencio. <b>¡La computadora de Bill se trabó!</b>",
+        ],
+        sig: "d",
+      },
+      d: {
+        texto: [
+          "Así que el primer mensaje de la red que se convertiría en Internet fue... <b>«LO»</b>. Sin querer, en inglés suena como <i>«lo and behold»</i>, que es algo así como «¡miren esto!».",
+          "Los equipos revisaron qué había pasado, corrigieron el problema y como <b>una hora después</b> lograron mandar la palabra completa.",
+        ],
+        dato: "Hoy la información viaja por Internet partida en pedacitos llamados paquetes. Si un paquete se pierde, se vuelve a pedir: es la misma idea de confirmar letra por letra.",
+        sig: "e",
+      },
+      e: {
+        fin: true,
+        texto: [
+          "Esa noche había <b>2 computadoras</b> en la red. Unos meses después ya eran 4. Hoy hay miles de millones de aparatos conectados: teléfonos, televisiones, relojes... y tu placa ESP32 cuando usas el <b>WiFi</b>.",
+          "Todo empezó con dos letras, un teléfono y unos jóvenes que no se rindieron cuando la máquina se trabó.",
+        ],
+      },
+    },
+    preguntas: [
+      { p: "¿Cuál fue el primer mensaje que llegó?", o: ["HOLA", "LO", "LOGIN completo"], c: 1, e: "La computadora se trabó al llegar la G, así que solo llegó «LO»." },
+      { p: "¿Para qué usaban el teléfono al mismo tiempo?", o: ["Para confirmar que cada letra había llegado", "Para pedir pizza", "Para escuchar música"], c: 0, e: "Así sabían exactamente qué llegó y qué no." },
+      { p: "¿Qué hicieron cuando la computadora se trabó?", o: ["Se rindieron", "Tiraron la computadora", "Buscaron el problema, lo corrigieron y lo lograron una hora después"], c: 2, e: "Corrigieron el error y mandaron la palabra completa." },
+    ],
+    palabras: [
+      ["Red", "Aparatos conectados que pueden mandarse información."],
+      ["Paquete", "Pedacito de información que viaja por Internet."],
+      ["Trabarse", "Cuando una computadora deja de responder."],
+    ],
+  },
+
+  {
+    id: "apolo", icono: "🌕", tipo: "real", tema: "Prioridades y errores", minutos: 5,
+    titulo: "Alarma 1202: aterrizar en la Luna",
+    resumen: "Faltan minutos para tocar la Luna y la computadora empieza a dar alarmas. ¿Abortan la misión?",
+    relacion: "Programas que hacen varias cosas a la vez",
+    inicio: "a",
+    escenas: {
+      a: {
+        texto: [
+          "<b>20 de julio de 1969</b>. El módulo lunar <b>Eagle</b>, con los astronautas Neil Armstrong y Buzz Aldrin, baja hacia la superficie de la Luna. Millones de personas lo ven por televisión.",
+          "Lo guía una computadora pequeñita para lo que hace: tiene muchísima menos memoria que cualquier calculadora de hoy. Su programa lo escribió un equipo dirigido por <b>Margaret Hamilton</b>, una ingeniera de software.",
+        ],
+        sig: "b",
+      },
+      b: {
+        texto: [
+          "A pocos minutos de aterrizar, en la pantalla aparece una alarma: <b>1202</b>. Luego otra: <b>1201</b>. Armstrong pregunta por radio qué significa. En la Tierra, el centro de control tiene segundos para decidir.",
+          "La computadora estaba recibiendo <b>demasiado trabajo a la vez</b>: un radar le mandaba datos que en ese momento no hacían falta.",
+        ],
+        pregunta: "¿Qué debería hacer una buena computadora cuando tiene demasiado trabajo?",
+        opciones: [
+          { t: "Hacer primero lo más importante y dejar para después lo que puede esperar", ir: "c" },
+          { t: "Intentar hacerlo todo al mismo tiempo, aunque se trabe", ir: "b1" },
+          { t: "Apagarse para descansar", ir: "b2" },
+        ],
+      },
+      b1: {
+        error: true,
+        texto: [
+          "Si se traba, nadie guía al módulo lunar. ¡Justo cuando más se necesita! Una computadora que intenta todo a la vez puede terminar sin hacer nada.",
+        ],
+        sig: "b",
+      },
+      b2: {
+        error: true,
+        texto: [
+          "¡Ni pensarlo! Faltan unos minutos para tocar la Luna. Apagarse sería peligrosísimo.",
+        ],
+        sig: "b",
+      },
+      c: {
+        texto: [
+          "Eso es exactamente lo que hacía el programa de Margaret Hamilton. Su equipo le dio a cada tarea una <b>prioridad</b>. Cuando hubo demasiado trabajo, la computadora se reinició en un instante y siguió haciendo <b>solo lo importante</b>: guiar el aterrizaje.",
+          "Las alarmas no decían «todo está mal», decían: «tengo demasiado trabajo, pero ya me estoy encargando».",
+        ],
+        dato: "En el centro de control, un joven ingeniero, Jack Garman, reconoció la alarma porque la habían practicado. Contestó rápido: podían seguir. Practicar los errores antes de que pasen salva misiones.",
+        sig: "d",
+      },
+      d: {
+        fin: true,
+        texto: [
+          "Minutos después, Armstrong anunció: <b>«El Águila ha aterrizado»</b>. Horas más tarde dio el primer paso de un ser humano en la Luna.",
+          "Hay una foto famosa de Margaret Hamilton junto a una torre de hojas de papel tan alta como ella: es el programa impreso del Apolo. Ella ayudó a que la gente usara la expresión <b>«ingeniería de software»</b>, para que se tomara en serio el trabajo de programar.",
+          "Cuando tu programa en 3DPit hace varias cosas, piensa como Margaret: <b>¿qué es lo más importante?</b>",
+        ],
+      },
+    },
+    preguntas: [
+      { p: "¿Por qué aparecieron las alarmas 1202 y 1201?", o: ["Porque se acabó la gasolina", "Porque la computadora tenía demasiado trabajo a la vez", "Porque la Luna estaba oscura"], c: 1, e: "Un radar le mandaba datos de más y la computadora estaba sobrecargada." },
+      { p: "¿Qué hizo el programa de Margaret Hamilton?", o: ["Siguió haciendo solo lo más importante", "Apagó la nave", "Borró todos los datos"], c: 0, e: "Usó prioridades: primero lo importante, que era aterrizar." },
+      { p: "¿Qué significa dar prioridad a una tarea?", o: ["Hacerla al final", "No hacerla nunca", "Decidir que es más importante y hacerla primero"], c: 2, e: "Lo prioritario va primero." },
+    ],
+    palabras: [
+      ["Prioridad", "Lo que es más importante y se hace primero."],
+      ["Software", "Los programas de una computadora."],
+      ["Abortar", "En una misión espacial, cancelarla y regresar."],
+    ],
+  },
+
+  {
+    id: "camarena", icono: "📺", tipo: "real", tema: "Colores y luz (RGB)", minutos: 5,
+    titulo: "El joven mexicano que le dio color a la tele",
+    resumen: "En Guadalajara, un muchacho curioso arma radios con piezas viejas y termina inventando la televisión a color.",
+    relacion: "LED RGB y NeoPixel",
+    inicio: "a",
+    escenas: {
+      a: {
+        texto: [
+          "Guadalajara, México, años <b>1920</b>. <b>Guillermo González Camarena</b> es un niño que no puede ver un aparato sin querer abrirlo. A los 12 años ya arma sus propios transmisores de radio con piezas que encuentra.",
+          "De joven estudia ingeniería en la Ciudad de México y se obsesiona con un invento nuevo: la <b>televisión</b>. Pero en esa época la tele solo se veía en blanco y negro.",
+        ],
+        sig: "b",
+      },
+      b: {
+        texto: [
+          "Guillermo quiere que la tele muestre todos los colores. Pero hay millones de colores... ¿cómo mandarlos todos?",
+        ],
+        pregunta: "¿Cuál es el truco para formar casi cualquier color?",
+        opciones: [
+          { t: "Mezclar luz roja, verde y azul en distintas cantidades", ir: "c" },
+          { t: "Tener un foco distinto para cada uno de los millones de colores", ir: "b1" },
+          { t: "Pintar la pantalla de colores", ir: "b2" },
+        ],
+      },
+      b1: {
+        error: true,
+        texto: [
+          "¡Se necesitarían millones de focos! No cabrían en ninguna casa. Tiene que haber una forma de formar muchos colores con muy pocos.",
+        ],
+        sig: "b",
+      },
+      b2: {
+        error: true,
+        texto: [
+          "Si pintas la pantalla, siempre se ve igual. La imagen de la tele se mueve y cambia todo el tiempo: el color tiene que venir de la <b>luz</b>.",
+        ],
+        sig: "b",
+      },
+      c: {
+        texto: [
+          "¡Exacto! Con <b>luz</b>, el rojo, el verde y el azul se pueden mezclar: rojo más verde da amarillo; los tres juntos dan blanco. Con distintas cantidades de cada uno salen millones de colores.",
+          "Guillermo inventa un sistema que manda la imagen en tres partes, una roja, una verde y una azul, una tras otra tan rápido que el ojo las ve juntas. Lo llama <b>sistema tricromático secuencial de campos</b>.",
+        ],
+        dato: "Es lo mismo que hace un LED RGB o un NeoPixel: tiene tres LEDs chiquitos, rojo, verde y azul. En 3DPit eliges cuánto brilla cada uno y así formas cualquier color.",
+        sig: "d",
+      },
+      d: {
+        texto: [
+          "En <b>1940</b>, con apenas 23 años, Guillermo patenta su invento en México, y después en Estados Unidos. Fue uno de los primeros sistemas de televisión a color del mundo.",
+        ],
+        sig: "e",
+      },
+      e: {
+        fin: true,
+        texto: [
+          "Guillermo siguió inventando toda su vida y fundó un canal de televisión. Su canal se identificaba con las letras <b>XHGC</b>: la G y la C son por <b>G</b>onzález <b>C</b>amarena. Hoy se conoce como el canal 5.",
+          "Su historia demuestra que un niño curioso de Guadalajara, desarmando radios viejos, puede cambiar la forma en que todo el mundo ve las cosas.",
+        ],
+      },
+    },
+    preguntas: [
+      { p: "¿Qué colores de luz se mezclan para formar casi todos los demás?", o: ["Rojo, verde y azul", "Negro, blanco y gris", "Morado, café y rosa"], c: 0, e: "Rojo, verde y azul: por eso se dice RGB (red, green, blue)." },
+      { p: "¿Qué hacía Guillermo de niño?", o: ["Pintaba cuadros", "Armaba transmisores de radio con piezas que encontraba", "Jugaba futbol todo el día"], c: 1, e: "Desde los 12 años armaba sus propios aparatos." },
+      { p: "¿Qué componente de 3DPit usa la misma idea?", o: ["El sensor ultrasónico", "El botón", "El LED RGB o NeoPixel"], c: 2, e: "Tiene tres LEDs: rojo, verde y azul." },
+    ],
+    palabras: [
+      ["RGB", "Rojo, verde y azul (en inglés: red, green, blue)."],
+      ["Tricromático", "Que usa tres colores."],
+      ["Transmisor", "Aparato que manda señales de radio o televisión."],
+    ],
+  },
+
+  {
+    id: "morse", icono: "🔦", tipo: "ficcion", tema: "Código Morse y tiempos", minutos: 5,
+    titulo: "El mensaje secreto entre dos ventanas",
+    resumen: "Sofía y su amigo Mateo viven frente a frente. Sin celular, inventan cómo mandarse mensajes con un LED.",
+    relacion: "LED y bloques de esperar",
+    inicio: "a",
+    escenas: {
+      a: {
+        texto: [
+          "<b>Sofía</b> y <b>Mateo</b> viven en edificios que están frente a frente, y sus ventanas se ven de noche. No tienen celular, pero sí una placa ESP32 cada uno y un LED muy brillante.",
+          "«¿Y si nos mandamos mensajes con luz?», dice Sofía por la ventana. Mateo levanta el pulgar.",
+        ],
+        sig: "b",
+      },
+      b: {
+        texto: [
+          "El abuelo de Sofía les cuenta del <b>código Morse</b>: cada letra se escribe con <b>puntos</b> (señales cortas) y <b>rayas</b> (señales largas). La S es «punto punto punto» y la O es «raya raya raya».",
+        ],
+        dato: "En 1844, Samuel Morse y Alfred Vail mandaron uno de los primeros mensajes por telégrafo entre dos ciudades de Estados Unidos. Durante más de cien años, el Morse fue la forma más rápida de mandar mensajes lejos.",
+        pregunta: "Con un LED, ¿cómo se distingue un punto de una raya?",
+        opciones: [
+          { t: "Por cuánto tiempo se queda encendido: poquito es punto, más tiempo es raya", ir: "c" },
+          { t: "Por el color del LED", ir: "b1" },
+        ],
+      },
+      b1: {
+        error: true,
+        texto: [
+          "Sofía y Mateo solo tienen un LED blanco cada uno. Además, de lejos los colores se confunden. Lo que sí se nota bien es si la luz dura <b>poco</b> o <b>mucho</b>.",
+        ],
+        sig: "b",
+      },
+      c: {
+        texto: [
+          "Sofía programa: para un <b>punto</b>, encender el LED, <b>esperar 0.2 segundos</b> y apagarlo. Para una <b>raya</b>, encender, <b>esperar 0.6 segundos</b> y apagar. La raya dura el triple que el punto.",
+          "Prueba mandar «SOS» y Mateo ve una sola luz larga y borrosa. Algo falta.",
+        ],
+        pregunta: "¿Qué le falta al programa?",
+        opciones: [
+          { t: "Una espera con el LED apagado entre cada señal", ir: "d" },
+          { t: "Hacer las rayas todavía más largas", ir: "c1" },
+        ],
+      },
+      c1: {
+        error: true,
+        texto: [
+          "Las rayas más largas no ayudan: si el LED se vuelve a prender justo al apagarse, Mateo sigue viendo todo pegado. Hay que dejar un <b>espacio</b> oscuro entre señal y señal.",
+        ],
+        sig: "c",
+      },
+      d: {
+        texto: [
+          "Sofía agrega <b>esperar 0.2 segundos con el LED apagado</b> después de cada punto o raya, y una espera más larga entre letras. Ahora Mateo ve clarito: <i>corto, corto, corto... largo, largo, largo... corto, corto, corto</i>.",
+          "Como el SOS se repite igual, Sofía arma un bloque para el punto y otro para la raya, y así no tiene que copiar lo mismo una y otra vez.",
+        ],
+        sig: "e",
+      },
+      e: {
+        fin: true,
+        texto: [
+          "Esa noche, Mateo contesta con su LED. Sofía va anotando: «H... O... L... A». ¡HOLA!",
+          "Desde entonces tienen su propio idioma de luces. Y aprendieron algo importante de los programas: <b>los silencios y las esperas también son parte del mensaje</b>.",
+        ],
+      },
+    },
+    preguntas: [
+      { p: "¿Cómo se distingue un punto de una raya con el LED?", o: ["Por el color", "Por cuánto tiempo se queda encendido", "Por el tamaño del LED"], c: 1, e: "El punto es corto y la raya dura más." },
+      { p: "¿Por qué al principio Mateo veía una luz larga y borrosa?", o: ["Faltaba una espera con el LED apagado entre señales", "El LED estaba fundido", "Era de día"], c: 0, e: "Sin el espacio oscuro, todas las señales se juntaban." },
+      { p: "¿Qué significa SOS en Morse?", o: ["Raya, punto, raya", "Solo puntos", "Punto punto punto, raya raya raya, punto punto punto"], c: 2, e: "S es tres puntos y O es tres rayas." },
+    ],
+    palabras: [
+      ["Código", "Forma de escribir un mensaje con señales o símbolos."],
+      ["Telégrafo", "Aparato antiguo que mandaba mensajes por cable con pulsos eléctricos."],
+      ["Señal", "Algo que se manda para comunicar, como una luz o un sonido."],
+    ],
+  },
+
+  {
+    id: "alarma", icono: "🚨", tipo: "ficcion", tema: "Sensores y condiciones", minutos: 5,
+    titulo: "¿Quién se come mis galletas?",
+    resumen: "Alguien saca galletas del cajón de Leo cada tarde. Con un sensor ultrasónico y un buzzer, Leo arma una trampa.",
+    relacion: "Sensor ultrasónico y buzzer",
+    inicio: "a",
+    escenas: {
+      a: {
+        texto: [
+          "Cada tarde, <b>Leo</b> guarda sus galletas favoritas en un cajón de su escritorio. Y cada mañana... ¡faltan dos! Nadie en la casa confiesa.",
+          "Leo decide resolver el misterio como un ingeniero: con su placa ESP32, un <b>sensor ultrasónico</b> y un <b>buzzer</b>.",
+        ],
+        sig: "b",
+      },
+      b: {
+        texto: [
+          "El sensor ultrasónico manda un sonido que no se oye y mide cuánto tarda en rebotar. Así sabe la <b>distancia</b> a lo que tenga enfrente. Leo lo pone mirando hacia el cajón: normalmente mide unos <b>80 cm</b> hasta la pared.",
+        ],
+        pregunta: "¿Cuándo debe sonar la alarma?",
+        opciones: [
+          { t: "Si la distancia es menor que 30 cm, porque alguien se acercó", ir: "c" },
+          { t: "Si la distancia es mayor que 30 cm", ir: "b1" },
+        ],
+      },
+      b1: {
+        error: true,
+        texto: [
+          "¡La alarma suena todo el tiempo! Como la pared está a 80 cm, la distancia casi siempre es mayor que 30. Cuando alguien se acerca, la distancia se hace <b>más chica</b>, no más grande.",
+        ],
+        sig: "b",
+      },
+      c: {
+        texto: [
+          "Leo programa: <b>repetir para siempre</b>: medir la distancia; <b>si</b> es menor que 30 cm, sonar el buzzer.",
+          "Lo prueba pasando la mano: <i>¡piiiii!</i> Funciona. Pero hay un problema: si el ladrón de galletas se va rápido, Leo no sabrá cuántas veces vino.",
+        ],
+        pregunta: "¿Cómo puede saber cuántas veces se acercaron?",
+        opciones: [
+          { t: "Usar una variable que cuente: sumarle 1 cada vez que suena la alarma", ir: "d" },
+          { t: "Quedarse despierto toda la noche contando", ir: "c1" },
+        ],
+      },
+      c1: {
+        error: true,
+        texto: [
+          "Leo lo intenta, pero a las 10 de la noche ya se quedó dormido sobre el escritorio. Para eso existen las placas: <b>no se cansan</b> y pueden contar por ti.",
+        ],
+        sig: "c",
+      },
+      d: {
+        texto: [
+          "Leo crea una variable llamada <b>visitas</b> que empieza en 0. Cada vez que el sensor detecta a alguien, le suma 1 y espera 3 segundos, para no contar la misma visita muchas veces.",
+          "Se va a dormir. A la mañana siguiente, en la pantalla dice: <b>visitas: 1</b>. Y en el piso, junto al cajón, hay... ¡pelos blancos!",
+        ],
+        dato: "Esperar unos segundos después de detectar algo es un truco común: evita que una sola persona que se queda un rato frente al sensor cuente como muchas.",
+        sig: "e",
+      },
+      e: {
+        fin: true,
+        texto: [
+          "Esa tarde, Leo se esconde y espera. A las 9 de la noche se escucha <i>¡piiiii!</i> y aparece la culpable: <b>Nube</b>, la perrita de la casa, con una galleta en el hocico.",
+          "Toda la familia se ríe. Leo cambia sus galletas a un frasco con tapa, y deja el sensor puesto... ahora como timbre para saber cuándo Nube quiere jugar.",
+        ],
+      },
+    },
+    preguntas: [
+      { p: "¿Qué mide el sensor ultrasónico?", o: ["La temperatura", "La distancia a lo que tiene enfrente", "El color de las cosas"], c: 1, e: "Mide cuánto tarda en rebotar un sonido para saber la distancia." },
+      { p: "¿Por qué la condición es «menor que 30 cm»?", o: ["Porque cuando alguien se acerca, la distancia se hace más chica", "Porque 30 es un número bonito", "Porque el sensor no mide más de 30"], c: 0, e: "Acercarse hace que la distancia baje." },
+      { p: "¿Para qué sirve la variable «visitas»?", o: ["Para apagar la alarma", "Para medir la distancia", "Para contar cuántas veces se acercó alguien"], c: 2, e: "La variable guarda la cuenta y le suma 1 cada vez." },
+    ],
+    palabras: [
+      ["Variable", "Un lugar con nombre donde el programa guarda un dato que puede cambiar."],
+      ["Condición", "Pregunta de sí o no que decide qué hace el programa."],
+      ["Ultrasonido", "Sonido tan agudo que las personas no lo oyen."],
+    ],
+  },
 ];
