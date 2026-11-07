@@ -3134,6 +3134,18 @@
           </block>
           <block type="analog_sensor_read"></block>
 
+          <label text="Potenciómetro (perilla)"></label>
+          <block type="analog_sensor_init">
+            <field name="NAME">perilla</field>
+            <field name="MODEL">POT</field>
+            <field name="PIN">34</field>
+            <field name="ATTEN">ADC.ATTN_11DB</field>
+            <field name="WIDTH">ADC.WIDTH_10BIT</field>
+          </block>
+          <block type="analog_sensor_read">
+            <field name="NAME">perilla</field>
+          </block>
+
           <block type="pot_slider_init">
             <field name="PIN_A">35</field>
             <field name="PIN_B">34</field>

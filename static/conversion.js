@@ -4099,6 +4099,15 @@ Blockly.defineBlocksWithJsonArray([
           ],
           [
             {
+              src: "./static/img/pot_rotary.svg",
+              width: 50,
+              height: 50,
+              alt: "Potenciómetro",
+            },
+            "POT",
+          ],
+          [
+            {
               src: "./static/img/ky-013.svg",
               width: 50,
               height: 50,

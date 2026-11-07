@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 50 58"
+   width="50mm"
+   height="58mm"
+   version="1.1"
+   id="svg13"
+   sodipodi:docname="pot_rotary.svg"
+   inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs13" />
+  <sodipodi:namedview
+     id="namedview13"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="mm"
+     inkscape:zoom="1.7386344"
+     inkscape:cx="85.124281"
+     inkscape:cy="115.89556"
+     inkscape:window-width="1366"
+     inkscape:window-height="697"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg13" />
+  <!-- Potenciómetro rotativo (módulo azul, perilla gris con marca de
+         posición), estilo de referencia dado por el usuario. La marca
+         (data-role="pot-indicator") es lo que pot_rotary.behavior.js
+         rota según el ángulo actual; data-role="pot-hitzone" es la zona
+         de arrastre (más grande que la perilla visible, más fácil de
+         agarrar con el mouse), mismo criterio que ya usan ky040/joystick. -->
+  <rect
+     x="2"
+     y="2"
+     width="46"
+     height="54"
+     rx="4"
+     fill="#0d5f78"
+     id="rect1" />
+  <rect
+     x="9"
+     y="7"
+     width="32"
+     height="32"
+     rx="3"
+     fill="#c9dbe0"
+     opacity="0.35"
+     id="rect2" />
+  <circle
+     cx="10"
+     cy="9"
+     r="2.6"
+     fill="#ffffff"
+     id="circle2" />
+  <circle
+     cx="40"
+     cy="9"
+     r="2.6"
+     fill="#ffffff"
+     id="circle3" />
+  <circle
+     cx="10"
+     cy="49"
+     r="2.6"
+     fill="#ffffff"
+     id="circle4" />
+  <circle
+     cx="40"
+     cy="49"
+     r="2.6"
+     fill="#ffffff"
+     id="circle5" />
+  <circle
+     cx="25"
+     cy="23"
+     r="16"
+     fill="none"
+     stroke="#ffffff"
+     stroke-width="2.2"
+     id="circle6" />
+  <circle
+     cx="25"
+     cy="23"
+     r="15"
+     fill="#c9c9c9"
+     id="circle7" />
+  <g
+     data-role="pot-indicator"
+     id="g7">
+    <line
+       x1="25"
+       y1="23"
+       x2="19"
+       y2="30"
+       stroke="#1a1a1a"
+       stroke-width="2"
+       stroke-linecap="round"
+       id="line7" />
+  </g>
+  <!-- Marcas de tope mecánico (a pedido: "debe empezar en la linea
+         roja de lado izquierda y terminar en la linea roja de lado
+         derecha"), puramente decorativas: indican dónde caen los
+         límites -150°/+150° que ya usa pot_rotary.behavior.js (mismo
+         sistema de ángulo: 0°=arriba, horario+). Son tics radiales
+         cortos, justo afuera del aro blanco (r=16), calculados a
+         mano con seno/coseno para que apunten exactamente en esas
+         direcciones: si alguna vez cambia MIN_ANGLE/MAX_ANGLE en
+         el .js, hay que recalcular estos puntos a mano también. -->
+  <line
+     x1="16.5"
+     y1="37.72"
+     x2="14.5"
+     y2="41.19"
+     stroke="#e03030"
+     stroke-width="2.2"
+     stroke-linecap="round"
+     id="line8" />
+  <line
+     x1="33.5"
+     y1="37.72"
+     x2="35.5"
+     y2="41.19"
+     stroke="#e03030"
+     stroke-width="2.2"
+     stroke-linecap="round"
+     id="line9" />
+  <rect
+     x="13"
+     y="44.5"
+     width="24"
+     height="7.5"
+     rx="1"
+     fill="none"
+     stroke="#ffffff"
+     stroke-width="1"
+     id="rect9" />
+  <circle
+     cx="18"
+     cy="48.25"
+     r="1.7"
+     fill="#8c8c8c"
+     id="circle9" />
+  <circle
+     cx="25"
+     cy="48.25"
+     r="1.7"
+     fill="#8c8c8c"
+     id="circle10" />
+  <circle
+     cx="32"
+     cy="48.25"
+     r="1.7"
+     fill="#8c8c8c"
+     id="circle11" />
+  <text
+     x="18"
+     y="42.5"
+     fill="#ffffff"
+     font-size="3.4"
+     font-weight="bold"
+     text-anchor="middle"
+     font-family="sans-serif"
+     id="text11">GND</text>
+  <text
+     x="25"
+     y="42.5"
+     fill="#ffffff"
+     font-size="3.4"
+     font-weight="bold"
+     text-anchor="middle"
+     font-family="sans-serif"
+     id="text12">SIG</text>
+  <text
+     x="32"
+     y="42.5"
+     fill="#ffffff"
+     font-size="3.4"
+     font-weight="bold"
+     text-anchor="middle"
+     font-family="sans-serif"
+     id="text13">VCC</text>
+  <!-- FIX real (a pedido: "hago clic y se mueve muy mal, no
+         sigue"): antes esto era un círculo de radio 17, apenas más
+         grande que la perilla visible (r=16); un click que caía
+         apenas afuera de ESE círculo exacto (muy fácil al arrastrar
+         rápido con el mouse) nunca disparaba pointerdown acá, y el
+         evento se filtraba hacia el drag genérico del componente
+         entero (que no tiene ningún límite angular, de ahí también
+         la sensación de "no tiene límite"). Ahora la zona de click
+         es TODO el cuadrado celeste de fondo (9,7 a 41,39), que
+         además ya sugiere visualmente "acá se agarra". -->
+</svg>
