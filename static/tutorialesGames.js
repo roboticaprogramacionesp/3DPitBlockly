@@ -2314,44 +2314,91 @@
     title: 'La Ruta del Conocimiento en la pantalla',
     icon: '🎲',
     diagram: '',
-    steps: [
-      {
-        titulo: '¿Qué aprenderemos?',
-        desc: 'Vamos a hacer <b>La Ruta del Conocimiento</b> en la pantalla: con la <b>barra espaciadora</b> tiras el dado, y con la flecha <b>→</b> el robot avanza <b>una casilla</b> por cada apretón, hasta gastar los pasos que te dio el dado. ¡Llega a la meta!',
-        highlightCat: null, bloque: null
-      }
-    ].concat(INICIO_JUEGO, [
-      paso('Inicia el juego', 'Arrastra <em>🎮 iniciar juego</em> con ancho <b>600</b> y alto <b>300</b>.', 'Inicio', 'game_start', 'iniciar juego'),
-      paso('Color de fondo', 'Arrastra <em>color de fondo</em> y elige un azul muy oscuro.', 'Inicio', 'game_set_bg', 'color de fondo'),
-      paso('Crea el robot', 'Arrastra <em>🧍 crear personaje</em>: nombre <b>robot</b>, X=<b>26</b>, Y=<b>116</b>, ancho y alto <b>48</b>.', 'Inicio', 'sprite_create_named', 'crear personaje'),
-      paso('Elige el robot', 'En su imagen pon <em>🧍 personaje</em> y elige el <b>robot</b>.', 'Inicio', 'game_sprite_personajes', 'personaje'),
-      pasoVariable('casilla', 'Ve a <b>Variables</b> y crea <b>casilla</b>: en qué casilla va el robot.'),
-      pasoSet('Empieza en la casilla 0', 'casilla', 'Arrastra <em>establecer casilla a</em> con <b>0</b>.'),
-      pasoVariable('dado', 'Crea la variable <b>dado</b>.'),
-      pasoSet('El dado empieza en 0', 'dado', 'Arrastra <em>establecer dado a</em> con <b>0</b>.'),
-      pasoVariable('pasos', 'Crea la variable <b>pasos</b>: cuántas casillas te faltan por avanzar.'),
-      pasoSet('Sin pasos al inicio', 'pasos', 'Arrastra <em>establecer pasos a</em> con <b>0</b>.'),
-      paso('El ciclo del juego', 'Ve a <b>Ciclos</b> y arrastra <em>repetir mientras verdadero</em>.', 'Ciclos', 'controls_whileUntil', 'Repetir mientras Verdadero'),
-      paso('Limpia la pantalla', 'Ve a <b>Inicio</b> y arrastra <em>limpiar pantalla</em> dentro del ciclo.', 'Inicio', 'game_clear', 'limpiar pantalla'),
-      paso('Un ciclo para las casillas', 'Ve a <b>Ciclos</b> y arrastra <em>contar con i desde 0 hasta 6 de a 1</em>: dibujaremos 7 casillas.', 'Ciclos', 'controls_for', 'contar con'),
-      paso('Dibuja cada casilla', 'Ve a <b>Inicio</b> y arrastra <em>⬛ rectángulo sólido</em> dentro del <em>contar</em>: Y=<b>110</b>, ancho y alto <b>60</b>, color azul.', 'Inicio', 'game_draw_rect', 'rectángulo sólido'),
-      paso('Una casilla junto a otra', 'En la X pon con <b>Matemáticas</b>: <b>20 + i × 70</b>. Así cada casilla queda 70 píxeles a la derecha de la anterior.', 'Matemáticas', 'math_arithmetic', 'operación'),
-      paso('La meta', 'Después del <em>contar</em> arrastra otro <em>rectángulo sólido</em> amarillo en X=<b>510</b>, Y=<b>110</b>, de <b>60</b> × <b>60</b>, y un <em>escribir</em> «META» en X=<b>517</b>, Y=<b>200</b>.', 'Inicio', 'game_draw_rect', 'rectángulo sólido'),
-      paso('Si se aprieta espacio', 'Ve a <b>Lógica</b> y arrastra un <em>si hacer</em>. Pon un bloque <em>y</em> en su condición.', 'Lógica', 'controls_if', 'si hacer'),
-      paso('Espacio y sin pasos pendientes', 'En el <em>y</em> pon <em>⌨️ tecla Espacio presionada?</em> y <em>comparar</em> <b>pasos = 0</b>: solo puedes tirar cuando ya avanzaste lo del tiro anterior.', 'Inicio', 'key_is_pressed', 'tecla presionada?'),
-      pasoSet('Tira el dado', 'dado', 'Dentro del <em>si</em> arrastra <em>establecer dado a</em> con <em>🎲 número entero aleatorio entre 1 y 6</em>.'),
-      pasoSet('Los pasos son lo que salió', 'pasos', 'Arrastra <em>establecer pasos a</em> con <em>obtener dado</em>.'),
-      paso('Una pausa', 'Ve a <b>Inicio</b> y arrastra <em>⏳ esperar</em> <b>0.3</b> segundos, para que un apretón tire una sola vez.', 'Inicio', 'game_wait', 'esperar'),
-      paso('Si se aprieta →', 'Arrastra otro <em>si hacer</em> con un <em>y</em>: <em>tecla → Derecha presionada?</em> y <em>comparar</em> <b>pasos &gt; 0</b>.', 'Lógica', 'controls_if', 'si hacer'),
-      paso('Avanza una casilla', 'Dentro, arrastra <em>🏃 mover personaje</em> <b>robot</b> con dx=<b>70</b>, dy=<b>0</b>.', 'Inicio', 'sprite_move_named', 'mover personaje'),
-      paso('Cuenta las casillas', 'Ve a <b>Variables</b> y arrastra <em>cambiar casilla por 1</em> y <em>cambiar pasos por -1</em>.', 'Variables', 'math_change', 'cambiar por'),
-      paso('¿Llegó a la meta?', 'Arrastra un <em>si</em> con <b>casilla = 7</b> y dentro <em>establecer pasos a 0</em>: en la meta ya no se avanza.', 'Lógica', 'controls_if', 'si hacer'),
-      paso('Un apretón, una casilla', 'Al final de este <em>si</em> arrastra <em>⏳ esperar</em> <b>0.25</b> segundos.', 'Inicio', 'game_wait', 'esperar'),
-      paso('Muestra el dado', 'Arrastra <em>✏️ escribir</em> en X=<b>20</b>, Y=<b>40</b> con <em>crear texto con</em>: <b>"Dado: "</b>, <em>dado</em>, <b>"   Te faltan: "</b>, <em>pasos</em>.', 'Inicio', 'game_show_text', 'escribir'),
-      paso('¡Llegaste!', 'Arrastra un <em>si</em> con <b>casilla = 7</b> y dentro un <em>escribir</em> «¡Llegaste a la meta!» en X=<b>20</b>, Y=<b>260</b>.', 'Lógica', 'controls_if', 'si hacer'),
-      paso('Dibuja el robot', 'Arrastra <em>🖊️ dibujar personaje</em> <b>robot</b>.', 'Inicio', 'sprite_draw_named', 'dibujar personaje'),
-      paso('Siguiente fotograma', 'Arrastra <em>siguiente frame</em> como último bloque del ciclo.', 'Inicio', 'game_frame', 'siguiente frame')
-    ], pasosVer('Haz clic en <b>▶ Ejecutar</b>. Aprieta <b>Espacio</b> para tirar el dado y <b>→</b> para avanzar casilla por casilla. 💡 Reto: agrega un dado de colores (1 = fácil, 2 = medio, 3 = difícil) que diga qué pregunta toca.'))
+    steps: (function () {
+      var t = function (texto, desc) { return paso('Escribe "' + texto + '"', desc, 'Textos', 'text', 'texto'); };
+      var y = function (desc) { return paso('Une dos condiciones con «y»', desc, 'Lógica', 'logic_operation', 'y'); };
+      var cmp = function (signo, desc) { return paso('Compara con ' + signo.replace('&gt;', '>'), desc, 'Lógica', 'logic_compare', 'Comparar'); };
+      var iniciaEn0 = function (v, desc) {
+        return [
+          pasoVariable(v, desc),
+          pasoSet('La variable ' + v + ' empieza en 0', v, 'Arrastra <em>establecer ' + v + ' a</em> debajo de lo anterior.'),
+          pasoNumero(0, 'Ve a <b>Matemáticas</b> y pon el número <b>0</b> en su hueco.')
+        ];
+      };
+      // Un «si casilla = 7» (se usa dos veces).
+      var siLlego = function (titulo, desc) {
+        return [
+          paso(titulo, desc, 'Lógica', 'controls_if', 'si hacer'),
+          cmp('=', 'Ve a <b>Lógica</b> y pon un <em>comparar</em> en la condición, con el signo <b>=</b>.'),
+          pasoGet('casilla', 'Del lado izquierdo pon <em>obtener casilla</em>.'),
+          pasoNumero(7, 'Del lado derecho pon el número <b>7</b>: la meta es la casilla 7.')
+        ];
+      };
+      return [
+        {
+          titulo: '¿Qué aprenderemos?',
+          desc: 'Vamos a hacer <b>La Ruta del Conocimiento</b> en la pantalla: con la <b>barra espaciadora</b> tiras el dado, y con la flecha <b>→</b> el robot avanza <b>una casilla</b> por cada apretón, hasta gastar los pasos que te dio el dado. ¡Llega a la meta!',
+          highlightCat: null, bloque: null
+        }
+      ].concat(INICIO_JUEGO, [
+        paso('Inicia el juego', 'Arrastra <em>🎮 iniciar juego</em> al área de trabajo. Pon ancho <b>600</b> y alto <b>300</b>.', 'Inicio', 'game_start', 'iniciar juego'),
+        paso('Color de fondo', 'Arrastra <em>color de fondo</em> debajo y elige un azul muy oscuro.', 'Inicio', 'game_set_bg', 'color de fondo'),
+        paso('Crea el robot', 'Arrastra <em>🧍 crear personaje</em> (el que tiene nombre) debajo. Escribe el nombre <b>robot</b>, X=<b>26</b>, Y=<b>116</b>, ancho <b>48</b> y alto <b>48</b>.', 'Inicio', 'sprite_create_named', 'crear personaje'),
+        paso('La imagen del robot', 'Ve a <b>Inicio</b> y arrastra el bloque <em>🧍 personaje</em> al hueco de imagen, <b>encima del texto car.png</b>. En su lista elige el <b>robot</b>.', 'Inicio', 'game_sprite_personajes', 'personaje')
+      ],
+        iniciaEn0('casilla', 'Ve a <b>Variables</b> y crea la variable <b>casilla</b>: en qué casilla va el robot.'),
+        iniciaEn0('dado', 'Crea la variable <b>dado</b>: el número que salió.'),
+        iniciaEn0('pasos', 'Crea la variable <b>pasos</b>: cuántas casillas te faltan por avanzar.'),
+      [
+        paso('El ciclo del juego', 'Ve a <b>Ciclos</b> y arrastra <em>repetir mientras verdadero</em> debajo. Todo el juego va dentro.', 'Ciclos', 'controls_whileUntil', 'Repetir mientras Verdadero'),
+        paso('Limpia la pantalla', 'Ve a <b>Inicio</b> y arrastra <em>limpiar pantalla</em> como primer bloque del ciclo.', 'Inicio', 'game_clear', 'limpiar pantalla'),
+        paso('Un ciclo para las casillas', 'Ve a <b>Ciclos</b> y arrastra <em>contar con i desde 0 hasta 6 de a 1</em> debajo: dibujaremos 7 casillas, de la 0 a la 6.', 'Ciclos', 'controls_for', 'contar con'),
+        paso('Dibuja una casilla', 'Ve a <b>Inicio</b> y arrastra <em>⬛ rectángulo sólido</em> dentro del <em>contar</em>. Pon Y=<b>110</b>, ancho <b>60</b>, alto <b>60</b> y color azul.', 'Inicio', 'game_draw_rect', 'rectángulo sólido'),
+        paso('La X de cada casilla: una suma', 'Ve a <b>Matemáticas</b> y pon un bloque de operación en la <b>X</b> del rectángulo, con el signo <b>+</b>.', 'Matemáticas', 'math_arithmetic', 'operación'),
+        pasoNumero(20, 'Del lado izquierdo de la suma pon el número <b>20</b>: la orilla donde empieza la primera casilla.'),
+        paso('Una multiplicación', 'Del lado derecho de la suma pon otro bloque de operación, ahora con el signo <b>×</b>.', 'Matemáticas', 'math_arithmetic', 'operación'),
+        pasoGet('i', 'Del lado izquierdo de la multiplicación pon <em>obtener i</em> (está en <b>Variables</b>).'),
+        pasoNumero(70, 'Del lado derecho pon <b>70</b>. Así la X es 20 + i × 70: cada casilla queda 70 píxeles a la derecha de la anterior.'),
+        paso('La casilla de la meta', 'Afuera del <em>contar</em>, arrastra otro <em>⬛ rectángulo sólido</em>: X=<b>510</b>, Y=<b>110</b>, ancho <b>60</b>, alto <b>60</b> y color amarillo.', 'Inicio', 'game_draw_rect', 'rectángulo sólido'),
+        paso('Escribe META', 'Arrastra <em>✏️ escribir</em> debajo. En su texto escribe <b>META</b>, X=<b>517</b>, Y=<b>200</b>, tamaño <b>16</b> y color amarillo.', 'Inicio', 'game_show_text', 'escribir'),
+        paso('Si se aprieta espacio', 'Ve a <b>Lógica</b> y arrastra un <em>si hacer</em> debajo.', 'Lógica', 'controls_if', 'si hacer'),
+        y('Pon un bloque <em>y</em> en la condición: se deben cumplir dos cosas a la vez.'),
+        paso('La tecla Espacio', 'Ve a <b>Inicio</b> y pon <em>⌨️ tecla presionada?</em> en el primer hueco del <em>y</em>. Elige <b>Espacio</b>.', 'Inicio', 'key_is_pressed', 'tecla presionada?'),
+        cmp('=', 'En el segundo hueco del <em>y</em> pon un <em>comparar</em> con el signo <b>=</b>.'),
+        pasoGet('pasos', 'Del lado izquierdo pon <em>obtener pasos</em>.'),
+        pasoNumero(0, 'Del lado derecho pon <b>0</b>: solo puedes tirar cuando ya avanzaste lo del tiro anterior.'),
+        pasoSet('Tira el dado', 'dado', 'Dentro del <em>si</em> arrastra <em>establecer dado a</em>.'),
+        paso('Un número del 1 al 6', 'Ve a <b>Inicio</b> y pon <em>🎲 número entero aleatorio entre</em> <b>1</b> y <b>6</b> en su hueco.', 'Inicio', 'game_random_int', 'número aleatorio'),
+        pasoSet('Los pasos son lo que salió', 'pasos', 'Debajo arrastra <em>establecer pasos a</em>.'),
+        pasoGet('dado', 'En su hueco pon <em>obtener dado</em>.'),
+        paso('Una pausa', 'Ve a <b>Inicio</b> y arrastra <em>⏳ esperar</em> <b>0.3</b> segundos al final de este <em>si</em>: así un apretón tira una sola vez.', 'Inicio', 'game_wait', 'esperar'),
+        paso('Si se aprieta →', 'Afuera del <em>si</em> anterior, arrastra otro <em>si hacer</em>.', 'Lógica', 'controls_if', 'si hacer'),
+        y('Pon un <em>y</em> en su condición.'),
+        paso('La flecha derecha', 'En el primer hueco del <em>y</em> pon <em>⌨️ tecla presionada?</em> y elige <b>→ Derecha</b>.', 'Inicio', 'key_is_pressed', 'tecla presionada?'),
+        cmp('&gt;', 'En el segundo hueco pon un <em>comparar</em> con el signo <b>&gt;</b>.'),
+        pasoGet('pasos', 'Del lado izquierdo pon <em>obtener pasos</em>.'),
+        pasoNumero(0, 'Del lado derecho pon <b>0</b>: solo avanzas si te quedan pasos.'),
+        paso('Avanza una casilla', 'Ve a <b>Inicio</b> y arrastra <em>🏃 mover personaje</em> dentro del <em>si</em>. Escribe <b>robot</b>, dx=<b>70</b> y dy=<b>0</b>.', 'Inicio', 'sprite_move_named', 'mover personaje'),
+        paso('Una casilla más', 'Ve a <b>Variables</b> y arrastra <em>cambiar … por</em>. Elige <b>casilla</b> y deja <b>1</b>.', 'Variables', 'math_change', 'cambiar por'),
+        paso('Un paso menos', 'Arrastra otro <em>cambiar … por</em>. Elige <b>pasos</b> y escribe <b>-1</b>.', 'Variables', 'math_change', 'cambiar por'),
+        paso('Un apretón, una casilla', 'Al final de este <em>si</em> arrastra <em>⏳ esperar</em> <b>0.25</b> segundos.', 'Inicio', 'game_wait', 'esperar'),
+        paso('Muestra el dado', 'Afuera de los <em>si</em>, arrastra <em>✏️ escribir</em> en X=<b>20</b>, Y=<b>40</b>, tamaño <b>22</b>.', 'Inicio', 'game_show_text', 'escribir'),
+        paso('Une 4 partes', 'Ve a <b>Textos</b> y pon <em>crear texto con</em> en el texto. Con su <b>⚙️</b> (engrane) agrégale huecos hasta tener <b>4</b>.', 'Textos', 'text_join', 'crear texto con'),
+        t('Dado: ', 'En el hueco 1 escribe <b>Dado: </b>.'),
+        pasoGet('dado', 'En el hueco 2 pon <em>obtener dado</em>.'),
+        t('   Te faltan: ', 'En el hueco 3 escribe <b>   Te faltan: </b> (con espacios al inicio).'),
+        pasoGet('pasos', 'En el hueco 4 pon <em>obtener pasos</em>.')
+      ],
+        siLlego('¿Ya llegaste?', 'Arrastra otro <em>si hacer</em> debajo.'),
+      [
+        paso('¡Llegaste!', 'Dentro arrastra <em>✏️ escribir</em> con el texto <b>¡Llegaste a la meta!</b>, X=<b>20</b>, Y=<b>260</b>, tamaño <b>24</b> y color verde.', 'Inicio', 'game_show_text', 'escribir'),
+        pasoSet('En la meta ya no se avanza', 'pasos', 'Debajo, dentro del mismo <em>si</em>, arrastra <em>establecer pasos a</em>.'),
+        pasoNumero(0, 'Pon <b>0</b> en su hueco: aunque el dado dé más o vuelvas a tirar, el robot se queda en la meta.'),
+        paso('Dibuja el robot', 'Afuera del <em>si</em>, arrastra <em>🖊️ dibujar personaje</em> y escribe <b>robot</b>.', 'Inicio', 'sprite_draw_named', 'dibujar personaje'),
+        paso('Siguiente fotograma', 'Arrastra <em>siguiente frame</em> como <b>último</b> bloque del ciclo.', 'Inicio', 'game_frame', 'siguiente frame')
+      ],
+        pasosVer('Haz clic en <b>▶ Ejecutar</b>. Aprieta <b>Espacio</b> para tirar el dado y <b>→</b> para avanzar casilla por casilla. 💡 Reto: agrega un dado de colores (1 = fácil, 2 = medio, 3 = difícil) que diga qué pregunta toca.'));
+    })()
   };
 
   // Las subcategorías se abren desde su categoría padre.
