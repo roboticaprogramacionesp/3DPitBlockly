@@ -5954,6 +5954,42 @@ Blockly.Python["sprite_move_named"] = function (block) {
   );
 };
 
+/* ── Bloques de juego sin equivalente en la placa ──────────────
+   Solo existen en el simulador; en Python dejan un comentario (o
+   actualizan _sprites) para que «Ejecutar» no falle al generar el
+   código y el juego arranque igual en la vista de juego. */
+Blockly.Python["sprite_set_pos_named"] = function (block) {
+  const name = Blockly.Python.valueToCode(block, "NAME", Blockly.Python.ORDER_NONE) || "'sprite'";
+  const x    = Blockly.Python.valueToCode(block, "X",    Blockly.Python.ORDER_NONE) || "0";
+  const y    = Blockly.Python.valueToCode(block, "Y",    Blockly.Python.ORDER_NONE) || "0";
+  return (
+    `if ${name} in _sprites:\n` +
+    `    _sprites[${name}]['x'] = ${x}\n` +
+    `    _sprites[${name}]['y'] = ${y}\n`
+  );
+};
+Blockly.Python["sprite_move_steps_named"] = function (block) {
+  const name  = Blockly.Python.valueToCode(block, "NAME",  Blockly.Python.ORDER_NONE) || "'sprite'";
+  const steps = Blockly.Python.valueToCode(block, "STEPS", Blockly.Python.ORDER_NONE) || "10";
+  return `# [Juego] mover ${name} ${steps} pasos\n`;
+};
+Blockly.Python["sprite_set_angle_named"] = function (block) {
+  const name  = Blockly.Python.valueToCode(block, "NAME", Blockly.Python.ORDER_NONE) || "'sprite'";
+  const angle = Blockly.Python.valueToCode(block, "DEG",  Blockly.Python.ORDER_NONE) || "0";
+  return `# [Juego] ángulo de ${name} = ${angle}\n`;
+};
+Blockly.Python["sprite_get_angle_named"] = function () { return ["0", Blockly.Python.ORDER_ATOMIC]; };
+Blockly.Python["sprite_set_scale"] = function (block) {
+  const scale = Blockly.Python.valueToCode(block, "SCALE", Blockly.Python.ORDER_NONE) || "1";
+  return `# [Juego] escala = ${scale}\n`;
+};
+Blockly.Python["sprite_set_flip_vertical"] = function (block) {
+  return `# [Juego] espejo vertical = ${block.getFieldValue("FLIP")}\n`;
+};
+Blockly.Python["game_draw_table"] = function () { return `# [Juego] dibujar tabla\n`; };
+Blockly.Python["game_get_bg_image_name"] = function () { return ["''", Blockly.Python.ORDER_ATOMIC]; };
+Blockly.Python["game_get_sprite_image_name"] = function () { return ["''", Blockly.Python.ORDER_ATOMIC]; };
+
 /* ── sprite_get_x_named ─────────────────────────────────────── */
 Blockly.Python["sprite_get_x_named"] = function (block) {
   const name = Blockly.Python.valueToCode(block, "NAME", Blockly.Python.ORDER_NONE) || "'sprite'";

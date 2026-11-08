@@ -986,9 +986,9 @@ var TUTORIAL_EXTRAS = {
       ["Haz que el carrito vaya <b>más despacio</b> para acercarse con cuidado a los vasos.", "Cambia los bloques de encender/apagar por los de velocidad (PWM) del Motor DC."]
     ],
     quiz: [
-      ["¿Por qué el carrito se detiene al soltar el botón?", ["Porque si no se aprieta nada, el programa llama a «alto»", "Porque se acaba la pila", "Porque el ADKey se apaga"], 0, "Sin botón, la lectura pasa de 600 y se llama a la función alto."],
-      ["Para girar en su lugar, ¿cómo se mueven las ruedas?", ["Las dos hacia adelante", "Una hacia adelante y la otra hacia atrás", "Las dos apagadas"], 1, "Al girar en sentidos opuestos, el carrito da vuelta sin avanzar."],
-      ["Si una rueda gira al revés, ¿qué haces?", ["Cambias el pin del ADKey", "Compras otro motor", "Intercambias sus dos cables en el L298N (o on y off en esa rueda)"], 2, "Al invertir los cables, el motor gira al otro lado."]
+      ["¿Por qué el carrito se detiene al soltar el botón?", ["Porque se acaba la pila", "Porque si no se aprieta nada, el programa llama a «alto»", "Porque el ADKey se apaga"], 1, "Sin botón, la lectura pasa de 600 y se llama a la función alto."],
+      ["Para girar en su lugar, ¿cómo se mueven las ruedas?", ["Las dos hacia adelante", "Las dos apagadas", "Una hacia adelante y la otra hacia atrás"], 2, "Al girar en sentidos opuestos, el carrito da vuelta sin avanzar."],
+      ["Si una rueda gira al revés, ¿qué haces?", ["Intercambias sus dos cables en el L298N (o on y off en esa rueda)", "Cambias el pin del ADKey", "Compras otro motor"], 0, "Al invertir los cables, el motor gira al otro lado."]
     ]
   },
 
@@ -1003,9 +1003,197 @@ var TUTORIAL_EXTRAS = {
       ["Haz que el buzzer haga <b>bip</b> cada vez que termina un bloque, para poder contarlos.", "Dentro de <em>avanzar_bloque</em>, después de <em>alto</em>, toca una nota corta."]
     ],
     quiz: [
-      ["¿Cuánto debe avanzar el robot con un apretón de ▲?", ["24 cm, un bloque", "Hasta que lo sueltes", "1 metro"], 0, "Cada bloque del tablero mide 24 × 24 cm."],
-      ["¿Para qué sirve la variable tiempo_bloque?", ["Para contar los puntos", "Para ajustar cuánto tiempo avanza el robot en cada bloque", "Para el color del dado"], 1, "Cambias un solo número y todos los avances se ajustan."],
-      ["¿Por qué hay una espera de 0.3 s al final del ciclo?", ["Para que el robot descanse", "Para ahorrar pila", "Para que un apretón cuente una sola vez"], 2, "Sin la espera, mantener el dedo un poquito haría avanzar varios bloques."]
+      ["¿Cuánto debe avanzar el robot con un apretón de ▲?", ["Hasta que lo sueltes", "1 metro", "24 cm, un bloque"], 2, "Cada bloque del tablero mide 24 × 24 cm."],
+      ["¿Para qué sirve la variable tiempo_bloque?", ["Para ajustar cuánto tiempo avanza el robot en cada bloque", "Para contar los puntos", "Para el color del dado"], 0, "Cambias un solo número y todos los avances se ajustan."],
+      ["¿Por qué hay una espera de 0.3 s al final del ciclo?", ["Para que el robot descanse", "Para que un apretón cuente una sola vez", "Para ahorrar pila"], 1, "Sin la espera, mantener el dedo un poquito haría avanzar varios bloques."]
+    ]
+  },
+
+  /* ── 🎮 Juegos con el motor de juegos (pantalla) ───────────────── */
+  juego_direcciones: {
+    n: 1, t: 20,
+    dato: "En la pantalla de una computadora, la <b>Y crece hacia abajo</b>: la esquina de arriba a la izquierda es (0, 0). Por eso para subir el personaje se usa un dy <b>negativo</b>.",
+    exp: "El ciclo <em>repetir mientras verdadero</em> es el <b>ciclo del juego</b>: en cada vuelta borra la pantalla, revisa qué flechas están apretadas, mueve el personaje unos píxeles y lo vuelve a dibujar. Como da unas 60 vueltas por segundo, el movimiento se ve suave.",
+    usos: ["Videojuegos de todo tipo", "Controlar un robot o un dron con el teclado", "Simuladores de manejo"],
+    retos: [
+      ["Haz que el personaje se mueva <b>el doble de rápido</b>.", "Cambia los 4 por 8 en los bloques de mover."],
+      ["Agrega movimiento en <b>diagonal</b> con otras teclas.", "Usa las teclas W, A, S, D y mueve dx y dy al mismo tiempo."],
+      ["Que el personaje <b>no se salga</b> de la pantalla.", "Usa <em>¿toca el borde?</em> y regrésalo un poco cuando lo toque."]
+    ],
+    quiz: [
+      ["Para subir el personaje en la pantalla, ¿qué dy usas?", ["Un número negativo", "Un número positivo", "Cero"], 0, "La Y crece hacia abajo, así que subir es restar."],
+      ["¿Para qué sirve <em>limpiar pantalla</em> al inicio del ciclo?", ["Para apagar el juego", "Para borrar el dibujo anterior y que no se vea un rastro", "Para cambiar el color"], 1, "Si no borras, el personaje deja una estela."],
+      ["¿Qué pasa si quitas <em>siguiente frame</em>?", ["El juego se mueve más rápido", "No cambia nada", "El juego no avanza fotograma a fotograma y no se ve"], 2, "Ese bloque le da tiempo a la pantalla de mostrar cada dibujo."]
+    ]
+  },
+
+  juego_calculadora_basica: {
+    n: 3, t: 60,
+    dato: "Las primeras calculadoras electrónicas de bolsillo salieron a la venta a principios de los <b>años 70</b>. Antes, una calculadora eléctrica ocupaba un escritorio entero.",
+    exp: "Cada botón es un <b>rectángulo</b> dibujado en la pantalla. Cuando haces clic, el programa revisa si la posición del mouse (X, Y) cae <b>dentro</b> de un rectángulo con condiciones del tipo «X mayor que la orilla izquierda y menor que la derecha». Así sabe qué botón apretaste.",
+    usos: ["Cajeros automáticos y pantallas táctiles", "Puntos de venta de las tiendas", "Cualquier app con botones"],
+    retos: [
+      ["Cambia los colores de los botones de operación.", "Busca los rectángulos de +, -, × y ÷ y cambia su color."],
+      ["Agrega un botón de <b>porcentaje</b> (%).", "Haz un rectángulo nuevo y divide el número entre 100 al presionarlo."],
+      ["Muestra el resultado con un sonido de «listo».", "Agrega <em>tocar nota</em> cuando se presione =."]
+    ],
+    quiz: [
+      ["¿Cómo sabe el programa qué botón apretaste?", ["Lo adivina", "Revisa si la X y la Y del clic caen dentro del rectángulo del botón", "Por el color del botón"], 1, "Compara la posición del mouse con las orillas de cada botón."],
+      ["¿Por qué se usa «y» en la condición de cada botón?", ["Porque es más corto", "No se necesita", "Porque el clic debe cumplir varias condiciones a la vez (izquierda, derecha, arriba, abajo)"], 2, "Las cuatro orillas deben cumplirse al mismo tiempo."],
+      ["¿Qué hace el botón C?", ["Limpia todo para empezar de nuevo", "Suma", "Apaga el juego"], 0, "Regresa las variables a su valor inicial."]
+    ]
+  },
+
+  juego_plano_cartesiano: {
+    n: 2, t: 35,
+    dato: "El plano cartesiano se llama así por <b>René Descartes</b>, que lo describió en 1637. En latín firmaba como <em>Cartesius</em>.",
+    exp: "El punto se mueve con las flechas y el objetivo aparece en una <b>coordenada al azar</b>. En cada vuelta el programa calcula la <b>distancia</b> entre los dos: si es pequeña, cuenta un acierto y elige otra coordenada.",
+    usos: ["GPS y mapas", "Videojuegos (todo personaje tiene coordenadas)", "Robots que se mueven a un punto"],
+    retos: [
+      ["Muestra en pantalla las coordenadas del objetivo.", "Usa <em>escribir</em> con <em>crear texto con</em> y las variables del objetivo."],
+      ["Haz que el objetivo sea más chico cada 5 puntos.", "Usa un <em>si</em> con los puntos y cambia el radio del círculo."],
+      ["Agrega un tiempo límite de 30 segundos.", "Cuenta fotogramas como en Contrarreloj: 60 fotogramas son 1 segundo."]
+    ],
+    quiz: [
+      ["¿Qué indica la coordenada X?", ["La posición vertical", "El color", "La posición horizontal (izquierda-derecha)"], 2, "X es horizontal y Y es vertical."],
+      ["¿Cómo sabe el juego que alcanzaste el objetivo?", ["Midiendo la distancia entre el punto y el objetivo", "Por el sonido", "Por el tiempo"], 0, "Si la distancia es pequeña, ya llegaste."],
+      ["¿Para qué sirve el número aleatorio?", ["Para cambiar el color", "Para que el objetivo aparezca en un lugar distinto cada vez", "Para apagar el juego"], 1, "Así cada ronda es diferente."]
+    ]
+  },
+
+  juego_caja_area: {
+    n: 3, t: 60,
+    dato: "El <b>área</b> de un rectángulo es base × altura, y se mide en unidades <b>cuadradas</b>: si mides en centímetros, el área queda en cm².",
+    exp: "Una <b>función</b> elige una base y una altura al azar, calcula el área correcta y la pone en uno de los 4 cuadrados, también al azar. En los otros pone respuestas falsas. Al hacer clic, el programa revisa en qué cuadrado cayó y lo compara con el correcto.",
+    usos: ["Calcular cuánta pintura o piso se necesita", "Medir terrenos y casas", "Juegos educativos de matemáticas"],
+    retos: [
+      ["Lleva la cuenta de aciertos y errores.", "Crea dos variables y súmales 1 en cada caso."],
+      ["Haz que los números sean más grandes al subir de nivel.", "Cambia los límites del número aleatorio cada 5 aciertos."],
+      ["Agrega un sonido distinto para acierto y error.", "Usa <em>tocar nota</em> con una nota aguda y otra grave."]
+    ],
+    quiz: [
+      ["¿Cómo se calcula el área de un rectángulo?", ["base × altura", "base + altura", "2 × (base + altura)"], 0, "Multiplicas lo que mide de ancho por lo que mide de alto."],
+      ["¿Para qué sirve una función en este juego?", ["Para dibujar el fondo", "Para reutilizar los mismos bloques cada vez que hay pregunta nueva", "Para apagar el juego"], 1, "Así no repites los bloques en cada ronda."],
+      ["¿Por qué la respuesta correcta cambia de cuadrado?", ["Por error", "Para que sea más fácil", "Para que tengas que calcular y no memorizar el lugar"], 2, "Se elige al azar en cada ronda."]
+    ]
+  },
+
+  juego_caja_perimetro: {
+    n: 3, t: 60,
+    dato: "El <b>perímetro</b> es lo que mide la orilla de una figura. En un rectángulo es 2 × (base + altura): las dos bases más las dos alturas.",
+    exp: "Funciona igual que el juego de áreas: una <b>función</b> crea un rectángulo al azar, calcula su perímetro, lo pone en uno de los 4 cuadrados y llena los demás con respuestas falsas. El clic se compara con el cuadrado correcto.",
+    usos: ["Calcular cuánta cerca o malla se necesita", "Poner marco a un cuadro", "Medir la orilla de un terreno"],
+    retos: [
+      ["Lleva la cuenta de aciertos y errores.", "Crea dos variables y súmales 1 en cada caso."],
+      ["Mezcla preguntas de área y de perímetro.", "Usa un número aleatorio para decidir qué preguntar."],
+      ["Agrega un tiempo para contestar cada pregunta.", "Cuenta fotogramas: 60 son un segundo."]
+    ],
+    quiz: [
+      ["¿Cómo se calcula el perímetro de un rectángulo?", ["base × altura", "2 × (base + altura)", "base + altura"], 1, "Sumas los cuatro lados."],
+      ["Si la base es 5 y la altura es 3, ¿cuál es el perímetro?", ["15", "8", "16"], 2, "2 × (5 + 3) = 16."],
+      ["¿En qué se diferencia del área?", ["El perímetro mide la orilla y el área lo de adentro", "Son lo mismo", "El área mide la orilla"], 0, "Perímetro: contorno. Área: superficie."]
+    ]
+  },
+
+  juego_evitar_obstaculos: {
+    n: 2, t: 40,
+    dato: "Muchos videojuegos detectan choques por <b>color</b>: si el personaje toca un píxel del color de la pared, chocó. Es una técnica sencilla y muy usada en juegos clásicos.",
+    exp: "El obstáculo es un rectángulo cuya posición se guarda en <b>variables</b>: en cada vuelta del ciclo baja un poco, y cuando sale de la pantalla vuelve a aparecer arriba en una X al azar. Si el jugador toca su color, el juego termina y muestra cuántos segundos sobreviviste.",
+    usos: ["Videojuegos de esquivar", "Simuladores de manejo", "Robots que evitan obstáculos (como el carrito con ultrasónico)"],
+    retos: [
+      ["Haz que el obstáculo caiga más rápido con el tiempo.", "Suma un poquito a la velocidad cada vez que vuelve a aparecer."],
+      ["Agrega un segundo obstáculo.", "Crea otras variables para su X y su Y."],
+      ["Guarda el mejor tiempo.", "Usa una variable récord y compárala al terminar."]
+    ],
+    quiz: [
+      ["¿Cómo sabe el juego que chocaste?", ["Por el sonido", "Por el teclado", "Porque el jugador toca el color del obstáculo"], 2, "Se usa <em>¿toca el color?</em>."],
+      ["¿Para qué sirve el número aleatorio?", ["Para que el obstáculo caiga en un lugar distinto cada vez", "Para cambiar de color", "Para pausar"], 0, "Así no se puede memorizar."],
+      ["¿Qué guarda la posición del obstáculo?", ["Una imagen", "Variables", "El monitor serial"], 1, "Sus variables cambian en cada vuelta."]
+    ]
+  },
+
+  juego_puntaje_tiempo: {
+    n: 2, t: 35,
+    dato: "La mayoría de los juegos dibujan unas <b>60 imágenes por segundo</b>. Por eso contar 60 fotogramas equivale, más o menos, a contar un segundo.",
+    exp: "El ciclo da muchas vueltas por segundo, así que no se puede bajar el tiempo en cada vuelta. Un <b>contador de fotogramas</b> suma 1 en cada vuelta y, cuando llega a 60, baja el tiempo en 1 segundo y vuelve a empezar. Cuando el tiempo llega a 0, el juego se detiene.",
+    usos: ["Cronómetros y relojes", "Concursos con tiempo límite", "Semáforos y hornos de microondas"],
+    retos: [
+      ["Cambia la partida a 15 segundos.", "Pon 15 en el valor inicial del tiempo."],
+      ["Muestra el tiempo en rojo cuando falten 5 segundos.", "Usa un <em>si</em> con el tiempo y cambia el color del texto."],
+      ["Guarda la mejor puntuación.", "Usa una variable récord y compárala al terminar."]
+    ],
+    quiz: [
+      ["¿Cuántos fotogramas son más o menos un segundo?", ["60", "1", "1000"], 0, "El juego dibuja unos 60 por segundo."],
+      ["¿Por qué no se baja el tiempo en cada vuelta del ciclo?", ["Porque no se puede restar", "Porque el ciclo da muchas vueltas por segundo y el tiempo bajaría muy rápido", "Porque el tiempo es un texto"], 1, "Por eso se cuentan fotogramas."],
+      ["¿Qué pasa cuando el tiempo llega a 0?", ["Empieza otra vez solo", "Se borran los puntos", "El juego se detiene y muestra los puntos"], 2, "Se deja de sumar y se muestra el resultado."]
+    ]
+  },
+
+  juego_laberinto: {
+    n: 2, t: 30,
+    dato: "Hay un truco para salir de muchos laberintos: pon una mano en la pared y nunca la sueltes. Funciona si todas las paredes están conectadas.",
+    exp: "Las paredes son rectángulos de un color. En cada vuelta, si el personaje <b>toca ese color</b>, el programa lo regresa a la salida. La meta es un rectángulo verde: al tocarla, ganas.",
+    usos: ["Videojuegos de laberintos", "Robots que buscan la salida (micromouse)", "Planear rutas en un mapa"],
+    retos: [
+      ["Agrega una cuarta pared.", "Dibuja otro rectángulo gris."],
+      ["Cuenta cuántas veces chocaste.", "Suma 1 a una variable cada vez que toques una pared."],
+      ["Agrega un tiempo para escapar.", "Cuenta fotogramas: 60 son un segundo."]
+    ],
+    quiz: [
+      ["¿Qué pasa si tocas una pared?", ["Ganas", "Regresas al inicio", "No pasa nada"], 1, "El programa te regresa a la salida."],
+      ["¿Cómo sabe el juego que tocaste una pared?", ["Por el sonido", "Por el mouse", "Por el color de la pared"], 2, "Se usa <em>¿toca el color?</em>."],
+      ["¿Qué bloque regresa el personaje al inicio?", ["poner personaje en X Y", "limpiar pantalla", "siguiente frame"], 0, "Lo pone en una posición fija."]
+    ]
+  },
+
+  juego_punteria: {
+    n: 2, t: 30,
+    dato: "Para medir la distancia entre dos puntos se usa el <b>teorema de Pitágoras</b>: la raíz cuadrada de (diferencia en X)² + (diferencia en Y)².",
+    exp: "Cuando haces clic, el programa calcula la <b>distancia</b> entre el clic y el centro del blanco. Si es menor que 25 píxeles, cuenta como acierto y el blanco se mueve a otro lugar al azar; si no, cuenta un fallo.",
+    usos: ["Juegos de puntería", "Pantallas táctiles (saber qué tocaste)", "Drones y robots que apuntan a un objetivo"],
+    retos: [
+      ["Haz que el juego sea más difícil: margen de 15 píxeles.", "Cambia el 25 por 15."],
+      ["Haz que el blanco cambie de lugar solo cada 2 segundos.", "Cuenta fotogramas: 120 son unos 2 segundos."],
+      ["Muestra el porcentaje de puntería.", "Divide aciertos entre (aciertos + fallos) y multiplica por 100."]
+    ],
+    quiz: [
+      ["¿Cuándo cuenta un acierto?", ["Con cualquier clic", "Cuando aprietas espacio", "Cuando el clic cae a menos de 25 píxeles del centro"], 2, "Se mide la distancia al centro."],
+      ["¿Para qué sirve la distancia entre dos puntos?", ["Para saber qué tan cerca cayó el clic del blanco", "Para cambiar el color", "Para el sonido"], 0, "Una distancia pequeña es un buen tiro."],
+      ["Si cambias el 25 por 10, el juego…", ["se vuelve más fácil", "se vuelve más difícil", "no cambia"], 1, "Hay que atinar más cerca del centro."]
+    ]
+  },
+
+  juego_bandera_pantalla: {
+    n: 2, t: 40,
+    dato: "Con <b>crear texto con</b> puedes armar el nombre de un personaje: «vaso» + 2 = «vaso2». Así un solo bloque sirve para preguntar por cualquier vaso.",
+    exp: "Cada vaso es un <b>personaje con nombre</b> (vaso1, vaso2, vaso3). La variable <b>meta</b> guarda un número al azar, y el juego pregunta si el robot toca a «vaso» + meta. Si sí, suma un punto, suena una nota, el robot regresa al inicio y se elige otra meta.",
+    usos: ["Practicar antes de manejar el robot de verdad", "Simuladores de robots", "Juegos de recoger objetos"],
+    retos: [
+      ["Si el robot toca un vaso <b>equivocado</b>, que regrese al inicio sin sumar.", "Agrega un <em>si</em> por cada vaso que no sea el de la meta."],
+      ["Agrega un cuarto vaso con otra bandera.", "Crea vaso4 y cambia el aleatorio a entre 1 y 4."],
+      ["Ponle un tiempo de 60 segundos al juego.", "Cuenta fotogramas: 60 son un segundo."]
+    ],
+    quiz: [
+      ["¿Qué guarda la variable meta?", ["El número del vaso al que hay que ir", "Los puntos", "La velocidad"], 0, "Se elige al azar entre 1 y 3."],
+      ["Si meta vale 3, ¿por cuál personaje pregunta el bloque de tocar?", ["vaso", "vaso3", "robot3"], 1, "«vaso» + 3 = «vaso3»."],
+      ["¿Para qué sirve <em>poner personaje</em> al tocar el vaso?", ["Para dibujar el vaso", "Para borrar la pantalla", "Para regresar el robot al inicio"], 2, "Así empieza cada ronda desde el mismo lugar."]
+    ]
+  },
+
+  juego_ruta_pantalla: {
+    n: 2, t: 40,
+    dato: "En los juegos de mesa con dado, cada número tiene la misma probabilidad de salir: <b>1 de 6</b>. Un número aleatorio entre 1 y 6 imita un dado justo.",
+    exp: "La barra espaciadora guarda un número al azar en <b>dado</b> y lo copia a <b>pasos</b>. Cada apretón de → mueve el robot 70 píxeles (una casilla) y resta 1 a pasos. Cuando pasos llega a 0 ya no avanza hasta tirar otra vez. Las esperas cortas hacen que un apretón cuente una sola vez.",
+    usos: ["Juegos de mesa digitales", "Practicar La Ruta del Conocimiento antes de usar el robot", "Contar pasos en un recorrido"],
+    retos: [
+      ["Agrega un <b>dado de colores</b>: 1 fácil, 2 medio, 3 difícil.", "Otra variable con un aleatorio entre 1 y 3, y escríbela en pantalla."],
+      ["Haz el camino más largo, con 10 casillas.", "Cambia el 6 del contar y mueve la meta."],
+      ["Cuenta en cuántos turnos llegas a la meta.", "Suma 1 a una variable turnos cada vez que tires el dado."]
+    ],
+    quiz: [
+      ["¿Qué hace la barra espaciadora?", ["Mueve el robot", "Tira el dado (un número al azar del 1 al 6)", "Termina el juego"], 1, "Guarda el número en dado y en pasos."],
+      ["¿Por qué solo puedes tirar cuando pasos = 0?", ["Porque el dado se descompone", "No hay razón", "Para que primero avances lo del tiro anterior"], 2, "Así no se acumulan tiros."],
+      ["¿Cuánto avanza el robot en cada apretón de →?", ["70 píxeles, una casilla", "1 píxel", "Hasta la meta"], 0, "Cada casilla mide 70 píxeles de centro a centro."]
     ]
   }
 };

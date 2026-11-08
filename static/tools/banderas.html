@@ -69,7 +69,7 @@
 <main>
   <a class="back" href="index.html">⬅ Herramientas</a>
   <h1>🚩 A por la Bandera</h1>
-  <p class="subtitle">Juego del Desafío de Robótica Educativa: retira los 9 vasos con bandera en el menor tiempo posible.</p>
+  <p class="subtitle">Juego del Desafío de Robótica Educativa: retira los vasos del tablero en el menor tiempo posible.</p>
   <div class="tabs" id="tabs"></div>
   <div id="app"></div>
 </main>
@@ -90,10 +90,11 @@
     it: { n: "Italia", s: '<rect width="10" height="20" fill="#009246"/><rect x="10" width="10" height="20" fill="#fff"/><rect x="20" width="10" height="20" fill="#ce2b37"/>' },
   };
 
-  // ── Tarjetas blancas: banderas propias y tarjetas de reto ──
-  // El juego trae 10 tarjetas y 12 stickers en blanco: cada bandera propia
-  // usa una tarjeta y un sticker; cada reto, solo una tarjeta.
-  const BLANCAS = 10;
+  // ── Tarjetas blancas ──
+  // El juego trae 6 tarjetas y 6 vasos en blanco. Cada bandera nueva usa
+  // una tarjeta y un vaso; cada reto también (su vaso lleva el ícono del
+  // reto); el comodín solo usa una tarjeta, porque no tiene vaso.
+  const BLANCAS = 6;
   const PATRONES = {
     v3: (c) => `<rect width="10" height="20" fill="${c[0]}"/><rect x="10" width="10" height="20" fill="${c[1]}"/><rect x="20" width="10" height="20" fill="${c[2]}"/>`,
     h3: (c) => `<rect width="30" height="6.67" fill="${c[0]}"/><rect y="6.67" width="30" height="6.67" fill="${c[1]}"/><rect y="13.33" width="30" height="6.67" fill="${c[2]}"/>`,
@@ -102,21 +103,28 @@
     diag: (c) => `<rect width="30" height="20" fill="${c[0]}"/><path d="M0 20L30 0V20z" fill="${c[1]}"/>`,
     circulo: (c) => `<rect width="30" height="20" fill="${c[0]}"/><circle cx="15" cy="10" r="6" fill="${c[1]}"/>`,
   };
-  // Cada reto (menos el comodín) va con un vaso: la app elige uno de los
-  // que quedan y el robot debe sacarlo y además cumplir el reto.
-  const RETOS_LISTOS = [
-    { id: "r_buzzer", ico: "🔊", t: "Saca el vaso y haz sonar el buzzer." },
-    { id: "r_saludo", ico: "👋", t: "Saca el vaso y saluda moviendo el servo." },
-    { id: "r_led", ico: "💡", t: "Saca el vaso y prende el LED (o el NeoPixel) 2 segundos." },
-    { id: "r_vuelta", ico: "🔄", t: "Saca el vaso y da una vuelta completa (360°) en tu lugar." },
-    { id: "r_regreso", ico: "↩️", t: "Saca el vaso y llévalo hasta el cuadro rojo." },
-    { id: "r_reversa", ico: "🐢", t: "Llega al vaso en reversa y sácalo." },
-    { id: "r_comodin", ico: "🎁", t: "Comodín: saca el vaso que tú quieras. El juez lo toca en el tablero de la app.", comodin: true },
+  const PLANTILLAS = [
+    { ico: "🔊", t: "Saca el vaso y haz sonar el buzzer." },
+    { ico: "👋", t: "Saca el vaso y saluda moviendo el servo." },
+    { ico: "💡", t: "Saca el vaso y prende el LED (o el NeoPixel) 2 segundos." },
+    { ico: "🔄", t: "Saca el vaso y da una vuelta completa (360°) en tu lugar." },
+    { ico: "↩️", t: "Saca el vaso y llévalo hasta el cuadro rojo." },
+    { ico: "🐢", t: "Llega al vaso en reversa y sácalo." },
+    { ico: "🎁", t: "Comodín: saca el vaso que tú quieras. El juez lo toca en el tablero de la app.", comodin: true },
   ];
   const GUARDA_BLANCAS = "3dpit-banderas-blancas";
-  let B = { propias: [], retos: [], activos: [] };
-  try { B = Object.assign(B, JSON.parse(localStorage.getItem(GUARDA_BLANCAS) || "{}")); } catch (_) {}
+  let B = { propias: [], retos: [] };
+  try {
+    const g = JSON.parse(localStorage.getItem(GUARDA_BLANCAS) || "{}") || {};
+    B.propias = g.propias || [];
+    B.retos = (g.retos || []).filter((r) => r && r.t);
+    // Versión anterior: los retos listos se marcaban como «activos».
+    const viejos = { r_buzzer: 0, r_saludo: 1, r_led: 2, r_vuelta: 3, r_regreso: 4, r_reversa: 5, r_comodin: 6 };
+    (g.activos || []).forEach((k) => { if (k in viejos) B.retos.push(Object.assign({ id: "x" + k }, PLANTILLAS[viejos[k]])); });
+  } catch (_) {}
   const guardarB = () => { try { localStorage.setItem(GUARDA_BLANCAS, JSON.stringify(B)); } catch (_) {} };
+  const tarjetasUsadas = () => B.propias.length + B.retos.length;
+  const vasosUsados = () => B.propias.length + B.retos.filter((r) => !r.comodin).length;
 
   const sinEtiquetas = (t) => String(t).replace(/[<>&"]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;" }[c]));
   function svgPropia(p) {
@@ -124,11 +132,19 @@
     if (p.simbolo) s += `<text x="15" y="13.5" font-size="10" text-anchor="middle">${sinEtiquetas(p.simbolo)}</text>`;
     return s;
   }
-  const bandera = (k) => FLAGS[k] || (() => { const p = B.propias.find((x) => x.id === k); return p ? { n: p.n, s: svgPropia(p) } : { n: "?", s: "" }; })();
-  const todasBanderas = () => [...Object.keys(FLAGS), ...B.propias.map((p) => p.id)];
-  const svgBandera = (k) => `<svg viewBox="0 0 30 20" aria-label="${sinEtiquetas(bandera(k).n)}">${bandera(k).s}</svg>`;
-  const todosRetos = () => [...RETOS_LISTOS, ...B.retos];
-  const reto = (k) => todosRetos().find((r) => r.id === k);
+  const reto = (k) => B.retos.find((r) => r.id === k);
+  // Todo lo que puede tener un vaso en el tablero: banderas y retos (sin el comodín).
+  function vasoInfo(k) {
+    if (FLAGS[k]) return { n: FLAGS[k].n, s: FLAGS[k].s };
+    const p = B.propias.find((x) => x.id === k);
+    if (p) return { n: p.n, s: svgPropia(p), propia: true };
+    const r = reto(k);
+    if (r) return { n: "Reto " + r.ico, s: `<rect width="30" height="20" fill="#fff6d6"/><text x="15" y="15" font-size="13" text-anchor="middle">${r.ico}</text>`, reto: r };
+    return { n: "?", s: "" };
+  }
+  const conVaso = () => [...Object.keys(FLAGS), ...B.propias.map((p) => p.id), ...B.retos.filter((r) => !r.comodin).map((r) => r.id)];
+  const comodines = () => B.retos.filter((r) => r.comodin).map((r) => r.id);
+  const svgBandera = (k) => `<svg viewBox="0 0 30 20" aria-label="${sinEtiquetas(vasoInfo(k).n)}">${vasoInfo(k).s}</svg>`;
 
   function el(tag, attrs, ...hijos) {
     const n = document.createElement(tag);
@@ -168,23 +184,23 @@
     app.append(
       el("div", { class: "tarjeta" },
         el("h2", { text: "🎯 Objetivo" }),
-        el("p", { text: "Con tu robot, retira del tablero los 9 vasos con bandera en el menor tiempo posible, siguiendo el orden que marcan las tarjetas." })),
+        el("p", { text: "Con tu robot, retira del tablero los vasos (9, si no se acuerda otra cosa) en el menor tiempo posible, siguiendo el orden que marcan las tarjetas." })),
       el("div", { class: "tarjeta" },
         el("h2", { text: "🧰 Preparación" }),
         el("ul", {},
-          el("li", { html: "Se colocan <b>9 vasos con bandera</b> sobre el tablero de 240 × 120 cm. El lugar de cada vaso es libre, pero deben quedar <b>repartidos por todo el tablero</b>." }),
-          el("li", { html: "Las <b>tarjetas de reto</b> (una por cada vaso que está en el tablero) se barajan y se ponen <b>boca abajo</b>." }),
+          el("li", { html: "Se colocan <b>9 vasos</b> sobre el tablero de 240 × 120 cm. El lugar de cada vaso es libre, pero deben quedar <b>repartidos por todo el tablero</b>." }),
+          el("li", { html: "Las <b>tarjetas</b> (una por cada vaso que está en el tablero, más los comodines si se usan) se barajan y se ponen <b>boca abajo</b>." }),
           el("li", { html: "El robot empieza en el <b>cuadro rojo (Jugador)</b>, al centro de la orilla de arriba del tablero." }),
           el("li", { html: "Un <b>juez</b> se encarga del cronómetro y de revisar cada vaso." }))),
       el("div", { class: "tarjeta" },
         el("h2", { text: "🎮 Cómo se juega" }),
         el("div", { class: "pasos" },
-          [["Toma la primera tarjeta del mazo.", 1], ["Mira qué bandera indica.", 2], ["Maneja el robot hasta el vaso con esa bandera.", 3], ["Retira el vaso del tablero.", 4], ["Toma la siguiente tarjeta.", 5], ["Repite hasta retirar los 9 vasos.", 6]]
+          [["Toma la primera tarjeta del mazo.", 1], ["Mira qué bandera o qué reto indica.", 2], ["Maneja el robot hasta ese vaso.", 3], ["Retira el vaso (y cumple el reto, si es una tarjeta de reto).", 4], ["Toma la siguiente tarjeta.", 5], ["Repite hasta retirar todos los vasos.", 6]]
             .map(([t, n]) => el("div", { class: "paso", html: `<b class="n">${n}</b>${t}` })))),
       el("div", { class: "tarjeta" },
         el("h2", { text: "🏁 Fin del juego" }),
         el("ul", {},
-          el("li", { text: "El juego termina cuando se retiraron los 9 vasos." }),
+          el("li", { text: "El juego termina cuando se retiraron todos los vasos." }),
           el("li", { text: "El juez anota el tiempo total. Gana el equipo con el tiempo más corto." }))),
       el("div", { class: "tarjeta" },
         el("h2", { text: "⚠️ Reglas importantes" }),
@@ -193,7 +209,7 @@
           el("li", { text: "Las tarjetas se resuelven una por una y en orden: no se puede saltar ningún vaso." }),
           el("li", { text: "Los vasos deben estar repartidos por todo el tablero." }),
           el("li", { html: "Si el robot retira un vaso <b>equivocado</b>, el juez regresa ese vaso a su lugar y el robot vuelve al <b>cuadro rojo</b>. El cronómetro sigue corriendo." })),
-        el("div", { class: "aviso", html: "💡 En <b>✏️ Tarjetas blancas</b> puedes crear banderas nuevas y tarjetas de reto. En <b>⏱️ Mesa del juez</b> la app acomoda los vasos, baraja, lleva el cronómetro y guarda los tiempos." })));
+        el("div", { class: "aviso", html: "💡 En <b>✏️ Tarjetas blancas</b> puedes crear banderas nuevas y tarjetas de reto. En <b>⏱️ Mesa del juez</b> eliges qué vasos van al tablero, la app los acomoda, baraja, lleva el cronómetro y guarda los tiempos." })));
   }
 
   // ── Cómo barajar ──
@@ -201,9 +217,9 @@
     app.append(
       el("div", { class: "tarjeta" },
         el("h2", { text: "1️⃣ Primero, separa las tarjetas que no se usan" }),
-        el("p", { html: "El juego trae <b>10 banderas</b> (en tarjetas y en stickers para los vasos), pero solo se ponen <b>9 vasos</b>. Antes de barajar, <b>quita la tarjeta de la bandera que no está en el tablero</b>. Si no, al final saldría una tarjeta de un vaso que no existe." }),
-        el("div", { class: "banderas" }, todasBanderas().map((k) => el("div", { class: "bandera" + (FLAGS[k] ? "" : " propia"), html: svgBandera(k) + `<span>${sinEtiquetas(bandera(k).n)}</span>` }))),
-        el("div", { class: "aviso", html: "✏️ Si agregaste <b>tarjetas de reto</b>, también van en el mazo y se barajan junto con las banderas." })),
+        el("p", { html: "El mazo debe tener <b>una tarjeta por cada vaso</b> que está en el tablero. Si en el tablero hay 9 vasos, quita las tarjetas de las banderas que no pusiste. Si no, al final saldría una tarjeta de un vaso que no existe." }),
+        el("div", { class: "banderas" }, conVaso().map((k) => el("div", { class: "bandera" + (FLAGS[k] ? "" : " propia"), html: svgBandera(k) + `<span>${sinEtiquetas(vasoInfo(k).n)}</span>` }))),
+        el("div", { class: "aviso", html: "✏️ Las <b>tarjetas de reto</b> también tienen su vaso, y el <b>comodín</b> va en el mazo sin vaso. Todas se barajan juntas." })),
       el("div", { class: "tarjeta" },
         el("h2", { text: "2️⃣ Barájalas bien" }),
         el("div", { class: "pasos" },
@@ -219,8 +235,8 @@
 
   // ── Tarjetas blancas ──
   function blancas() {
-    const usadas = B.propias.length + B.retos.length + B.activos.filter((k) => RETOS_LISTOS.some((r) => r.id === k)).length;
-    const lleno = usadas >= BLANCAS;
+    const lleno = tarjetasUsadas() >= BLANCAS;
+    const sinVasos = vasosUsados() >= BLANCAS;
     // Editor de bandera propia
     const nueva = { n: "", patron: "v3", colores: ["#1565c0", "#ffffff", "#e53935"], simbolo: "" };
     const vista = el("div", { class: "vista" });
@@ -235,17 +251,27 @@
       onclick: () => { nueva.patron = p; pintarVista(); },
     })));
     pintarVista();
-
-    const textoReto = el("input", { class: "texto", placeholder: "Escribe un reto, por ejemplo: «Toca la campana antes de seguir»", maxlength: "90" });
+    const puedeAgregar = (comodin) => {
+      if (lleno) { Tools.toast("Ya usaste las 6 tarjetas blancas"); return false; }
+      if (!comodin && sinVasos) { Tools.toast("Ya usaste los 6 vasos blancos"); return false; }
+      return true;
+    };
+    const agregarReto = (plantilla) => {
+      if (!puedeAgregar(plantilla.comodin)) return;
+      B.retos.push(Object.assign({ id: "x" + Date.now() + Math.floor(Math.random() * 1000) }, plantilla));
+      guardarB(); mostrar();
+    };
+    const textoReto = el("input", { class: "texto", placeholder: "Escribe un reto, por ejemplo: «Saca el vaso y toca la campana»", maxlength: "90" });
 
     app.append(
       el("div", { class: "tarjeta" },
         el("h2", { text: "✏️ ¿Para qué sirven las tarjetas blancas?" }),
-        el("p", { html: "El juego trae <b>10 tarjetas</b> y <b>12 stickers</b> en blanco. Úsalas para hacer el juego más variado:" }),
+        el("p", { html: "El juego trae <b>6 tarjetas</b> y <b>6 vasos</b> en blanco. Úsalos para hacer el juego más variado:" }),
         el("ul", {},
-          el("li", { html: "<b>🏳️ Banderas nuevas:</b> una tarjeta y un sticker para el vaso. Pueden ser de otros países o inventadas, ¡como la bandera de tu escuela!" }),
-          el("li", { html: "<b>⚡ Tarjetas de reto:</b> se revuelven con las banderas. Cuando sale una, la app elige uno de los vasos que quedan: el robot va por él, lo saca <b>y además</b> cumple el reto (sonar el buzzer, saludar con el servo, prender un LED…). Para programar el buzzer o el servo en el carrito, mira los retos del tutorial <b>A por la Bandera</b>." })),
-        el("p", { class: "contador" + (lleno ? " lleno" : ""), text: `Tarjetas blancas usadas: ${usadas} de ${BLANCAS}` })),
+          el("li", { html: "<b>🏳️ Banderas nuevas:</b> una tarjeta y un vaso con la bandera. Pueden ser de otros países o inventadas, ¡como la bandera de tu escuela!" }),
+          el("li", { html: "<b>⚡ Tarjetas de reto:</b> una tarjeta y un vaso con el ícono del reto. Cuando sale la tarjeta, el robot va a ese vaso, lo saca <b>y además</b> cumple el reto (sonar el buzzer, saludar con el servo…). Para programarlo, mira los retos del tutorial <b>A por la Bandera</b>." }),
+          el("li", { html: "<b>🎁 Comodín:</b> solo una tarjeta (no lleva vaso): el robot saca el vaso que quiera." })),
+        el("p", { class: "contador" + (lleno || sinVasos ? " lleno" : ""), text: `Usadas: ${tarjetasUsadas()} de ${BLANCAS} tarjetas · ${vasosUsados()} de ${BLANCAS} vasos` })),
       el("div", { class: "tarjeta" },
         el("h2", { text: "🏳️ Crea una bandera" }),
         el("div", { class: "editor" },
@@ -258,7 +284,7 @@
               class: "primary",
               onclick: () => {
                 if (!nueva.n) return Tools.toast("Escribe el nombre de la bandera");
-                if (lleno) return Tools.toast("Ya usaste las 10 tarjetas blancas");
+                if (!puedeAgregar(false)) return;
                 B.propias.push(Object.assign({ id: "p" + Date.now() }, nueva, { colores: nueva.colores.slice() }));
                 guardarB(); mostrar();
               },
@@ -270,42 +296,38 @@
         }))) : null),
       el("div", { class: "tarjeta" },
         el("h2", { text: "⚡ Tarjetas de reto" }),
-        el("p", { class: "hint", text: "Marca las que quieras revolver con las banderas. Te recomendamos 2 o 3 para no alargar demasiado el juego." }),
-        el("div", { class: "retos" },
-          todosRetos().map((r) => {
-            const propio = !RETOS_LISTOS.includes(r);
-            const chk = el("input", { type: "checkbox" });
-            chk.checked = B.activos.includes(r.id);
-            chk.onchange = () => {
-              if (chk.checked && !propio && lleno) { chk.checked = false; return Tools.toast("Ya usaste las 10 tarjetas blancas"); }
-              B.activos = chk.checked ? [...B.activos, r.id] : B.activos.filter((k) => k !== r.id);
-              guardarB(); mostrar();
-            };
-            return el("div", { class: "reto" }, chk, el("span", { class: "ico", text: r.ico }), el("span", { class: "txt", text: r.t }),
-              propio ? el("button", { title: "Borrar", onclick: () => { B.retos = B.retos.filter((x) => x !== r); B.activos = B.activos.filter((k) => k !== r.id); guardarB(); mostrar(); } }, "🗑") : null);
-          })),
+        el("p", { class: "hint", text: "Toca ➕ para convertir una tarjeta blanca en ese reto. Te recomendamos 2 o 3 para no alargar demasiado el juego." }),
+        el("div", { class: "retos" }, PLANTILLAS.map((r) => el("div", { class: "reto" },
+          el("span", { class: "ico", text: r.ico }), el("span", { class: "txt", text: r.t + (r.comodin ? " (sin vaso)" : "") }),
+          el("button", { onclick: () => agregarReto(r) }, "➕")))),
         el("div", { class: "acciones" }, textoReto, el("button", {
           onclick: () => {
             const t = textoReto.value.trim();
             if (!t) return Tools.toast("Escribe el reto");
-            if (lleno) return Tools.toast("Ya usaste las 10 tarjetas blancas");
-            const id = "x" + Date.now();
-            B.retos.push({ id, ico: "✏️", t }); B.activos.push(id); guardarB(); mostrar();
+            agregarReto({ ico: "✏️", t });
           },
-        }, "➕ Agregar reto"))),
+        }, "➕ Agregar reto propio")),
+        B.retos.length ? [
+          el("p", { class: "section-title", style: "margin-top:14px", text: "Tus tarjetas de reto:" }),
+          el("div", { class: "retos" }, B.retos.map((r) => el("div", { class: "reto" },
+            el("span", { class: "ico", text: r.ico }), el("span", { class: "txt", text: r.t + (r.comodin ? " (sin vaso)" : "") }),
+            el("button", { title: "Borrar", onclick: () => { B.retos = B.retos.filter((x) => x !== r); guardarB(); mostrar(); } }, "🗑"))))] : null),
       el("div", { class: "tarjeta" },
         el("h2", { text: "🖨️ Imprimir" }),
-        el("p", { text: "Imprime tus banderas nuevas y tus tarjetas de reto al tamaño real (8.7 × 5.6 cm) para recortarlas y pegarlas en las tarjetas y stickers blancos." }),
+        el("p", { text: "Imprime tus banderas y tus tarjetas de reto al tamaño real (8.7 × 5.6 cm), y las etiquetas para los vasos, para recortarlas y pegarlas en las tarjetas y vasos blancos." }),
         el("div", { class: "acciones" }, el("button", { class: "primary", onclick: imprimir }, "🖨️ Hoja para imprimir"))));
   }
 
   function imprimir() {
     const tarjetas = [
       ...B.propias.map((p) => `<div class="t"><svg viewBox="0 0 30 20">${svgPropia(p)}</svg><b>${sinEtiquetas(p.n)}</b></div>`),
-      ...B.activos.map(reto).filter(Boolean).map((r) => `<div class="t r"><span>${r.ico}</span><p>${sinEtiquetas(r.t)}</p></div>`),
+      ...B.retos.map((r) => `<div class="t r"><span>${r.ico}</span><p>${sinEtiquetas(r.t)}</p></div>`),
     ];
-    const stickers = B.propias.map((p) => `<div class="s"><svg viewBox="0 0 30 20" preserveAspectRatio="none">${svgPropia(p)}</svg></div>`);
-    if (!tarjetas.length) return Tools.toast("Primero crea una bandera o marca un reto");
+    const etiquetas = [
+      ...B.propias.map((p) => `<div class="s"><svg viewBox="0 0 30 20" preserveAspectRatio="none">${svgPropia(p)}</svg></div>`),
+      ...B.retos.filter((r) => !r.comodin).map((r) => `<div class="s r"><span>${r.ico}</span></div>`),
+    ];
+    if (!tarjetas.length) return Tools.toast("Primero crea una bandera o un reto");
     const w = window.open("", "_blank");
     if (!w) return Tools.toast("El navegador bloqueó la ventana para imprimir");
     w.document.write(`<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Tarjetas A por la Bandera</title><style>
@@ -313,13 +335,13 @@
       .g{display:flex;flex-wrap:wrap;gap:4mm}
       .t{width:8.7cm;height:5.6cm;border:1px dashed #999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2mm;box-sizing:border-box;padding:3mm;text-align:center}
       .t svg{width:5cm;height:3.33cm} .t b{font-size:13pt} .t.r span{font-size:26pt} .t.r p{margin:0;font-size:11pt}
-      .s{width:8.7cm;height:5.6cm;clip-path:polygon(0 0,100% 0,88% 100%,12% 100%);border:1px dashed #999}
-      .s svg{width:100%;height:100%;display:block}
+      .s{width:8.7cm;height:5.6cm;clip-path:polygon(0 0,100% 0,88% 100%,12% 100%);border:1px dashed #999;display:grid;place-items:center;background:#fff6d6}
+      .s svg{width:100%;height:100%;display:block} .s.r span{font-size:48pt}
       @media print{button{display:none}}
     </style></head><body>
       <button onclick="print()">🖨️ Imprimir</button>
       <h2>Tarjetas (8.7 × 5.6 cm)</h2><div class="g">${tarjetas.join("")}</div>
-      ${stickers.length ? `<h2>Stickers para los vasos</h2><div class="g">${stickers.join("")}</div>` : ""}
+      ${etiquetas.length ? `<h2>Etiquetas para los vasos</h2><div class="g">${etiquetas.join("")}</div>` : ""}
     </body></html>`);
     w.document.close();
   }
@@ -331,20 +353,23 @@
   const guardarRes = () => { try { localStorage.setItem(RESULTADOS, JSON.stringify(resultados)); } catch (_) {} };
 
   // Estado de la partida (se conserva al cambiar de pestaña).
-  const J = { enJuego: Object.keys(FLAGS).filter((k) => k !== "it"), vasos: null, mazo: [], i: -1, retirados: new Set(), inicio: 0, fin: 0, timer: null, equipo: "", errores: 0, comodin: false };
-  const retosActivos = () => B.activos.filter((k) => reto(k));
+  // n: cuántos vasos van al tablero (9 por defecto).
+  const J = { n: 9, enJuego: Object.keys(FLAGS).filter((k) => k !== "it"), comodines: [], vasos: null, mazo: [], i: -1, retirados: new Set(), inicio: 0, fin: 0, timer: null, equipo: "", errores: 0, comodin: false, objetivo: null };
 
-  // Un vaso en cada zona de una cuadrícula de 3 × 3, para que queden repartidos.
+  // Los vasos se reparten en una cuadrícula de zonas (3 filas), uno por zona.
   function acomodarVasos() {
-    J.enJuego = J.enJuego.filter((k) => todasBanderas().includes(k));
-    if (J.enJuego.length !== 9) { J.vasos = null; return; }
+    J.enJuego = J.enJuego.filter((k) => conVaso().includes(k));
+    J.comodines = J.comodines.filter((k) => comodines().includes(k));
+    if (J.enJuego.length !== J.n) { J.vasos = null; return; }
+    const cols = Math.max(3, Math.ceil(J.n / 3)), anchoZ = 240 / cols;
+    const zonas = revolver(Array.from({ length: cols * 3 }, (_, i) => i)).slice(0, J.n);
     J.vasos = revolver(J.enJuego).map((k, z) => {
-      const zc = z % 3, zr = Math.floor(z / 3);
-      let x, y;
+      const zc = zonas[z] % cols, zr = Math.floor(zonas[z] / cols);
+      let x, y, intentos = 0;
       do {
-        x = zc * 80 + 14 + Math.random() * 52;
+        x = zc * anchoZ + 10 + Math.random() * Math.max(1, anchoZ - 20);
         y = zr * 40 + 10 + Math.random() * 20;
-      } while (x > 100 && x < 140 && y < 34); // lejos del cuadro rojo
+      } while (x > 100 && x < 140 && y < 34 && ++intentos < 50); // lejos del cuadro rojo
       return { k, x, y };
     });
     J.retirados = new Set();
@@ -356,45 +381,37 @@
     for (let y = 0; y <= 120; y += 24) s += `<line x1="0" y1="${y}" x2="240" y2="${y}" stroke="#d6dae6" stroke-width=".4"/>`;
     s += `<line x1="120" y1="0" x2="120" y2="120" stroke="#9aa" stroke-dasharray="2 2" stroke-width=".5"/><line x1="0" y1="60" x2="240" y2="60" stroke="#9aa" stroke-dasharray="2 2" stroke-width=".5"/>`;
     s += `<rect x="108" y="0" width="24" height="24" fill="#e02020"/><text x="120" y="14" font-size="4.5" fill="#fff" text-anchor="middle" font-weight="700">JUGADOR</text>`;
-    if (!J.vasos) return s + `<text x="120" y="70" font-size="7" text-anchor="middle" fill="#a3195b">Elige exactamente 9 banderas</text></svg>`;
+    if (!J.vasos) return s + `<text x="120" y="70" font-size="7" text-anchor="middle" fill="#a3195b">Elige exactamente ${J.n} vasos</text></svg>`;
     const actual = J.i >= 0 && J.i < J.mazo.length ? J.mazo[J.i] : null;
     for (const v of J.vasos) {
-      const fuera = J.retirados.has(v.k);
-      const marca = (v.k === actual || v.k === J.objetivo || J.comodin) && !fuera;
+      const fuera = J.retirados.has(v.k), info = vasoInfo(v.k);
+      const marca = (v.k === actual || J.comodin) && !fuera;
       s += `<g class="vaso" data-k="${v.k}" opacity="${fuera ? 0.2 : 1}" transform="translate(${v.x},${v.y})">`;
       // Vaso de unos 10 cm de diámetro, a escala del tablero.
-      s += `<circle r="5.5" fill="#fff" stroke="${marca ? "#f1c40f" : "#555"}" stroke-width="${marca ? 1.6 : 0.5}"/>`;
-      s += `<svg x="-4.2" y="-2.8" width="8.4" height="5.6" viewBox="0 0 30 20">${bandera(v.k).s}</svg>`;
-      s += `<text y="10" font-size="3.4" text-anchor="middle" fill="#333">${sinEtiquetas(bandera(v.k).n)}</text></g>`;
+      s += `<circle r="5.5" fill="${info.reto ? "#fff6d6" : "#fff"}" stroke="${marca ? "#f1c40f" : "#555"}" stroke-width="${marca ? 1.6 : 0.5}"/>`;
+      s += info.reto ? `<text y="2.4" font-size="6.5" text-anchor="middle">${info.reto.ico}</text>`
+        : `<svg x="-4.2" y="-2.8" width="8.4" height="5.6" viewBox="0 0 30 20">${info.s}</svg>`;
+      s += `<text y="10" font-size="3.4" text-anchor="middle" fill="#333">${sinEtiquetas(info.reto ? "Reto" : info.n)}</text></g>`;
     }
     return s + "</svg>";
   }
 
   const fmt = (ms) => { const t = Math.max(0, ms) / 1000; return `${String(Math.floor(t / 60)).padStart(2, "0")}:${(t % 60).toFixed(1).padStart(4, "0")}`; };
 
-  // Prepara la tarjeta actual: si es un reto, elige al azar uno de los
-  // vasos que quedan (su tarjeta de bandera ya no saldrá después).
+  // Prepara la tarjeta actual (salta las de vasos que ya se llevó un comodín).
   function prepararCarta() {
     J.comodin = false;
-    J.objetivo = null;
-    // Si un reto o comodín ya se llevó el vaso de esta tarjeta, se salta.
     while (J.i < J.mazo.length && J.retirados.has(J.mazo[J.i])) J.i++;
-    const r = J.i < J.mazo.length && reto(J.mazo[J.i]);
-    if (r && !r.comodin) {
-      const quedan = J.vasos.map((v) => v.k).filter((k) => !J.retirados.has(k));
-      J.objetivo = quedan.length ? quedan[Math.floor(Math.random() * quedan.length)] : null;
-    }
   }
 
-  // Pasa a la siguiente tarjeta; si ya no quedan, termina y guarda el tiempo.
+  // Pasa a la siguiente tarjeta; termina cuando ya no quedan vasos.
   function siguienteTarjeta() {
     J.i++;
     prepararCarta();
-    // El juego termina cuando ya no quedan vasos (aunque sobren tarjetas de reto).
     if (J.i >= J.mazo.length || J.vasos.every((v) => J.retirados.has(v.k))) {
       J.i = J.mazo.length;
       J.fin = Date.now();
-      resultados.push({ equipo: J.equipo || "Equipo " + (resultados.length + 1), ms: J.fin - J.inicio, errores: J.errores, fecha: new Date().toLocaleDateString("es-MX") });
+      resultados.push({ equipo: J.equipo || "Equipo " + (resultados.length + 1), ms: J.fin - J.inicio, errores: J.errores, vasos: J.n, fecha: new Date().toLocaleDateString("es-MX") });
       guardarRes();
     }
     mostrar();
@@ -409,9 +426,9 @@
     const actual = J.i >= 0 && J.i < J.mazo.length ? J.mazo[J.i] : null;
     const rActual = actual && reto(actual);
     const carta = el("div", { class: "carta" + (rActual ? " reto" : actual ? " vista" : "") });
-    if (rActual && J.objetivo) carta.innerHTML = `<div>${svgBandera(J.objetivo)}<div style="font-size:18px">Ve al vaso de <b>${sinEtiquetas(bandera(J.objetivo).n)}</b></div><div class="ico">${rActual.ico}</div><b>${sinEtiquetas(rActual.t)}</b></div>`;
-    else if (rActual) carta.innerHTML = `<div><div class="ico">${rActual.ico}</div><b>${sinEtiquetas(rActual.t)}</b>${rActual.comodin ? "" : "<div>(ya no quedan vasos: hazlo en el cuadro rojo)</div>"}</div>`;
-    else if (actual) carta.innerHTML = svgBandera(actual) + `<b style="font-size:20px">${sinEtiquetas(bandera(actual).n)}</b>`;
+    if (rActual && rActual.comodin) carta.innerHTML = `<div><div class="ico">${rActual.ico}</div><b>${sinEtiquetas(rActual.t)}</b></div>`;
+    else if (rActual) carta.innerHTML = `<div><div class="ico">${rActual.ico}</div><div style="font-size:18px">Ve al vaso <b>del reto ${rActual.ico}</b></div><b>${sinEtiquetas(rActual.t)}</b></div>`;
+    else if (actual) carta.innerHTML = svgBandera(actual) + `<b style="font-size:20px">${sinEtiquetas(vasoInfo(actual).n)}</b>`;
     else carta.textContent = J.inicio && J.fin ? "🏁 ¡Terminó!" : J.mazo.length ? "Mazo listo, boca abajo" : "Baraja las tarjetas para empezar";
     const mazo = el("div", { class: "mazo" }, Array.from({ length: Math.max(0, J.mazo.length - J.i - 1) }, () => el("i")));
     const jugando = J.inicio && !J.fin;
@@ -427,50 +444,68 @@
       J.retirados.add(g.dataset.k);
       siguienteTarjeta();
     };
+    const reiniciarPartida = () => { J.vasos = null; acomodarVasos(); J.mazo = []; J.i = -1; J.inicio = J.fin = 0; };
 
     const botones = [];
     if (!jugando) botones.push(el("button", {
       class: "primary",
       onclick: () => {
-        if (!J.vasos) return Tools.toast("Elige exactamente 9 banderas");
-        if (!J.mazo.length || J.fin) { J.mazo = revolver([...J.enJuego, ...retosActivos()]); J.retirados = new Set(); }
+        if (!J.vasos) return Tools.toast(`Elige exactamente ${J.n} vasos`);
+        if (!J.mazo.length || J.fin) { J.mazo = revolver([...J.enJuego, ...J.comodines]); J.retirados = new Set(); }
         J.i = 0; J.errores = 0; J.fin = 0; J.inicio = Date.now(); prepararCarta(); mostrar();
       },
     }, "▶ Empezar y sacar tarjeta"));
-    if (jugando && rActual) {
-      if (rActual.comodin) {
-        if (!J.comodin) botones.push(el("button", { class: "bien", onclick: () => { J.comodin = true; mostrar(); } }, "🎁 Usar comodín"));
-      } else if (J.objetivo) {
-        botones.push(el("button", { class: "bien", onclick: () => { J.retirados.add(J.objetivo); siguienteTarjeta(); } }, "✅ Vaso y reto cumplidos"));
-        botones.push(el("button", { class: "mal", onclick: () => { J.errores++; Tools.toast("❌ Regresa el vaso a su lugar y el robot al cuadro rojo"); mostrar(); } }, "❌ Vaso equivocado"));
-      } else botones.push(el("button", { class: "bien", onclick: siguienteTarjeta }, "✅ Reto cumplido"));
-    }
-    if (jugando && !rActual) {
-      botones.push(el("button", { class: "bien", onclick: () => { J.retirados.add(actual); siguienteTarjeta(); } }, "✅ Vaso correcto"));
+    if (jugando && rActual && rActual.comodin) {
+      if (!J.comodin) botones.push(el("button", { class: "bien", onclick: () => { J.comodin = true; mostrar(); } }, "🎁 Usar comodín"));
+    } else if (jugando) {
+      botones.push(el("button", { class: "bien", onclick: () => { J.retirados.add(actual); siguienteTarjeta(); } }, rActual ? "✅ Vaso y reto cumplidos" : "✅ Vaso correcto"));
       botones.push(el("button", { class: "mal", onclick: () => { J.errores++; Tools.toast("❌ Regresa el vaso a su lugar y el robot al cuadro rojo"); mostrar(); } }, "❌ Vaso equivocado"));
     }
     if (jugando) botones.push(el("button", { onclick: () => { clearInterval(J.timer); J.inicio = J.fin = 0; J.i = -1; J.comodin = false; J.retirados = new Set(); mostrar(); } }, "⏹ Cancelar"));
 
+    const elegir = (k) => {
+      if (jugando) return;
+      if (J.enJuego.includes(k)) J.enJuego = J.enJuego.filter((x) => x !== k);
+      else if (J.enJuego.length >= J.n) return Tools.toast(`Ya hay ${J.n}: saca otro vaso primero, o usa ➕ Más vasos`);
+      else J.enJuego = [...J.enJuego, k];
+      reiniciarPartida(); mostrar();
+    };
+    const cambiarN = (d) => {
+      if (jugando) return;
+      const max = conVaso().length;
+      J.n = Math.max(3, Math.min(max, J.n + d));
+      // Ajusta la selección al nuevo número: agrega o quita los últimos.
+      const sobran = conVaso().filter((k) => !J.enJuego.includes(k));
+      while (J.enJuego.length < J.n && sobran.length) J.enJuego.push(sobran.shift());
+      J.enJuego = J.enJuego.slice(0, J.n);
+      reiniciarPartida(); mostrar();
+    };
+
     app.append(el("div", { class: "mesa" },
       el("div", {},
         el("div", { class: "tarjeta" },
-          el("h2", { text: "1️⃣ Elige las 9 banderas" }),
-          el("p", { class: "hint", text: `Toca una bandera para meterla o sacarla del juego. Van ${J.enJuego.length} de 9.` }),
-          el("div", { class: "banderas" }, todasBanderas().map((k) => el("div", {
-            class: "bandera" + (J.enJuego.includes(k) ? "" : " fuera") + (FLAGS[k] ? "" : " propia"), html: svgBandera(k) + `<span>${sinEtiquetas(bandera(k).n)}</span>`,
-            onclick: () => {
-              if (jugando) return;
-              if (J.enJuego.includes(k)) J.enJuego = J.enJuego.filter((x) => x !== k);
-              else if (J.enJuego.length >= 9) return Tools.toast("Ya hay 9: primero saca otra bandera");
-              else J.enJuego = [...J.enJuego, k];
-              J.vasos = null; acomodarVasos(); J.mazo = []; J.i = -1; J.inicio = J.fin = 0; mostrar();
-            },
+          el("h2", { text: "1️⃣ Elige los vasos" }),
+          el("div", { class: "acciones", style: "align-items:center;margin-top:0" },
+            el("button", { onclick: () => cambiarN(-1) }, "➖ Menos vasos"),
+            el("b", { style: "font-size:18px;flex:0 0 auto", text: `${J.n} vasos` }),
+            el("button", { onclick: () => cambiarN(1) }, "➕ Más vasos")),
+          el("p", { class: "hint", text: `Toca una bandera o un reto para meterlo o sacarlo del tablero. Van ${J.enJuego.length} de ${J.n}.` }),
+          el("div", { class: "banderas" }, conVaso().map((k) => el("div", {
+            class: "bandera" + (J.enJuego.includes(k) ? "" : " fuera") + (FLAGS[k] ? "" : " propia"),
+            html: svgBandera(k) + `<span>${sinEtiquetas(vasoInfo(k).n)}</span>`,
+            onclick: () => elegir(k),
           }))),
-          retosActivos().length ? el("p", { class: "hint", text: `⚡ Además se revuelven ${retosActivos().length} tarjeta(s) de reto (pestaña ✏️ Tarjetas blancas).` }) : null),
+          comodines().length ? [
+            el("p", { class: "hint", text: "🎁 Comodines (van en el mazo, sin vaso):" }),
+            el("div", { class: "banderas" }, comodines().map((k) => el("div", {
+              class: "bandera" + (J.comodines.includes(k) ? "" : " fuera"), html: `<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#fff6d6"/><text x="15" y="15" font-size="13" text-anchor="middle">🎁</text></svg><span>Comodín</span>`,
+              onclick: () => { if (jugando) return; J.comodines = J.comodines.includes(k) ? J.comodines.filter((x) => x !== k) : [...J.comodines, k]; J.mazo = []; J.i = -1; J.inicio = J.fin = 0; mostrar(); },
+            })))] : null,
+          B.retos.length || B.propias.length ? null : el("p", { class: "hint", text: "✏️ Crea retos o banderas nuevas en la pestaña Tarjetas blancas y aparecerán aquí." })),
         el("div", { class: "tarjeta" },
           el("h2", { text: J.comodin ? "🎁 Toca el vaso que retiró el equipo" : "2️⃣ Acomoda los vasos así" }),
           tableroDiv,
-          el("p", { class: "hint", text: "Las líneas grises son cuadros de 24 cm. Hay un vaso en cada zona del tablero para que queden repartidos." }),
+          el("p", { class: "hint", text: "Las líneas grises son cuadros de 24 cm. Los vasos quedan repartidos por zonas del tablero." }),
           el("div", { class: "acciones" },
             el("button", { onclick: () => { if (jugando) return; acomodarVasos(); mostrar(); } }, "🔀 Otra acomodada al azar")))),
       el("div", {},
@@ -481,8 +516,8 @@
             el("button", {
               onclick: () => {
                 if (jugando) return;
-                if (!J.vasos) return Tools.toast("Elige exactamente 9 banderas");
-                J.mazo = revolver([...J.enJuego, ...retosActivos()]); J.i = -1; J.inicio = J.fin = 0; J.errores = 0; J.retirados = new Set();
+                if (!J.vasos) return Tools.toast(`Elige exactamente ${J.n} vasos`);
+                J.mazo = revolver([...J.enJuego, ...J.comodines]); J.i = -1; J.inicio = J.fin = 0; J.errores = 0; J.retirados = new Set();
                 mostrar();
                 app.querySelector(".mazo").classList.add("barajando");
               },
@@ -498,7 +533,7 @@
             ? el("table", { class: "res" },
                 el("tr", {}, el("th", { text: "#" }), el("th", { text: "Equipo" }), el("th", { text: "Tiempo" }), el("th", { text: "❌" })),
                 resultados.slice().sort((a, b) => a.ms - b.ms).map((r, i) =>
-                  el("tr", {}, el("td", { text: i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : i + 1 }), el("td", { text: r.equipo }), el("td", { text: fmt(r.ms) }), el("td", { text: r.errores }))))
+                  el("tr", {}, el("td", { text: i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : i + 1 }), el("td", { text: r.equipo + (r.vasos && r.vasos !== 9 ? ` (${r.vasos} vasos)` : "") }), el("td", { text: fmt(r.ms) }), el("td", { text: r.errores }))))
             : el("p", { class: "hint", text: "Aquí aparecerán los tiempos de cada equipo." }),
           resultados.length ? el("div", { class: "acciones" }, el("button", { onclick: () => { if (confirm("¿Borrar todos los tiempos?")) { resultados = []; guardarRes(); mostrar(); } } }, "🗑 Borrar tiempos")) : null))));
   }
