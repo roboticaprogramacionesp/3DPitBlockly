@@ -102,11 +102,16 @@
     diag: (c) => `<rect width="30" height="20" fill="${c[0]}"/><path d="M0 20L30 0V20z" fill="${c[1]}"/>`,
     circulo: (c) => `<rect width="30" height="20" fill="${c[0]}"/><circle cx="15" cy="10" r="6" fill="${c[1]}"/>`,
   };
+  // Cada reto (menos el comodín) va con un vaso: la app elige uno de los
+  // que quedan y el robot debe sacarlo y además cumplir el reto.
   const RETOS_LISTOS = [
-    { id: "r_vuelta", ico: "🔄", t: "Vuelta completa: antes de ir al siguiente vaso, el robot da una vuelta de 360° en su lugar." },
-    { id: "r_regreso", ico: "↩️", t: "Regreso: el robot vuelve al cuadro rojo antes de seguir con la siguiente tarjeta." },
-    { id: "r_reversa", ico: "🐢", t: "En reversa: el robot va de reversa hasta el siguiente vaso." },
-    { id: "r_comodin", ico: "🎁", t: "Comodín: retira el vaso que tú quieras. El juez lo toca en el tablero de la app.", comodin: true },
+    { id: "r_buzzer", ico: "🔊", t: "Saca el vaso y haz sonar el buzzer." },
+    { id: "r_saludo", ico: "👋", t: "Saca el vaso y saluda moviendo el servo." },
+    { id: "r_led", ico: "💡", t: "Saca el vaso y prende el LED (o el NeoPixel) 2 segundos." },
+    { id: "r_vuelta", ico: "🔄", t: "Saca el vaso y da una vuelta completa (360°) en tu lugar." },
+    { id: "r_regreso", ico: "↩️", t: "Saca el vaso y llévalo hasta el cuadro rojo." },
+    { id: "r_reversa", ico: "🐢", t: "Llega al vaso en reversa y sácalo." },
+    { id: "r_comodin", ico: "🎁", t: "Comodín: saca el vaso que tú quieras. El juez lo toca en el tablero de la app.", comodin: true },
   ];
   const GUARDA_BLANCAS = "3dpit-banderas-blancas";
   let B = { propias: [], retos: [], activos: [] };
@@ -239,7 +244,7 @@
         el("p", { html: "El juego trae <b>10 tarjetas</b> y <b>12 stickers</b> en blanco. Úsalas para hacer el juego más variado:" }),
         el("ul", {},
           el("li", { html: "<b>🏳️ Banderas nuevas:</b> una tarjeta y un sticker para el vaso. Pueden ser de otros países o inventadas, ¡como la bandera de tu escuela!" }),
-          el("li", { html: "<b>⚡ Tarjetas de reto:</b> se revuelven con las banderas. Cuando sale una, el robot tiene que cumplir el reto antes de seguir." })),
+          el("li", { html: "<b>⚡ Tarjetas de reto:</b> se revuelven con las banderas. Cuando sale una, la app elige uno de los vasos que quedan: el robot va por él, lo saca <b>y además</b> cumple el reto (sonar el buzzer, saludar con el servo, prender un LED…). Para programar el buzzer o el servo en el carrito, mira los retos del tutorial <b>A por la Bandera</b>." })),
         el("p", { class: "contador" + (lleno ? " lleno" : ""), text: `Tarjetas blancas usadas: ${usadas} de ${BLANCAS}` })),
       el("div", { class: "tarjeta" },
         el("h2", { text: "🏳️ Crea una bandera" }),
@@ -355,7 +360,7 @@
     const actual = J.i >= 0 && J.i < J.mazo.length ? J.mazo[J.i] : null;
     for (const v of J.vasos) {
       const fuera = J.retirados.has(v.k);
-      const marca = (v.k === actual || (J.comodin && !fuera)) && !fuera;
+      const marca = (v.k === actual || v.k === J.objetivo || J.comodin) && !fuera;
       s += `<g class="vaso" data-k="${v.k}" opacity="${fuera ? 0.2 : 1}" transform="translate(${v.x},${v.y})">`;
       // Vaso de unos 10 cm de diámetro, a escala del tablero.
       s += `<circle r="5.5" fill="#fff" stroke="${marca ? "#f1c40f" : "#555"}" stroke-width="${marca ? 1.6 : 0.5}"/>`;
@@ -367,13 +372,27 @@
 
   const fmt = (ms) => { const t = Math.max(0, ms) / 1000; return `${String(Math.floor(t / 60)).padStart(2, "0")}:${(t % 60).toFixed(1).padStart(4, "0")}`; };
 
+  // Prepara la tarjeta actual: si es un reto, elige al azar uno de los
+  // vasos que quedan (su tarjeta de bandera ya no saldrá después).
+  function prepararCarta() {
+    J.comodin = false;
+    J.objetivo = null;
+    // Si un reto o comodín ya se llevó el vaso de esta tarjeta, se salta.
+    while (J.i < J.mazo.length && J.retirados.has(J.mazo[J.i])) J.i++;
+    const r = J.i < J.mazo.length && reto(J.mazo[J.i]);
+    if (r && !r.comodin) {
+      const quedan = J.vasos.map((v) => v.k).filter((k) => !J.retirados.has(k));
+      J.objetivo = quedan.length ? quedan[Math.floor(Math.random() * quedan.length)] : null;
+    }
+  }
+
   // Pasa a la siguiente tarjeta; si ya no quedan, termina y guarda el tiempo.
   function siguienteTarjeta() {
     J.i++;
-    J.comodin = false;
-    // Si un comodín ya se llevó el vaso de esta tarjeta, se salta.
-    while (J.i < J.mazo.length && J.retirados.has(J.mazo[J.i])) J.i++;
-    if (J.i >= J.mazo.length) {
+    prepararCarta();
+    // El juego termina cuando ya no quedan vasos (aunque sobren tarjetas de reto).
+    if (J.i >= J.mazo.length || J.vasos.every((v) => J.retirados.has(v.k))) {
+      J.i = J.mazo.length;
       J.fin = Date.now();
       resultados.push({ equipo: J.equipo || "Equipo " + (resultados.length + 1), ms: J.fin - J.inicio, errores: J.errores, fecha: new Date().toLocaleDateString("es-MX") });
       guardarRes();
@@ -390,7 +409,8 @@
     const actual = J.i >= 0 && J.i < J.mazo.length ? J.mazo[J.i] : null;
     const rActual = actual && reto(actual);
     const carta = el("div", { class: "carta" + (rActual ? " reto" : actual ? " vista" : "") });
-    if (rActual) carta.innerHTML = `<div><div class="ico">${rActual.ico}</div><b>${sinEtiquetas(rActual.t)}</b></div>`;
+    if (rActual && J.objetivo) carta.innerHTML = `<div>${svgBandera(J.objetivo)}<div style="font-size:18px">Ve al vaso de <b>${sinEtiquetas(bandera(J.objetivo).n)}</b></div><div class="ico">${rActual.ico}</div><b>${sinEtiquetas(rActual.t)}</b></div>`;
+    else if (rActual) carta.innerHTML = `<div><div class="ico">${rActual.ico}</div><b>${sinEtiquetas(rActual.t)}</b>${rActual.comodin ? "" : "<div>(ya no quedan vasos: hazlo en el cuadro rojo)</div>"}</div>`;
     else if (actual) carta.innerHTML = svgBandera(actual) + `<b style="font-size:20px">${sinEtiquetas(bandera(actual).n)}</b>`;
     else carta.textContent = J.inicio && J.fin ? "🏁 ¡Terminó!" : J.mazo.length ? "Mazo listo, boca abajo" : "Baraja las tarjetas para empezar";
     const mazo = el("div", { class: "mazo" }, Array.from({ length: Math.max(0, J.mazo.length - J.i - 1) }, () => el("i")));
@@ -414,12 +434,15 @@
       onclick: () => {
         if (!J.vasos) return Tools.toast("Elige exactamente 9 banderas");
         if (!J.mazo.length || J.fin) { J.mazo = revolver([...J.enJuego, ...retosActivos()]); J.retirados = new Set(); }
-        J.i = 0; J.errores = 0; J.fin = 0; J.comodin = false; J.inicio = Date.now(); mostrar();
+        J.i = 0; J.errores = 0; J.fin = 0; J.inicio = Date.now(); prepararCarta(); mostrar();
       },
     }, "▶ Empezar y sacar tarjeta"));
     if (jugando && rActual) {
       if (rActual.comodin) {
         if (!J.comodin) botones.push(el("button", { class: "bien", onclick: () => { J.comodin = true; mostrar(); } }, "🎁 Usar comodín"));
+      } else if (J.objetivo) {
+        botones.push(el("button", { class: "bien", onclick: () => { J.retirados.add(J.objetivo); siguienteTarjeta(); } }, "✅ Vaso y reto cumplidos"));
+        botones.push(el("button", { class: "mal", onclick: () => { J.errores++; Tools.toast("❌ Regresa el vaso a su lugar y el robot al cuadro rojo"); mostrar(); } }, "❌ Vaso equivocado"));
       } else botones.push(el("button", { class: "bien", onclick: siguienteTarjeta }, "✅ Reto cumplido"));
     }
     if (jugando && !rActual) {

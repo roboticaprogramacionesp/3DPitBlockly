@@ -166,7 +166,37 @@
       camino: [[0, 2], [1, 2], [2, 2], [2, 1], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0], [7, 1], [7, 2], [8, 2], [9, 2]],
       atajos: [{ desde: [2, 2], celdas: [[2, 3], [2, 4], [3, 4], [4, 4], [5, 4], [6, 4], [7, 4], [7, 3]], hasta: [7, 2] }],
     },
+    // Caminos cortos para practicar a manejar (diseños del docente).
+    recta: {
+      n: "➖ Recta (10)", corto: true, d: "Para empezar: ir derecho de un lado al otro del tablero sin salirse.",
+      camino: [[0, 2], [1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2], [9, 2]], atajos: [],
+    },
+    escalon: {
+      n: "📶 Escalón (11)", corto: true, d: "Una sola bajada: practica las dos primeras vueltas de 90°.",
+      camino: [[0, 1], [1, 1], [2, 1], [3, 1], [4, 1], [5, 1], [5, 2], [6, 2], [7, 2], [8, 2], [9, 2]], atajos: [],
+    },
+    ce: {
+      n: "↩️ La C (14)", corto: true, d: "Ida y vuelta: el robot regresa por debajo hacia donde empezó.",
+      camino: [[2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0], [7, 1], [7, 2], [7, 3], [6, 3], [5, 3], [4, 3], [3, 3], [2, 3]], atajos: [],
+    },
+    u: {
+      n: "⛎ La U (15)", corto: true, d: "Baja, cruza y vuelve a subir: tres vueltas seguidas.",
+      camino: [[0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [5, 1], [5, 2], [5, 3], [6, 3], [7, 3], [8, 3], [8, 2], [8, 1], [8, 0]], atajos: [],
+    },
+    ese: {
+      n: "〽️ La S (15)", corto: true, d: "Cuatro vueltas, dos para cada lado: la más difícil de los cortos.",
+      camino: [[0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [4, 1], [4, 2], [4, 3], [5, 3], [6, 3], [7, 3], [7, 2], [7, 1], [8, 1], [9, 1]], atajos: [],
+    },
   };
+  // Botones de recorridos: los largos para jugar y los cortos para practicar.
+  function botonesRutas(alElegir) {
+    const b = (cortos) => Object.entries(RUTAS).filter(([, v]) => !!v.corto === cortos)
+      .map(([k, v]) => el("button", { class: ruta === k ? "active" : "", onclick: () => { ruta = k; alElegir(); mostrar(); } }, v.n));
+    return [
+      el("div", { class: "hint", text: "Para jugar:" }), el("div", { class: "rutas" }, b(false)),
+      el("div", { class: "hint", text: "Cortos, para practicar a manejar:" }), el("div", { class: "rutas" }, b(true)),
+    ];
+  }
   const celdasDe = (r) => [...r.camino, ...r.atajos.flatMap((a) => a.celdas)];
   const SOLUCION = {};
   let ruta = "atajos";
@@ -283,7 +313,7 @@
             .map(([t, n]) => el("div", { class: "paso", html: `<b class="n">${n}</b>${t}` })))),
       el("div", { class: "tarjeta" },
         el("h2", { text: "🗺️ Recorridos que sí se pueden armar" }),
-        el("div", { class: "rutas" }, Object.entries(RUTAS).map(([k, v]) => el("button", { class: ruta === k ? "active" : "", onclick: () => { ruta = k; mostrar(); } }, v.n))),
+        botonesRutas(() => {}),
         el("p", { text: r.d }),
         el("div", { html: svgRecorrido(celdasDe(r), sol, { numeros: numerosRuta(r) }) }),
         conteo(sol), listaFichas(sol),
@@ -438,7 +468,7 @@
         el("div", { class: "aviso", html: "🤖 <b>¿Solo tienen un robot?</b> Se turnan: antes de cada tiro, el juez pone el robot en la ficha donde va el equipo (la app lo indica). Y si juega <b>una sola persona o equipo</b>, el reto es llegar a la meta en el <b>menor número de turnos</b>." })),
       el("div", { class: "tarjeta" },
         el("h2", { text: "🎲 Dados y avance" }),
-        el("div", { class: "rutas" }, Object.entries(RUTAS).map(([k, v]) => el("button", { class: ruta === k ? "active" : "", onclick: () => { ruta = k; reiniciar(); mostrar(); } }, v.n))),
+        botonesRutas(reiniciar),
         el("div", { html: svgRecorrido(celdasDe(r), sol, { numeros: numerosRuta(r), piezas }) }),
         el("div", { class: "equipos", style: "margin-top:10px" }, G.equipos.map((e, k) => {
           const nombre = el("input", { value: e.n, style: "flex:1;min-width:120px;background:transparent;color:var(--text);border:0;font-size:16px;font-weight:700" });

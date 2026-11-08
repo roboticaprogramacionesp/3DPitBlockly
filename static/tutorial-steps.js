@@ -5449,6 +5449,7 @@ var TutorialSteps = {
     if (typeof showView === 'function') showView('viewBlocks');
     this.tutorial = tut;
     this.paso = 0;
+    this._enFin = false;
     // El check ✓ del paso "Ejecuta tu programa" se apoya en este flag
     // (ver _isPasoCompleto / main.js sendCodeToDevice) -- resetearlo acá
     // evita que quede "pegado" en true por haber corrido código de un
@@ -5483,7 +5484,16 @@ var TutorialSteps = {
   },
 
   anterior: function () {
-    if (!this.tutorial || this.paso === 0) return;
+    if (!this.tutorial) return;
+    // Desde la pantalla de fin: volver al último paso con sus botones.
+    if (this._enFin) {
+      this._enFin = false;
+      document.getElementById('ts-btn-next').style.display = '';
+      document.getElementById('ts-body').innerHTML = this._bodyTpl();
+      this._renderPasoConTransicion('prev');
+      return;
+    }
+    if (this.paso === 0) return;
     this.paso--;
     this._renderPasoConTransicion('prev');
   },
@@ -6305,8 +6315,11 @@ var TutorialSteps = {
       '</div>';
     // El título puede venir de un tutorial compartido: como texto, no HTML.
     document.getElementById('ts-fin-titulo').textContent = this.tutorial.title;
+    // "← Anterior" sigue visible para poder regresar a los pasos.
     document.getElementById('ts-btn-next').style.display = 'none';
-    document.getElementById('ts-btn-prev').style.display = 'none';
+    document.getElementById('ts-btn-prev').style.display = '';
+    document.getElementById('ts-btn-prev').disabled = false;
+    this._enFin = true;
     // Ya no hay un "paso de conexión" activo -- ocultar el botón de
     // conexiones (antes quedaba visible incluso en la pantalla de fin).
     this._actualizarBotonWiring();
@@ -6315,6 +6328,7 @@ var TutorialSteps = {
   },
 
   _reiniciar: function () {
+    this._enFin = false;
     document.getElementById('ts-btn-next').style.display = '';
     document.getElementById('ts-btn-prev').style.display = '';
     document.getElementById('ts-body').innerHTML = TutorialSteps._bodyTpl();

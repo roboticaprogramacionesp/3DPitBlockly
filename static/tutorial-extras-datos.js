@@ -972,6 +972,41 @@ var TUTORIAL_EXTRAS = {
       ["¿Cómo encuentra el celular al ESP32?", ["Por el nombre que anuncia", "Por su IP", "Por el cable USB"], 0, "Eso se llama advertising."],
       ["¿Por qué hay que decodificar los datos que llegan?", ["Llegan como bytes y hay que convertirlos a texto", "Porque vienen cifrados", "No hace falta"], 0, "Sin decodificar verías algo como b'hola'."]
     ]
+  },
+
+  /* ── Desafío de Robótica (juegos con el carrito) ────────────── */
+  juego_bandera_carrito: {
+    n: 2, t: 40,
+    dato: "El control de 5 botones usa <b>un solo pin</b>: cada botón tiene una resistencia distinta, y por eso el ESP32 lee un número diferente para cada uno. ¡Ahorras 4 pines!",
+    exp: "El ciclo lee el control unas <b>20 veces por segundo</b>. Si el número cae en el rango de un botón, llama a la función de ese movimiento; si no se aprieta nada, llama a <em>alto</em>. Por eso el carrito se mueve <b>solo mientras mantienes</b> el botón. Cada función prende las dos ruedas en el sentido correcto: para girar, una va hacia adelante y la otra hacia atrás.",
+    usos: ["Carritos y drones de control remoto", "Grúas y montacargas que se manejan con botones", "Robots de rescate manejados a distancia"],
+    retos: [
+      ["Haz que el botón del centro haga <b>sonar el buzzer</b>, para avisar cuando sacas un vaso.", "Agrega un <em>si</em> para la tecla entre 700 y 800 y usa el bloque del buzzer. Cambia el de <em>alto</em> a tecla &gt; 900."],
+      ["Agrega un <b>servo</b> que salude (de 0° a 90° y de regreso) con el botón del centro.", "Prepara el servo al inicio y, dentro del <em>si</em>, muévelo a 90°, espera 0.3 s y regrésalo a 0°."],
+      ["Haz que el carrito vaya <b>más despacio</b> para acercarse con cuidado a los vasos.", "Cambia los bloques de encender/apagar por los de velocidad (PWM) del Motor DC."]
+    ],
+    quiz: [
+      ["¿Por qué el carrito se detiene al soltar el botón?", ["Porque si no se aprieta nada, el programa llama a «alto»", "Porque se acaba la pila", "Porque el ADKey se apaga"], 0, "Sin botón, la lectura pasa de 600 y se llama a la función alto."],
+      ["Para girar en su lugar, ¿cómo se mueven las ruedas?", ["Las dos hacia adelante", "Una hacia adelante y la otra hacia atrás", "Las dos apagadas"], 1, "Al girar en sentidos opuestos, el carrito da vuelta sin avanzar."],
+      ["Si una rueda gira al revés, ¿qué haces?", ["Cambias el pin del ADKey", "Compras otro motor", "Intercambias sus dos cables en el L298N (o on y off en esa rueda)"], 2, "Al invertir los cables, el motor gira al otro lado."]
+    ]
+  },
+
+  juego_ruta_robot: {
+    n: 3, t: 50,
+    dato: "Los robots de los almacenes también avanzan por <b>casillas</b> en el piso, como en este juego: así saben exactamente dónde están sin necesidad de GPS.",
+    exp: "Cada botón llama a una función que <b>avanza o gira y luego se detiene sola</b>: por ejemplo, <em>avanzar_bloque</em> prende las ruedas, espera <em>tiempo_bloque</em> segundos y llama a <em>alto</em>. Al guardar los tiempos en <b>variables</b>, calibras el robot cambiando un solo número. La espera de 0.3 s al final del ciclo hace que un apretón cuente una sola vez.",
+    usos: ["Robots de almacenes que se mueven por casillas", "Robots aspiradora que recorren la casa por zonas", "Juegos de mesa con robots, como este"],
+    retos: [
+      ["Calibra tu robot para que llegue <b>justo al centro</b> de la siguiente ficha.", "Usa la calculadora de Herramientas › La Ruta del Conocimiento y cambia <em>tiempo_bloque</em>."],
+      ["Haz que el botón del centro dé una <b>media vuelta</b> (180°).", "Agrega un <em>si</em> para la tecla entre 700 y 800 y llama dos veces a <em>girar_derecha</em>."],
+      ["Haz que el buzzer haga <b>bip</b> cada vez que termina un bloque, para poder contarlos.", "Dentro de <em>avanzar_bloque</em>, después de <em>alto</em>, toca una nota corta."]
+    ],
+    quiz: [
+      ["¿Cuánto debe avanzar el robot con un apretón de ▲?", ["24 cm, un bloque", "Hasta que lo sueltes", "1 metro"], 0, "Cada bloque del tablero mide 24 × 24 cm."],
+      ["¿Para qué sirve la variable tiempo_bloque?", ["Para contar los puntos", "Para ajustar cuánto tiempo avanza el robot en cada bloque", "Para el color del dado"], 1, "Cambias un solo número y todos los avances se ajustan."],
+      ["¿Por qué hay una espera de 0.3 s al final del ciclo?", ["Para que el robot descanse", "Para ahorrar pila", "Para que un apretón cuente una sola vez"], 2, "Sin la espera, mantener el dedo un poquito haría avanzar varios bloques."]
+    ]
   }
 };
 
