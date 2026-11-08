@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>La Ruta del Conocimiento</title>
+  <link rel="stylesheet" href="tools.css">
+  <style>
+    .back { font-size: 16px; display: inline-flex; padding: 6px 0; }
+    main { max-width: 1000px; margin: 0 auto; }
+    .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 16px; }
+    .tabs button { font-size: 15px; padding: 10px 16px; border-radius: 10px; }
+    .tarjeta { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px 20px; margin-bottom: 14px; }
+    .tarjeta h2 { margin: 0 0 10px; font-size: 18px; }
+    .tarjeta p, .tarjeta li { font-size: 16px; line-height: 1.6; }
+    .tarjeta ol, .tarjeta ul { margin: 0; padding-left: 22px; }
+    .aviso { border-left: 4px solid #f1c40f; background: #2a2a3f; padding: 10px 14px; border-radius: 8px; margin: 10px 0; font-size: 15px; line-height: 1.5; }
+    .fichas { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+    .ficha { background: var(--panel-2); border-radius: 10px; padding: 10px; text-align: center; font-size: 14px; }
+    .ficha .cuadro { margin: 0 auto 6px; border-radius: 4px; box-shadow: 0 1px 4px #0006; display: grid; place-items: center; font-weight: 800; font-size: 18px; color: #fff; text-shadow: 0 1px 2px #0008; }
+    .ficha small { color: var(--muted); display: block; }
+    .pasos { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; }
+    .paso { background: var(--panel-2); border-radius: 10px; padding: 12px; font-size: 15px; line-height: 1.45; }
+    .paso b.n { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--accent); margin-right: 6px; }
+    .tablero { width: 100%; display: block; background: #eef0f6; border: 6px solid #a3195b; border-radius: 6px; }
+    .leyenda { display: flex; flex-wrap: wrap; gap: 12px; font-size: 14px; color: var(--muted); margin-top: 8px; }
+    .leyenda i { display: inline-block; width: 14px; height: 14px; border-radius: 3px; vertical-align: -2px; margin-right: 4px; }
+    .rutas { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+    .cuenta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .cuenta span { background: var(--panel-2); border-radius: 999px; padding: 4px 12px; font-size: 14px; }
+    .calc { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+    .calc label { display: flex; flex-direction: column; gap: 4px; font-size: 14px; color: var(--muted); }
+    .calc input { font-size: 16px; }
+    .res { font-size: 22px; font-weight: 800; color: #f1c40f; }
+    .control { display: grid; grid-template-columns: repeat(3, 70px); grid-template-rows: repeat(3, 70px); gap: 6px; justify-content: center; margin: 10px 0; }
+    .control div { display: grid; place-items: center; border-radius: 50%; background: #f1c40f; color: #222; font-weight: 800; font-size: 13px; text-align: center; line-height: 1.1; box-shadow: 0 3px 0 #b8900a; }
+    .dados { display: flex; gap: 16px; justify-content: center; margin: 10px 0; }
+    .dado { width: 90px; height: 90px; border-radius: 16px; background: #fff; color: #222; display: grid; place-items: center; font-size: 46px; font-weight: 800; box-shadow: 0 4px 0 #999; }
+    .dado.rodando { animation: rodar .5s ease-in-out; }
+    @keyframes rodar { 0% { transform: rotate(0); } 50% { transform: rotate(200deg) scale(.8); } 100% { transform: rotate(360deg); } }
+    .equipos { display: grid; gap: 8px; }
+    .equipo { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; background: var(--panel-2); border-radius: 10px; padding: 8px 12px; border: 2px solid transparent; }
+    .equipo.turno { border-color: #f1c40f; }
+    .equipo .pieza { width: 18px; height: 18px; border-radius: 50%; }
+    .equipo b { flex: 1; }
+    .acciones { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .acciones button { font-size: 15px; padding: 9px 14px; border-radius: 10px; }
+    button.bien { background: #1f6f45; border-color: var(--ok); }
+    button.mal { background: #7a2e2e; border-color: #e74c3c; }
+  </style>
+</head>
+<body>
+<main>
+  <a class="back" href="index.html">⬅ Herramientas</a>
+  <h1>🧩 La Ruta del Conocimiento</h1>
+  <p class="subtitle">Cómo armar el tablero con las fichas, cómo debe moverse el robot y cómo se juega con los dados.</p>
+  <div class="tabs" id="tabs"></div>
+  <div id="app"></div>
+</main>
+
+<script src="tools.js"></script>
+<script>
+  function el(tag, attrs, ...hijos) {
+    const n = document.createElement(tag);
+    Object.entries(attrs || {}).forEach(([k, v]) => {
+      if (k === "class") n.className = v;
+      else if (k === "html") n.innerHTML = v;
+      else if (k.startsWith("on")) n[k] = v;
+      else if (k === "text") n.textContent = v;
+      else n.setAttribute(k, v);
+    });
+    hijos.flat().forEach((c) => c != null && n.append(c));
+    return n;
+  }
+  const app = document.getElementById("app");
+
+  // Fichas del juego (medidas y cantidades del diseño del tablero).
+  const FICHAS = [
+    ["Lavanda", "#7b86c4", 24, 24, 3], ["Azul marino", "#034a8a", 27, 24, 10], ["Azul cielo", "#0ea0e0", 27, 27, 3], ["Verde azulado", "#00a19a", 27, 24, 3],
+    ["Gris claro", "#cfd5d3", 27, 24, 3], ["Verde claro", "#d9e8b8", 27, 27, 2], ["Durazno", "#fcd5bb", 24, 30, 2], ["Rosa", "#d585b9", 24, 24, 2],
+    ["Azul muy claro", "#cfe6f8", 24, 24, 2], ["Lila", "#d9d6ee", 24, 24, 2], ["Gris oscuro", "#8f8f8f", 24, 24, 2], ["Café", "#c49a6c", 27, 24, 2],
+  ];
+
+  // ── Recorridos sugeridos en la cuadrícula de 10 × 5 cuadros de 24 cm ──
+  const fila = (y, x0, x1) => { const r = []; for (let x = x0; x0 <= x1 ? x <= x1 : x >= x1; x += x0 <= x1 ? 1 : -1) r.push([x, y]); return r; };
+  const SERPIENTE = [...fila(0, 0, 9), [9, 1], ...fila(2, 9, 0), [0, 3], ...fila(4, 0, 9)];
+  const RUTAS = {
+    serpiente: { n: "🐍 Serpiente (32 bloques)", camino: SERPIENTE, extra: [],
+      d: "Un solo camino largo que recorre todo el tablero. Es el más fácil de armar y de jugar: nadie llega a la meta en dos tiros." },
+    atajos: { n: "🔀 Serpiente con atajos (34 bloques)", camino: SERPIENTE, extra: [[4, 1], [5, 3]],
+      d: "La serpiente con dos atajos. Al llegar a un cruce, el equipo decide: ¿se arriesga por el atajo (con más vueltas) o sigue por el camino largo?" },
+    caminos: { n: "⬆️⬇️ Dos caminos (22 bloques)", camino: [[0, 2], [1, 2], [2, 2], [2, 1], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0], [7, 1], [7, 2], [8, 2], [9, 2]], extra: [[2, 3], [2, 4], [3, 4], [4, 4], [5, 4], [6, 4], [7, 4], [7, 3]],
+      d: "Más corto, para principiantes o para jugar rápido. Desde la salida, el camino se divide en dos y se vuelve a juntar antes de la meta." },
+  };
+  let ruta = "serpiente";
+  const clave = (c) => c[0] + "," + c[1];
+
+  // Tipo de cada cuadro según cuántos vecinos del recorrido tiene.
+  function tipos(r) {
+    const celdas = [...r.camino, ...r.extra], set = new Set(celdas.map(clave)), t = {};
+    for (const [x, y] of celdas) {
+      const v = [[1, 0], [-1, 0], [0, 1], [0, -1]].filter(([dx, dy]) => set.has(clave([x + dx, y + dy])));
+      let tipo = v.length === 4 ? "cruce" : v.length === 3 ? "t" : v.length === 2 ? (v[0][0] === -v[1][0] && v[0][1] === -v[1][1] ? "recta" : "vuelta") : "punta";
+      if (clave([x, y]) === clave(r.camino[0])) tipo = "inicio";
+      else if (clave([x, y]) === clave(r.camino[r.camino.length - 1])) tipo = "meta";
+      t[clave([x, y])] = tipo;
+    }
+    return t;
+  }
+  const COLOR = { inicio: "#2ecc71", meta: "#f1c40f", recta: "#034a8a", vuelta: "#0ea0e0", t: "#00a19a", cruce: "#8f8f8f", punta: "#c49a6c" };
+  const NOMBRE = { inicio: "Inicio (cuadro verde)", meta: "Meta", recta: "Recta", vuelta: "Vuelta", t: "Unión en T", cruce: "Cruce", punta: "Final de camino" };
+
+  function svgRuta(r, piezas) {
+    const t = tipos(r);
+    let s = '<svg class="tablero" viewBox="-2 -2 244 124">';
+    for (let x = 0; x <= 240; x += 24) s += `<line x1="${x}" y1="0" x2="${x}" y2="120" stroke="#d6dae6" stroke-width=".5"/>`;
+    for (let y = 0; y <= 120; y += 24) s += `<line x1="0" y1="${y}" x2="240" y2="${y}" stroke="#d6dae6" stroke-width=".5"/>`;
+    for (const c of [...r.camino, ...r.extra]) {
+      const tp = t[clave(c)];
+      s += `<rect x="${c[0] * 24 + 1}" y="${c[1] * 24 + 1}" width="22" height="22" rx="2" fill="${COLOR[tp]}" ${r.extra.some((e) => clave(e) === clave(c)) ? 'stroke="#fff" stroke-dasharray="2 1.5" stroke-width=".8"' : ""}/>`;
+    }
+    r.camino.forEach((c, i) => {
+      const tp = t[clave(c)];
+      const txt = tp === "inicio" ? "INICIO" : tp === "meta" ? "META" : i;
+      s += `<text x="${c[0] * 24 + 12}" y="${c[1] * 24 + 14.5}" font-size="${typeof txt === "number" ? 7 : 4.6}" font-weight="700" text-anchor="middle" fill="${tp === "meta" ? "#222" : "#fff"}">${txt}</text>`;
+    });
+    // Piezas de los equipos sobre el recorrido.
+    (piezas || []).forEach((p, k) => {
+      const c = r.camino[Math.min(p.pos, r.camino.length - 1)];
+      s += `<circle cx="${c[0] * 24 + 5 + (k % 2) * 14}" cy="${c[1] * 24 + 5 + Math.floor(k / 2) * 14}" r="3.6" fill="${p.color}" stroke="#fff" stroke-width=".9"/>`;
+    });
+    return s + "</svg>";
+  }
+
+  function conteo(r) {
+    const n = {};
+    Object.values(tipos(r)).forEach((tp) => (n[tp] = (n[tp] || 0) + 1));
+    return el("div", { class: "cuenta" }, Object.entries(n).map(([tp, k]) => el("span", { html: `<i style="display:inline-block;width:12px;height:12px;border-radius:3px;background:${COLOR[tp]};vertical-align:-1px"></i> ${NOMBRE[tp]}: <b>${k}</b>` })),
+      el("span", { html: `Total: <b>${r.camino.length + r.extra.length}</b> de 36 fichas` }));
+  }
+
+  // ── Pestañas ──
+  const TABS = { fichas: "🧩 Las fichas", armar: "🛠️ Armar el tablero", robot: "🤖 Cómo se mueve el robot", jugar: "🎲 Jugar" };
+  let tab = "fichas";
+  function mostrar() {
+    const t = document.getElementById("tabs");
+    t.innerHTML = "";
+    Object.entries(TABS).forEach(([k, txt]) => t.append(el("button", { class: tab === k ? "active" : "", onclick: () => { tab = k; mostrar(); } }, txt)));
+    app.innerHTML = "";
+    ({ fichas, armar, robot, jugar })[tab]();
+    window.scrollTo(0, 0);
+  }
+
+  function fichas() {
+    app.append(
+      el("div", { class: "tarjeta" },
+        el("h2", { text: "🧩 Qué trae el juego: 36 fichas de 12 colores" }),
+        el("div", { class: "fichas" }, FICHAS.map(([n, c, w, h, k]) => el("div", { class: "ficha" },
+          el("div", { class: "cuadro", style: `width:${w * 2.4}px;height:${h * 2.4}px;background:${c}`, text: "×" + k }),
+          el("b", { text: n }), el("small", { text: `${w} × ${h} cm` }))))),
+      el("div", { class: "tarjeta" },
+        el("h2", { text: "🔗 Cómo embonan: pestañas y muescas" }),
+        el("ul", {},
+          el("li", { html: "Cada ficha tiene <b>pestañas</b> (triángulos que salen) y <b>muescas</b> (huecos con la misma forma). La pestaña de una ficha entra en la muesca de la siguiente, como un rompecabezas." }),
+          el("li", { html: "La pestaña mide <b>3 cm</b> de fondo, con lados de <b>7 cm</b> y <b>3.85 cm</b>." }),
+          el("li", { html: "La parte cuadrada de todas las fichas mide <b>24 × 24 cm</b>. Las que miden <b>27 cm</b> de un lado tienen una pestaña hacia ese lado; la de <b>24 × 30 cm</b> tiene dos (arriba y abajo)." }),
+          el("li", { html: "Ya armadas, <b>cada ficha ocupa un cuadro de 24 × 24 cm</b>. Por eso en el tablero de 240 × 120 cm caben <b>10 fichas a lo largo y 5 a lo ancho</b>." })),
+        el("div", { class: "aviso", html: "👀 Antes de armar, fíjate hacia qué lados tiene pestañas o muescas cada color: eso dice si la ficha sirve para seguir derecho, dar vuelta, dividir el camino o terminarlo." })));
+  }
+
+  function armar() {
+    const r = RUTAS[ruta];
+    app.append(
+      el("div", { class: "tarjeta" },
+        el("h2", { text: "🛠️ Paso a paso" }),
+        el("div", { class: "pasos" },
+          [["Extiende el tablero de 240 × 120 cm en el piso, en un lugar plano y sin tapetes.", 1],
+           ["Elige un recorrido de abajo y arma primero la ficha de <b>inicio</b> en su lugar.", 2],
+           ["Sigue el recorrido ficha por ficha: la pestaña de una entra en la muesca de la siguiente.", 3],
+           ["En las vueltas y uniones usa las fichas que tengan las pestañas o muescas hacia los lados correctos.", 4],
+           ["Revisa que ninguna ficha se salga del tablero y que todas queden bien apretadas.", 5],
+           ["Prueba el robot: debe poder recorrer el camino sin que sus llantas pisen fuera.", 6]]
+            .map(([t, n]) => el("div", { class: "paso", html: `<b class="n">${n}</b>${t}` })))),
+      el("div", { class: "tarjeta" },
+        el("h2", { text: "🗺️ Recorridos sugeridos" }),
+        el("div", { class: "rutas" }, Object.entries(RUTAS).map(([k, v]) => el("button", { class: ruta === k ? "active" : "", onclick: () => { ruta = k; mostrar(); } }, v.n))),
+        el("p", { text: r.d }),
+        el("div", { html: svgRuta(r) }),
+        conteo(r),
+        el("p", { class: "hint", text: "Los números son los bloques del camino principal (los que cuentas con el dado). Los cuadros con borde punteado son atajos o el segundo camino." })),
+      el("div", { class: "tarjeta" },
+        el("h2", { text: "💡 Sobre los diseños con varios caminos cortos" }),
+        el("ul", {},
+          el("li", { html: "Los caminos cortos (5 a 10 fichas) sirven para <b>practicar</b> a manejar el robot, pero para jugar con el dado se acaban muy rápido: con dos tiros de 6 ya llegaste." }),
+          el("li", { html: "Un <b>solo camino largo</b> que recorra todo el tablero hace el juego más emocionante y usa casi todas las fichas." }),
+          el("li", { html: "Los <b>atajos</b> o caminos que se dividen agregan decisiones: más vueltas son más difíciles de manejar, pero llegan antes." }),
+          el("li", { html: "Deja <b>espacio entre filas</b> (como en la serpiente): así, si el robot se sale, no cae por accidente en otra parte del camino." }))));
+  }
+
+  function robot() {
+    const calc = el("div", { class: "calc" });
+    const vel = el("input", { type: "number", value: "30", min: "1", step: "1" });
+    const giro = el("input", { type: "number", value: "2.4", min: "0.1", step: "0.1" });
+    const r1 = el("div", { class: "res" }), r2 = el("div", { class: "res" });
+    const calcular = () => {
+      const v = parseFloat(vel.value), g = parseFloat(giro.value);
+      r1.textContent = v > 0 ? `${(24 / v).toFixed(2)} s por bloque` : "—";
+      r2.textContent = g > 0 ? `${(g / 4).toFixed(2)} s por vuelta de 90°` : "—";
+    };
+    vel.oninput = giro.oninput = calcular;
+    calcular();
+    calc.append(
+      el("label", {}, "¿Cuántos cm avanza tu robot en 1 segundo?", vel, r1),
+      el("label", {}, "¿Cuántos segundos tarda en dar una vuelta completa (360°) girando en su lugar?", giro, r2));
+
+    app.append(
+      el("div", { class: "tarjeta" },
+        el("h2", { text: "📏 La regla de oro: 1 bloque = 24 cm" }),
+        el("ul", {},
+          el("li", { html: "El robot empieza <b>centrado</b> en la ficha de inicio, mirando hacia donde sigue el camino." }),
+          el("li", { html: "Avanzar <b>1 bloque</b> es moverse <b>24 cm</b>, de centro a centro de ficha. Si el dado marca 4, son 4 × 24 = <b>96 cm</b>." }),
+          el("li", { html: "En las vueltas, el robot <b>se detiene en el centro</b> de la ficha y <b>gira 90°</b> en su lugar (una llanta hacia adelante y la otra hacia atrás)." }),
+          el("li", { html: "Si una llanta pisa fuera de las fichas, el robot <b>se salió del camino</b> y regresa a la ficha de inicio." }))),
+      el("div", { class: "tarjeta" },
+        el("h2", { text: "🎮 Un control fácil con 5 botones" }),
+        el("p", { text: "El control de botones amarillos funciona como el teclado ADKey de los tutoriales: cada botón da un número distinto en un pin analógico. Una buena forma de programarlo:" }),
+        el("div", { class: "control" },
+          el("span"), el("div", { text: "▲ Avanza 1 bloque" }), el("span"),
+          el("div", { text: "◀ Gira 90°" }), el("div", { text: "■ Alto" }), el("div", { text: "Gira 90° ▶" }),
+          el("span"), el("div", { text: "▼ Atrás 1 bloque" }), el("span")),
+        el("div", { class: "aviso", html: "💡 Así, si el dado dice 3, el jugador aprieta <b>▲</b> tres veces. Es mucho más fácil que controlar el tiempo a mano y casi no se sale del camino." })),
+      el("div", { class: "tarjeta" },
+        el("h2", { text: "⏱️ Calibra tu robot" }),
+        el("p", { text: "Cada robot es distinto. Pon el robot sobre las fichas, prende los motores 1 segundo con el bloque «esperar» y mide con una regla cuánto avanzó. Haz lo mismo con una vuelta completa." }),
+        calc,
+        el("div", { class: "aviso", html: "🔋 Con las pilas bajas el robot avanza menos: vuelve a calibrar si notas que ya no llega al centro de la ficha. Y calibra <b>sobre las fichas</b>, no sobre otra mesa: el material cambia cuánto se resbalan las llantas." })));
+  }
+
+  // ── Jugar: dados y avance de cada equipo ──
+  const COLORES_DADO = [["Gris", "#cfd5d3", "fácil"], ["Gris", "#cfd5d3", "fácil"], ["Azul cielo", "#0ea0e0", "medio"], ["Azul cielo", "#0ea0e0", "medio"], ["Azul marino", "#034a8a", "difícil"], ["Azul marino", "#034a8a", "difícil"]];
+  const PIEZAS = ["#e74c3c", "#9b59b6", "#f39c12", "#ecf0f1"];
+  const G = { equipos: [{ n: "Equipo 1", pos: 0 }, { n: "Equipo 2", pos: 0 }], turno: 0, num: null, color: null };
+
+  function jugar() {
+    const r = RUTAS[ruta];
+    const meta = r.camino.length - 1;
+    const piezas = G.equipos.map((e, k) => ({ pos: e.pos, color: PIEZAS[k] }));
+    const dNum = el("div", { class: "dado", text: G.num || "?" });
+    const dCol = el("div", { class: "dado", style: G.color ? `background:${G.color[1]}` : "", text: G.color ? "" : "?" });
+    const eq = G.equipos[G.turno];
+    const lanzar = () => {
+      G.num = 1 + Math.floor(Math.random() * 6);
+      G.color = COLORES_DADO[Math.floor(Math.random() * 6)];
+      mostrar();
+      app.querySelectorAll(".dado").forEach((d) => d.classList.add("rodando"));
+    };
+    const siguiente = () => { G.turno = (G.turno + 1) % G.equipos.length; G.num = G.color = null; mostrar(); };
+
+    app.append(
+      el("div", { class: "tarjeta" },
+        el("h2", { text: "📖 Cómo se juega" }),
+        el("ol", {},
+          el("li", { html: "Las <b>60 preguntas</b> vienen en tres niveles: <b>gris</b> (fácil), <b>azul cielo</b> (medio) y <b>azul marino</b> (difícil). Se mezclan bien antes de empezar." }),
+          el("li", { html: "El jugador lanza el <b>dado de números</b>: dice cuántos bloques puede avanzar." }),
+          el("li", { html: "Luego lanza el <b>dado de colores</b>: dice de qué nivel es la pregunta que debe contestar." }),
+          el("li", { html: "Si contesta <b>bien</b>, maneja su robot y avanza esos bloques. Si contesta mal, no avanza." }),
+          el("li", { html: "Si el robot <b>se sale del camino</b>, regresa a la ficha de inicio (cuadro verde)." }))),
+      el("div", { class: "tarjeta" },
+        el("h2", { text: "🎲 Dados y avance" }),
+        el("div", { class: "rutas" }, Object.entries(RUTAS).map(([k, v]) => el("button", { class: ruta === k ? "active" : "", onclick: () => { ruta = k; G.equipos.forEach((e) => (e.pos = 0)); mostrar(); } }, v.n))),
+        el("div", { html: svgRuta(r, piezas) }),
+        el("div", { class: "equipos" }, G.equipos.map((e, k) => {
+          const nombre = el("input", { value: e.n, style: "flex:1;min-width:120px;background:transparent;color:var(--text);border:0;font-size:16px;font-weight:700" });
+          nombre.oninput = () => (e.n = nombre.value);
+          return el("div", { class: "equipo" + (k === G.turno ? " turno" : "") },
+            el("span", { class: "pieza", style: `background:${PIEZAS[k]}` }), nombre,
+            el("span", { text: e.pos >= meta ? "🏆 ¡Llegó!" : `bloque ${e.pos}` }),
+            el("button", { title: "Mover a mano un bloque atrás", onclick: () => { e.pos = Math.max(0, e.pos - 1); mostrar(); } }, "−1"),
+            el("button", { title: "Mover a mano un bloque adelante", onclick: () => { e.pos = Math.min(meta, e.pos + 1); mostrar(); } }, "+1"));
+        })),
+        el("div", { class: "acciones" },
+          G.equipos.length < 4 ? el("button", { onclick: () => { G.equipos.push({ n: "Equipo " + (G.equipos.length + 1), pos: 0 }); mostrar(); } }, "➕ Equipo") : null,
+          G.equipos.length > 1 ? el("button", { onclick: () => { G.equipos.pop(); G.turno = 0; mostrar(); } }, "➖ Equipo") : null,
+          el("button", { onclick: () => { if (confirm("¿Regresar a todos al inicio?")) { G.equipos.forEach((e) => (e.pos = 0)); G.turno = 0; G.num = G.color = null; mostrar(); } } }, "↺ Reiniciar")),
+        el("h2", { style: "margin-top:16px", text: `Turno: ${eq.n}` }),
+        el("div", { class: "dados" }, dNum, dCol),
+        G.color ? el("p", { style: "text-align:center", html: `Avanza <b>${G.num}</b> ${G.num === 1 ? "bloque" : "bloques"} si contesta bien una pregunta <b>${G.color[0].toLowerCase()}</b> (${G.color[2]}).` }) : null,
+        el("div", { class: "acciones", style: "justify-content:center" },
+          !G.color ? el("button", { class: "primary", onclick: lanzar }, "🎲 Lanzar los dados") : [
+            el("button", { class: "bien", onclick: () => { eq.pos = Math.min(meta, eq.pos + G.num); if (eq.pos >= meta) Tools.toast(`🏆 ¡${eq.n} llegó a la meta!`); siguiente(); } }, "✅ Contestó bien: avanza"),
+            el("button", { class: "mal", onclick: siguiente }, "❌ Contestó mal: no avanza"),
+            el("button", { onclick: () => { eq.pos = 0; Tools.toast("🚫 Regresa a la ficha de inicio"); siguiente(); } }, "🚫 Se salió del camino")]),
+        r.extra.length ? el("p", { class: "hint", text: "En los atajos o el segundo camino, usa −1 / +1 para acomodar la pieza del equipo donde quedó su robot." }) : null));
+  }
+
+  mostrar();
+</script>
+</body>
+</html>

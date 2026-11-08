@@ -541,5 +541,84 @@ CUENTOS.push(
       ["Sistema métrico", "Sistema de medidas que usa metros, kilos y litros; es el que usamos en México."],
       ["Atmósfera", "Capa de gases que rodea a un planeta."],
     ],
+  },
+
+  {
+    id: "esp32", area: "programacion", icono: "📟", tipo: "real", tema: "La placa ESP32", minutos: 5,
+    titulo: "El chip de cinco dólares que conquistó al mundo",
+    resumen: "Una empresa pequeña de China hace un chip con WiFi muy barato. Nadie lo anuncia, pero miles de personas lo descubren... y así llegamos a tu ESP32.",
+    relacion: "Tu placa ESP32 WeMos D1 R32",
+    inicio: "a",
+    escenas: {
+      a: {
+        texto: [
+          "Shanghái, China, <b>2008</b>. El ingeniero <b>Teo Swee Ann</b>, nacido en Singapur, funda una empresa pequeña llamada <b>Espressif</b>. Su idea: hacer chips para que los aparatos se conecten a Internet sin cables.",
+          "En esa época, poner WiFi en un proyecto escolar o casero era <b>caro</b>: los módulos costaban muchos dólares y eran difíciles de usar.",
+        ],
+        sig: "b",
+      },
+      b: {
+        texto: [
+          "En <b>2014</b> sale a la venta un modulito con su chip <b>ESP8266</b>: tiene WiFi y cuesta unos <b>5 dólares</b>, ¡menos que una torta y un refresco en muchos lugares! Pero hay un problema: casi toda la información está en <b>chino</b>.",
+          "Espressif no hace grandes anuncios. Aun así, en pocos meses, miles de aficionados de todo el mundo ya lo están usando.",
+        ],
+        pregunta: "¿Cómo crees que se volvió famoso sin anuncios?",
+        opciones: [
+          { t: "Aficionados de todo el mundo lo probaron, tradujeron la información y compartieron ejemplos en Internet", ir: "c" },
+          { t: "Lo vendían solo en tiendas elegantes y caras", ir: "b1" },
+        ],
+      },
+      b1: {
+        error: true,
+        texto: [
+          "¡Al contrario! Era barato y se compraba por Internet desde cualquier país. Lo que lo hizo famoso fue la <b>comunidad</b>: personas que aprenden juntas y comparten lo que descubren.",
+        ],
+        sig: "b",
+      },
+      c: {
+        texto: [
+          "¡Así fue! Unos aficionados tradujeron los documentos al inglés, otros escribieron programas para usarlo fácilmente y otros publicaron tutoriales. Espressif escuchó a esa comunidad y se puso a trabajar en algo mejor.",
+          "En <b>2016</b> presentó el <b>ESP32</b>.",
+        ],
+        sig: "d",
+      },
+      d: {
+        texto: [
+          "¿Qué lo hace tan especial? El ESP32 tiene <b>dos núcleos</b> que pueden trabajar hasta a 240 millones de ciclos por segundo, <b>WiFi y Bluetooth</b> en el mismo chip, muchos pines para conectar sensores, entradas analógicas, pines que detectan cuando los tocas con el dedo y un modo de «sueño profundo» que casi no gasta pila.",
+          "¡Y todo eso por unos pocos dólares!",
+        ],
+        pregunta: "Si quieres que tu proyecto mande datos al celular sin cables, ¿qué parte del ESP32 usarías?",
+        opciones: [
+          { t: "El WiFi o el Bluetooth que ya trae integrados", ir: "e" },
+          { t: "Un cable USB muy largo", ir: "d1" },
+        ],
+      },
+      d1: {
+        error: true,
+        texto: [
+          "Funcionaría, pero tendrías un cable atravesando el salón. ¡Lo bonito del ESP32 es que ya trae la conexión <b>inalámbrica</b> adentro!",
+        ],
+        sig: "d",
+      },
+      e: {
+        fin: true,
+        texto: [
+          "Al poco tiempo, el ESP32 ya se podía programar en <b>MicroPython</b>, un lenguaje que creó el ingeniero australiano Damien George para que programar placas fuera tan fácil como escribir Python. Eso es lo que usa 3DPit Blocks cuando conviertes tus bloques en código.",
+          "Tu placa, la <b>WeMos D1 R32</b>, tiene un ESP32 adentro, acomodado con la misma forma que las placas Arduino para que le queden los mismos módulos.",
+          "Hoy hay chips de Espressif en focos inteligentes, enchufes, relojes, robots y cientos de millones de aparatos más. Y todo empezó con un chip barato que una comunidad decidió entender y compartir.",
+        ],
+        dato: "Los aparatos que se conectan a Internet para mandar o recibir datos forman lo que se llama el Internet de las cosas.",
+      },
+    },
+    preguntas: [
+      { p: "¿Qué hizo famoso al ESP8266, aunque no tuvo grandes anuncios?", o: ["La comunidad de aficionados que lo tradujo, lo probó y compartió ejemplos", "Un comercial en la tele", "Que era muy caro"], c: 0, e: "La comunidad lo dio a conocer en todo el mundo." },
+      { p: "¿Qué trae el ESP32 que lo hace especial?", o: ["Solo una pantalla", "WiFi y Bluetooth en el mismo chip, dos núcleos y muchos pines", "Un motor"], c: 1, e: "Y todo por unos pocos dólares." },
+      { p: "¿Qué lenguaje usa 3DPit Blocks para programar la placa?", o: ["Español", "HTML", "MicroPython"], c: 2, e: "Tus bloques se convierten en código MicroPython." },
+    ],
+    palabras: [
+      ["Chip", "Pedacito de silicio con millones de transistores que hace los cálculos de un aparato."],
+      ["Núcleo", "Parte del chip que ejecuta instrucciones; con dos núcleos puede hacer dos cosas a la vez."],
+      ["Internet de las cosas", "Aparatos de todos los días que se conectan a Internet, como focos, relojes o sensores."],
+    ],
   }
 );

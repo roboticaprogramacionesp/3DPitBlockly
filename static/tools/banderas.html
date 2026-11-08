@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A por la Bandera</title>
+  <link rel="stylesheet" href="tools.css">
+  <style>
+    .back { font-size: 16px; display: inline-flex; padding: 6px 0; }
+    main { max-width: 1000px; margin: 0 auto; }
+    .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 16px; }
+    .tabs button { font-size: 15px; padding: 10px 16px; border-radius: 10px; }
+    .tarjeta { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px 20px; margin-bottom: 14px; }
+    .tarjeta h2 { margin: 0 0 10px; font-size: 18px; }
+    .tarjeta p, .tarjeta li { font-size: 16px; line-height: 1.6; }
+    .tarjeta ol, .tarjeta ul { margin: 0; padding-left: 22px; }
+    .aviso { border-left: 4px solid #f1c40f; background: #2a2a3f; padding: 10px 14px; border-radius: 8px; margin: 10px 0; font-size: 15px; line-height: 1.5; }
+    .pasos { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+    .paso { background: var(--panel-2); border-radius: 10px; padding: 12px; font-size: 15px; line-height: 1.45; }
+    .paso b.n { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--accent); margin-right: 6px; }
+    .banderas { display: flex; flex-wrap: wrap; gap: 8px; }
+    .bandera { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 12px; color: var(--muted); cursor: pointer; padding: 6px; border-radius: 8px; border: 2px solid transparent; }
+    .bandera.fuera { opacity: .35; }
+    .bandera.fuera span::after { content: " (fuera)"; }
+    .bandera svg { width: 60px; height: 40px; border-radius: 3px; box-shadow: 0 1px 4px #0006; }
+    .tablero { width: 100%; background: #eef0f6; border: 6px solid #a3195b; border-radius: 6px; display: block; }
+    .mesa { display: grid; grid-template-columns: 1fr 280px; gap: 14px; align-items: start; }
+    @media (max-width: 760px) { .mesa { grid-template-columns: 1fr; } }
+    .reloj { font-family: monospace; font-size: 42px; font-weight: 800; text-align: center; }
+    .carta { height: 150px; border-radius: 12px; display: grid; place-items: center; background: repeating-linear-gradient(45deg, #2c2566, #2c2566 10px, #352d7a 10px, #352d7a 20px); border: 2px solid var(--accent-2); font-size: 15px; color: var(--muted); text-align: center; perspective: 600px; }
+    .carta.vista { background: #fff; color: #222; animation: voltear .4s; }
+    .carta svg { width: 150px; height: 100px; }
+    @keyframes voltear { from { transform: rotateY(90deg); } to { transform: none; } }
+    .mazo { display: flex; gap: 4px; justify-content: center; margin: 8px 0; min-height: 34px; }
+    .mazo i { width: 20px; height: 30px; border-radius: 3px; background: #352d7a; border: 1px solid var(--accent-2); }
+    .mazo.barajando i { animation: barajar .5s ease-in-out 3; }
+    .mazo i:nth-child(odd) { animation-direction: reverse; }
+    @keyframes barajar { 50% { transform: translateY(-14px) rotate(12deg); } }
+    .acciones { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .acciones button { font-size: 15px; padding: 9px 14px; border-radius: 10px; flex: 1 1 auto; }
+    button.bien { background: #1f6f45; border-color: var(--ok); }
+    button.mal { background: #7a2e2e; border-color: #e74c3c; }
+    table.res { width: 100%; border-collapse: collapse; font-size: 15px; }
+    table.res td, table.res th { padding: 6px 8px; border-bottom: 1px solid var(--line); text-align: left; }
+    input.equipo { width: 100%; background: var(--panel-2); color: var(--text); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font-size: 15px; }
+  </style>
+</head>
+<body>
+<main>
+  <a class="back" href="index.html">⬅ Herramientas</a>
+  <h1>🚩 A por la Bandera</h1>
+  <p class="subtitle">Juego del Desafío de Robótica Educativa: retira los 9 vasos con bandera en el menor tiempo posible.</p>
+  <div class="tabs" id="tabs"></div>
+  <div id="app"></div>
+</main>
+
+<script src="tools.js"></script>
+<script>
+  // ── Banderas (dibujos sencillos en SVG, 30 × 20) ──
+  const FLAGS = {
+    mx: { n: "México", s: '<rect width="10" height="20" fill="#006847"/><rect x="10" width="10" height="20" fill="#fff"/><rect x="20" width="10" height="20" fill="#ce1126"/><circle cx="15" cy="10" r="2.6" fill="#8c5a2b"/>' },
+    ca: { n: "Canadá", s: '<rect width="30" height="20" fill="#fff"/><rect width="7.5" height="20" fill="#d52b1e"/><rect x="22.5" width="7.5" height="20" fill="#d52b1e"/><path d="M15 4l1.2 2.4 1.8-.8-.6 3.4 2-1.6.4 1.4 1.6-.2-.8 2 1 .6-3.6 2.6.4 1.4-3-.4V17h-.8v-2.2l-3 .4.4-1.4-3.6-2.6 1-.6-.8-2 1.6.2.4-1.4 2 1.6-.6-3.4 1.8.8z" fill="#d52b1e"/>' },
+    br: { n: "Brasil", s: '<rect width="30" height="20" fill="#009c3b"/><path d="M15 2.5L27.5 10 15 17.5 2.5 10z" fill="#ffdf00"/><circle cx="15" cy="10" r="4.4" fill="#002776"/><path d="M10.8 9.2q4.2-1.2 8.4 1.4" stroke="#fff" stroke-width=".7" fill="none"/>' },
+    fr: { n: "Francia", s: '<rect width="10" height="20" fill="#0055a4"/><rect x="10" width="10" height="20" fill="#fff"/><rect x="20" width="10" height="20" fill="#ef4135"/>' },
+    ar: { n: "Argentina", s: '<rect width="30" height="20" fill="#74acdf"/><rect y="6.67" width="30" height="6.67" fill="#fff"/><circle cx="15" cy="10" r="2" fill="#f6b40e"/>' },
+    es: { n: "España", s: '<rect width="30" height="20" fill="#aa151b"/><rect y="5" width="30" height="10" fill="#f1bf00"/><rect x="7" y="7.5" width="3" height="5" rx=".8" fill="#aa151b"/>' },
+    de: { n: "Alemania", s: '<rect width="30" height="6.67" fill="#000"/><rect y="6.67" width="30" height="6.67" fill="#dd0000"/><rect y="13.33" width="30" height="6.67" fill="#ffce00"/>' },
+    gb: { n: "Reino Unido", s: '<rect width="30" height="20" fill="#012169"/><path d="M0 0L30 20M30 0L0 20" stroke="#fff" stroke-width="4"/><path d="M0 0L30 20M30 0L0 20" stroke="#c8102e" stroke-width="1.4"/><path d="M15 0V20M0 10H30" stroke="#fff" stroke-width="6"/><path d="M15 0V20M0 10H30" stroke="#c8102e" stroke-width="3.4"/>' },
+    co: { n: "Colombia", s: '<rect width="30" height="10" fill="#fcd116"/><rect y="10" width="30" height="5" fill="#003893"/><rect y="15" width="30" height="5" fill="#ce1126"/>' },
+    it: { n: "Italia", s: '<rect width="10" height="20" fill="#009246"/><rect x="10" width="10" height="20" fill="#fff"/><rect x="20" width="10" height="20" fill="#ce2b37"/>' },
+  };
+  const svgBandera = (k) => `<svg viewBox="0 0 30 20" aria-label="${FLAGS[k].n}">${FLAGS[k].s}</svg>`;
+
+  function el(tag, attrs, ...hijos) {
+    const n = document.createElement(tag);
+    Object.entries(attrs || {}).forEach(([k, v]) => {
+      if (k === "class") n.className = v;
+      else if (k === "html") n.innerHTML = v;
+      else if (k.startsWith("on")) n[k] = v;
+      else if (k === "text") n.textContent = v;
+      else n.setAttribute(k, v);
+    });
+    hijos.flat().forEach((c) => c != null && n.append(c));
+    return n;
+  }
+  function revolver(a) {
+    a = a.slice();
+    for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+    return a;
+  }
+  const app = document.getElementById("app");
+
+  // ── Pestañas ──
+  const TABS = { reglas: "📖 Cómo se juega", barajar: "🃏 Barajar las tarjetas", mesa: "⏱️ Mesa del juez" };
+  let tab = "reglas";
+  function pintarTabs() {
+    const t = document.getElementById("tabs");
+    t.innerHTML = "";
+    Object.entries(TABS).forEach(([k, txt]) => t.append(el("button", { class: tab === k ? "active" : "", onclick: () => { tab = k; mostrar(); } }, txt)));
+  }
+  function mostrar() {
+    pintarTabs();
+    app.innerHTML = "";
+    ({ reglas, barajar, mesa })[tab]();
+  }
+
+  // ── Reglas ──
+  function reglas() {
+    app.append(
+      el("div", { class: "tarjeta" },
+        el("h2", { text: "🎯 Objetivo" }),
+        el("p", { text: "Con tu robot, retira del tablero los 9 vasos con bandera en el menor tiempo posible, siguiendo el orden que marcan las tarjetas." })),
+      el("div", { class: "tarjeta" },
+        el("h2", { text: "🧰 Preparación" }),
+        el("ul", {},
+          el("li", { html: "Se colocan <b>9 vasos con bandera</b> sobre el tablero de 240 × 120 cm. El lugar de cada vaso es libre, pero deben quedar <b>repartidos por todo el tablero</b>." }),
+          el("li", { html: "Las <b>tarjetas de reto</b> (una por cada vaso que está en el tablero) se barajan y se ponen <b>boca abajo</b>." }),
+          el("li", { html: "El robot empieza en el <b>cuadro rojo (Jugador)</b>, al centro de la orilla de arriba del tablero." }),
+          el("li", { html: "Un <b>juez</b> se encarga del cronómetro y de revisar cada vaso." }))),
+      el("div", { class: "tarjeta" },
+        el("h2", { text: "🎮 Cómo se juega" }),
+        el("div", { class: "pasos" },
+          [["Toma la primera tarjeta del mazo.", 1], ["Mira qué bandera indica.", 2], ["Maneja el robot hasta el vaso con esa bandera.", 3], ["Retira el vaso del tablero.", 4], ["Toma la siguiente tarjeta.", 5], ["Repite hasta retirar los 9 vasos.", 6]]
+            .map(([t, n]) => el("div", { class: "paso", html: `<b class="n">${n}</b>${t}` })))),
+      el("div", { class: "tarjeta" },
+        el("h2", { text: "🏁 Fin del juego" }),
+        el("ul", {},
+          el("li", { text: "El juego termina cuando se retiraron los 9 vasos." }),
+          el("li", { text: "El juez anota el tiempo total. Gana el equipo con el tiempo más corto." }))),
+      el("div", { class: "tarjeta" },
+        el("h2", { text: "⚠️ Reglas importantes" }),
+        el("ul", {},
+          el("li", { text: "El robot siempre inicia en el cuadro rojo." }),
+          el("li", { text: "Las tarjetas se resuelven una por una y en orden: no se puede saltar ningún vaso." }),
+          el("li", { text: "Los vasos deben estar repartidos por todo el tablero." }),
+          el("li", { html: "Si el robot retira un vaso <b>equivocado</b>, el juez regresa ese vaso a su lugar y el robot vuelve al <b>cuadro rojo</b>. El cronómetro sigue corriendo." })),
+        el("div", { class: "aviso", html: "💡 En la pestaña <b>⏱️ Mesa del juez</b> la app acomoda los vasos al azar, baraja las tarjetas, lleva el cronómetro y guarda los tiempos de cada equipo." })));
+  }
+
+  // ── Cómo barajar ──
+  function barajar() {
+    app.append(
+      el("div", { class: "tarjeta" },
+        el("h2", { text: "1️⃣ Primero, separa las tarjetas que no se usan" }),
+        el("p", { html: "El juego trae <b>10 banderas</b> (en tarjetas y en stickers para los vasos), pero solo se ponen <b>9 vasos</b>. Antes de barajar, <b>quita la tarjeta de la bandera que no está en el tablero</b>. Si no, al final saldría una tarjeta de un vaso que no existe." }),
+        el("div", { class: "banderas" }, Object.keys(FLAGS).map((k) => el("div", { class: "bandera", html: svgBandera(k) + `<span>${FLAGS[k].n}</span>` }))),
+        el("div", { class: "aviso", html: "✏️ También vienen <b>tarjetas y stickers en blanco</b>: puedes dibujar otras banderas (por ejemplo, la de Japón o la de tu escuela) y cambiar cuáles van en el juego." })),
+      el("div", { class: "tarjeta" },
+        el("h2", { text: "2️⃣ Barájalas bien" }),
+        el("div", { class: "pasos" },
+          el("div", { class: "paso", html: "<b class=\"n\">1</b><b>Lavadito:</b> extiende las tarjetas boca abajo sobre la mesa y revuélvelas con las dos manos durante unos 20 segundos." }),
+          el("div", { class: "paso", html: "<b class=\"n\">2</b><b>Junta el mazo</b> sin voltear ninguna tarjeta." }),
+          el("div", { class: "paso", html: "<b class=\"n\">3</b><b>Corta el mazo</b> dos veces: toma la mitad de arriba y ponla debajo." }),
+          el("div", { class: "paso", html: "<b class=\"n\">4</b>Deja el mazo <b>boca abajo</b> junto al tablero. Nadie lo ve hasta que empieza el juego." })),
+        el("div", { class: "aviso", html: "👀 Baraja el <b>juez</b>, no el equipo que va a jugar. Y para cada equipo se vuelve a barajar, para que nadie se aprenda el orden." })),
+      el("div", { class: "tarjeta" },
+        el("h2", { text: "🤔 ¿Por qué barajar?" }),
+        el("p", { text: "Si las tarjetas salieran siempre en el mismo orden, el segundo equipo ya sabría a qué vaso ir y tendría ventaja. Barajar hace que el orden sea al azar y que el juego sea justo para todos. ¡Es lo mismo que hace un programa cuando elige números al azar!" })));
+  }
+
+  // ── Mesa del juez ──
+  const RESULTADOS = "3dpit-banderas-tiempos";
+  let resultados = [];
+  try { resultados = JSON.parse(localStorage.getItem(RESULTADOS) || "[]") || []; } catch (_) {}
+  const guardarRes = () => { try { localStorage.setItem(RESULTADOS, JSON.stringify(resultados)); } catch (_) {} };
+
+  // Estado de la partida (se conserva al cambiar de pestaña).
+  const J = { fuera: "it", vasos: null, mazo: [], i: -1, retirados: new Set(), inicio: 0, fin: 0, timer: null, equipo: "", errores: 0 };
+  const enJuego = () => Object.keys(FLAGS).filter((k) => k !== J.fuera);
+
+  // Un vaso en cada zona de una cuadrícula de 3 × 3, para que queden repartidos.
+  function acomodarVasos() {
+    const ks = revolver(enJuego());
+    J.vasos = ks.map((k, z) => {
+      const zc = z % 3, zr = Math.floor(z / 3);
+      let x, y;
+      do {
+        x = zc * 80 + 14 + Math.random() * 52;
+        y = zr * 40 + 10 + Math.random() * 20;
+      } while (x > 100 && x < 140 && y < 34); // lejos del cuadro rojo
+      return { k, x, y };
+    });
+    J.retirados = new Set();
+  }
+
+  function dibujarTablero() {
+    let s = `<svg class="tablero" viewBox="0 0 240 120">`;
+    for (let x = 0; x <= 240; x += 24) s += `<line x1="${x}" y1="0" x2="${x}" y2="120" stroke="#d6dae6" stroke-width=".4"/>`;
+    for (let y = 0; y <= 120; y += 24) s += `<line x1="0" y1="${y}" x2="240" y2="${y}" stroke="#d6dae6" stroke-width=".4"/>`;
+    s += `<line x1="120" y1="0" x2="120" y2="120" stroke="#9aa" stroke-dasharray="2 2" stroke-width=".5"/><line x1="0" y1="60" x2="240" y2="60" stroke="#9aa" stroke-dasharray="2 2" stroke-width=".5"/>`;
+    s += `<rect x="108" y="0" width="24" height="24" fill="#e02020"/><text x="120" y="14" font-size="4.5" fill="#fff" text-anchor="middle" font-weight="700">JUGADOR</text>`;
+    const actual = J.i >= 0 && J.i < J.mazo.length ? J.mazo[J.i] : null;
+    for (const v of J.vasos) {
+      const fuera = J.retirados.has(v.k);
+      s += `<g opacity="${fuera ? 0.2 : 1}" transform="translate(${v.x},${v.y})">`;
+      // Vaso de unos 10 cm de diámetro, a escala del tablero.
+      s += `<circle r="5.5" fill="#fff" stroke="${v.k === actual && !fuera ? "#f1c40f" : "#555"}" stroke-width="${v.k === actual && !fuera ? 1.6 : 0.5}"/>`;
+      s += `<svg x="-4.2" y="-2.8" width="8.4" height="5.6" viewBox="0 0 30 20">${FLAGS[v.k].s}</svg>`;
+      s += `<text y="10" font-size="3.4" text-anchor="middle" fill="#333">${FLAGS[v.k].n}</text></g>`;
+    }
+    return s + "</svg>";
+  }
+
+  const fmt = (ms) => { const t = Math.max(0, ms) / 1000; return `${String(Math.floor(t / 60)).padStart(2, "0")}:${(t % 60).toFixed(1).padStart(4, "0")}`; };
+
+  function mesa() {
+    if (!J.vasos) acomodarVasos();
+    const reloj = el("div", { class: "reloj", text: fmt(J.inicio ? (J.fin || Date.now()) - J.inicio : 0) });
+    clearInterval(J.timer);
+    if (J.inicio && !J.fin) J.timer = setInterval(() => { reloj.textContent = fmt(Date.now() - J.inicio); }, 100);
+
+    const actual = J.i >= 0 && J.i < J.mazo.length ? J.mazo[J.i] : null;
+    const carta = el("div", { class: "carta" + (actual ? " vista" : "") });
+    if (actual) carta.innerHTML = svgBandera(actual) + `<b style="font-size:20px">${FLAGS[actual].n}</b>`;
+    else carta.textContent = J.inicio && J.fin ? "🏁 ¡Terminó!" : J.mazo.length ? "Mazo listo, boca abajo" : "Baraja las tarjetas para empezar";
+    const mazo = el("div", { class: "mazo" }, Array.from({ length: Math.max(0, J.mazo.length - J.i - 1) }, () => el("i")));
+    const jugando = J.inicio && !J.fin;
+
+    const nombre = el("input", { class: "equipo", placeholder: "Nombre del equipo", value: J.equipo });
+    nombre.oninput = () => (J.equipo = nombre.value);
+
+    app.append(el("div", { class: "mesa" },
+      el("div", {},
+        el("div", { class: "tarjeta" },
+          el("h2", { text: "1️⃣ ¿Qué bandera queda fuera?" }),
+          el("p", { class: "hint", text: "Toca una bandera para dejarla fuera del juego (quedan 9)." }),
+          el("div", { class: "banderas" }, Object.keys(FLAGS).map((k) => el("div", {
+            class: "bandera" + (k === J.fuera ? " fuera" : ""), html: svgBandera(k) + `<span>${FLAGS[k].n}</span>`,
+            onclick: () => { if (jugando) return; J.fuera = k; acomodarVasos(); J.mazo = []; J.i = -1; J.inicio = J.fin = 0; mostrar(); },
+          })))),
+        el("div", { class: "tarjeta" },
+          el("h2", { text: "2️⃣ Acomoda los vasos así" }),
+          el("div", { html: dibujarTablero() }),
+          el("p", { class: "hint", text: "Las líneas grises son cuadros de 24 cm. Hay un vaso en cada zona del tablero para que queden repartidos." }),
+          el("div", { class: "acciones" },
+            el("button", { onclick: () => { if (jugando) return; acomodarVasos(); mostrar(); } }, "🔀 Otra acomodada al azar")))),
+      el("div", {},
+        el("div", { class: "tarjeta" },
+          el("h2", { text: "3️⃣ Tarjetas" }),
+          carta, mazo,
+          el("div", { class: "acciones" },
+            el("button", {
+              onclick: () => {
+                if (jugando) return;
+                J.mazo = revolver(enJuego()); J.i = -1; J.inicio = J.fin = 0; J.errores = 0; J.retirados = new Set();
+                mostrar();
+                const m = app.querySelector(".mazo"); m.classList.add("barajando");
+              },
+            }, "🃏 Barajar"))),
+        el("div", { class: "tarjeta" },
+          el("h2", { text: "4️⃣ Cronómetro" }),
+          nombre, reloj,
+          el("div", { class: "acciones" },
+            !jugando ? el("button", {
+              class: "primary",
+              onclick: () => {
+                if (!J.mazo.length || J.fin) { J.mazo = revolver(enJuego()); J.retirados = new Set(); }
+                J.i = 0; J.errores = 0; J.fin = 0; J.inicio = Date.now(); mostrar();
+              },
+            }, "▶ Empezar y sacar tarjeta") : null,
+            jugando ? el("button", {
+              class: "bien",
+              onclick: () => {
+                J.retirados.add(J.mazo[J.i]); J.i++;
+                if (J.i >= J.mazo.length) {
+                  J.fin = Date.now();
+                  resultados.push({ equipo: J.equipo || "Equipo " + (resultados.length + 1), ms: J.fin - J.inicio, errores: J.errores, fecha: new Date().toLocaleDateString("es-MX") });
+                  guardarRes();
+                }
+                mostrar();
+              },
+            }, "✅ Vaso correcto") : null,
+            jugando ? el("button", {
+              class: "mal",
+              onclick: () => { J.errores++; Tools.toast("❌ Regresa el vaso a su lugar y el robot al cuadro rojo"); mostrar(); },
+            }, "❌ Vaso equivocado") : null,
+            jugando ? el("button", { onclick: () => { clearInterval(J.timer); J.inicio = J.fin = 0; J.i = -1; J.retirados = new Set(); mostrar(); } }, "⏹ Cancelar") : null),
+          J.errores ? el("p", { class: "hint", text: `Vasos equivocados: ${J.errores} (cada uno regresó al robot al cuadro rojo).` }) : null),
+        el("div", { class: "tarjeta" },
+          el("h2", { text: "🏆 Tiempos" }),
+          resultados.length
+            ? el("table", { class: "res" },
+                el("tr", {}, el("th", { text: "#" }), el("th", { text: "Equipo" }), el("th", { text: "Tiempo" }), el("th", { text: "❌" })),
+                resultados.slice().sort((a, b) => a.ms - b.ms).map((r, i) =>
+                  el("tr", {}, el("td", { text: i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : i + 1 }), el("td", { text: r.equipo }), el("td", { text: fmt(r.ms) }), el("td", { text: r.errores }))))
+            : el("p", { class: "hint", text: "Aquí aparecerán los tiempos de cada equipo." }),
+          resultados.length ? el("div", { class: "acciones" }, el("button", { onclick: () => { if (confirm("¿Borrar todos los tiempos?")) { resultados = []; guardarRes(); mostrar(); } } }, "🗑 Borrar tiempos")) : null))));
+  }
+
+  mostrar();
+</script>
+</body>
+</html>
