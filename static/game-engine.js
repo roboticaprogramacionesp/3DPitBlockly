@@ -45,7 +45,8 @@ window.GameEngine = (function () {
       flipX: false, flipY: false,
       baseW: 48, baseH: 48,
       angle: 0,
-      created: false
+      created: false,
+      hidden: false   /* escondido: no se dibuja ni choca */
     };
   }
 
@@ -443,6 +444,7 @@ window.GameEngine = (function () {
       s.flipX = false;
       s.flipY = false;
       s.created = true;
+      s.hidden = false;
       if (_isImageName(v)) {
         s.color    = '#00ff88';
         s.imgReady = false;
@@ -563,7 +565,7 @@ window.GameEngine = (function () {
          Con nombre: dibuja ese sprite específico.
          Sin createSprite previo, no dibuja nada. */
       var s = _sp(name);
-      if (!s.created) return;
+      if (!s.created || s.hidden) return;
 
       var x = s.x, y = s.y, w = s.w, h = s.h;
 
@@ -728,11 +730,17 @@ window.GameEngine = (function () {
       return false;
     },
 
+    /* Esconder / mostrar un personaje: escondido no se dibuja ni choca
+       (por ejemplo, un vaso que ya se recogió). */
+    hideSprite: function(name) { _sp(name).hidden = true; },
+    showSprite: function(name) { _sp(name).hidden = false; },
+    isVisible: function(name) { var s = _sp(name); return s.created && !s.hidden; },
+
     /* touchingSprite(nameA, nameB): colisión AABB entre dos sprites.
        Devuelve true si sus rectángulos se solapan. */
     touchingSprite: function(nameA, nameB) {
       var a = _sp(nameA), b = _sp(nameB);
-      if (!a.created || !b.created) return false;
+      if (!a.created || !b.created || a.hidden || b.hidden) return false;
       return !(a.x + a.w <= b.x || b.x + b.w <= a.x ||
                a.y + a.h <= b.y || b.y + b.h <= a.y);
     },

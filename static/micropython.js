@@ -5937,6 +5937,16 @@ Blockly.Python["sprite_create_named"] = function (block) {
 };
 
 /* ── sprite_draw_named ──────────────────────────────────────── */
+Blockly.Python["sprite_hide_named"] = function (block) {
+  const name = Blockly.Python.valueToCode(block, "NAME", Blockly.Python.ORDER_NONE) || "'sprite'";
+  return `# [Juego] esconder personaje ${name}\n`;
+};
+Blockly.Python["sprite_show_named"] = function (block) {
+  const name = Blockly.Python.valueToCode(block, "NAME", Blockly.Python.ORDER_NONE) || "'sprite'";
+  return `# [Juego] mostrar personaje ${name}\n`;
+};
+Blockly.Python["sprite_visible_named"] = function () { return ["True", Blockly.Python.ORDER_ATOMIC]; };
+
 Blockly.Python["sprite_draw_named"] = function (block) {
   const name = Blockly.Python.valueToCode(block, "NAME", Blockly.Python.ORDER_NONE) || "'sprite'";
   return `# [Juego] dibujar personaje ${name}\n`;

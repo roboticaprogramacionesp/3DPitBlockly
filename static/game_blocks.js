@@ -969,6 +969,32 @@ Blockly.defineBlocksWithJsonArray([
     tooltip: "Dibuja el personaje con el nombre indicado.",
   },
   {
+    type: "sprite_hide_named",
+    message0: "🙈 esconder personaje %1",
+    args0: [{ type: "input_value", name: "NAME", check: "String" }],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 45,
+    tooltip: "Esconde el personaje: ya no se dibuja ni choca con nada (por ejemplo, un objeto que ya recogiste).",
+  },
+  {
+    type: "sprite_show_named",
+    message0: "👀 mostrar personaje %1",
+    args0: [{ type: "input_value", name: "NAME", check: "String" }],
+    previousStatement: null,
+    nextStatement: null,
+    colour: 45,
+    tooltip: "Vuelve a mostrar un personaje escondido.",
+  },
+  {
+    type: "sprite_visible_named",
+    message0: "👀 ¿se ve %1 ?",
+    args0: [{ type: "input_value", name: "NAME", check: "String" }],
+    output: "Boolean",
+    colour: 45,
+    tooltip: "Verdadero si el personaje existe y no está escondido.",
+  },
+  {
     type: "sprite_move_named",
     message0: "🏃 mover personaje %1  dx %2  dy %3",
     args0: [

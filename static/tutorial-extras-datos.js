@@ -1166,7 +1166,7 @@ var TUTORIAL_EXTRAS = {
   juego_bandera_pantalla: {
     n: 2, t: 40,
     dato: "Con <b>crear texto con</b> puedes armar el nombre de un personaje: «vaso» + 2 = «vaso2». Así un solo bloque sirve para preguntar por cualquier vaso.",
-    exp: "Cada vaso es un <b>personaje con nombre</b> (vaso1, vaso2, vaso3). La variable <b>meta</b> guarda un número al azar, y el juego pregunta si el robot toca a «vaso» + meta. Si sí, suma un punto, suena una nota, el robot regresa al inicio y se elige otra meta.",
+    exp: "Cada vaso es un <b>personaje con nombre</b> (vaso1, vaso2, vaso3). La variable <b>meta</b> guarda un número al azar, y el juego pregunta si el robot toca a «vaso» + meta. Si sí, suma un punto, suena una nota y <b>esconde</b> ese vaso: ya no se dibuja ni se puede tocar. Luego se elige otra meta al azar, repitiendo hasta que salga un vaso que todavía <b>se vea</b>.",
     usos: ["Practicar antes de manejar el robot de verdad", "Simuladores de robots", "Juegos de recoger objetos"],
     retos: [
       ["Si el robot toca un vaso <b>equivocado</b>, que regrese al inicio sin sumar.", "Agrega un <em>si</em> por cada vaso que no sea el de la meta."],

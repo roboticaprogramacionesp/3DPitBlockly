@@ -1490,6 +1490,16 @@ Blockly.JavaScript["sprite_draw_named"] = function (block) {
   return "GameEngine.drawSprite(" + name + ");\n";
 };
 
+Blockly.JavaScript["sprite_hide_named"] = function (block) {
+  return "GameEngine.hideSprite(" + _namedArg(block, "NAME", "''") + ");\n";
+};
+Blockly.JavaScript["sprite_show_named"] = function (block) {
+  return "GameEngine.showSprite(" + _namedArg(block, "NAME", "''") + ");\n";
+};
+Blockly.JavaScript["sprite_visible_named"] = function (block) {
+  return ["GameEngine.isVisible(" + _namedArg(block, "NAME", "''") + ")", Blockly.JavaScript.ORDER_FUNCTION_CALL];
+};
+
 Blockly.JavaScript["sprite_move_named"] = function (block) {
   const name = _namedArg(block, "NAME", "''");
   const dx = _namedArg(block, "DX", "0");
@@ -2392,6 +2402,27 @@ function initInterpreter(code) {
       "setScale",
       interpreter.createNativeFunction(function (scale, name) {
         GE.setScale(_n(scale), _s(name) || undefined);
+      }),
+    );
+    interpreter.setProperty(
+      geObj,
+      "hideSprite",
+      interpreter.createNativeFunction(function (name) {
+        GE.hideSprite(_s(name) || undefined);
+      }),
+    );
+    interpreter.setProperty(
+      geObj,
+      "showSprite",
+      interpreter.createNativeFunction(function (name) {
+        GE.showSprite(_s(name) || undefined);
+      }),
+    );
+    interpreter.setProperty(
+      geObj,
+      "isVisible",
+      interpreter.createNativeFunction(function (name) {
+        return GE.isVisible(_s(name) || undefined);
       }),
     );
     interpreter.setProperty(
