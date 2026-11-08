@@ -2024,6 +2024,177 @@
     }
   };
 
+  /* ── Desafío de Robótica: el carrito con el control de 5 botones (ADKey) ──
+     Los dos tutoriales usan el mismo carrito (L298N en 16/17/25/26 y ADKey
+     en el pin 35, a 10 bits). Cada botón del ADKey da un número distinto:
+     izquierda < 100, arriba 100-200, abajo 200-300, derecha 300-500; sin
+     apretar, más de 600. Herramientas › A por la Bandera / La Ruta del
+     Conocimiento explican cada juego. */
+  function pasoVariable(nombre, desc) {
+    return { titulo: 'Crea la variable ' + nombre, desc: desc, highlightCat: 'Variables', highlightFlyoutButton: 'create_variable', variable: nombre, expandCat: null, bloque: null };
+  }
+  function pasoFuncion(nombre, desc) {
+    return paso('Crea la función ' + nombre, desc, 'Funciones', 'procedures_defnoreturn', 'para … hacer');
+  }
+  function pasoLlamar(nombre, desc) {
+    return paso('Llama a ' + nombre, desc, 'Funciones', 'procedures_callnoreturn', nombre);
+  }
+  function pasoMotor(titulo, motor, in1, in2) {
+    return {
+      titulo: titulo,
+      desc: 'Ve a <b>Actuadores › Motor DC</b> y arrastra <em>Controlar Motor DC (encender/apagar)</em> dentro de la función. Elige motor <b>' + motor + '</b>, el primer selector en <b>' + in1 + '</b> y el segundo en <b>' + in2 + '</b>.',
+      highlightCat: 'Motor DC', expandCat: 'Actuadores', bloque: 'move_dc_motor1_on_off', bloqueLabel: 'Controlar Motor DC (encender/apagar)'
+    };
+  }
+  // Las 5 funciones de movimiento (motor A = rueda izquierda, motor B = derecha).
+  function pasosMovimientos() {
+    var MOV = [
+      ['adelante', 'las dos ruedas giran hacia adelante', ['on', 'off'], ['on', 'off']],
+      ['atras', 'las dos ruedas giran hacia atrás', ['off', 'on'], ['off', 'on']],
+      ['izquierda', 'la rueda izquierda va hacia atrás y la derecha hacia adelante: el carrito gira en su lugar', ['off', 'on'], ['on', 'off']],
+      ['derecha', 'la rueda izquierda va hacia adelante y la derecha hacia atrás', ['on', 'off'], ['off', 'on']],
+      ['alto', 'se apagan las dos ruedas', ['off', 'off'], ['off', 'off']]
+    ];
+    var pasos = [];
+    MOV.forEach(function (m) {
+      pasos.push(pasoFuncion(m[0], 'Ve a <b>Funciones</b> y arrastra <em>para hacer algo</em> a un lugar vacío (suelto). Haz clic en su nombre y escribe <b>' + m[0] + '</b>: ' + m[1] + '.'));
+      pasos.push(pasoMotor(m[0] + ': rueda izquierda', 'A', m[2][0], m[2][1]));
+      pasos.push(pasoMotor(m[0] + ': rueda derecha', 'B', m[3][0], m[3][1]));
+    });
+    return pasos;
+  }
+  // Un «si» que llama a una función cuando la tecla está en un rango.
+  function pasosSi(boton, desde, hasta, funcion) {
+    var cond = desde == null ? '<b>tecla &lt; ' + hasta + '</b>'
+      : hasta == null ? '<b>tecla &gt; ' + desde + '</b>'
+      : '<b>tecla &gt; ' + desde + '</b> y <b>tecla &lt; ' + hasta + '</b>';
+    var pasos = [paso('Si se aprieta ' + boton, 'Ve a <b>Lógica</b> y arrastra un bloque <em>si hacer</em> dentro del ciclo, debajo de lo anterior. Vamos a revisar si ' + cond + '.', 'Lógica', 'controls_if', 'si hacer')];
+    if (desde != null && hasta != null) {
+      pasos.push(paso('Une dos comparaciones con «y»', 'Ve a <b>Lógica</b> y pon un bloque <em>y</em> en el hueco del <em>si</em>: la tecla debe estar entre ' + desde + ' y ' + hasta + '.', 'Lógica', 'logic_operation', 'y'));
+      pasos.push(paso('Las dos comparaciones', 'Arrastra dos bloques <em>comparar</em> (uno en cada hueco del <em>y</em>): el primero con <b>&gt;</b> y el segundo con <b>&lt;</b>.', 'Lógica', 'logic_compare', 'Comparar'));
+    } else {
+      pasos.push(paso('La comparación', 'Ve a <b>Lógica</b> y pon un bloque <em>comparar</em> en el hueco del <em>si</em>, con el signo <b>' + (desde == null ? '&lt;' : '&gt;') + '</b>.', 'Lógica', 'logic_compare', 'Comparar'));
+    }
+    pasos.push(pasoGet('tecla', 'Ve a <b>Variables</b> y pon <em>obtener tecla</em> del lado izquierdo de ' + (desde != null && hasta != null ? 'cada comparación' : 'la comparación') + '.'));
+    pasos.push(pasoNumero(desde == null ? hasta : desde, 'Ve a <b>Matemáticas</b> y pon el número del lado derecho: ' + cond + '.'));
+    pasos.push(pasoLlamar(funcion, 'Ve a <b>Funciones</b> y arrastra <em>' + funcion + '</em> dentro del <em>si</em>.'));
+    return pasos;
+  }
+  var PASOS_CARRITO = [
+    {
+      titulo: 'Crea un proyecto nuevo',
+      desc: 'Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class="icon-btn icon-new"></span> para partir de un área de trabajo limpia.',
+      highlightElement: '#btnArchivo'
+    },
+    {
+      titulo: 'Conecta el carrito',
+      desc: '<b>Puente H L298N</b> (como en el tutorial Puente H):<br>📌 IN1 → pin <b>16</b> · IN2 → pin <b>17</b> · IN3 → pin <b>25</b> · IN4 → pin <b>26</b><br>⚡ 12V → pilas (+), pasando por el interruptor · ⏚ GND → GND del ESP32 y pilas (−)<br>🔌 OUT1/OUT2 → rueda <b>izquierda</b> · OUT3/OUT4 → rueda <b>derecha</b><br><br><b>Control de 5 botones (ADKey)</b>:<br>📌 S → pin <b>35</b> · ⚡ V → 3.3V · ⏚ G → GND',
+      highlightCat: null, bloque: null
+    },
+    paso('Prepara los motores', 'Ve a <b>Actuadores › Motor DC</b> y arrastra <em>Preparar Motor DC (L298N)</em>. Deja los pines IN1=<b>16</b>, IN2=<b>17</b>, IN3=<b>25</b>, IN4=<b>26</b>.', 'Motor DC', 'init_dc_motor', 'Preparar Motor DC (L298N)'),
+    paso('Prepara el control de botones', 'Ve a <b>Sensores › Sensores Analogicos</b> y arrastra el bloque del <b>ADKey</b> debajo del anterior. Déjalo en el pin <b>35</b>, <b>ADC.ATTN_11DB</b> y <b>ADC.WIDTH_10BIT</b>.', 'Sensores Analogicos', 'analog_sensor_init', 'ADKey')
+  ];
+  PASOS_CARRITO[2].expandCat = 'Actuadores';
+  PASOS_CARRITO[3].expandCat = 'Sensores';
+  function pasosFinales(probar) {
+    return [
+      {
+        titulo: 'Guarda tu proyecto',
+        desc: 'Abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class="icon-btn icon-save"></span>.',
+        highlightElement: '#btnArchivo'
+      },
+      {
+        titulo: 'Conecta tu ESP32',
+        desc: 'Haz clic en <b>Conectar</b> <span class="icon-btn icon-disconnect"></span> y elige el puerto de tu ESP32.',
+        highlightElement: '#btnConnection'
+      },
+      {
+        titulo: 'Ejecuta y prueba',
+        desc: probar,
+        highlightElement: '#btnRun',
+        waitForAction: 'run'
+      }
+    ];
+  }
+
+  tutorials.juego_bandera_carrito = {
+    title: 'A por la Bandera: maneja tu carrito con botones',
+    icon: '🚩',
+    diagram: 'img/conexiones/carrito_botones.svg',
+    steps: [
+      {
+        titulo: '¿Qué aprenderemos?',
+        desc: 'Vamos a programar el carrito para jugar <b>A por la Bandera</b>: mientras <b>mantienes apretado</b> un botón del control, el carrito se mueve hacia ese lado, y cuando lo <b>sueltas</b>, se detiene. Así podrás llevarlo hasta cada vaso con bandera.<br><br>Las reglas del juego, la mesa del juez y el cronómetro están en <b>🛠 Herramientas › A por la Bandera</b>.',
+        highlightCat: null, bloque: null
+      }
+    ].concat(PASOS_CARRITO, pasosMovimientos(), [
+      pasoVariable('tecla', 'Ve a <b>Variables</b> y crea una variable llamada <b>tecla</b>: ahí guardaremos qué botón está apretado.'),
+      paso('Agrega el ciclo', 'Ve a <b>Ciclos</b> y arrastra <em>repetir mientras verdadero</em> debajo del bloque del ADKey.', 'Ciclos', 'controls_whileUntil', 'Repetir mientras Verdadero'),
+      pasoSet('Lee el control', 'tecla', 'Dentro del ciclo arrastra <em>establecer tecla a</em>.'),
+      paso('El número del botón', 'Ve a <b>Sensores › Sensores Analogicos</b> y pon <em>adkey Leer</em> en el hueco de <em>establecer tecla a</em>.', 'Sensores Analogicos', 'analog_sensor_read', 'adkey Leer')
+    ], pasosSi('◀ izquierda', null, 100, 'izquierda'),
+      pasosSi('▲ arriba', 100, 200, 'adelante'),
+      pasosSi('▼ abajo', 200, 300, 'atras'),
+      pasosSi('▶ derecha', 300, 500, 'derecha'),
+      pasosSi('nada (o el botón del centro)', 600, null, 'alto'),
+      [
+        paso('Una pausa cortita', 'Ve a <b>Tiempo</b> y arrastra <em>esperar</em> al final del ciclo con <b>0.05</b> segundos: así el ciclo revisa el control 20 veces por segundo.', 'Tiempo', 'time_sleep', 'esperar')
+      ],
+      pasosFinales('Haz clic en <b>Ejecutar</b> <span class="icon-btn icon-run"></span>. Mantén apretado ▲: el carrito avanza. Suéltalo: se detiene. 💡 Si una rueda gira al revés, cambia de lugar sus dos cables en el L298N (o intercambia on y off en esa rueda). ¡Ahora sí, a jugar A por la Bandera!')
+    )
+  };
+
+  tutorials.juego_ruta_robot = {
+    title: 'La Ruta del Conocimiento: robot por bloques',
+    icon: '🧩',
+    diagram: 'img/conexiones/carrito_botones.svg',
+    steps: [
+      {
+        titulo: '¿Qué aprenderemos?',
+        desc: 'Vamos a programar el robot para jugar <b>La Ruta del Conocimiento</b>: cada vez que aprietas ▲ avanza <b>exactamente un bloque</b> (24 cm), y con ◀ ▶ gira <b>90°</b> en su lugar. Si el dado dice 3, aprietas ▲ tres veces.<br><br>Cómo armar el tablero, calibrar el robot y jugar con los dados está en <b>🛠 Herramientas › La Ruta del Conocimiento</b>. Si ya hiciste el tutorial <b>A por la Bandera</b>, el carrito es el mismo.',
+        highlightCat: null, bloque: null
+      }
+    ].concat(PASOS_CARRITO, [
+      pasoVariable('tiempo_bloque', 'Ve a <b>Variables</b> y crea <b>tiempo_bloque</b>: los segundos que tarda el robot en avanzar 24 cm.'),
+      pasoSet('Tiempo para un bloque', 'tiempo_bloque', 'Arrastra <em>establecer tiempo_bloque a</em> debajo del bloque del ADKey.'),
+      pasoNumero(0.8, 'Ve a <b>Matemáticas</b> y pon <b>0.8</b>. Después lo ajustarás con la calculadora de la herramienta.'),
+      pasoVariable('tiempo_giro', 'Crea otra variable: <b>tiempo_giro</b>, los segundos que tarda en girar 90°.'),
+      pasoSet('Tiempo para girar', 'tiempo_giro', 'Arrastra <em>establecer tiempo_giro a</em> debajo del anterior.'),
+      pasoNumero(0.6, 'Pon <b>0.6</b> por ahora.')
+    ], pasosMovimientos(), [
+      pasoFuncion('avanzar_bloque', 'Crea otra función suelta y llámala <b>avanzar_bloque</b>: avanza, espera lo que tarda un bloque y se detiene.'),
+      pasoLlamar('adelante', 'Dentro de <b>avanzar_bloque</b> arrastra <em>adelante</em>.'),
+      paso('Espera un bloque', 'Ve a <b>Tiempo</b> y arrastra <em>esperar</em> debajo. En su hueco pon <em>obtener tiempo_bloque</em> (de <b>Variables</b>).', 'Tiempo', 'time_sleep', 'esperar'),
+      pasoLlamar('alto', 'Al final de <b>avanzar_bloque</b> arrastra <em>alto</em>.'),
+      pasoFuncion('retroceder_bloque', 'Crea la función <b>retroceder_bloque</b> igual, pero con <em>atras</em>: llama <em>atras</em>, espera <em>tiempo_bloque</em> y llama <em>alto</em>.'),
+      pasoLlamar('atras', 'Arrastra <em>atras</em>, luego <em>esperar tiempo_bloque</em> y al final <em>alto</em> dentro de <b>retroceder_bloque</b>.'),
+      pasoFuncion('girar_izquierda', 'Crea la función <b>girar_izquierda</b>: llama <em>izquierda</em>, espera <em>tiempo_giro</em> y llama <em>alto</em>.'),
+      pasoLlamar('izquierda', 'Arrastra <em>izquierda</em>, luego <em>esperar tiempo_giro</em> y al final <em>alto</em> dentro de <b>girar_izquierda</b>.'),
+      pasoFuncion('girar_derecha', 'Crea la función <b>girar_derecha</b>: llama <em>derecha</em>, espera <em>tiempo_giro</em> y llama <em>alto</em>.'),
+      pasoLlamar('derecha', 'Arrastra <em>derecha</em>, luego <em>esperar tiempo_giro</em> y al final <em>alto</em> dentro de <b>girar_derecha</b>.'),
+      pasoVariable('tecla', 'Ve a <b>Variables</b> y crea la variable <b>tecla</b>.'),
+      paso('Agrega el ciclo', 'Ve a <b>Ciclos</b> y arrastra <em>repetir mientras verdadero</em> debajo de los tiempos.', 'Ciclos', 'controls_whileUntil', 'Repetir mientras Verdadero'),
+      pasoSet('Lee el control', 'tecla', 'Dentro del ciclo arrastra <em>establecer tecla a</em>.'),
+      paso('El número del botón', 'Ve a <b>Sensores › Sensores Analogicos</b> y pon <em>adkey Leer</em> en el hueco.', 'Sensores Analogicos', 'analog_sensor_read', 'adkey Leer')
+    ], pasosSi('◀ izquierda', null, 100, 'girar_izquierda'),
+      pasosSi('▲ arriba', 100, 200, 'avanzar_bloque'),
+      pasosSi('▼ abajo', 200, 300, 'retroceder_bloque'),
+      pasosSi('▶ derecha', 300, 500, 'girar_derecha'),
+      [
+        paso('Un apretón, un movimiento', 'Ve a <b>Tiempo</b> y arrastra <em>esperar</em> al final del ciclo con <b>0.3</b> segundos: así, aunque dejes el dedo un poquito, cada apretón cuenta una sola vez.', 'Tiempo', 'time_sleep', 'esperar')
+      ],
+      pasosFinales('Haz clic en <b>Ejecutar</b> <span class="icon-btn icon-run"></span>. Pon el robot en el centro de una ficha y aprieta ▲: debe llegar al centro de la siguiente. Si se queda corto o se pasa, mide y usa la calculadora de <b>🛠 Herramientas › La Ruta del Conocimiento › Cómo se mueve el robot</b> para cambiar <b>tiempo_bloque</b> y <b>tiempo_giro</b>.')
+    )
+  };
+
+  // Las subcategorías se abren desde su categoría padre.
+  ['juego_bandera_carrito', 'juego_ruta_robot'].forEach(function (k) {
+    tutorials[k].steps.forEach(function (s) {
+      if (s.highlightCat === 'Sensores Analogicos') s.expandCat = 'Sensores';
+      if (s.highlightCat === 'Motor DC') s.expandCat = 'Actuadores';
+    });
+  });
+
   if (typeof TUTORIALS === 'undefined') {
     window.TUTORIALS = {};
   }

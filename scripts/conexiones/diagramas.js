@@ -222,6 +222,26 @@ const DEL_SIMULADOR = [
 
 module.exports = [
   ...DEL_SIMULADOR,
+  // ── Desafío de Robótica ──
+  {
+    archivo: "carrito_botones", titulo: "Carrito con control de 5 botones", tutoriales: ["juego_bandera_carrito", "juego_ruta_robot"],
+    modulos: [
+      { id: "h", tipo: "l298n", etiqueta: "L298N", material: "Puente H L298N", pos: [88.28, -270] },
+      { id: "a", tipo: "motor", etiqueta: "Rueda izq.", material: "Motor DC con reductora", pos: [-141.72, -190] },
+      { id: "b", tipo: "motor", etiqueta: "Rueda der.", material: "Motor DC con reductora", pos: [298.28, -210] },
+      { id: "p", tipo: "battery_18650", etiqueta: "Pilas", material: "Portapilas 2×18650 (7.4 V) con interruptor", pos: [-261.72, -30] },
+      { id: "k", tipo: "adkey_real", etiqueta: "Control", material: "Teclado de 5 botones ADKey", lado: "abajo" },
+    ],
+    conexiones: [
+      ["h.in1", "IO16"], ["h.in2", "IO17"], ["h.in3", "IO25"], ["h.in4", "IO26"], ["h.power_gnd", "GND"],
+      ["p.vcc", "h.power_12v", { color: "#e03131" }], ["p.gnd", "h.power_gnd"],
+      ["a.pin1", "h.out1", { color: "#7048e8" }], ["a.pin2", "h.out2", { color: "#7048e8" }],
+      ["b.pin1", "h.out3", { color: "#0b7285" }], ["b.pin2", "h.out4", { color: "#0b7285" }],
+      ["k.out", "IO35"], ["k.vcc", "3V3"], ["k.gnd", "GND"],
+    ],
+    nombresPin: { "h.power_gnd": "GND", "h.power_12v": "+12V", "p.vcc": "+", "p.gnd": "−" },
+    nota: "Las pilas alimentan los motores (pon el interruptor en el cable +). Une el GND de las pilas, del L298N y del ESP32. El control va a 3V3 y al pin 35.",
+  },
   // ── Pantallas y SPI ──
   {
     archivo: "lcd_paralelo", titulo: "LCD 16x2 (paralelo)", tutoriales: ["lcd_paralelo"],

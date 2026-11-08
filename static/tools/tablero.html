@@ -15,19 +15,22 @@
     .tarjeta p, .tarjeta li { font-size: 16px; line-height: 1.6; }
     .tarjeta ol, .tarjeta ul { margin: 0; padding-left: 22px; }
     .aviso { border-left: 4px solid #f1c40f; background: #2a2a3f; padding: 10px 14px; border-radius: 8px; margin: 10px 0; font-size: 15px; line-height: 1.5; }
+    .aviso.mal { border-color: #e74c3c; }
+    .aviso.bien { border-color: var(--ok); }
     .fichas { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
     .ficha { background: var(--panel-2); border-radius: 10px; padding: 10px; text-align: center; font-size: 14px; }
-    .ficha .cuadro { margin: 0 auto 6px; border-radius: 4px; box-shadow: 0 1px 4px #0006; display: grid; place-items: center; font-weight: 800; font-size: 18px; color: #fff; text-shadow: 0 1px 2px #0008; }
+    .ficha svg { width: 90px; height: 90px; display: block; margin: 0 auto 4px; }
     .ficha small { color: var(--muted); display: block; }
+    .grupo { margin: 14px 0 6px; font-weight: 700; color: var(--accent-2); }
     .pasos { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; }
     .paso { background: var(--panel-2); border-radius: 10px; padding: 12px; font-size: 15px; line-height: 1.45; }
     .paso b.n { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--accent); margin-right: 6px; }
     .tablero { width: 100%; display: block; background: #eef0f6; border: 6px solid #a3195b; border-radius: 6px; }
-    .leyenda { display: flex; flex-wrap: wrap; gap: 12px; font-size: 14px; color: var(--muted); margin-top: 8px; }
-    .leyenda i { display: inline-block; width: 14px; height: 14px; border-radius: 3px; vertical-align: -2px; margin-right: 4px; }
+    .tablero.editable { cursor: pointer; }
     .rutas { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
     .cuenta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
     .cuenta span { background: var(--panel-2); border-radius: 999px; padding: 4px 12px; font-size: 14px; }
+    .cuenta span.pasa { background: #7a2e2e; }
     .calc { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
     .calc label { display: flex; flex-direction: column; gap: 4px; font-size: 14px; color: var(--muted); }
     .calc input { font-size: 16px; }
@@ -42,11 +45,13 @@
     .equipo { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; background: var(--panel-2); border-radius: 10px; padding: 8px 12px; border: 2px solid transparent; }
     .equipo.turno { border-color: #f1c40f; }
     .equipo .pieza { width: 18px; height: 18px; border-radius: 50%; }
-    .equipo b { flex: 1; }
     .acciones { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
     .acciones button { font-size: 15px; padding: 9px 14px; border-radius: 10px; }
     button.bien { background: #1f6f45; border-color: var(--ok); }
     button.mal { background: #7a2e2e; border-color: #e74c3c; }
+    .robot { text-align: center; font-size: 17px; background: #2a2a3f; border-radius: 10px; padding: 10px; margin: 8px 0; }
+    label.check { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; }
+    label.check input { width: 18px; height: 18px; }
   </style>
 </head>
 <body>
@@ -73,128 +78,248 @@
     return n;
   }
   const app = document.getElementById("app");
-
-  // Fichas del juego (medidas y cantidades del diseño del tablero).
-  const FICHAS = [
-    ["Lavanda", "#7b86c4", 24, 24, 3], ["Azul marino", "#034a8a", 27, 24, 10], ["Azul cielo", "#0ea0e0", 27, 27, 3], ["Verde azulado", "#00a19a", 27, 24, 3],
-    ["Gris claro", "#cfd5d3", 27, 24, 3], ["Verde claro", "#d9e8b8", 27, 27, 2], ["Durazno", "#fcd5bb", 24, 30, 2], ["Rosa", "#d585b9", 24, 24, 2],
-    ["Azul muy claro", "#cfe6f8", 24, 24, 2], ["Lila", "#d9d6ee", 24, 24, 2], ["Gris oscuro", "#8f8f8f", 24, 24, 2], ["Café", "#c49a6c", 27, 24, 2],
-  ];
-
-  // ── Recorridos sugeridos en la cuadrícula de 10 × 5 cuadros de 24 cm ──
-  const fila = (y, x0, x1) => { const r = []; for (let x = x0; x0 <= x1 ? x <= x1 : x >= x1; x += x0 <= x1 ? 1 : -1) r.push([x, y]); return r; };
-  const SERPIENTE = [...fila(0, 0, 9), [9, 1], ...fila(2, 9, 0), [0, 3], ...fila(4, 0, 9)];
-  const RUTAS = {
-    serpiente: { n: "🐍 Serpiente (32 bloques)", camino: SERPIENTE, extra: [],
-      d: "Un solo camino largo que recorre todo el tablero. Es el más fácil de armar y de jugar: nadie llega a la meta en dos tiros." },
-    atajos: { n: "🔀 Serpiente con atajos (34 bloques)", camino: SERPIENTE, extra: [[4, 1], [5, 3]],
-      d: "La serpiente con dos atajos. Al llegar a un cruce, el equipo decide: ¿se arriesga por el atajo (con más vueltas) o sigue por el camino largo?" },
-    caminos: { n: "⬆️⬇️ Dos caminos (22 bloques)", camino: [[0, 2], [1, 2], [2, 2], [2, 1], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0], [7, 1], [7, 2], [8, 2], [9, 2]], extra: [[2, 3], [2, 4], [3, 4], [4, 4], [5, 4], [6, 4], [7, 4], [7, 3]],
-      d: "Más corto, para principiantes o para jugar rápido. Desde la salida, el camino se divide en dos y se vuelve a juntar antes de la meta." },
-  };
-  let ruta = "serpiente";
   const clave = (c) => c[0] + "," + c[1];
 
-  // Tipo de cada cuadro según cuántos vecinos del recorrido tiene.
-  function tipos(r) {
-    const celdas = [...r.camino, ...r.extra], set = new Set(celdas.map(clave)), t = {};
-    for (const [x, y] of celdas) {
-      const v = [[1, 0], [-1, 0], [0, 1], [0, -1]].filter(([dx, dy]) => set.has(clave([x + dx, y + dy])));
-      let tipo = v.length === 4 ? "cruce" : v.length === 3 ? "t" : v.length === 2 ? (v[0][0] === -v[1][0] && v[0][1] === -v[1][1] ? "recta" : "vuelta") : "punta";
-      if (clave([x, y]) === clave(r.camino[0])) tipo = "inicio";
-      else if (clave([x, y]) === clave(r.camino[r.camino.length - 1])) tipo = "meta";
-      t[clave([x, y])] = tipo;
+  // ── Las 36 fichas ──
+  // Lados con pestaña (T, sale) o muesca (M, hueco), con el logo derecho.
+  // Leídos del diseño del tablero; si alguna ficha no coincide, se corrige aquí.
+  const FICHAS = [
+    { id: "lavanda", n: "Lavanda", c: "#7b86c4", w: 24, h: 24, k: 3, lados: { E: "M" }, tipo: "final" },
+    { id: "gris", n: "Gris claro", c: "#cfd5d3", w: 27, h: 24, k: 3, lados: { W: "T" }, tipo: "final" },
+    { id: "marino", n: "Azul marino", c: "#034a8a", w: 27, h: 24, k: 10, lados: { W: "T", E: "M" }, tipo: "recta" },
+    { id: "durazno", n: "Durazno", c: "#fcd5bb", w: 24, h: 30, k: 2, lados: { N: "T", S: "T" }, tipo: "recta" },
+    { id: "rosa", n: "Rosa", c: "#d585b9", w: 24, h: 24, k: 2, lados: { N: "M", S: "M" }, tipo: "recta" },
+    { id: "cielo", n: "Azul cielo", c: "#0ea0e0", w: 27, h: 27, k: 3, lados: { W: "T", S: "T" }, tipo: "vuelta" },
+    { id: "teal", n: "Verde azulado", c: "#00a19a", w: 27, h: 24, k: 3, lados: { W: "T", S: "M" }, tipo: "vuelta" },
+    { id: "azulclaro", n: "Azul muy claro", c: "#cfe6f8", w: 24, h: 24, k: 2, lados: { N: "M", W: "M" }, tipo: "vuelta" },
+    { id: "cafe", n: "Café", c: "#c49a6c", w: 27, h: 24, k: 2, lados: { W: "T", N: "M" }, tipo: "vuelta" },
+    { id: "verde", n: "Verde claro", c: "#d9e8b8", w: 27, h: 27, k: 2, lados: { W: "T", E: "M", S: "T" }, tipo: "T" },
+    { id: "lila", n: "Lila", c: "#d9d6ee", w: 24, h: 24, k: 2, lados: { N: "M", S: "M", W: "M" }, tipo: "T" },
+    { id: "grisos", n: "Gris oscuro", c: "#8f8f8f", w: 24, h: 24, k: 2, lados: { N: "M", E: "M", S: "M", W: "M" }, tipo: "cruce" },
+  ];
+  const TIPOS = { final: "Finales (inicio o meta)", recta: "Rectas", vuelta: "Vueltas", T: "Uniones en T", cruce: "Cruces" };
+  const DISP = {}; FICHAS.forEach((f) => (DISP[f.tipo] = (DISP[f.tipo] || 0) + f.k));
+  const L = ["N", "E", "S", "W"], DIR = { N: [0, -1], E: [1, 0], S: [0, 1], W: [-1, 0] }, OP = { N: "S", S: "N", E: "W", W: "E" };
+  const girar = (lados, r) => { const o = {}; for (const [k, v] of Object.entries(lados)) o[L[(L.indexOf(k) + r) % 4]] = v; return o; };
+  // Todas las formas de poner cada ficha (girada 0°, 90°, 180°, 270°).
+  const VARIANTES = [];
+  FICHAS.forEach((f, i) => {
+    const vistas = new Set();
+    for (let r = 0; r < 4; r++) {
+      const o = girar(f.lados, r), firma = L.map((k) => o[k] || "-").join("");
+      if (!vistas.has(firma)) { vistas.add(firma); VARIANTES.push({ i, r, o, lados: L.filter((k) => o[k]).join("") }); }
     }
-    return t;
-  }
-  const COLOR = { inicio: "#2ecc71", meta: "#f1c40f", recta: "#034a8a", vuelta: "#0ea0e0", t: "#00a19a", cruce: "#8f8f8f", punta: "#c49a6c" };
-  const NOMBRE = { inicio: "Inicio (cuadro verde)", meta: "Meta", recta: "Recta", vuelta: "Vuelta", t: "Unión en T", cruce: "Cruce", punta: "Final de camino" };
+  });
 
-  function svgRuta(r, piezas) {
-    const t = tipos(r);
-    let s = '<svg class="tablero" viewBox="-2 -2 244 124">';
+  // Busca qué ficha (y con qué giro) va en cada cuadro: cada unión debe ser
+  // pestaña con muesca y no se pueden usar más fichas de las que hay.
+  function resolver(celdas) {
+    const pos = new Map(celdas.map((c, k) => [clave(c), k]));
+    const vecino = (c, d) => pos.get(clave([c[0] + DIR[d][0], c[1] + DIR[d][1]]));
+    const lados = celdas.map((c) => L.filter((d) => vecino(c, d) != null).join(""));
+    const tipoDe = (s) => s.length === 1 ? "final" : s.length === 2 ? (s === "NS" || s === "EW" ? "recta" : "vuelta") : s.length === 3 ? "T" : s.length === 4 ? "cruce" : "suelta";
+    const usoTipos = {}; lados.forEach((s) => (usoTipos[tipoDe(s)] = (usoTipos[tipoDe(s)] || 0) + 1));
+    if (usoTipos.suelta) return { ok: false, usoTipos, motivo: "Hay un cuadro suelto: todos deben tocar el recorrido." };
+    const pasan = Object.keys(usoTipos).filter((t) => usoTipos[t] > (DISP[t] || 0));
+    if (pasan.length) return { ok: false, usoTipos, pasan, motivo: pasan.map((t) => `${TIPOS[t]}: usas ${usoTipos[t]} y hay ${DISP[t] || 0}`).join(" · ") };
+    // Orden: a lo ancho desde el primer cuadro.
+    const orden = [], vis = new Set([0]), cola = [0];
+    while (cola.length) { const k = cola.shift(); orden.push(k); for (const d of L) { const j = vecino(celdas[k], d); if (j != null && !vis.has(j)) { vis.add(j); cola.push(j); } } }
+    if (orden.length !== celdas.length) return { ok: false, usoTipos, motivo: "El recorrido está partido en pedazos que no se tocan." };
+    const cand = lados.map((s) => VARIANTES.filter((v) => v.lados === s));
+    const uso = FICHAS.map(() => 0), asig = new Array(celdas.length);
+    let pasos = 0;
+    const embona = (k, v) => L.every((d) => { if (!v.o[d]) return true; const j = vecino(celdas[k], d); return j == null || !asig[j] || asig[j].o[OP[d]] !== v.o[d]; });
+    (function bt(n) {
+      if (n === orden.length) return true;
+      if (++pasos > 300000) return false;
+      const k = orden[n];
+      for (const v of cand[k]) {
+        if (uso[v.i] >= FICHAS[v.i].k || !embona(k, v)) continue;
+        uso[v.i]++; asig[k] = v;
+        if (bt(n + 1)) return true;
+        uso[v.i]--; asig[k] = null;
+      }
+      return false;
+    })(0);
+    if (!asig.every(Boolean)) return { ok: false, usoTipos, motivo: "Alcanzan las fichas, pero las pestañas y muescas no embonan en algún lugar. Prueba mover una vuelta o un atajo." };
+    return { ok: true, usoTipos, asig };
+  }
+
+  // ── Recorridos sugeridos (todos se pueden armar con las 36 fichas) ──
+  const RUTAS = {
+    atajos: {
+      n: "⭐ Con atajos (30 fichas)", d: "El recomendado: un camino largo con dos atajos. Al llegar a una unión en T, el equipo decide: ¿sigue por el camino largo o se arriesga por el atajo?",
+      camino: [[0, 0], [1, 0], [2, 0], [2, 1], [2, 2], [1, 2], [0, 2], [0, 3], [0, 4], [1, 4], [2, 4], [3, 4], [3, 3], [4, 3], [5, 3], [5, 2], [5, 1], [6, 1], [6, 0], [7, 0], [8, 0], [8, 1], [8, 2], [8, 3], [8, 4], [9, 4]],
+      atajos: [{ desde: [2, 1], celdas: [[3, 1], [4, 1]], hasta: [5, 1] }, { desde: [5, 3], celdas: [[6, 3], [7, 3]], hasta: [8, 3] }],
+    },
+    zigzag: {
+      n: "〰️ Zigzag (26 fichas)", d: "Un solo camino que sube y baja por todo el tablero. Usa todas las rectas y todas las vueltas.",
+      camino: [[0, 4], [1, 4], [2, 4], [2, 3], [2, 2], [1, 2], [0, 2], [0, 1], [0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [4, 1], [4, 2], [4, 3], [4, 4], [5, 4], [6, 4], [6, 3], [6, 2], [7, 2], [8, 2], [8, 3], [8, 4], [9, 4]], atajos: [],
+    },
+    eme: {
+      n: "Ⓜ️ La M (26 fichas)", d: "Empieza en una esquina y termina en la otra, con forma de M. Tiene tramos largos para practicar a ir derecho.",
+      camino: [[0, 0], [0, 1], [0, 2], [0, 3], [0, 4], [1, 4], [2, 4], [3, 4], [3, 3], [3, 2], [4, 2], [4, 1], [4, 0], [5, 0], [6, 0], [6, 1], [6, 2], [7, 2], [7, 3], [7, 4], [8, 4], [9, 4], [9, 3], [9, 2], [9, 1], [9, 0]], atajos: [],
+    },
+    dos: {
+      n: "⬆️⬇️ Dos caminos (22 fichas)", d: "Corto, para principiantes. El camino se divide en dos (de igual largo) y se vuelve a juntar antes de la meta.",
+      camino: [[0, 2], [1, 2], [2, 2], [2, 1], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0], [7, 1], [7, 2], [8, 2], [9, 2]],
+      atajos: [{ desde: [2, 2], celdas: [[2, 3], [2, 4], [3, 4], [4, 4], [5, 4], [6, 4], [7, 4], [7, 3]], hasta: [7, 2] }],
+    },
+  };
+  const celdasDe = (r) => [...r.camino, ...r.atajos.flatMap((a) => a.celdas)];
+  const SOLUCION = {};
+  let ruta = "atajos";
+
+  // ── Dibujo de fichas ──
+  // Pestaña: trapecio de 3 cm de fondo, 7 cm en la orilla y 3.85 cm en la punta.
+  function trapecio(cx, cy, d, dentro) {
+    const s = dentro ? -1 : 1, [dx, dy] = DIR[d], px = -dy, py = dx;
+    const ox = cx + dx * 12, oy = cy + dy * 12;
+    const p = [[ox + px * 3.5, oy + py * 3.5], [ox - px * 3.5, oy - py * 3.5], [ox - px * 1.925 + dx * 3 * s, oy - py * 1.925 + dy * 3 * s], [ox + px * 1.925 + dx * 3 * s, oy + py * 1.925 + dy * 3 * s]];
+    return p.map((q) => q.map((n) => +n.toFixed(2)).join(",")).join(" ");
+  }
+  function svgFicha(f, o, r, cx, cy, extra) {
+    let s = `<rect x="${cx - 12}" y="${cy - 12}" width="24" height="24" fill="${f.c}" ${extra || ""}/>`;
+    for (const d of L) if (o[d] === "M") s += `<polygon points="${trapecio(cx, cy, d, true)}" fill="#eef0f6"/>`;
+    // Marca del logo: el triángulo apunta hacia arriba del logo.
+    const [ux, uy] = DIR[L[r % 4]];
+    s += `<circle cx="${cx}" cy="${cy}" r="3.2" fill="#ffffff88"/><polygon points="${cx + ux * 5},${cy + uy * 5} ${cx - uy * 2.2},${cy + ux * 2.2} ${cx + uy * 2.2},${cy - ux * 2.2}" fill="#ffffffcc"/>`;
+    return s;
+  }
+  const svgPestanas = (f, o, cx, cy) => L.filter((d) => o[d] === "T").map((d) => `<polygon points="${trapecio(cx, cy, d, false)}" fill="${f.c}"/>`).join("");
+
+  function svgRecorrido(celdas, sol, opciones) {
+    const o = opciones || {};
+    let s = `<svg class="tablero${o.editable ? " editable" : ""}" viewBox="-4 -4 248 128">`;
     for (let x = 0; x <= 240; x += 24) s += `<line x1="${x}" y1="0" x2="${x}" y2="120" stroke="#d6dae6" stroke-width=".5"/>`;
     for (let y = 0; y <= 120; y += 24) s += `<line x1="0" y1="${y}" x2="240" y2="${y}" stroke="#d6dae6" stroke-width=".5"/>`;
-    for (const c of [...r.camino, ...r.extra]) {
-      const tp = t[clave(c)];
-      s += `<rect x="${c[0] * 24 + 1}" y="${c[1] * 24 + 1}" width="22" height="22" rx="2" fill="${COLOR[tp]}" ${r.extra.some((e) => clave(e) === clave(c)) ? 'stroke="#fff" stroke-dasharray="2 1.5" stroke-width=".8"' : ""}/>`;
-    }
-    r.camino.forEach((c, i) => {
-      const tp = t[clave(c)];
-      const txt = tp === "inicio" ? "INICIO" : tp === "meta" ? "META" : i;
-      s += `<text x="${c[0] * 24 + 12}" y="${c[1] * 24 + 14.5}" font-size="${typeof txt === "number" ? 7 : 4.6}" font-weight="700" text-anchor="middle" fill="${tp === "meta" ? "#222" : "#fff"}">${txt}</text>`;
+    if (o.editable) for (let x = 0; x < 10; x++) for (let y = 0; y < 5; y++) s += `<rect class="celda" data-c="${x},${y}" x="${x * 24}" y="${y * 24}" width="24" height="24" fill="transparent"/>`;
+    let pest = "";
+    celdas.forEach((c, k) => {
+      const cx = c[0] * 24 + 12, cy = c[1] * 24 + 12;
+      if (sol && sol.ok) {
+        const v = sol.asig[k], f = FICHAS[v.i];
+        s += svgFicha(f, v.o, v.r, cx, cy, o.editable ? `class="celda" data-c="${clave(c)}"` : "");
+        pest += svgPestanas(f, v.o, cx, cy);
+      } else {
+        s += `<rect ${o.editable ? `class="celda" data-c="${clave(c)}"` : ""} x="${cx - 11}" y="${cy - 11}" width="22" height="22" rx="2" fill="#9aa3c7"/>`;
+      }
     });
-    // Piezas de los equipos sobre el recorrido.
-    (piezas || []).forEach((p, k) => {
-      const c = r.camino[Math.min(p.pos, r.camino.length - 1)];
-      s += `<circle cx="${c[0] * 24 + 5 + (k % 2) * 14}" cy="${c[1] * 24 + 5 + Math.floor(k / 2) * 14}" r="3.6" fill="${p.color}" stroke="#fff" stroke-width=".9"/>`;
+    s += pest;
+    (o.numeros || []).forEach(([c, t]) => {
+      s += `<text x="${c[0] * 24 + 12}" y="${c[1] * 24 + 22}" font-size="${String(t).length > 2 ? 4.4 : 6}" font-weight="800" text-anchor="middle" fill="#222" stroke="#fff" stroke-width="1.6" paint-order="stroke">${t}</text>`;
+    });
+    (o.piezas || []).forEach((p, k) => {
+      const c = p.cel;
+      s += `<circle cx="${c[0] * 24 + 5 + (k % 2) * 14}" cy="${c[1] * 24 + 5 + Math.floor(k / 2) * 14}" r="4" fill="${p.color}" stroke="${p.turno ? "#f1c40f" : "#fff"}" stroke-width="${p.turno ? 1.6 : 0.9}"/>`;
     });
     return s + "</svg>";
   }
+  function numerosRuta(r) {
+    const n = r.camino.map((c, i) => [c, i === 0 ? "INICIO" : i === r.camino.length - 1 ? "META" : i]);
+    r.atajos.forEach((a) => a.celdas.forEach((c) => n.push([c, "atajo"])));
+    return n;
+  }
 
-  function conteo(r) {
-    const n = {};
-    Object.values(tipos(r)).forEach((tp) => (n[tp] = (n[tp] || 0) + 1));
-    return el("div", { class: "cuenta" }, Object.entries(n).map(([tp, k]) => el("span", { html: `<i style="display:inline-block;width:12px;height:12px;border-radius:3px;background:${COLOR[tp]};vertical-align:-1px"></i> ${NOMBRE[tp]}: <b>${k}</b>` })),
-      el("span", { html: `Total: <b>${r.camino.length + r.extra.length}</b> de 36 fichas` }));
+  function conteo(sol) {
+    return el("div", { class: "cuenta" },
+      Object.keys(TIPOS).filter((t) => sol.usoTipos[t]).map((t) =>
+        el("span", { class: sol.usoTipos[t] > DISP[t] ? "pasa" : "", html: `${TIPOS[t]}: <b>${sol.usoTipos[t]}</b> de ${DISP[t]}` })),
+      el("span", { html: `Total: <b>${Object.values(sol.usoTipos).reduce((a, b) => a + b, 0)}</b> de 36 fichas` }));
+  }
+  function listaFichas(sol) {
+    if (!sol.ok) return null;
+    const n = {}; sol.asig.forEach((v) => (n[v.i] = (n[v.i] || 0) + 1));
+    return el("div", { class: "cuenta" }, Object.entries(n).map(([i, k]) => el("span", { html: `<i style="display:inline-block;width:12px;height:12px;border-radius:3px;background:${FICHAS[i].c};vertical-align:-1px"></i> ${FICHAS[i].n}: <b>${k}</b> de ${FICHAS[i].k}` })));
   }
 
   // ── Pestañas ──
-  const TABS = { fichas: "🧩 Las fichas", armar: "🛠️ Armar el tablero", robot: "🤖 Cómo se mueve el robot", jugar: "🎲 Jugar" };
+  const TABS = { fichas: "🧩 Las fichas", armar: "🛠️ Armar el tablero", disenar: "✏️ Diseña tu recorrido", robot: "🤖 Cómo se mueve el robot", jugar: "🎲 Jugar" };
   let tab = "fichas";
   function mostrar() {
     const t = document.getElementById("tabs");
     t.innerHTML = "";
-    Object.entries(TABS).forEach(([k, txt]) => t.append(el("button", { class: tab === k ? "active" : "", onclick: () => { tab = k; mostrar(); } }, txt)));
+    Object.entries(TABS).forEach(([k, txt]) => t.append(el("button", { class: tab === k ? "active" : "", onclick: () => { tab = k; mostrar(); window.scrollTo(0, 0); } }, txt)));
     app.innerHTML = "";
-    ({ fichas, armar, robot, jugar })[tab]();
-    window.scrollTo(0, 0);
+    ({ fichas, armar, disenar, robot, jugar })[tab]();
   }
 
   function fichas() {
+    const grupos = Object.keys(TIPOS).flatMap((t) => [
+      el("div", { class: "grupo", text: `${TIPOS[t]} (${DISP[t]})` }),
+      el("div", { class: "fichas" }, FICHAS.filter((f) => f.tipo === t).map((f) => el("div", { class: "ficha" },
+        el("div", { html: `<svg viewBox="-16 -16 32 32">${svgFicha(f, f.lados, 0, 0, 0)}${svgPestanas(f, f.lados, 0, 0)}</svg>` }),
+        el("b", { text: `${f.n} ×${f.k}` }), el("small", { text: `${f.w} × ${f.h} cm` })))),
+    ]);
     app.append(
       el("div", { class: "tarjeta" },
         el("h2", { text: "🧩 Qué trae el juego: 36 fichas de 12 colores" }),
-        el("div", { class: "fichas" }, FICHAS.map(([n, c, w, h, k]) => el("div", { class: "ficha" },
-          el("div", { class: "cuadro", style: `width:${w * 2.4}px;height:${h * 2.4}px;background:${c}`, text: "×" + k }),
-          el("b", { text: n }), el("small", { text: `${w} × ${h} cm` }))))),
+        el("p", { class: "hint", text: "Los triángulos de color son pestañas (salen de la ficha) y los blancos son muescas (huecos). El triangulito blanco del centro apunta hacia arriba del logo." }),
+        grupos),
       el("div", { class: "tarjeta" },
-        el("h2", { text: "🔗 Cómo embonan: pestañas y muescas" }),
+        el("h2", { text: "🔗 Cómo embonan" }),
         el("ul", {},
-          el("li", { html: "Cada ficha tiene <b>pestañas</b> (triángulos que salen) y <b>muescas</b> (huecos con la misma forma). La pestaña de una ficha entra en la muesca de la siguiente, como un rompecabezas." }),
-          el("li", { html: "La pestaña mide <b>3 cm</b> de fondo, con lados de <b>7 cm</b> y <b>3.85 cm</b>." }),
-          el("li", { html: "La parte cuadrada de todas las fichas mide <b>24 × 24 cm</b>. Las que miden <b>27 cm</b> de un lado tienen una pestaña hacia ese lado; la de <b>24 × 30 cm</b> tiene dos (arriba y abajo)." }),
-          el("li", { html: "Ya armadas, <b>cada ficha ocupa un cuadro de 24 × 24 cm</b>. Por eso en el tablero de 240 × 120 cm caben <b>10 fichas a lo largo y 5 a lo ancho</b>." })),
-        el("div", { class: "aviso", html: "👀 Antes de armar, fíjate hacia qué lados tiene pestañas o muescas cada color: eso dice si la ficha sirve para seguir derecho, dar vuelta, dividir el camino o terminarlo." })));
+          el("li", { html: "La <b>pestaña</b> de una ficha entra en la <b>muesca</b> de la de al lado, como un rompecabezas. Dos pestañas o dos muescas juntas <b>no embonan</b>." }),
+          el("li", { html: "La pestaña mide <b>3 cm</b> de fondo, con lados de <b>7 cm</b> y <b>3.85 cm</b>. Por eso hay fichas de 27 cm (una pestaña) y de 30 cm (dos)." }),
+          el("li", { html: "Ya armadas, <b>cada ficha ocupa un cuadro de 24 × 24 cm</b>: en el tablero de 240 × 120 cm caben <b>10 a lo largo y 5 a lo ancho</b>." }),
+          el("li", { html: "Las fichas se pueden <b>girar</b> para que las pestañas queden hacia donde hacen falta (el logo queda de lado o de cabeza, y está bien)." })),
+        el("div", { class: "aviso", html: `📦 En total hay <b>${DISP.recta} rectas</b>, <b>${DISP.vuelta} vueltas</b>, <b>${DISP.T} uniones en T</b>, <b>${DISP.cruce} cruces</b> y <b>${DISP.final} finales</b>. Un recorrido no puede pedir más de las que hay.` })));
   }
 
   function armar() {
     const r = RUTAS[ruta];
+    const sol = SOLUCION[ruta] || (SOLUCION[ruta] = resolver(celdasDe(r)));
     app.append(
       el("div", { class: "tarjeta" },
         el("h2", { text: "🛠️ Paso a paso" }),
         el("div", { class: "pasos" },
           [["Extiende el tablero de 240 × 120 cm en el piso, en un lugar plano y sin tapetes.", 1],
-           ["Elige un recorrido de abajo y arma primero la ficha de <b>inicio</b> en su lugar.", 2],
-           ["Sigue el recorrido ficha por ficha: la pestaña de una entra en la muesca de la siguiente.", 3],
-           ["En las vueltas y uniones usa las fichas que tengan las pestañas o muescas hacia los lados correctos.", 4],
+           ["Elige un recorrido de abajo. Empieza por la ficha de <b>INICIO</b>.", 2],
+           ["Pon cada ficha del <b>color</b> que marca el dibujo, girada como indica su triangulito blanco.", 3],
+           ["Sigue el orden de los números: la pestaña de una entra en la muesca de la siguiente.", 4],
            ["Revisa que ninguna ficha se salga del tablero y que todas queden bien apretadas.", 5],
-           ["Prueba el robot: debe poder recorrer el camino sin que sus llantas pisen fuera.", 6]]
+           ["Prueba el robot: debe recorrer el camino sin que sus llantas pisen fuera.", 6]]
             .map(([t, n]) => el("div", { class: "paso", html: `<b class="n">${n}</b>${t}` })))),
       el("div", { class: "tarjeta" },
-        el("h2", { text: "🗺️ Recorridos sugeridos" }),
+        el("h2", { text: "🗺️ Recorridos que sí se pueden armar" }),
         el("div", { class: "rutas" }, Object.entries(RUTAS).map(([k, v]) => el("button", { class: ruta === k ? "active" : "", onclick: () => { ruta = k; mostrar(); } }, v.n))),
         el("p", { text: r.d }),
-        el("div", { html: svgRuta(r) }),
-        conteo(r),
-        el("p", { class: "hint", text: "Los números son los bloques del camino principal (los que cuentas con el dado). Los cuadros con borde punteado son atajos o el segundo camino." })),
+        el("div", { html: svgRecorrido(celdasDe(r), sol, { numeros: numerosRuta(r) }) }),
+        conteo(sol), listaFichas(sol),
+        el("p", { class: "hint", text: "Los números son los bloques del camino principal (los que cuentas con el dado). Los cuadros marcados «atajo» son el atajo o el segundo camino." })),
       el("div", { class: "tarjeta" },
-        el("h2", { text: "💡 Sobre los diseños con varios caminos cortos" }),
+        el("h2", { text: "💡 ¿Por qué no un camino que cubra todo el tablero?" }),
         el("ul", {},
-          el("li", { html: "Los caminos cortos (5 a 10 fichas) sirven para <b>practicar</b> a manejar el robot, pero para jugar con el dado se acaban muy rápido: con dos tiros de 6 ya llegaste." }),
-          el("li", { html: "Un <b>solo camino largo</b> que recorra todo el tablero hace el juego más emocionante y usa casi todas las fichas." }),
-          el("li", { html: "Los <b>atajos</b> o caminos que se dividen agregan decisiones: más vueltas son más difíciles de manejar, pero llegan antes." }),
-          el("li", { html: "Deja <b>espacio entre filas</b> (como en la serpiente): así, si el robot se sale, no cae por accidente en otra parte del camino." }))));
+          el("li", { html: `Solo hay <b>${DISP.recta} rectas</b>: un camino de lado a lado del tablero ya usa 8, así que una serpiente de 3 filas completas no se puede armar.` }),
+          el("li", { html: "Con <b>uniones en T</b> se agregan atajos que usan más fichas y hacen el juego más emocionante." }),
+          el("li", { html: "Los caminos cortos (5 a 10 fichas) sirven para <b>practicar</b> a manejar, pero con el dado se terminan en dos tiros." }),
+          el("li", { html: "Deja <b>espacio</b> entre tramos: si dos tramos se tocan, parecen unidos y el robot puede «brincar» de uno a otro." }))));
+  }
+
+  // ── Editor de recorridos ──
+  const E = { celdas: [] };
+  function disenar() {
+    const sol = E.celdas.length ? resolver(E.celdas) : null;
+    const tab = el("div", { html: svgRecorrido(E.celdas, sol, { editable: true }) });
+    tab.onclick = (e) => {
+      const t = e.target.closest("[data-c]");
+      if (!t) return;
+      const c = t.dataset.c.split(",").map(Number), k = E.celdas.findIndex((x) => clave(x) === clave(c));
+      if (k >= 0) E.celdas.splice(k, 1);
+      else if (E.celdas.length >= 36) return Tools.toast("Ya usaste las 36 fichas");
+      else E.celdas.push(c);
+      mostrar();
+    };
+    app.append(el("div", { class: "tarjeta" },
+      el("h2", { text: "✏️ Diseña tu recorrido" }),
+      el("p", { text: "Toca los cuadros del tablero para poner o quitar fichas. La app busca qué ficha va en cada lugar y te avisa si alcanzan y si embonan." }),
+      el("div", { class: "acciones" },
+        el("button", { onclick: () => { E.celdas = []; mostrar(); } }, "🗑 Empezar de nuevo"),
+        Object.entries(RUTAS).map(([k, v]) => el("button", { onclick: () => { E.celdas = celdasDe(v).map((c) => c.slice()); mostrar(); } }, "Cargar " + v.n.split(" (")[0]))),
+      tab,
+      sol ? [conteo(sol), el("div", { class: "aviso " + (sol.ok ? "bien" : "mal"), text: sol.ok ? "✅ ¡Sí se puede armar! Cada cuadro muestra el color de la ficha y hacia dónde va su logo." : "❌ " + sol.motivo }), listaFichas(sol)]
+        : el("p", { class: "hint", text: "Empieza tocando un cuadro." })));
   }
 
   function robot() {
@@ -223,38 +348,83 @@
           el("li", { html: "Si una llanta pisa fuera de las fichas, el robot <b>se salió del camino</b> y regresa a la ficha de inicio." }))),
       el("div", { class: "tarjeta" },
         el("h2", { text: "🎮 Un control fácil con 5 botones" }),
-        el("p", { text: "El control de botones amarillos funciona como el teclado ADKey de los tutoriales: cada botón da un número distinto en un pin analógico. Una buena forma de programarlo:" }),
+        el("p", { text: "El control de botones amarillos funciona como el teclado ADKey de los tutoriales: cada botón da un número distinto en un pin analógico. En el tutorial «La Ruta del Conocimiento: robot por bloques» lo programamos así:" }),
         el("div", { class: "control" },
           el("span"), el("div", { text: "▲ Avanza 1 bloque" }), el("span"),
           el("div", { text: "◀ Gira 90°" }), el("div", { text: "■ Alto" }), el("div", { text: "Gira 90° ▶" }),
           el("span"), el("div", { text: "▼ Atrás 1 bloque" }), el("span")),
-        el("div", { class: "aviso", html: "💡 Así, si el dado dice 3, el jugador aprieta <b>▲</b> tres veces. Es mucho más fácil que controlar el tiempo a mano y casi no se sale del camino." })),
+        el("div", { class: "aviso", html: "💡 Si el dado dice 3, el jugador aprieta <b>▲</b> tres veces. Es mucho más fácil que controlar el tiempo a mano y casi no se sale del camino." })),
       el("div", { class: "tarjeta" },
         el("h2", { text: "⏱️ Calibra tu robot" }),
-        el("p", { text: "Cada robot es distinto. Pon el robot sobre las fichas, prende los motores 1 segundo con el bloque «esperar» y mide con una regla cuánto avanzó. Haz lo mismo con una vuelta completa." }),
+        el("p", { text: "Cada robot es distinto. Pon el robot sobre las fichas, prende los motores 1 segundo con el bloque «esperar» y mide con una regla cuánto avanzó. Haz lo mismo con una vuelta completa. Usa los resultados en las variables tiempo_bloque y tiempo_giro del tutorial." }),
         calc,
         el("div", { class: "aviso", html: "🔋 Con las pilas bajas el robot avanza menos: vuelve a calibrar si notas que ya no llega al centro de la ficha. Y calibra <b>sobre las fichas</b>, no sobre otra mesa: el material cambia cuánto se resbalan las llantas." })));
   }
 
   // ── Jugar: dados y avance de cada equipo ──
   const COLORES_DADO = [["Gris", "#cfd5d3", "fácil"], ["Gris", "#cfd5d3", "fácil"], ["Azul cielo", "#0ea0e0", "medio"], ["Azul cielo", "#0ea0e0", "medio"], ["Azul marino", "#034a8a", "difícil"], ["Azul marino", "#034a8a", "difícil"]];
-  const PIEZAS = ["#e74c3c", "#9b59b6", "#f39c12", "#ecf0f1"];
-  const G = { equipos: [{ n: "Equipo 1", pos: 0 }, { n: "Equipo 2", pos: 0 }], turno: 0, num: null, color: null };
+  const PIEZAS = ["#e74c3c", "#9b59b6", "#f39c12", "#2ecc71"];
+  const MEJOR = "3dpit-ruta-mejor";
+  const nuevoEquipo = (n) => ({ n, ruta: RUTAS[ruta].camino.slice(), pos: 0, atajos: [] });
+  const G = { equipos: [nuevoEquipo("Equipo 1"), nuevoEquipo("Equipo 2")], turno: 0, num: null, color: null, unRobot: true, turnos: 0, fallos: 0 };
+  function reiniciar() { G.equipos = G.equipos.map((e) => nuevoEquipo(e.n)); G.turno = 0; G.num = G.color = null; G.turnos = 0; G.fallos = 0; }
+
+  // Atajos por los que el equipo pasará si avanza n bloques.
+  function atajosEnCamino(e, n) {
+    return RUTAS[ruta].atajos.map((a, i) => ({ a, i, idx: e.ruta.findIndex((c) => clave(c) === clave(a.desde)) }))
+      .filter((x) => !e.atajos.includes(x.i) && x.idx >= e.pos && x.idx < e.pos + n);
+  }
+  function tomarAtajo(e, x) {
+    const fin = e.ruta.findIndex((c) => clave(c) === clave(x.a.hasta));
+    e.ruta = [...e.ruta.slice(0, x.idx + 1), ...x.a.celdas, ...e.ruta.slice(fin)];
+    e.atajos.push(x.i);
+  }
+  const dondeEsta = (e) => {
+    const c = e.ruta[Math.min(e.pos, e.ruta.length - 1)], i = RUTAS[ruta].camino.findIndex((x) => clave(x) === clave(c));
+    return i === 0 ? "la ficha de INICIO" : i === RUTAS[ruta].camino.length - 1 ? "la META" : i > 0 ? `el bloque ${i}` : "el atajo";
+  };
 
   function jugar() {
     const r = RUTAS[ruta];
-    const meta = r.camino.length - 1;
-    const piezas = G.equipos.map((e, k) => ({ pos: e.pos, color: PIEZAS[k] }));
+    const sol = SOLUCION[ruta] || (SOLUCION[ruta] = resolver(celdasDe(r)));
+    const solo = G.equipos.length === 1;
+    const eq = G.equipos[G.turno];
+    const llego = (e) => e.pos >= e.ruta.length - 1;
+    const piezas = G.equipos.map((e, k) => ({ cel: e.ruta[Math.min(e.pos, e.ruta.length - 1)], color: PIEZAS[k], turno: k === G.turno }));
     const dNum = el("div", { class: "dado", text: G.num || "?" });
     const dCol = el("div", { class: "dado", style: G.color ? `background:${G.color[1]}` : "", text: G.color ? "" : "?" });
-    const eq = G.equipos[G.turno];
     const lanzar = () => {
       G.num = 1 + Math.floor(Math.random() * 6);
       G.color = COLORES_DADO[Math.floor(Math.random() * 6)];
       mostrar();
       app.querySelectorAll(".dado").forEach((d) => d.classList.add("rodando"));
     };
-    const siguiente = () => { G.turno = (G.turno + 1) % G.equipos.length; G.num = G.color = null; mostrar(); };
+    const pasarTurno = () => {
+      G.turnos++;
+      G.num = G.color = null;
+      if (!solo) do { G.turno = (G.turno + 1) % G.equipos.length; } while (llego(G.equipos[G.turno]) && !G.equipos.every(llego));
+      mostrar();
+    };
+    const avanzar = (x) => {
+      if (x) tomarAtajo(eq, x);
+      eq.pos = Math.min(eq.ruta.length - 1, eq.pos + G.num);
+      if (llego(eq)) {
+        Tools.toast(`🏆 ¡${eq.n} llegó a la meta!`);
+        if (solo) {
+          let m = {}; try { m = JSON.parse(localStorage.getItem(MEJOR) || "{}"); } catch (_) {}
+          if (!m[ruta] || G.turnos + 1 < m[ruta]) { m[ruta] = G.turnos + 1; try { localStorage.setItem(MEJOR, JSON.stringify(m)); } catch (_) {} }
+        }
+      }
+      pasarTurno();
+    };
+    let mejor = null; try { mejor = JSON.parse(localStorage.getItem(MEJOR) || "{}")[ruta]; } catch (_) {}
+
+    const opciones = G.color ? atajosEnCamino(eq, G.num) : [];
+    const botones = !G.color ? [el("button", { class: "primary", onclick: lanzar }, "🎲 Lanzar los dados")] : [
+      el("button", { class: "bien", onclick: () => avanzar(null) }, opciones.length ? "✅ Bien: sigue por el camino" : "✅ Contestó bien: avanza"),
+      ...opciones.map((x) => el("button", { class: "bien", onclick: () => avanzar(x) }, r.atajos.length === 1 && ruta === "dos" ? "✅ Bien: toma el camino de abajo" : `✅ Bien: toma el atajo ${x.i + 1}`)),
+      el("button", { class: "mal", onclick: () => { G.fallos++; pasarTurno(); } }, "❌ Contestó mal: no avanza"),
+      el("button", { onclick: () => { eq.ruta = r.camino.slice(); eq.pos = 0; eq.atajos = []; Tools.toast("🚫 Regresa a la ficha de inicio"); pasarTurno(); } }, "🚫 Se salió del camino")];
 
     app.append(
       el("div", { class: "tarjeta" },
@@ -264,33 +434,33 @@
           el("li", { html: "El jugador lanza el <b>dado de números</b>: dice cuántos bloques puede avanzar." }),
           el("li", { html: "Luego lanza el <b>dado de colores</b>: dice de qué nivel es la pregunta que debe contestar." }),
           el("li", { html: "Si contesta <b>bien</b>, maneja su robot y avanza esos bloques. Si contesta mal, no avanza." }),
-          el("li", { html: "Si el robot <b>se sale del camino</b>, regresa a la ficha de inicio (cuadro verde)." }))),
+          el("li", { html: "Si el robot <b>se sale del camino</b>, regresa a la ficha de inicio." })),
+        el("div", { class: "aviso", html: "🤖 <b>¿Solo tienen un robot?</b> Se turnan: antes de cada tiro, el juez pone el robot en la ficha donde va el equipo (la app lo indica). Y si juega <b>una sola persona o equipo</b>, el reto es llegar a la meta en el <b>menor número de turnos</b>." })),
       el("div", { class: "tarjeta" },
         el("h2", { text: "🎲 Dados y avance" }),
-        el("div", { class: "rutas" }, Object.entries(RUTAS).map(([k, v]) => el("button", { class: ruta === k ? "active" : "", onclick: () => { ruta = k; G.equipos.forEach((e) => (e.pos = 0)); mostrar(); } }, v.n))),
-        el("div", { html: svgRuta(r, piezas) }),
-        el("div", { class: "equipos" }, G.equipos.map((e, k) => {
+        el("div", { class: "rutas" }, Object.entries(RUTAS).map(([k, v]) => el("button", { class: ruta === k ? "active" : "", onclick: () => { ruta = k; reiniciar(); mostrar(); } }, v.n))),
+        el("div", { html: svgRecorrido(celdasDe(r), sol, { numeros: numerosRuta(r), piezas }) }),
+        el("div", { class: "equipos", style: "margin-top:10px" }, G.equipos.map((e, k) => {
           const nombre = el("input", { value: e.n, style: "flex:1;min-width:120px;background:transparent;color:var(--text);border:0;font-size:16px;font-weight:700" });
           nombre.oninput = () => (e.n = nombre.value);
           return el("div", { class: "equipo" + (k === G.turno ? " turno" : "") },
             el("span", { class: "pieza", style: `background:${PIEZAS[k]}` }), nombre,
-            el("span", { text: e.pos >= meta ? "🏆 ¡Llegó!" : `bloque ${e.pos}` }),
+            el("span", { text: llego(e) ? "🏆 ¡Llegó!" : dondeEsta(e) }),
             el("button", { title: "Mover a mano un bloque atrás", onclick: () => { e.pos = Math.max(0, e.pos - 1); mostrar(); } }, "−1"),
-            el("button", { title: "Mover a mano un bloque adelante", onclick: () => { e.pos = Math.min(meta, e.pos + 1); mostrar(); } }, "+1"));
+            el("button", { title: "Mover a mano un bloque adelante", onclick: () => { e.pos = Math.min(e.ruta.length - 1, e.pos + 1); mostrar(); } }, "+1"));
         })),
         el("div", { class: "acciones" },
-          G.equipos.length < 4 ? el("button", { onclick: () => { G.equipos.push({ n: "Equipo " + (G.equipos.length + 1), pos: 0 }); mostrar(); } }, "➕ Equipo") : null,
+          G.equipos.length < 4 ? el("button", { onclick: () => { G.equipos.push(nuevoEquipo("Equipo " + (G.equipos.length + 1))); mostrar(); } }, "➕ Equipo") : null,
           G.equipos.length > 1 ? el("button", { onclick: () => { G.equipos.pop(); G.turno = 0; mostrar(); } }, "➖ Equipo") : null,
-          el("button", { onclick: () => { if (confirm("¿Regresar a todos al inicio?")) { G.equipos.forEach((e) => (e.pos = 0)); G.turno = 0; G.num = G.color = null; mostrar(); } } }, "↺ Reiniciar")),
-        el("h2", { style: "margin-top:16px", text: `Turno: ${eq.n}` }),
-        el("div", { class: "dados" }, dNum, dCol),
-        G.color ? el("p", { style: "text-align:center", html: `Avanza <b>${G.num}</b> ${G.num === 1 ? "bloque" : "bloques"} si contesta bien una pregunta <b>${G.color[0].toLowerCase()}</b> (${G.color[2]}).` }) : null,
-        el("div", { class: "acciones", style: "justify-content:center" },
-          !G.color ? el("button", { class: "primary", onclick: lanzar }, "🎲 Lanzar los dados") : [
-            el("button", { class: "bien", onclick: () => { eq.pos = Math.min(meta, eq.pos + G.num); if (eq.pos >= meta) Tools.toast(`🏆 ¡${eq.n} llegó a la meta!`); siguiente(); } }, "✅ Contestó bien: avanza"),
-            el("button", { class: "mal", onclick: siguiente }, "❌ Contestó mal: no avanza"),
-            el("button", { onclick: () => { eq.pos = 0; Tools.toast("🚫 Regresa a la ficha de inicio"); siguiente(); } }, "🚫 Se salió del camino")]),
-        r.extra.length ? el("p", { class: "hint", text: "En los atajos o el segundo camino, usa −1 / +1 para acomodar la pieza del equipo donde quedó su robot." }) : null));
+          (() => { const c = el("input", { type: "checkbox" }); c.checked = G.unRobot; c.onchange = () => { G.unRobot = c.checked; mostrar(); }; return el("label", { class: "check" }, c, "Un solo robot para todos"); })(),
+          el("button", { onclick: () => { if (confirm("¿Regresar a todos al inicio?")) { reiniciar(); mostrar(); } } }, "↺ Reiniciar")),
+        solo ? el("div", { class: "robot", html: `🧑 Modo solitario · Turnos: <b>${G.turnos}</b> · Fallos: <b>${G.fallos}</b>${mejor ? ` · Mejor marca en este recorrido: <b>${mejor} turnos</b>` : ""}` }) : null,
+        G.equipos.every(llego) ? el("div", { class: "robot", html: "🏁 ¡Todos llegaron a la meta! Toca <b>↺ Reiniciar</b> para jugar otra vez." }) : [
+          el("h2", { style: "margin-top:16px", text: `Turno: ${eq.n}` }),
+          G.unRobot && !G.color ? el("div", { class: "robot", html: `🤖 Pon el robot en <b>${dondeEsta(eq)}</b>, mirando hacia donde sigue el camino.` }) : null,
+          el("div", { class: "dados" }, dNum, dCol),
+          G.color ? el("p", { style: "text-align:center", html: `Avanza <b>${G.num}</b> ${G.num === 1 ? "bloque" : "bloques"} si contesta bien una pregunta <b>${G.color[0].toLowerCase()}</b> (${G.color[2]}).` }) : null,
+          el("div", { class: "acciones", style: "justify-content:center" }, botones)]));
   }
 
   mostrar();
