@@ -28,6 +28,20 @@
     .chip.real { color: #ffd479; border-color: #7a6326; }
     .chip.ficcion { color: #9fe3ff; border-color: #2f6b80; }
     .chip.leido { color: var(--ok); border-color: #1f7a47; }
+    .chip.mx { color: #7ee2a8; border-color: #2c7a4b; }
+    .cuento .fila { display: flex; justify-content: space-between; align-items: flex-start; }
+    .cuento .num { font-size: 12px; color: var(--muted); }
+    .cuento.visto { opacity: .85; }
+    .progreso { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 12px 16px; margin-bottom: 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; }
+    .progreso .txt { font-weight: 700; }
+    .progreso .avance { flex: 1 1 200px; margin: 0; }
+    .progreso button { font-size: 15px; padding: 9px 16px; border-radius: 10px; }
+    .filtros { margin: 0 0 8px; }
+    .filtros .sep { width: 1px; height: 24px; background: var(--line); margin: 0 4px; }
+    input.buscar { flex: 1 1 260px; max-width: 420px; background: var(--panel-2); color: var(--text); border: 1px solid var(--line); border-radius: 999px; padding: 9px 16px; font-size: 15px; }
+    .siguiente { display: flex; align-items: center; gap: 12px; margin-top: 12px; padding: 12px; border: 1px dashed var(--accent-2); border-radius: 10px; cursor: pointer; background: none; color: var(--text); font: inherit; text-align: left; width: 100%; }
+    .siguiente:hover { background: var(--panel-2); }
+    .siguiente .icono { font-size: 30px; }
 
     /* ── Lector ── */
     .lector { max-width: 860px; margin: 0 auto; }
@@ -91,6 +105,9 @@
 
   <script src="tools.js"></script>
   <script src="cuentos-data.js"></script>
+  <script src="cuentos-data-2.js"></script>
+  <script src="cuentos-data-3.js"></script>
+  <script src="cuentos-data-4.js"></script>
   <script>
     const app = document.getElementById("app");
     const portada = document.getElementById("portada");
@@ -182,30 +199,76 @@
     }
 
     // ── Lista de cuentos ──
-    let filtro = "todos";
+    const AREAS = {
+      electricidad: "⚡ Electricidad", programacion: "💻 Programación", comunicacion: "📡 Comunicación",
+      espacio: "🚀 Espacio", sensores: "🤖 Sensores y robots",
+    };
+    // Filtros de la lista (se conservan al volver de un cuento).
+    const F = { tipo: "todos", area: "", buscar: "", mx: false, sinLeer: false };
+    const sinAcentos = (t) => t.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+    function filtrados() {
+      const q = sinAcentos(F.buscar.trim());
+      return CUENTOS.filter((c) =>
+        (F.tipo === "todos" || c.tipo === F.tipo) &&
+        (!F.area || c.area === F.area) &&
+        (!F.mx || c.mx) &&
+        (!F.sinLeer || !leidos[c.id]) &&
+        (!q || sinAcentos(c.titulo + " " + c.tema + " " + c.resumen).includes(q)));
+    }
+    // Un cuento sin leer al azar (si ya leyó todos, cualquiera).
+    function sorpresa(lista) {
+      const pend = lista.filter((c) => !leidos[c.id]);
+      const de = pend.length ? pend : lista;
+      return de[Math.floor(Math.random() * de.length)];
+    }
+
     function lista() {
       callar();
       portada.hidden = false;
       app.innerHTML = "";
-      const nombres = { todos: "Todos", real: "⭐ Historias reales", ficcion: "✨ Ficción" };
-      app.append(el("div", { class: "lista-wrap" },
-        el("div", { class: "barra" },
-          el("div", { class: "row filtros" }, Object.entries(nombres).map(([k, t]) =>
-            el("button", { class: filtro === k ? "active" : "", onclick: () => { filtro = k; lista(); } }, t))),
-          el("span", { class: "espacio" }),
-          el("span", { class: "hint", text: `Leídos: ${CUENTOS.filter((c) => leidos[c.id]).length} de ${CUENTOS.length}` })),
-        el("div", { class: "lista" }, CUENTOS.filter((c) => filtro === "todos" || c.tipo === filtro).map((c) => {
+      const nLeidos = CUENTOS.filter((c) => leidos[c.id]).length;
+      const tarjetas = el("div", { class: "lista" });
+      const cuenta = el("span", { class: "hint" });
+      function pintar() {
+        const ls = filtrados();
+        cuenta.textContent = ls.length === CUENTOS.length ? `${ls.length} cuentos` : `Mostrando ${ls.length} de ${CUENTOS.length}`;
+        tarjetas.innerHTML = "";
+        if (!ls.length) tarjetas.append(el("p", { class: "hint", text: "No hay cuentos con esos filtros." }));
+        ls.forEach((c) => {
           const l = leidos[c.id];
-          return el("button", { class: "cuento", onclick: () => leer(c) },
-            el("div", { class: "icono", text: c.icono }),
+          tarjetas.append(el("button", { class: "cuento" + (l ? " visto" : ""), onclick: () => leer(c) },
+            el("div", { class: "fila" }, el("span", { class: "icono", text: c.icono }), el("span", { class: "num", text: "N.º " + (CUENTOS.indexOf(c) + 1) })),
             el("h3", { text: c.titulo }),
             el("p", { text: c.resumen }),
             el("div", { class: "chips" },
               etiquetaTipo(c),
-              el("span", { class: "chip", text: c.tema }),
+              c.mx ? el("span", { class: "chip mx", text: "🦅 México" }) : null,
+              el("span", { class: "chip", text: AREAS[c.area] || c.tema }),
               el("span", { class: "chip", text: `⏱ ${c.minutos} min` }),
-              l ? el("span", { class: "chip leido", text: `✓ ${l.aciertos}/${l.total}` }) : null));
-        }))));
+              l ? el("span", { class: "chip leido", text: `✓ ${l.aciertos}/${l.total}` }) : null)));
+        });
+      }
+      const boton = (texto, activo, accion) => el("button", { class: activo ? "active" : "", onclick: () => { accion(); lista(); } }, texto);
+      const caja = el("input", { type: "search", class: "buscar", placeholder: "🔎 Buscar un cuento…", value: F.buscar });
+      caja.oninput = () => { F.buscar = caja.value; pintar(); };
+      app.append(el("div", { class: "lista-wrap" },
+        el("div", { class: "progreso" },
+          el("div", { class: "txt", text: `📖 Has leído ${nLeidos} de ${CUENTOS.length} cuentos` }),
+          el("div", { class: "avance" }, el("div", { style: `width:${Math.round((nLeidos / CUENTOS.length) * 100)}%` })),
+          el("button", { class: "primary", onclick: () => leer(sorpresa(filtrados().length ? filtrados() : CUENTOS)) }, "🎲 Sorpréndeme")),
+        el("div", { class: "barra filtros" },
+          boton("Todos", F.tipo === "todos", () => (F.tipo = "todos")),
+          boton("⭐ Reales", F.tipo === "real", () => (F.tipo = "real")),
+          boton("✨ Ficción", F.tipo === "ficcion", () => (F.tipo = "ficcion")),
+          el("span", { class: "sep" }),
+          boton("🦅 De México", F.mx, () => (F.mx = !F.mx)),
+          boton("📕 Sin leer", F.sinLeer, () => (F.sinLeer = !F.sinLeer))),
+        el("div", { class: "barra filtros" },
+          boton("Todas las áreas", !F.area, () => (F.area = "")),
+          Object.entries(AREAS).map(([k, t]) => boton(t, F.area === k, () => (F.area = F.area === k ? "" : k)))),
+        el("div", { class: "barra" }, caja, el("span", { class: "espacio" }), cuenta),
+        tarjetas));
+      pintar();
       window.scrollTo(0, 0);
     }
 
@@ -305,6 +368,12 @@
             el("div", { class: "acciones" },
               el("button", { onclick: () => leer(c) }, "📖 Leer otra vez"),
               el("button", { class: "primary", onclick: lista }, "Otros cuentos")));
+          // Siguiente cuento sugerido: uno sin leer de la misma área (o cualquiera sin leer).
+          const pend = CUENTOS.filter((o) => o !== c && !leidos[o.id]);
+          const sig = pend.find((o) => o.area === c.area) || pend[0];
+          if (sig) final.append(el("button", { class: "siguiente", onclick: () => leer(sig) },
+            el("span", { class: "icono", text: sig.icono }),
+            el("span", {}, el("div", { class: "hint", text: "Te sugerimos leer:" }), el("b", { text: sig.titulo }))));
           final.scrollIntoView({ behavior: "smooth", block: "start" });
         }
 

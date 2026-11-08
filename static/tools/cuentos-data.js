@@ -8,10 +8,13 @@
      fin:      true en la última escena
    preguntas: comprensión lectora { p, o: [opciones], c: índice correcto, e: explicación }
    palabras:  [palabra, significado]
-   tipo:      "real" (pasó de verdad) o "ficcion" */
+   tipo:      "real" (pasó de verdad) o "ficcion"
+   area:      electricidad | programacion | comunicacion | espacio | sensores
+   mx:        true si es una historia real de México
+   Más cuentos en cuentos-data-2.js, -3.js y -4.js (CUENTOS.push). */
 const CUENTOS = [
   {
-    id: "bicho", icono: "🦋", tipo: "real", tema: "Depurar programas", minutos: 5,
+    id: "bicho", area: "programacion", icono: "🦋", tipo: "real", tema: "Depurar programas", minutos: 5,
     titulo: "El bicho del relevador 70",
     resumen: "Una computadora gigante empieza a fallar y su equipo, con Grace Hopper, busca el error pieza por pieza.",
     relacion: "Tutorial del relevador",
@@ -86,7 +89,7 @@ const CUENTOS = [
   },
 
   {
-    id: "ada", icono: "⚙️", tipo: "real", tema: "Algoritmos y ciclos", minutos: 5,
+    id: "ada", area: "programacion", icono: "⚙️", tipo: "real", tema: "Algoritmos y ciclos", minutos: 5,
     titulo: "Ada y la máquina que nunca se construyó",
     resumen: "En 1843, antes de que existieran las computadoras, una joven escribió un programa para una máquina de engranes.",
     relacion: "Bloques de repetir",
@@ -161,7 +164,7 @@ const CUENTOS = [
   },
 
   {
-    id: "viento", icono: "🌬️", tipo: "real", tema: "Energía y generadores", minutos: 6,
+    id: "viento", area: "electricidad", icono: "🌬️", tipo: "real", tema: "Energía y generadores", minutos: 6,
     titulo: "El niño que atrapó el viento",
     resumen: "Sin dinero y sin escuela, un niño de Malawi construye un molino con chatarra para darle luz a su casa.",
     relacion: "Motores DC (un motor también puede generar)",
@@ -242,7 +245,7 @@ const CUENTOS = [
   },
 
   {
-    id: "semaforo", icono: "🚦", tipo: "ficcion", tema: "Secuencias y tiempos", minutos: 4,
+    id: "semaforo", area: "programacion", icono: "🚦", tipo: "ficcion", tema: "Secuencias y tiempos", minutos: 4,
     titulo: "Pit y el semáforo despistado",
     resumen: "Los carritos de juguete chocan en la maqueta de la escuela. El robot Pit tiene que descubrir qué le pasa al semáforo.",
     relacion: "Tutorial del semáforo",
@@ -319,7 +322,7 @@ const CUENTOS = [
   },
 
   {
-    id: "planta", icono: "🌱", tipo: "ficcion", tema: "Sensores analógicos", minutos: 5,
+    id: "planta", area: "sensores", icono: "🌱", tipo: "ficcion", tema: "Sensores analógicos", minutos: 5,
     titulo: "La planta que aprendió a pedir agua",
     resumen: "Valeria quiere que la planta de su abuela avise cuando tiene sed. ¿Qué sensor usará?",
     relacion: "Sensores analógicos y la perilla",
@@ -404,7 +407,7 @@ const CUENTOS = [
   },
 
   {
-    id: "marte", icono: "🚙", tipo: "real", tema: "Robots y frecuencias", minutos: 5,
+    id: "marte", area: "espacio", icono: "🚙", tipo: "real", tema: "Robots y frecuencias", minutos: 5,
     titulo: "El robot que se cantó «Feliz cumpleaños» en Marte",
     resumen: "Curiosity está tan lejos que nadie puede manejarlo en tiempo real. Al cumplir un año en Marte, hizo algo sorprendente.",
     relacion: "Carrito esquiva obstáculos y buzzer",
@@ -470,7 +473,7 @@ const CUENTOS = [
   },
 
   {
-    id: "hedy", icono: "🎹", tipo: "real", tema: "Comunicación inalámbrica", minutos: 5,
+    id: "hedy", area: "comunicacion", icono: "🎹", tipo: "real", tema: "Comunicación inalámbrica", minutos: 5,
     titulo: "La actriz que inventó saltar de frecuencia",
     resumen: "Una estrella de cine y un pianista inventan una forma secreta de mandar señales de radio. Hoy la usa el Bluetooth.",
     relacion: "Bluetooth y comunicación inalámbrica",
@@ -545,7 +548,7 @@ const CUENTOS = [
   },
 
   {
-    id: "internet", icono: "💻", tipo: "real", tema: "Redes e Internet", minutos: 5,
+    id: "internet", area: "comunicacion", icono: "💻", tipo: "real", tema: "Redes e Internet", minutos: 5,
     titulo: "LO: el primer mensaje de Internet",
     resumen: "En 1969 dos computadoras muy lejanas intentan hablarse por primera vez. El mensaje sale... a medias.",
     relacion: "WiFi y comunicación por red",
@@ -613,7 +616,7 @@ const CUENTOS = [
   },
 
   {
-    id: "apolo", icono: "🌕", tipo: "real", tema: "Prioridades y errores", minutos: 5,
+    id: "apolo", area: "espacio", icono: "🌕", tipo: "real", tema: "Prioridades y errores", minutos: 5,
     titulo: "Alarma 1202: aterrizar en la Luna",
     resumen: "Faltan minutos para tocar la Luna y la computadora empieza a dar alarmas. ¿Abortan la misión?",
     relacion: "Programas que hacen varias cosas a la vez",
@@ -682,7 +685,7 @@ const CUENTOS = [
   },
 
   {
-    id: "camarena", icono: "📺", tipo: "real", tema: "Colores y luz (RGB)", minutos: 5,
+    id: "camarena", area: "comunicacion", mx: true, icono: "📺", tipo: "real", tema: "Colores y luz (RGB)", minutos: 5,
     titulo: "El joven mexicano que le dio color a la tele",
     resumen: "En Guadalajara, un muchacho curioso arma radios con piezas viejas y termina inventando la televisión a color.",
     relacion: "LED RGB y NeoPixel",
@@ -755,7 +758,7 @@ const CUENTOS = [
   },
 
   {
-    id: "morse", icono: "🔦", tipo: "ficcion", tema: "Código Morse y tiempos", minutos: 5,
+    id: "morse", area: "comunicacion", icono: "🔦", tipo: "ficcion", tema: "Código Morse y tiempos", minutos: 5,
     titulo: "El mensaje secreto entre dos ventanas",
     resumen: "Sofía y su amigo Mateo viven frente a frente. Sin celular, inventan cómo mandarse mensajes con un LED.",
     relacion: "LED y bloques de esperar",
@@ -832,7 +835,7 @@ const CUENTOS = [
   },
 
   {
-    id: "alarma", icono: "🚨", tipo: "ficcion", tema: "Sensores y condiciones", minutos: 5,
+    id: "alarma", area: "sensores", icono: "🚨", tipo: "ficcion", tema: "Sensores y condiciones", minutos: 5,
     titulo: "¿Quién se come mis galletas?",
     resumen: "Alguien saca galletas del cajón de Leo cada tarde. Con un sensor ultrasónico y un buzzer, Leo arma una trampa.",
     relacion: "Sensor ultrasónico y buzzer",
@@ -909,7 +912,7 @@ const CUENTOS = [
   },
 
   {
-    id: "neri", icono: "🌮", tipo: "real", tema: "Satélites y comunicación", minutos: 5,
+    id: "neri", area: "espacio", mx: true, icono: "🌮", tipo: "real", tema: "Satélites y comunicación", minutos: 5,
     titulo: "Tortillas en el espacio",
     resumen: "En 1985 un ingeniero de Guerrero se convierte en el primer astronauta mexicano... y se lleva tortillas a la nave.",
     relacion: "Comunicación inalámbrica (WiFi y Bluetooth)",
@@ -977,7 +980,7 @@ const CUENTOS = [
   },
 
   {
-    id: "papalote", icono: "🪁", tipo: "real", tema: "Electricidad y seguridad", minutos: 5,
+    id: "papalote", area: "electricidad", icono: "🪁", tipo: "real", tema: "Electricidad y seguridad", minutos: 5,
     titulo: "Un papalote en la tormenta",
     resumen: "Benjamin Franklin sospecha que los rayos son electricidad. Para probarlo, sale a volar un papalote en plena tormenta.",
     relacion: "Voltaje y cuidados con la electricidad",
@@ -1036,7 +1039,7 @@ const CUENTOS = [
   },
 
   {
-    id: "volta", icono: "🔋", tipo: "real", tema: "Pilas y voltaje", minutos: 5,
+    id: "volta", area: "electricidad", icono: "🔋", tipo: "real", tema: "Pilas y voltaje", minutos: 5,
     titulo: "Ranas, metales y la primera pila",
     resumen: "Unas patas de rana se mueven solas y dos científicos discuten por qué. La respuesta fue la primera pila del mundo.",
     relacion: "Voltaje, pilas y la placa ESP32",
@@ -1102,7 +1105,7 @@ const CUENTOS = [
   },
 
   {
-    id: "katherine", icono: "🧮", tipo: "real", tema: "Revisar resultados", minutos: 5,
+    id: "katherine", area: "espacio", icono: "🧮", tipo: "real", tema: "Revisar resultados", minutos: 5,
     titulo: "Que la revise ella",
     resumen: "Un astronauta está listo para dar vueltas a la Tierra, pero antes pide algo: que una matemática revise las cuentas de la computadora.",
     relacion: "Probar y revisar tus programas",
@@ -1163,7 +1166,7 @@ const CUENTOS = [
   },
 
   {
-    id: "loteria", icono: "🎴", tipo: "ficcion", tema: "Números al azar y listas", minutos: 5,
+    id: "loteria", area: "programacion", icono: "🎴", tipo: "ficcion", tema: "Números al azar y listas", minutos: 5,
     titulo: "¡Lotería! en la posada",
     resumen: "El que canta la lotería se quedó sin voz en plena posada. Majo y su primo programan la placa para que la cante.",
     relacion: "Números al azar, listas y buzzer",
@@ -1241,7 +1244,7 @@ const CUENTOS = [
   },
 
   {
-    id: "huerto", icono: "🥬", tipo: "ficcion", tema: "Horarios y relevador", minutos: 5,
+    id: "huerto", area: "sensores", icono: "🥬", tipo: "ficcion", tema: "Horarios y relevador", minutos: 5,
     titulo: "El huerto que se inundó",
     resumen: "La secundaria arma un riego automático para su huerto. El primer día, ¡el agua no deja de salir!",
     relacion: "Reloj RTC y relevador",
