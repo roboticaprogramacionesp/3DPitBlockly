@@ -91,10 +91,10 @@
   };
 
   // ── Tarjetas blancas ──
-  // El juego trae 6 tarjetas y 10 vasos en blanco. Cada bandera nueva usa
+  // El juego trae 10 tarjetas y 10 vasos en blanco. Cada bandera nueva usa
   // una tarjeta y un vaso; cada reto también (su vaso lleva el ícono del
-  // reto). Como cada una lleva su vaso, las tarjetas se acaban primero.
-  const TARJETAS_BLANCAS = 6;
+  // reto), así que alcanzan para 10 banderas o retos nuevos.
+  const TARJETAS_BLANCAS = 10;
   const VASOS_BLANCOS = 10;
   const PATRONES = {
     v3: (c) => `<rect width="10" height="20" fill="${c[0]}"/><rect x="10" width="10" height="20" fill="${c[1]}"/><rect x="20" width="10" height="20" fill="${c[2]}"/>`,
@@ -270,7 +270,7 @@
         el("ul", {},
           el("li", { html: "<b>🏳️ Banderas nuevas:</b> una tarjeta y un vaso con la bandera. Pueden ser de otros países o inventadas, ¡como la bandera de tu escuela!" }),
           el("li", { html: "<b>⚡ Tarjetas de reto:</b> una tarjeta y un vaso con el ícono del reto. Cuando sale la tarjeta, el robot va a ese vaso, lo saca <b>y además</b> cumple el reto (sonar el buzzer, saludar con el servo…). Para programarlo, mira los retos del tutorial <b>A por la Bandera</b>." })),
-        el("p", { class: "hint", text: `Cada tarjeta nueva lleva su vaso: al usar las ${TARJETAS_BLANCAS} tarjetas te quedan ${VASOS_BLANCOS - TARJETAS_BLANCAS} vasos blancos de sobra.` }),
+        el("p", { class: "hint", text: "Cada tarjeta nueva lleva su vaso, así que alcanzan para 10 banderas o retos nuevos." }),
         el("p", { class: "contador" + (lleno || sinVasos ? " lleno" : ""), text: `Usadas: ${tarjetasUsadas()} de ${TARJETAS_BLANCAS} tarjetas · ${vasosUsados()} de ${VASOS_BLANCOS} vasos` })),
       el("div", { class: "tarjeta" },
         el("h2", { text: "🏳️ Crea una bandera" }),
