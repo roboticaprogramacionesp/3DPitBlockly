@@ -1003,7 +1003,7 @@ var TUTORIAL_EXTRAS = {
       ["Haz que el buzzer haga <b>bip</b> cada vez que termina un bloque, para poder contarlos.", "Dentro de <em>avanzar_bloque</em>, después de <em>alto</em>, toca una nota corta."]
     ],
     quiz: [
-      ["¿Cuánto debe avanzar el robot con un apretón de ▲?", ["Hasta que lo sueltes", "1 metro", "24 cm, un bloque"], 2, "Cada bloque del tablero mide 24 × 24 cm."],
+      ["¿Cuánto debe avanzar el robot con un apretón de ▲?", ["Hasta que lo sueltes", "1 metro", "24 cm, un bloque"], 2, "Cada ficha armada ocupa un cuadro de 24 × 24 cm."],
       ["¿Para qué sirve la variable tiempo_bloque?", ["Para ajustar cuánto tiempo avanza el robot en cada bloque", "Para contar los puntos", "Para el color del dado"], 0, "Cambias un solo número y todos los avances se ajustan."],
       ["¿Por qué hay una espera de 0.3 s al final del ciclo?", ["Para que el robot descanse", "Para que un apretón cuente una sola vez", "Para ahorrar pila"], 1, "Sin la espera, mantener el dedo un poquito haría avanzar varios bloques."]
     ]

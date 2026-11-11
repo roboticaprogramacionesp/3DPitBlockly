@@ -58,7 +58,7 @@
 <main>
   <a class="back" href="index.html">⬅ Herramientas</a>
   <h1>🧩 La Ruta del Conocimiento</h1>
-  <p class="subtitle">Cómo armar el tablero con las fichas, cómo debe moverse el robot y cómo se juega con los dados.</p>
+  <p class="subtitle">Cómo armar el recorrido con las fichas en el piso, cómo debe moverse el robot y cómo se juega con los dados.</p>
   <div class="tabs" id="tabs"></div>
   <div id="app"></div>
 </main>
@@ -168,7 +168,7 @@
     },
     // Caminos cortos para practicar a manejar (diseños del docente).
     recta: {
-      n: "➖ Recta (10)", corto: true, d: "Para empezar: ir derecho de un lado al otro del tablero sin salirse.",
+      n: "➖ Recta (10)", corto: true, d: "Para empezar: ir derecho de un lado al otro del espacio sin salirse.",
       camino: [[0, 2], [1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2], [9, 2]], atajos: [],
     },
     escalon: {
@@ -265,7 +265,7 @@
   }
 
   // ── Pestañas ──
-  const TABS = { fichas: "🧩 Las fichas", armar: "🛠️ Armar el tablero", disenar: "✏️ Diseña tu recorrido", robot: "🤖 Cómo se mueve el robot", jugar: "🎲 Jugar" };
+  const TABS = { fichas: "🧩 Las fichas", armar: "🛠️ Armar el recorrido", disenar: "✏️ Diseña tu recorrido", robot: "🤖 Cómo se mueve el robot", jugar: "🎲 Jugar" };
   let tab = "fichas";
   function mostrar() {
     const t = document.getElementById("tabs");
@@ -292,7 +292,7 @@
         el("ul", {},
           el("li", { html: "La <b>pestaña</b> de una ficha entra en la <b>muesca</b> de la de al lado, como un rompecabezas. Dos pestañas o dos muescas juntas <b>no embonan</b>." }),
           el("li", { html: "La pestaña mide <b>3 cm</b> de fondo, con lados de <b>7 cm</b> y <b>3.85 cm</b>. Por eso hay fichas de 27 cm (una pestaña) y de 30 cm (dos)." }),
-          el("li", { html: "Ya armadas, <b>cada ficha ocupa un cuadro de 24 × 24 cm</b>: en el tablero de 240 × 120 cm caben <b>10 a lo largo y 5 a lo ancho</b>." }),
+          el("li", { html: "Ya armadas, <b>cada ficha ocupa un cuadro de 24 × 24 cm</b>: en un espacio de 240 × 120 cm (lo que mide el tablero de A por la Bandera) caben <b>10 a lo largo y 5 a lo ancho</b>." }),
           el("li", { html: "Las fichas se pueden <b>girar</b> para que las pestañas queden hacia donde hacen falta (el logo queda de lado o de cabeza, y está bien)." })),
         el("div", { class: "aviso", html: `📦 En total hay <b>${DISP.recta} rectas</b>, <b>${DISP.vuelta} vueltas</b>, <b>${DISP.T} uniones en T</b>, <b>${DISP.cruce} cruces</b> y <b>${DISP.final} finales</b>. Un recorrido no puede pedir más de las que hay.` })));
   }
@@ -304,11 +304,11 @@
       el("div", { class: "tarjeta" },
         el("h2", { text: "🛠️ Paso a paso" }),
         el("div", { class: "pasos" },
-          [["Extiende el tablero de 240 × 120 cm en el piso, en un lugar plano y sin tapetes.", 1],
+          [["Busca en el piso un espacio <b>plano y sin tapetes</b> de unos <b>240 × 120 cm</b>. También puedes armarlo encima del <b>tablero de A por la Bandera</b>, que mide eso.", 1],
            ["Elige un recorrido de abajo. Empieza por la ficha de <b>INICIO</b>.", 2],
            ["Pon cada ficha del <b>color</b> que marca el dibujo, girada como indica su triangulito blanco.", 3],
            ["Sigue el orden de los números: la pestaña de una entra en la muesca de la siguiente.", 4],
-           ["Revisa que ninguna ficha se salga del tablero y que todas queden bien apretadas.", 5],
+           ["Revisa que ninguna ficha se salga del espacio y que todas queden bien apretadas.", 5],
            ["Prueba el robot: debe recorrer el camino sin que sus llantas pisen fuera.", 6]]
             .map(([t, n]) => el("div", { class: "paso", html: `<b class="n">${n}</b>${t}` })))),
       el("div", { class: "tarjeta" },
@@ -319,9 +319,9 @@
         conteo(sol), listaFichas(sol),
         el("p", { class: "hint", text: "Los números son los bloques del camino principal (los que cuentas con el dado). Los cuadros marcados «atajo» son el atajo o el segundo camino." })),
       el("div", { class: "tarjeta" },
-        el("h2", { text: "💡 ¿Por qué no un camino que cubra todo el tablero?" }),
+        el("h2", { text: "💡 ¿Por qué no un camino que cubra todo el espacio?" }),
         el("ul", {},
-          el("li", { html: `Solo hay <b>${DISP.recta} rectas</b>: un camino de lado a lado del tablero ya usa 8, así que una serpiente de 3 filas completas no se puede armar.` }),
+          el("li", { html: `Solo hay <b>${DISP.recta} rectas</b>: un camino de lado a lado del espacio ya usa 8, así que una serpiente de 3 filas completas no se puede armar.` }),
           el("li", { html: "Con <b>uniones en T</b> se agregan atajos que usan más fichas y hacen el juego más emocionante." }),
           el("li", { html: "Los caminos cortos (5 a 10 fichas) sirven para <b>practicar</b> a manejar, pero con el dado se terminan en dos tiros." }),
           el("li", { html: "Deja <b>espacio</b> entre tramos: si dos tramos se tocan, parecen unidos y el robot puede «brincar» de uno a otro." }))));
@@ -343,7 +343,7 @@
     };
     app.append(el("div", { class: "tarjeta" },
       el("h2", { text: "✏️ Diseña tu recorrido" }),
-      el("p", { text: "Toca los cuadros del tablero para poner o quitar fichas. La app busca qué ficha va en cada lugar y te avisa si alcanzan y si embonan." }),
+      el("p", { text: "Toca los cuadros del espacio para poner o quitar fichas. La app busca qué ficha va en cada lugar y te avisa si alcanzan y si embonan." }),
       el("div", { class: "acciones" },
         el("button", { onclick: () => { E.celdas = []; mostrar(); } }, "🗑 Empezar de nuevo"),
         Object.entries(RUTAS).map(([k, v]) => el("button", { onclick: () => { E.celdas = celdasDe(v).map((c) => c.slice()); mostrar(); } }, "Cargar " + v.n.split(" (")[0]))),

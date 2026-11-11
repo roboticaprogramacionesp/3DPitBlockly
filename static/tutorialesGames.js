@@ -2151,7 +2151,7 @@
     steps: [
       {
         titulo: '¿Qué aprenderemos?',
-        desc: 'Vamos a programar el robot para jugar <b>La Ruta del Conocimiento</b>: cada vez que aprietas ▲ avanza <b>exactamente un bloque</b> (24 cm), y con ◀ ▶ gira <b>90°</b> en su lugar. Si el dado dice 3, aprietas ▲ tres veces.<br><br>Cómo armar el tablero, calibrar el robot y jugar con los dados está en <b>🛠 Herramientas › La Ruta del Conocimiento</b>. Si ya hiciste el tutorial <b>A por la Bandera</b>, el carrito es el mismo.',
+        desc: 'Vamos a programar el robot para jugar <b>La Ruta del Conocimiento</b>: cada vez que aprietas ▲ avanza <b>exactamente un bloque</b> (24 cm), y con ◀ ▶ gira <b>90°</b> en su lugar. Si el dado dice 3, aprietas ▲ tres veces.<br><br>Cómo armar el recorrido en el piso, calibrar el robot y jugar con los dados está en <b>🛠 Herramientas › La Ruta del Conocimiento</b>. Si ya hiciste el tutorial <b>A por la Bandera</b>, el carrito es el mismo.',
         highlightCat: null, bloque: null
       }
     ].concat(PASOS_CARRITO, [
