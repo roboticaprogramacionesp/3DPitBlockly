@@ -34,9 +34,9 @@ const CARTAS = [
   [29, "intermedio", 4, 3, "Decimales"], [30, "intermedio", 4, 0, "Decimales"],
   [31, "facil", 4, 3, "Decimales"], [32, "intermedio", 4, 2, "Decimales"],
   [33, "intermedio", 4, 1, "Fracciones"], [34, "intermedio", 4, 1, "Fracciones"],
-  [35, "intermedio", 4, null, "Fracciones"], [36, "dificil", 4, null, "Fracciones"],
-  [37, "dificil", 4, null, "Fracciones"], [38, "dificil", 4, null, "Fracciones"],
-  [39, "dificil", 4, null, "Fracciones"], [40, "dificil", 4, 1, "Área"],
+  [35, "intermedio", 4, 1, "Fracciones"], [36, "dificil", 4, 0, "Fracciones"],
+  [37, "dificil", 4, 3, "Fracciones"], [38, "dificil", 4, 2, "Fracciones"],
+  [39, "dificil", 4, 1, "Fracciones"], [40, "dificil", 4, 1, "Área"],
   [41, "intermedio", 4, 2, "Área"], [42, "facil", 4, 3, "Área"],
   [43, "intermedio", 4, 0, "Área"], [44, "intermedio", 4, 0, "Área"],
   [45, "intermedio", 4, 0, "Perímetro"], [46, "dificil", 4, 3, "Área"],
@@ -57,11 +57,6 @@ const CARTAS = [
 
 // Tarjetas con algún detalle (número → nota). Las de "null" quedan fuera del juego.
 const CARTAS_NOTAS = {
-  35: "La flecha marca 4 y ninguna opción vale 4 (10/2 = 5, 18/4 = 4.5, 5/4, 18/6 = 3).",
-  36: "7/10 + 3/5 + 5/6 = 64/30 (= 32/15), que no está entre las opciones.",
-  37: "13/5 + 4/5 − 25/8 = 11/40 m, que no está entre las opciones (y dice kg en vez de m).",
-  38: "4/5 litros menos 3/2 y 1/3 da negativo: se toma más jugo del que había.",
-  39: "13 × 2/3 − 20/6 − 7/4 = 43/12 kg, que no está entre las opciones.",
   40: "El texto dice 10 cm por lado pero el dibujo dice 30 m y las opciones están en m²; se toma 10 × 10 = 100.",
   41: "No dice cuánto mide de ancho; las opciones usan 45 m.",
   45: "Pregunta metros recorridos pero las opciones dicen m²; 6 × 26 × 5 = 780.",

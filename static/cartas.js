@@ -383,7 +383,8 @@ const Cartas = (() => {
     body.append(nav,
       el("div", { class: "carta-flip" }, el("img", { class: "carta-img", src: c.img, alt: `Carta ${n}` })),
       detalle, fb, rejilla,
-      el("p", { class: "ts-progress-txt", text: "🟢 Fácil · 🔵 Intermedio · 🟣 Difícil · tachadas: tienen un error" }));
+      el("p", { class: "ts-progress-txt", text: "🟢 Fácil · 🔵 Intermedio · 🟣 Difícil" +
+        (CARTAS.some((x) => x.correcta === null) ? " · tachadas: tienen un error" : "") }));
     pie(boton("← Niveles", "ts-btn-sec", abrir),
       respuesta !== null && typeof c.correcta !== "string"
         ? boton("▶ Jugar esta carta", "ts-btn-primary", () => jugar("todas", 0, [c], `Carta ${n}`)) : null);
