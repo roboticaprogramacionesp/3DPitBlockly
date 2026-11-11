@@ -43,6 +43,7 @@
     .acciones button { font-size: 15px; padding: 9px 14px; border-radius: 10px; flex: 1 1 auto; }
     button.bien { background: #1f6f45; border-color: var(--ok); }
     button.mal { background: #7a2e2e; border-color: #e74c3c; }
+    button.movido { background: #6b4e12; border-color: #f39c12; }
     table.res { width: 100%; border-collapse: collapse; font-size: 15px; }
     table.res td, table.res th { padding: 6px 8px; border-bottom: 1px solid var(--line); text-align: left; }
     input.texto { width: 100%; background: var(--panel-2); color: var(--text); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font-size: 15px; }
@@ -191,7 +192,8 @@
           el("li", { html: "Se colocan <b>9 vasos</b> sobre el tablero de 240 × 120 cm. El lugar de cada vaso es libre, pero deben quedar <b>repartidos por todo el tablero</b>." }),
           el("li", { html: "Las <b>tarjetas</b> (una por cada vaso que está en el tablero) se barajan y se ponen <b>boca abajo</b>." }),
           el("li", { html: "El robot empieza en el <b>cuadro rojo (Jugador)</b>, al centro de la orilla de arriba del tablero." }),
-          el("li", { html: "Un <b>juez</b> se encarga del cronómetro y de revisar cada vaso." }))),
+          el("li", { html: "Un <b>juez</b> se encarga del cronómetro y de revisar cada vaso." }),
+          el("li", { html: "Marca con cinta o plumón un <b>círculo</b> donde va cada vaso: así el juez sabe si un vaso se movió y a dónde regresarlo." }))),
       el("div", { class: "tarjeta" },
         el("h2", { text: "🎮 Cómo se juega" }),
         el("div", { class: "pasos" },
@@ -208,7 +210,9 @@
           el("li", { text: "El robot siempre inicia en el cuadro rojo." }),
           el("li", { text: "Las tarjetas se resuelven una por una y en orden: no se puede saltar ningún vaso." }),
           el("li", { text: "Los vasos deben estar repartidos por todo el tablero." }),
-          el("li", { html: "Si el robot retira un vaso <b>equivocado</b>, el juez regresa ese vaso a su lugar y el robot vuelve al <b>cuadro rojo</b>. El cronómetro sigue corriendo." })),
+          el("li", { html: "Si el robot retira un vaso <b>equivocado</b>, el juez regresa ese vaso a su lugar y el robot vuelve al <b>cuadro rojo</b>. El cronómetro sigue corriendo." }),
+          el("li", { html: "Si el robot solo <b>mueve</b> un vaso que no le toca (lo saca de su círculo o lo tira), el juez lo regresa a su lugar, el robot sigue desde donde está y se suman <b>5 segundos</b> al tiempo. Si solo lo roza y el vaso sigue dentro de su círculo, no pasa nada." })),
+        el("div", { class: "aviso", html: "💡 <b>Sugerencia:</b> evita mover un vaso que no corresponda, porque cada vaso incorrecto que muevas te agrega <b>5 segundos</b> más al tiempo. Maneja con calma cerca de los otros vasos." }),
         el("div", { class: "aviso", html: "💡 En <b>✏️ Tarjetas blancas</b> puedes crear banderas nuevas y tarjetas de reto. En <b>⏱️ Mesa del juez</b> eliges qué vasos van al tablero, la app los acomoda, baraja, lleva el cronómetro y guarda los tiempos." })));
   }
 
@@ -354,7 +358,10 @@
 
   // Estado de la partida (se conserva al cambiar de pestaña).
   // n: cuántos vasos van al tablero (9 por defecto).
-  const J = { n: 9, enJuego: Object.keys(FLAGS).filter((k) => k !== "it"), vasos: null, mazo: [], i: -1, retirados: new Set(), inicio: 0, fin: 0, timer: null, equipo: "", errores: 0, objetivo: null };
+  const J = { n: 9, enJuego: Object.keys(FLAGS).filter((k) => k !== "it"), vasos: null, mazo: [], i: -1, retirados: new Set(), inicio: 0, fin: 0, timer: null, equipo: "", errores: 0, movidos: 0, objetivo: null };
+  // Mover (sin sacar) un vaso que no corresponde suma 5 segundos al tiempo.
+  const CASTIGO_MOVIDO = 5000;
+  const tiempoJ = (hasta) => hasta - J.inicio + J.movidos * CASTIGO_MOVIDO;
 
   // Los vasos se reparten en una cuadrícula de zonas (3 filas), uno por zona.
   function acomodarVasos() {
@@ -403,7 +410,7 @@
     if (J.i >= J.mazo.length || J.vasos.every((v) => J.retirados.has(v.k))) {
       J.i = J.mazo.length;
       J.fin = Date.now();
-      resultados.push({ equipo: J.equipo || "Equipo " + (resultados.length + 1), ms: J.fin - J.inicio, errores: J.errores, vasos: J.n, fecha: new Date().toLocaleDateString("es-MX") });
+      resultados.push({ equipo: J.equipo || "Equipo " + (resultados.length + 1), ms: tiempoJ(J.fin), errores: J.errores, movidos: J.movidos, vasos: J.n, fecha: new Date().toLocaleDateString("es-MX") });
       guardarRes();
     }
     mostrar();
@@ -411,9 +418,9 @@
 
   function mesa() {
     if (!J.vasos) acomodarVasos();
-    const reloj = el("div", { class: "reloj", text: fmt(J.inicio ? (J.fin || Date.now()) - J.inicio : 0) });
+    const reloj = el("div", { class: "reloj", text: fmt(J.inicio ? tiempoJ(J.fin || Date.now()) : 0) });
     clearInterval(J.timer);
-    if (J.inicio && !J.fin) J.timer = setInterval(() => { reloj.textContent = fmt(Date.now() - J.inicio); }, 100);
+    if (J.inicio && !J.fin) J.timer = setInterval(() => { reloj.textContent = fmt(tiempoJ(Date.now())); }, 100);
 
     const actual = J.i >= 0 && J.i < J.mazo.length ? J.mazo[J.i] : null;
     const rActual = actual && reto(actual);
@@ -436,12 +443,13 @@
       onclick: () => {
         if (!J.vasos) return Tools.toast(`Elige exactamente ${J.n} vasos`);
         if (!J.mazo.length || J.fin) { J.mazo = revolver(J.enJuego); J.retirados = new Set(); }
-        J.i = 0; J.errores = 0; J.fin = 0; J.inicio = Date.now(); mostrar();
+        J.i = 0; J.errores = 0; J.movidos = 0; J.fin = 0; J.inicio = Date.now(); mostrar();
       },
     }, "▶ Empezar y sacar tarjeta"));
     if (jugando) {
       botones.push(el("button", { class: "bien", onclick: () => { J.retirados.add(actual); siguienteTarjeta(); } }, rActual ? "✅ Vaso y reto cumplidos" : "✅ Vaso correcto"));
       botones.push(el("button", { class: "mal", onclick: () => { J.errores++; Tools.toast("❌ Regresa el vaso a su lugar y el robot al cuadro rojo"); mostrar(); } }, "❌ Vaso equivocado"));
+      botones.push(el("button", { class: "movido", title: "El robot sacó de su círculo o tiró un vaso que no le tocaba", onclick: () => { J.movidos++; Tools.toast("⚠️ +5 s: regresa el vaso a su círculo; el robot sigue desde donde está"); mostrar(); } }, "⚠️ Vaso movido (+5 s)"));
     }
     if (jugando) botones.push(el("button", { onclick: () => { clearInterval(J.timer); J.inicio = J.fin = 0; J.i = -1; J.retirados = new Set(); mostrar(); } }, "⏹ Cancelar"));
 
@@ -493,7 +501,7 @@
               onclick: () => {
                 if (jugando) return;
                 if (!J.vasos) return Tools.toast(`Elige exactamente ${J.n} vasos`);
-                J.mazo = revolver(J.enJuego); J.i = -1; J.inicio = J.fin = 0; J.errores = 0; J.retirados = new Set();
+                J.mazo = revolver(J.enJuego); J.i = -1; J.inicio = J.fin = 0; J.errores = 0; J.movidos = 0; J.retirados = new Set();
                 mostrar();
                 app.querySelector(".mazo").classList.add("barajando");
               },
@@ -502,15 +510,17 @@
           el("h2", { text: "4️⃣ Cronómetro" }),
           nombre, reloj,
           el("div", { class: "acciones" }, botones),
-          J.errores ? el("p", { class: "hint", text: `Vasos equivocados: ${J.errores} (cada uno regresó al robot al cuadro rojo).` }) : null),
+          J.errores ? el("p", { class: "hint", text: `Vasos equivocados: ${J.errores} (cada uno regresó al robot al cuadro rojo).` }) : null,
+          J.movidos ? el("p", { class: "hint", text: `Vasos movidos: ${J.movidos} (+${J.movidos * 5} s, ya sumados al cronómetro).` }) : null),
         el("div", { class: "tarjeta" },
           el("h2", { text: "🏆 Tiempos" }),
           resultados.length
             ? el("table", { class: "res" },
-                el("tr", {}, el("th", { text: "#" }), el("th", { text: "Equipo" }), el("th", { text: "Tiempo" }), el("th", { text: "❌" })),
+                el("tr", {}, el("th", { text: "#" }), el("th", { text: "Equipo" }), el("th", { text: "Tiempo" }), el("th", { text: "❌" }), el("th", { text: "⚠️" })),
                 resultados.slice().sort((a, b) => a.ms - b.ms).map((r, i) =>
-                  el("tr", {}, el("td", { text: i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : i + 1 }), el("td", { text: r.equipo + (r.vasos && r.vasos !== 9 ? ` (${r.vasos} vasos)` : "") }), el("td", { text: fmt(r.ms) }), el("td", { text: r.errores }))))
+                  el("tr", {}, el("td", { text: i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : i + 1 }), el("td", { text: r.equipo + (r.vasos && r.vasos !== 9 ? ` (${r.vasos} vasos)` : "") }), el("td", { text: fmt(r.ms) }), el("td", { text: r.errores }), el("td", { text: r.movidos || 0 }))))
             : el("p", { class: "hint", text: "Aquí aparecerán los tiempos de cada equipo." }),
+          resultados.length ? el("p", { class: "hint", text: "❌ vasos equivocados · ⚠️ vasos movidos (el tiempo ya incluye +5 s por cada uno)." }) : null,
           resultados.length ? el("div", { class: "acciones" }, el("button", { onclick: () => { if (confirm("¿Borrar todos los tiempos?")) { resultados = []; guardarRes(); mostrar(); } } }, "🗑 Borrar tiempos")) : null))));
   }
 
