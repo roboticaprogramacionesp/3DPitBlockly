@@ -54,6 +54,7 @@
   // Única fuente de los elementos que un tutorial compartido puede resaltar.
   var BOTONES = {
     archivo: '#btnArchivo',
+    monitor: '#btnOpenSerialMonitor',
     conectar: '#btnConnection',
     ejecutar: '#btnRun',
     juego: '#btnGame',
@@ -283,6 +284,7 @@
         }
         if (p.boton) s.highlightElement = BOTONES[p.boton];
         if (p.accion === 'ejecutar') s.waitForAction = 'run';
+        if (p.boton === 'monitor') s.waitForAction = 'monitor';
         return s;
       })
     };
@@ -507,6 +509,7 @@
     }
     if (opc.placa) {
       pasos.push({ titulo: 'Guarda tu proyecto', texto: 'Abre el menú **Archivo** y haz clic en **Guardar** antes de conectar la placa.', boton: 'archivo' });
+      pasos.push({ titulo: 'Abre el Monitor Serial', texto: 'Haz clic en **Monitor Serial** y déjalo abierto: al conectar verás si la ESP32 tiene el firmware correcto.', boton: 'monitor' });
       pasos.push({ titulo: 'Conecta tu ESP32', texto: 'Haz clic en **Conectar** y elige el puerto de tu ESP32.', boton: 'conectar' });
       pasos.push({ titulo: '¡Ejecuta y prueba!', texto: 'Haz clic en **Ejecutar** y comprueba que funciona.', boton: 'ejecutar', accion: 'ejecutar' });
     }
@@ -831,7 +834,7 @@
         ]),
         el('div', { clase: 'tdoc-fila' }, [selIcono, inTitulo]),
         el('div', { clase: 'tdoc-fila' }, [
-          el('label', null, [chkPlaca, document.createTextNode(' Pasos de ESP32 (guardar, conectar, ejecutar)')]),
+          el('label', null, [chkPlaca, document.createTextNode(' Pasos de ESP32 (guardar, monitor serial, conectar, ejecutar)')]),
           el('label', null, [chkJuego, document.createTextNode(' Pasos de vista de juego')]),
           el('button', {
             texto: '⚙️ Generar pasos desde mis bloques', click: function () {

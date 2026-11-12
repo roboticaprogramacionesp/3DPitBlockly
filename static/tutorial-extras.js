@@ -102,7 +102,7 @@
   function tipoDe(step) {
     if (step.extra) return step.extra;
     if (typeof step.titulo === 'string' && step.titulo.indexOf('Conexión física') === 0) return 'conexion';
-    if (step.waitForAction === 'run' || step.waitForAction === 'connect' || step.highlightElement === '#btnConnection') return 'probar';
+    if (step.waitForAction === 'run' || step.waitForAction === 'connect' || step.waitForAction === 'monitor' || step.highlightElement === '#btnConnection') return 'probar';
     if (step.bloque || step.highlightCat || step.highlightFlyoutButton) return 'bloque';
     if (step.highlightElement === '#btnArchivo') return 'archivo';
     return 'info';

@@ -5439,12 +5439,60 @@ var TutorialSteps = {
   _pollTimer: null,   // setInterval del check ✓ (ver _iniciarPolling/_actualizarCheck)
 
   /* ── API pública ─────────────────────────────────────────── */
+  /* ── Paso "Abre el Monitor Serial" ────────────────────────────
+     Se agrega solo, justo antes de cada paso de conectar la ESP32, en
+     TODOS los tutoriales (también los de docentes y los de Juegos): el
+     monitor solo muestra lo que llega mientras está abierto, así que
+     abriéndolo antes se ve el mensaje de arranque de la placa y se puede
+     revisar si tiene MicroPython. Al paso de conectar se le agrega qué
+     mirar en el monitor. No duplica si el tutorial ya trae ese paso. */
+  _PASO_MONITOR: {
+    titulo: "Abre el Monitor Serial",
+    desc: "Antes de conectar, haz clic en el botón <b>Monitor Serial</b> <span class=\"icon-btn icon-munitor\"></span> para abrirlo y déjalo abierto. " +
+      "Ahí verás lo que dice la ESP32 en cuanto se conecte, y así sabrás si tiene el <b>firmware</b> correcto.",
+    highlightElement: "#btnOpenSerialMonitor",
+    waitForAction: "monitor"
+  },
+  _NOTA_FIRMWARE: "<br><br>👀 <b>Revisa el Monitor Serial:</b> debe aparecer <code>&gt;&gt;&gt;</code> (en muchas placas, antes sale un mensaje como <code>MicroPython v1.2… with ESP32</code>). " +
+    "Eso quiere decir que tiene el firmware correcto.<br>⚠️ Si no aparece nada o salen símbolos raros, presiona el botón <b>EN/RST</b> de la placa o desconéctala y vuelve a conectarla. " +
+    "Si sigue igual, graba MicroPython con el botón <b>Grabar MicroPython</b> <span class=\"icon-btn icon-burnfimware\"></span>.",
+
+  _conPasoMonitor: function (tut) {
+    if (!tut || !Array.isArray(tut.steps)) return tut;
+    var esConectar = function (s) { return s && (s.highlightElement === "#btnConnection" || s.waitForAction === "connect"); };
+    var esMonitor = function (s) { return s && (s.waitForAction === "monitor" || s.highlightElement === "#btnOpenSerialMonitor"); };
+    if (!tut.steps.some(esConectar)) return tut;
+    var self = this, pasos = [];
+    tut.steps.forEach(function (s) {
+      if (esConectar(s)) {
+        // El paso anterior (sin contar "Guarda tu proyecto") ya abre el monitor: no se repite.
+        if (!pasos.length || !esMonitor(pasos[pasos.length - 1])) {
+          var m = {};
+          for (var k in self._PASO_MONITOR) m[k] = self._PASO_MONITOR[k];
+          pasos.push(m);
+        }
+        var c = {};
+        for (var k2 in s) c[k2] = s[k2];
+        if (typeof c.desc === "string" && c.desc.indexOf("Revisa el Monitor Serial") < 0) c.desc += self._NOTA_FIRMWARE;
+        pasos.push(c);
+      } else {
+        pasos.push(s);
+      }
+    });
+    var nuevo = {};
+    for (var k3 in tut) nuevo[k3] = tut[k3];
+    nuevo.steps = pasos;
+    return nuevo;
+  },
+
   cargar: function (id) {
     if (!id) { this.cerrar(); return; }
     var tut = TUTORIALS[id];
     if (!tut) return;
     // Portada, conceptos, retos y quiz (static/tutorial-extras.js)
     if (window.TutorialExtras) tut = TutorialExtras.aumentar(id, tut);
+    // Antes de conectar la ESP32: abrir el Monitor Serial (ver _conPasoMonitor).
+    tut = this._conPasoMonitor(tut);
     // Siempre regresar a la vista de bloques al cambiar de tutorial
     if (typeof showView === 'function') showView('viewBlocks');
     this.tutorial = tut;
@@ -5740,6 +5788,11 @@ var TutorialSteps = {
     // más abajo (mismo comportamiento que tenía antes de este chequeo).
     if (!step.bloque && step.highlightCat && !step.highlightFlyoutButton) {
       return this._categoriaSeleccionada(step.highlightCat);
+    }
+
+    // Paso pide abrir el Monitor Serial (antes de conectar).
+    if (step.waitForAction === "monitor") {
+      return !!(window.SerialMonitor && SerialMonitor.estaAbierto && SerialMonitor.estaAbierto());
     }
 
     // Paso pide conectar el ESP32.

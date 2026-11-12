@@ -785,6 +785,8 @@ var SerialMonitor = (() => {
     open,
     close,
     toggle,
+    // Para el paso "Abre el Monitor Serial" de los tutoriales.
+    estaAbierto: () => isOpen,
     sendCommand,
     notifySending,
     notifyDone,
