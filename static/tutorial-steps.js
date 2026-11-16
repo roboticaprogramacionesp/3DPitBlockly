@@ -19,7 +19,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -49,7 +49,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -77,7 +77,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -133,7 +133,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -161,7 +161,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -217,7 +217,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -245,7 +245,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -435,7 +435,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -476,7 +476,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -504,7 +504,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -529,7 +529,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -557,7 +557,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -623,7 +623,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -651,12 +651,12 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
         titulo: "Conexión física",
-        desc: "📡 <b>HC-SR04</b> (mirando hacia abajo, a una altura fija que vas a medir con una cinta métrica -- por ejemplo <b>200 cm</b> desde el piso):<br>⚡ VCC → 3.3V &nbsp; ⏚ GND → GND<br>📌 TRIG → pin <b>12</b> &nbsp; 📌 ECHO → pin <b>13</b><br><br>👆 <b>TouchPad</b> (el \"botón\"): no hace falta ningún módulo: enrolla un pedazo de <b>papel aluminio</b> en la punta de un <b>cable macho-macho</b> y conecta la otra punta al pin <b>4</b> del ESP32 -- vas a tocarlo con el dedo para activar la medición.<br><br>⚠️ Medí con cinta métrica la altura real a la que quedó el sensor: ese número es el que vas a usar en el bloque <em>altura_sensor</em> más adelante. Si el sensor no está exactamente ahí, la estatura calculada sale mal.",
+        desc: "📡 <b>HC-SR04</b> (mirando hacia abajo, a una altura fija que vas a medir con una cinta métrica -- por ejemplo <b>200 cm</b> desde el piso):<br>⚡ VCC → 3.3V &nbsp; ⏚ GND → GND<br>📌 TRIG → pin <b>12</b> &nbsp; 📌 ECHO → pin <b>13</b><br><br>👆 <b>TouchPad</b> (el \"botón\"): no hace falta ningún módulo: enrolla un pedazo de <b>papel aluminio</b> en la punta de un <b>cable macho-macho</b> y conecta la otra punta al pin <b>4</b> del ESP32 -- vas a tocarlo con el dedo para activar la medición.<br><br>⚠️ Mide con cinta métrica la altura real a la que quedó el sensor: ese número es el que vas a usar en el bloque <em>altura_sensor</em> más adelante. Si el sensor no está exactamente ahí, la estatura calculada sale mal.",
         highlightCat: null, bloque: null
       },
       {
@@ -676,7 +676,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Arrastra: Preparar TouchPad",
-        desc: "Arrastra el bloque <em>TouchPad(Pin(...))</em>, debajo del sensor ultrasónico. Elige el pin <b>4</b> en el desplegable -- ahí vas a conectar el cable que tocás con el dedo.",
+        desc: "Arrastra el bloque <em>TouchPad(Pin(...))</em>, debajo del sensor ultrasónico. Elige el pin <b>4</b> en el desplegable -- ahí vas a conectar el cable que tocas con el dedo.",
         highlightCat: "TouchPad", expandCat: "Machine", bloque: "touch_init", bloqueLabel: "TouchPad(Pin(...))"
       },
       {
@@ -711,17 +711,17 @@ var TUTORIALS = {
       },
       {
         titulo: "Compara la lectura del TouchPad",
-        desc: "Ve a <b>Lógica</b> y arrastra una comparación a la condición del <em>Si</em>. Cambia el operador a <b>&lt;</b>: cuando tocás el cable, la lectura <b>baja</b> en vez de subir -- por eso comparamos \"menor que\", no \"mayor que\".",
+        desc: "Ve a <b>Lógica</b> y arrastra una comparación a la condición del <em>Si</em>. Cambia el operador a <b>&lt;</b>: cuando tocas el cable, la lectura <b>baja</b> en vez de subir -- por eso comparamos \"menor que\", no \"mayor que\".",
         highlightCat: "Lógica", expandCat: null, bloque: "logic_compare", bloqueLabel: "< (menor que)"
       },
       {
         titulo: "Lee el TouchPad",
-        desc: "Ve a <b>Machine › TouchPad</b> y arrastra <em>leer TouchPad</em> al primer hueco de la comparación. Elegí el mismo pin <b>4</b> que configuraste antes.",
+        desc: "Ve a <b>Machine › TouchPad</b> y arrastra <em>leer TouchPad</em> al primer hueco de la comparación. Elige el mismo pin <b>4</b> que configuraste antes.",
         highlightCat: "TouchPad", expandCat: "Machine", bloque: "touch_read", bloqueLabel: "leer TouchPad"
       },
       {
         titulo: "Escribe el umbral de toque",
-        desc: "Ve a <b>Matemáticas</b> y arrastra un <em>Número</em> con valor <b>300</b> al segundo hueco de la comparación. Sin tocar el cable, la lectura normalmente da por arriba de ese número; al tocarlo, cae por debajo. Si notás que no detecta bien tu toque, probá subir o bajar este número.",
+        desc: "Ve a <b>Matemáticas</b> y arrastra un <em>Número</em> con valor <b>300</b> al segundo hueco de la comparación. Sin tocar el cable, la lectura normalmente da por arriba de ese número; al tocarlo, cae por debajo. Si notas que no detecta bien tu toque, prueba subir o bajar este número.",
         highlightCat: "Matemáticas", expandCat: null, bloque: "math_number", bloqueLabel: "Número"
       },
       {
@@ -779,12 +779,12 @@ var TUTORIALS = {
       },
       {
         titulo: "Agrega una pausa",
-        desc: "Todavía dentro del <b>hacer</b>, ve a <b>Tiempo</b> y arrastra <em>esperar</em> con <b>1</b> segundo: así, mientras mantenés el dedo en el cable, no te imprime el resultado sin parar.",
+        desc: "Todavía dentro del <b>hacer</b>, ve a <b>Tiempo</b> y arrastra <em>esperar</em> con <b>1</b> segundo: así, mientras mantienes el dedo en el cable, no te imprime el resultado sin parar.",
         highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep", bloqueLabel: "esperar … segundos"
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -793,8 +793,8 @@ var TUTORIALS = {
         highlightElement: "#btnConnection"
       },
       {
-        titulo: "Ejecuta y probá el medidor",
-        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Parate debajo del sensor y tocá el cable del TouchPad con el dedo: el monitor serial debería mostrar tu estatura en centímetros. Si el número sale muy raro, revisá que la altura del sensor que escribiste coincida con la real, y que no haya nada (pelo muy alto, gorra) alterando la medición.",
+        titulo: "Ejecuta y prueba el medidor",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Párate debajo del sensor y toca el cable del TouchPad con el dedo: el monitor serial debería mostrar tu estatura en centímetros. Si el número sale muy raro, revisa que la altura del sensor que escribiste coincida con la real, y que no haya nada (pelo muy alto, gorra) alterando la medición.",
         highlightElement: "#btnRun", waitForAction: "run"
       }
     ]
@@ -811,7 +811,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -961,7 +961,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -989,7 +989,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -1046,7 +1046,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -1074,7 +1074,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -1100,13 +1100,13 @@ var TUTORIALS = {
       },
       {
         titulo: "Arrastra: Girar grados",
-        desc: "Arrastra el bloque <em>girar ... grados</em> debajo. Dejá el ángulo en <b>90</b> grados — el motor va a girar esa cantidad de grados <b>desde donde esté</b> (movimiento relativo).",
+        desc: "Arrastra el bloque <em>girar ... grados</em> debajo. Deja el ángulo en <b>90</b> grados — el motor va a girar esa cantidad de grados <b>desde donde esté</b> (movimiento relativo).",
         highlightCat: "Stepper Motor", expandCat: "Actuadores",
         bloque: "stepper_degrees", bloqueLabel: "girar grados"
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -1116,7 +1116,7 @@ var TUTORIALS = {
       },
       {
         titulo: "¡Ejecuta y prueba!",
-        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. El motor debería girar 90°. Si querés que vaya a una posición fija (no relativa), probá el bloque <em>ir al ángulo</em> en vez de <em>girar grados</em>. 🌀",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. El motor debería girar 90°. Si quieres que vaya a una posición fija (no relativa), prueba el bloque <em>ir al ángulo</em> en vez de <em>girar grados</em>. 🌀",
         highlightElement: "#btnRun", waitForAction: "run"
       }
     ]
@@ -1133,7 +1133,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -1228,7 +1228,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -1256,7 +1256,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -1276,30 +1276,30 @@ var TUTORIALS = {
       },
       {
         titulo: "Arrastra: Inicializar Actuador",
-        desc: "Arrastra el bloque <em>Actuador ... Pin</em> al área de trabajo. En el primer desplegable elegí el ícono de <b>Rele</b> (no Buzzer), y en <b>Pin</b> dejá <b>26</b> (o el pin que usaste). Este bloque va <b>una sola vez</b> al inicio del programa.",
+        desc: "Arrastra el bloque <em>Actuador ... Pin</em> al área de trabajo. En el primer desplegable elige el ícono de <b>Rele</b> (no Buzzer), y en <b>Pin</b> deja <b>26</b> (o el pin que usaste). Este bloque va <b>una sola vez</b> al inicio del programa.",
         highlightCat: "Relevador", expandCat: "Actuadores",
         bloque: "actuador_init", bloqueLabel: "Actuador ... Pin"
       },
       {
         titulo: "Arrastra: Encender el relay",
-        desc: "Arrastra el bloque <em>Actuador ... value</em>, con el mismo <b>Pin</b> que usaste arriba, y elegí estado <b>on</b>.",
+        desc: "Arrastra el bloque <em>Actuador ... value</em>, con el mismo <b>Pin</b> que usaste arriba, y elige estado <b>on</b>.",
         highlightCat: "Relevador", expandCat: "Actuadores",
         bloque: "actuador_on_off", bloqueLabel: "Actuador ... value"
       },
       {
         titulo: "Esperar 2 segundos",
-        desc: "Ve a <b>Tiempo</b> y arrastra <em>time_sleep</em>. Ajustá el valor a <b>2</b> segundos, para ver el relay encendido antes de apagarlo.",
+        desc: "Ve a <b>Tiempo</b> y arrastra <em>time_sleep</em>. Ajusta el valor a <b>2</b> segundos, para ver el relay encendido antes de apagarlo.",
         highlightCat: "Tiempo", expandCat: null, bloque: "time_sleep"
       },
       {
         titulo: "Arrastra: Apagar el relay",
-        desc: "Arrastra otro bloque <em>Actuador ... value</em>, mismo <b>Pin</b>, y elegí estado <b>off</b>.",
+        desc: "Arrastra otro bloque <em>Actuador ... value</em>, mismo <b>Pin</b>, y elige estado <b>off</b>.",
         highlightCat: "Relevador", expandCat: "Actuadores",
         bloque: "actuador_on_off", bloqueLabel: "Actuador ... value"
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -1326,7 +1326,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -1394,7 +1394,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -1421,7 +1421,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -1834,7 +1834,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -1865,7 +1865,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -1982,7 +1982,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -2012,7 +2012,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -2094,7 +2094,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -2124,7 +2124,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -2215,7 +2215,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -2242,7 +2242,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -2301,7 +2301,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -2328,7 +2328,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -2348,19 +2348,19 @@ var TUTORIALS = {
       },
       {
         titulo: "Arrastra: Inicializar IR TX",
-        desc: "Arrastra el bloque <em>Pin protocolo NEC</em> al área de trabajo. Dejá el pin en <b>4</b> (o el que usaste). Este bloque va <b>una sola vez</b> al inicio.",
+        desc: "Arrastra el bloque <em>Pin protocolo NEC</em> al área de trabajo. Deja el pin en <b>4</b> (o el que usaste). Este bloque va <b>una sola vez</b> al inicio.",
         highlightCat: "IR TX (KY-005)", expandCat: "LEDs",
         bloque: "ky005_init", bloqueLabel: "Pin protocolo NEC"
       },
       {
         titulo: "Arrastra: Enviar código NEC",
-        desc: "Arrastra el bloque <em>IR NEC dirección comando</em> debajo. Escribí <b>0</b> en dirección y <b>1</b> en comando — es solo un código de prueba, cada control remoto real usa sus propios números.",
+        desc: "Arrastra el bloque <em>IR NEC dirección comando</em> debajo. Escribe <b>0</b> en dirección y <b>1</b> en comando — es solo un código de prueba, cada control remoto real usa sus propios números.",
         highlightCat: "IR TX (KY-005)", expandCat: "LEDs",
         bloque: "ky005_send_nec", bloqueLabel: "IR NEC dirección comando"
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -2370,7 +2370,7 @@ var TUTORIALS = {
       },
       {
         titulo: "¡Ejecuta y prueba!",
-        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Para comprobar que realmente emite, usá el tutorial de <b>Control Remoto IR (KY-022)</b> en otro ESP32 como receptor y verificá que le llegue el código. 📡",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Para comprobar que realmente emite, usa el tutorial de <b>Control Remoto IR (KY-022)</b> en otro ESP32 como receptor y verifica que le llegue el código. 📡",
         highlightElement: "#btnRun", waitForAction: "run"
       }
     ]
@@ -2387,7 +2387,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -2511,7 +2511,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -2538,7 +2538,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -2612,7 +2612,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -2639,12 +2639,12 @@ var TUTORIALS = {
     steps: [
       {
         titulo: "¿Qué vamos a construir?",
-        desc: "Un <b>chat</b> de verdad entre dos ESP32: los dos pueden <b>enviar y recibir al mismo tiempo</b>, sin que uno tenga que esperar al otro. Para eso vamos a usar <b>ESP-NOW al recibir llamar</b> (<code>e.irq()</code>): en vez de estar preguntando todo el rato \"¿llegó algo?\" dentro de un ciclo, el ESP32 se queda libre y, apenas llega algo, <b>se interrumpe solo</b> para atenderlo. Tu programa no va a tener ningún ciclo: va a armar una función <b>enviar</b> y, en vez de llamarla sola, vas a escribirla <b>vos mismo</b> en el monitor serial cada vez que quieras mandar un mensaje. Vas a cargar el <b>mismo programa</b> en los dos ESP32 -- no hace falta armar un \"emisor\" y un \"receptor\" por separado.",
+        desc: "Un <b>chat</b> de verdad entre dos ESP32: los dos pueden <b>enviar y recibir al mismo tiempo</b>, sin que uno tenga que esperar al otro. Para eso vamos a usar <b>ESP-NOW al recibir llamar</b> (<code>e.irq()</code>): en vez de estar preguntando todo el rato \"¿llegó algo?\" dentro de un ciclo, el ESP32 se queda libre y, apenas llega algo, <b>se interrumpe solo</b> para atenderlo. Tu programa no va a tener ningún ciclo: va a armar una función <b>enviar</b> y, en vez de llamarla sola, vas a escribirla <b>tú mismo</b> en el monitor serial cada vez que quieras mandar un mensaje. Vas a cargar el <b>mismo programa</b> en los dos ESP32 -- no hace falta armar un \"emisor\" y un \"receptor\" por separado.",
         highlightCat: null, bloque: null
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -2683,7 +2683,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Arrastra: Dirección MAC (peer) broadcast",
-        desc: "Arrastra el bloque <em>Dirección MAC (peer)</em> y conéctalo en el espacio del bloque anterior. Dejá el valor de <b>broadcast</b> que trae por defecto, <code>b'\\xff\\xff\\xff\\xff\\xff\\xff'</code>: así no necesitás saber la MAC exacta del otro ESP32, y como vas a cargar el mismo programa en los dos, los dos van a usar el mismo valor.",
+        desc: "Arrastra el bloque <em>Dirección MAC (peer)</em> y conéctalo en el espacio del bloque anterior. Deja el valor de <b>broadcast</b> que trae por defecto, <code>b'\\xff\\xff\\xff\\xff\\xff\\xff'</code>: así no necesitas saber la MAC exacta del otro ESP32, y como vas a cargar el mismo programa en los dos, los dos van a usar el mismo valor.",
         highlightCat: "ESP-NOW", expandCat: "Comunicación Inalambrica",
         bloque: "peer", bloqueLabel: "Dirección MAC (peer)"
       },
@@ -2695,18 +2695,18 @@ var TUTORIALS = {
       },
       {
         titulo: "Ahora arma la parte que ESCUCHA, por separado",
-        desc: "Vas a armar un segundo grupo de bloques, <b>sin conectarlo</b> a los que ya tenés -- dejalo suelto en otra parte del área de trabajo, por ejemplo más abajo. Es la función que se va a ejecutar sola cada vez que llegue un mensaje, así que no forma parte de la secuencia principal de tu programa (es el mismo caso que una función de <b>Funciones</b>: se define aparte y algo más la activa).",
+        desc: "Vas a armar un segundo grupo de bloques, <b>sin conectarlo</b> a los que ya tienes -- déjalo suelto en otra parte del área de trabajo, por ejemplo más abajo. Es la función que se va a ejecutar sola cada vez que llegue un mensaje, así que no forma parte de la secuencia principal de tu programa (es el mismo caso que una función de <b>Funciones</b>: se define aparte y algo más la activa).",
         highlightCat: null, bloque: null
       },
       {
         titulo: "Arrastra: def ... al recibir hacer",
-        desc: "Ve a <b>ESP-NOW</b> y arrastra el bloque <em>def … al recibir hacer</em> <b>suelto</b> en el área de trabajo, sin conectarlo a nada. Fijate que no tiene conectores arriba ni abajo -- a propósito, para que no lo enganches por error dentro de tu programa principal.",
+        desc: "Ve a <b>ESP-NOW</b> y arrastra el bloque <em>def … al recibir hacer</em> <b>suelto</b> en el área de trabajo, sin conectarlo a nada. Fíjate que no tiene conectores arriba ni abajo -- a propósito, para que no lo enganches por error dentro de tu programa principal.",
         highlightCat: "ESP-NOW", expandCat: "Comunicación Inalambrica",
         bloque: "espnow_irq_callback", bloqueLabel: "def … al recibir hacer"
       },
       {
         titulo: "Dentro: Recibir mensaje ESP-NOW",
-        desc: "Ve a <b>ESP-NOW</b> y arrastra el bloque <em>Recibir mensaje ESP-NOW</em> <b>dentro</b> del hueco \"hacer\" del bloque que acabás de soltar.",
+        desc: "Ve a <b>ESP-NOW</b> y arrastra el bloque <em>Recibir mensaje ESP-NOW</em> <b>dentro</b> del hueco \"hacer\" del bloque que acabas de soltar.",
         highlightCat: "ESP-NOW", expandCat: "Comunicación Inalambrica",
         bloque: "espnow_recv", bloqueLabel: "Recibir mensaje ESP-NOW"
       },
@@ -2745,19 +2745,19 @@ var TUTORIALS = {
         bloque: { tipo: "variables_get", valor: "msg" }
       },
       {
-        titulo: "Volvé a la pila principal",
-        desc: "Dejá por un momento la función suelta y volvé a los bloques que armaste al principio (el que empieza con <em>Inicializar WiFi</em>). Ahí vamos a <b>activar</b> esa función.",
+        titulo: "Vuelve a la pila principal",
+        desc: "Deja por un momento la función suelta y vuelve a los bloques que armaste al principio (el que empieza con <em>Inicializar WiFi</em>). Ahí vamos a <b>activar</b> esa función.",
         highlightCat: null, bloque: null
       },
       {
         titulo: "Arrastra: ESP-NOW al recibir llamar",
-        desc: "Ve a <b>ESP-NOW</b> y arrastra el bloque <em>ESP-NOW al recibir llamar</em>. Conéctalo <b>después</b> del bloque <em>try / except</em>, en la pila principal. Este bloque sí es una instrucción normal: le dice al ESP32 \"cuando llegue un mensaje, andá a ejecutar la función on_recv que armaste\".",
+        desc: "Ve a <b>ESP-NOW</b> y arrastra el bloque <em>ESP-NOW al recibir llamar</em>. Conéctalo <b>después</b> del bloque <em>try / except</em>, en la pila principal. Este bloque sí es una instrucción normal: le dice al ESP32 \"cuando llegue un mensaje, ve a ejecutar la función on_recv que armaste\".",
         highlightCat: "ESP-NOW", expandCat: "Comunicación Inalambrica",
         bloque: "espnow_irq", bloqueLabel: "ESP-NOW al recibir llamar"
       },
       {
         titulo: "Crea tu función: enviar",
-        desc: "Ve a <b>Funciones</b> y arrastra otro bloque <em>para hacer algo</em>, <b>suelto</b> en el área de trabajo (no lo conectes a nada, igual que la función que escucha). Hacé clic en su nombre y escribí <b>enviar</b>. Con el <b>⚙️</b> (engranaje) agregale un parámetro de entrada y nombralo <b>text</b>: así vas a poder decirle qué mensaje mandar cada vez que la llames.",
+        desc: "Ve a <b>Funciones</b> y arrastra otro bloque <em>para hacer algo</em>, <b>suelto</b> en el área de trabajo (no lo conectes a nada, igual que la función que escucha). Haz clic en su nombre y escribe <b>enviar</b>. Con el <b>⚙️</b> (engranaje) agrégale un parámetro de entrada y nómbralo <b>text</b>: así vas a poder decirle qué mensaje mandar cada vez que la llames.",
         highlightCat: "Funciones", expandCat: null,
         bloque: "procedures_defnoreturn", bloqueLabel: "para … hacer"
       },
@@ -2769,7 +2769,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Arrastra: Dirección MAC (peer) broadcast",
-        desc: "Arrastra otro bloque <em>Dirección MAC (peer)</em> y conéctalo en el primer espacio del bloque de envío. Dejá el valor de broadcast, igual que antes.",
+        desc: "Arrastra otro bloque <em>Dirección MAC (peer)</em> y conéctalo en el primer espacio del bloque de envío. Deja el valor de broadcast, igual que antes.",
         highlightCat: "ESP-NOW", expandCat: "Comunicación Inalambrica",
         bloque: "peer", bloqueLabel: "Dirección MAC (peer)"
       },
@@ -2781,12 +2781,12 @@ var TUTORIALS = {
       },
       {
         titulo: "¿Cómo se manda un mensaje?",
-        desc: "Fijate que la función <b>enviar</b> no se llama en ningún lado de tu programa, y no hay ningún ciclo: tu programa principal termina enseguida (apenas registra el <em>on_recv</em>) y vuelve al <b>prompt</b> del monitor serial. La escucha sigue activa en segundo plano. Para mandar un mensaje, vas a escribir <b>vos mismo</b> la llamada directamente en el monitor serial, por ejemplo <code>enviar('Hola')</code>, y presionar Enter.",
+        desc: "Fíjate que la función <b>enviar</b> no se llama en ningún lado de tu programa, y no hay ningún ciclo: tu programa principal termina enseguida (apenas registra el <em>on_recv</em>) y vuelve al <b>prompt</b> del monitor serial. La escucha sigue activa en segundo plano. Para mandar un mensaje, vas a escribir <b>tú mismo</b> la llamada directamente en el monitor serial, por ejemplo <code>enviar('Hola')</code>, y presionar Enter.",
         highlightCat: null, bloque: null
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -2801,17 +2801,17 @@ var TUTORIALS = {
       },
       {
         titulo: "Envía tu primer mensaje",
-        desc: "Hacé clic en el monitor serial y escribí directamente <code>enviar('Hola')</code>, después presioná Enter. Eso <b>llama</b> a la función que armaste, con <b>'Hola'</b> como valor de <b>text</b>.",
+        desc: "Haz clic en el monitor serial y escribe directamente <code>enviar('Hola')</code>, después presiona Enter. Eso <b>llama</b> a la función que armaste, con <b>'Hola'</b> como valor de <b>text</b>.",
         highlightCat: null, bloque: null
       },
       {
         titulo: "Carga el MISMO programa en el segundo ESP32",
-        desc: "Sin cambiar nada del programa, conectá el <b>segundo</b> ESP32 con el botón <b>Conectar</b> y hacé clic en <b>Ejecutar</b> de nuevo.",
+        desc: "Sin cambiar nada del programa, conecta el <b>segundo</b> ESP32 con el botón <b>Conectar</b> y haz clic en <b>Ejecutar</b> de nuevo.",
         highlightElement: "#btnConnection"
       },
       {
         titulo: "¡Mira el chat funcionando!",
-        desc: "Con los dos ESP32 corriendo, escribí <code>enviar('...')</code> en el monitor serial de <b>cualquiera</b> de los dos: en el <b>otro</b> vas a ver aparecer el host y el mensaje <b>al instante</b>, sin que ese ESP32 tuviera que estar preguntando \"¿llegó algo?\" en ningún ciclo -- la función <em>on_recv</em> se disparó sola. Probá mandar mensajes desde los dos lados. 🎉",
+        desc: "Con los dos ESP32 corriendo, escribe <code>enviar('...')</code> en el monitor serial de <b>cualquiera</b> de los dos: en el <b>otro</b> vas a ver aparecer el host y el mensaje <b>al instante</b>, sin que ese ESP32 tuviera que estar preguntando \"¿llegó algo?\" en ningún ciclo -- la función <em>on_recv</em> se disparó sola. Prueba mandar mensajes desde los dos lados. 🎉",
         highlightCat: null, bloque: null
       }
     ]
@@ -2828,12 +2828,12 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
         titulo: "Conexión física",
-        desc: "No necesitas conectar nada — el WiFi está integrado en el ESP32. Solo necesitás el nombre y la contraseña de una red WiFi <b>de 2.4GHz</b> (el ESP32 no soporta redes de 5GHz).",
+        desc: "No necesitas conectar nada — el WiFi está integrado en el ESP32. Solo necesitas el nombre y la contraseña de una red WiFi <b>de 2.4GHz</b> (el ESP32 no soporta redes de 5GHz).",
         highlightCat: null, bloque: null
       },
       {
@@ -2848,7 +2848,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Arrastra: Conectar WiFi",
-        desc: "Arrastra el bloque <em>conectar SSID contraseña</em> al área de trabajo. Cambiá <b>SSID</b> por el nombre de tu red y <b>contraseña</b> por la clave real. Este bloque ya espera solo hasta 10 segundos a que conecte — no hace falta agregar nada más.",
+        desc: "Arrastra el bloque <em>conectar SSID contraseña</em> al área de trabajo. Cambia <b>SSID</b> por el nombre de tu red y <b>contraseña</b> por la clave real. Este bloque ya espera solo hasta 10 segundos a que conecte — no hace falta agregar nada más.",
         highlightCat: "WiFi", expandCat: "Comunicación Inalambrica",
         bloque: "wifi_connect", bloqueLabel: "conectar SSID contraseña"
       },
@@ -2859,13 +2859,13 @@ var TUTORIALS = {
       },
       {
         titulo: "Arrastra: WiFi IP actual",
-        desc: "Volvé a <b>Comunicación Inalambrica › WiFi</b> y arrastra el bloque <em>WiFi IP actual</em> dentro del hueco de <em>imprimir</em>.",
+        desc: "Vuelve a <b>Comunicación Inalambrica › WiFi</b> y arrastra el bloque <em>WiFi IP actual</em> dentro del hueco de <em>imprimir</em>.",
         highlightCat: "WiFi", expandCat: "Comunicación Inalambrica",
         bloque: "wifi_current_ip", bloqueLabel: "WiFi IP actual"
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -2875,7 +2875,7 @@ var TUTORIALS = {
       },
       {
         titulo: "¡Ejecuta y prueba!",
-        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Si se conectó bien, vas a ver una IP como <b>192.168.1.XX</b> en el monitor serial. Si ves un mensaje de error, revisá que el SSID/contraseña estén bien escritos y que la red sea de 2.4GHz. 📶",
+        desc: "Haz clic en <b>Ejecutar</b> <span class=\"icon-btn icon-run\"></span>. Si se conectó bien, vas a ver una IP como <b>192.168.1.XX</b> en el monitor serial. Si ves un mensaje de error, revisa que el SSID/contraseña estén bien escritos y que la red sea de 2.4GHz. 📶",
         highlightElement: "#btnRun", waitForAction: "run"
       }
     ]
@@ -2892,7 +2892,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -3147,7 +3147,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -3174,7 +3174,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -3249,7 +3249,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -3276,7 +3276,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -3354,7 +3354,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -3384,7 +3384,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -3457,7 +3457,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -3487,7 +3487,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -3565,7 +3565,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -3592,7 +3592,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -3630,7 +3630,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -3657,7 +3657,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -3695,13 +3695,13 @@ var TUTORIALS = {
       },
       {
         titulo: "¿La ves al revés? Usa: rotar",
-        desc: "Si montaste la pantalla dada vuelta, agregá el bloque <em>rotar</em> justo después de <em>Inicializar SH1106</em> y elegí <b>180°</b>. También sirve <b>90°</b>/<b>270°</b> si tu proyecto necesita la pantalla de costado.",
+        desc: "Si montaste la pantalla dada vuelta, agrega el bloque <em>rotar</em> justo después de <em>Inicializar SH1106</em> y elige <b>180°</b>. También sirve <b>90°</b>/<b>270°</b> si tu proyecto necesita la pantalla de costado.",
         highlightCat: "SH1106", expandCat: "Pantallas",
         bloque: "sh1106_rotate", bloqueLabel: "rotar"
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -3728,7 +3728,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -3766,7 +3766,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -3793,7 +3793,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -3842,7 +3842,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -3869,7 +3869,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -3918,7 +3918,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -3945,7 +3945,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -3977,7 +3977,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -4004,7 +4004,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -4042,7 +4042,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -4069,7 +4069,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -4118,7 +4118,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -4145,7 +4145,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -4188,7 +4188,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -4215,7 +4215,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -4264,7 +4264,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -4291,7 +4291,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -4334,7 +4334,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -4361,7 +4361,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -4381,7 +4381,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Arrastra: Inicializar teclado",
-        desc: "Arrastra el bloque <em>R1 R2 R3 R4 C1 C2 C3</em> al área de trabajo y asigná los 7 pines según tu conexión. Este bloque va <b>una sola vez</b> al inicio.",
+        desc: "Arrastra el bloque <em>R1 R2 R3 R4 C1 C2 C3</em> al área de trabajo y asigna los 7 pines según tu conexión. Este bloque va <b>una sola vez</b> al inicio.",
         highlightCat: "Teclados Matriciales 4x3", expandCats: ["Periféricos", "Teclados"],
         bloque: "init_keypad_3x4", bloqueLabel: "Inicializar teclado 4x3"
       },
@@ -4393,7 +4393,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Dentro del ciclo: imprimir la tecla",
-        desc: "Ve a <b>Textos</b> y arrastra el bloque <em>imprimir</em> dentro del ciclo. Luego volvé a <b>Periféricos → Teclados → Teclados Matriciales 4x3</b> y arrastra el bloque <em>leer</em> dentro del <em>imprimir</em>.",
+        desc: "Ve a <b>Textos</b> y arrastra el bloque <em>imprimir</em> dentro del ciclo. Luego vuelve a <b>Periféricos → Teclados → Teclados Matriciales 4x3</b> y arrastra el bloque <em>leer</em> dentro del <em>imprimir</em>.",
         highlightCat: "Teclados Matriciales 4x3", expandCats: ["Periféricos", "Teclados"],
         bloque: "keypad_get_key", bloqueLabel: "leer"
       },
@@ -4404,7 +4404,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -4431,7 +4431,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -4451,7 +4451,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Arrastra: Inicializar teclado I2C",
-        desc: "Arrastra el bloque <em>SDA SCL dirección</em> al área de trabajo. Dejá los valores por defecto (SDA <b>21</b>, SCL <b>22</b>, dirección <b>0x20</b>). Este bloque va <b>una sola vez</b> al inicio.",
+        desc: "Arrastra el bloque <em>SDA SCL dirección</em> al área de trabajo. Deja los valores por defecto (SDA <b>21</b>, SCL <b>22</b>, dirección <b>0x20</b>). Este bloque va <b>una sola vez</b> al inicio.",
         highlightCat: "Teclados Matriciales 4x4 I2C", expandCats: ["Periféricos", "Teclados"],
         bloque: "init_keypad4x4_i2c", bloqueLabel: "Inicializar teclado 4x4 I2C"
       },
@@ -4463,7 +4463,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Dentro del ciclo: imprimir la tecla",
-        desc: "Ve a <b>Textos</b> y arrastra el bloque <em>imprimir</em> dentro del ciclo. Luego volvé a <b>Periféricos → Teclados → Teclados Matriciales 4x4 I2C</b> y arrastra el bloque <em>leer</em> dentro del <em>imprimir</em>.",
+        desc: "Ve a <b>Textos</b> y arrastra el bloque <em>imprimir</em> dentro del ciclo. Luego vuelve a <b>Periféricos → Teclados → Teclados Matriciales 4x4 I2C</b> y arrastra el bloque <em>leer</em> dentro del <em>imprimir</em>.",
         highlightCat: "Teclados Matriciales 4x4 I2C", expandCats: ["Periféricos", "Teclados"],
         bloque: "keypad_get_key_i2c", bloqueLabel: "leer"
       },
@@ -4474,7 +4474,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -4501,7 +4501,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -4544,7 +4544,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -4571,7 +4571,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -4614,7 +4614,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -4641,7 +4641,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -4690,7 +4690,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -4717,7 +4717,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -4749,7 +4749,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -4776,7 +4776,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -4808,7 +4808,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -4835,7 +4835,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -4873,7 +4873,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -4900,7 +4900,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -4938,7 +4938,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -4960,17 +4960,17 @@ var TUTORIALS = {
     steps: [
       {
         titulo: "¿Qué aprenderemos?",
-        desc: "Vamos a encender píxeles individuales en una <b>matriz NeoPixel 8x8</b> (64 LEDs RGB direccionables). Si tenés la de 5x5, los bloques son iguales — solo usá la categoría <b>NeoPixel 5x5</b>.",
+        desc: "Vamos a encender píxeles individuales en una <b>matriz NeoPixel 8x8</b> (64 LEDs RGB direccionables). Si tienes la de 5x5, los bloques son iguales — solo usa la categoría <b>NeoPixel 5x5</b>.",
         highlightCat: null, bloque: null
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
         titulo: "Conexión física",
-        desc: "La matriz NeoPixel tiene 3 pines:<br>⚡ <b>5V</b> → <b>5V</b> (una matriz completa de 64 LEDs puede consumir bastante corriente)<br>⏚ <b>GND</b> → GND<br>📌 <b>DIN</b> (dato) → el pin que elijas<br><br>💡 Empezá con brillo bajo (20-30%) para no encandilarte ni consumir demasiada corriente.",
+        desc: "La matriz NeoPixel tiene 3 pines:<br>⚡ <b>5V</b> → <b>5V</b> (una matriz completa de 64 LEDs puede consumir bastante corriente)<br>⏚ <b>GND</b> → GND<br>📌 <b>DIN</b> (dato) → el pin que elijas<br><br>💡 Empieza con brillo bajo (20-30%) para no encandilarte ni consumir demasiada corriente.",
         highlightCat: null, bloque: null
       },
       {
@@ -4985,25 +4985,25 @@ var TUTORIALS = {
       },
       {
         titulo: "Arrastra: Inicializar matriz 8x8",
-        desc: "Arrastra el bloque <em>pin layout rotación</em> al área de trabajo. Dejá el pin y el layout por defecto. Este bloque va <b>una sola vez</b> al inicio.",
+        desc: "Arrastra el bloque <em>pin layout rotación</em> al área de trabajo. Deja el pin y el layout por defecto. Este bloque va <b>una sola vez</b> al inicio.",
         highlightCat: "NeoPixel 8x8", expandCats: ["Pantallas", "NeoPixel"],
         bloque: "neopixel_init_8x8", bloqueLabel: "Inicializar matriz 8x8"
       },
       {
         titulo: "Arrastra: Pintar un píxel",
-        desc: "Arrastra el bloque <em>pixel x y color</em> debajo. Poné x=<b>4</b>, y=<b>4</b> (cerca del centro) y elegí un color.",
+        desc: "Arrastra el bloque <em>pixel x y color</em> debajo. Pon x=<b>4</b>, y=<b>4</b> (cerca del centro) y elige un color.",
         highlightCat: "NeoPixel 8x8", expandCats: ["Pantallas", "NeoPixel"],
         bloque: "neopixel_pixel", bloqueLabel: "pixel x y color"
       },
       {
         titulo: "Arrastra: Mostrar con brillo",
-        desc: "Arrastra el bloque <em>brillo</em> debajo — este es el que <b>envía</b> los colores a la matriz (sin él no se ve nada). Usá el slider para poner el brillo en <b>20%</b>.",
+        desc: "Arrastra el bloque <em>brillo</em> debajo — este es el que <b>envía</b> los colores a la matriz (sin él no se ve nada). Usa el slider para poner el brillo en <b>20%</b>.",
         highlightCat: "NeoPixel 8x8", expandCats: ["Pantallas", "NeoPixel"],
         bloque: "neopixel_show", bloqueLabel: "brillo"
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -5030,7 +5030,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -5073,7 +5073,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -5100,7 +5100,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -5138,7 +5138,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -5165,7 +5165,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -5203,7 +5203,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -5230,7 +5230,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -5274,7 +5274,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -5301,7 +5301,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -5339,7 +5339,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {
@@ -5366,7 +5366,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Crea un proyecto nuevo",
-        desc: "Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).",
+        desc: "Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class=\"icon-btn icon-new\"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).",
         highlightElement: "#btnArchivo"
       },
       {
@@ -5409,7 +5409,7 @@ var TUTORIALS = {
       },
       {
         titulo: "Guarda tu proyecto",
-        desc: "Antes de conectar la placa, abrí el menú <b>Archivo</b> y hacé clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no perdés tu progreso si la conexión falla o tenés que reiniciar el ESP32.",
+        desc: "Antes de conectar la placa, abre el menú <b>Archivo</b> y haz clic en <b>Guardar</b> <span class=\"icon-btn icon-save\"></span>: así no pierdes tu progreso si la conexión falla o tienes que reiniciar el ESP32.",
         highlightElement: "#btnArchivo"
       },
       {

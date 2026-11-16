@@ -399,8 +399,8 @@ async function _detectDeviceSpeed() {
       // timeout completo, no una medición real de velocidad. No
       // confundir con "dispositivo lento": acá el REPL no respondió
       // nada en absoluto pese a los reintentos.
-      console.warn(`[DeviceDetect] sin respuesta del REPL tras ${MAX_INTENTOS} intentos -- el dispositivo no contestó al Ctrl+C/Ctrl+A. Probá presionar RESET en la placa o revisar el cable/puerto.`);
-      if (term) term.writeln(`\r\n⚠ No se detectó respuesta del ESP32 -- si no reacciona, probá presionar RESET en la placa.\r\n`);
+      console.warn(`[DeviceDetect] sin respuesta del REPL tras ${MAX_INTENTOS} intentos -- el dispositivo no contestó al Ctrl+C/Ctrl+A. Prueba presionar RESET en la placa o revisar el cable/puerto.`);
+      if (term) term.writeln(`\r\n⚠ No se detectó respuesta del ESP32 -- si no reacciona, prueba presionar RESET en la placa.\r\n`);
     } else {
       const label = _deviceSpeedMul > 1 ? "lento (por timing, placa no reconocida)" : "rápido (por timing, placa no reconocida)";
       console.log(`[DeviceDetect] tiempo raw REPL: ${elapsed} ms → dispositivo ${label} (mul=${_deviceSpeedMul})`);
@@ -1469,7 +1469,7 @@ async function connectSerial() {
     const friendly = /Failed to open serial port/i.test(msg)
       ? "⚠ No se pudo abrir el puerto serie. Puede estar en uso por otra " +
         "aplicación o pestaña (Thonny, Arduino IDE, otro monitor serie, u " +
-        "otra pestaña de esta misma app) -- cerrala e intentá de nuevo. Si " +
+        "otra pestaña de esta misma app) -- ciérrala e inténtalo de nuevo. Si " +
         "es una placa de USB nativo (ej. ESP32-C3 Super Mini), también " +
         "ayuda desenchufarla y volver a enchufarla antes de reintentar."
       : "Error de conexión: " + msg;

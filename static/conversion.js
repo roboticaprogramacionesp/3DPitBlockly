@@ -5250,7 +5250,7 @@ Blockly.defineBlocksWithJsonArray([
     nextStatement: null,
     inputsInline: true,
     colour: 20,
-    tooltip: "Velocidad con deslizador (0-100%) para un solo motor: IN1/IN2 si elegís Motor A, IN3/IN4 si elegís Motor B.",
+    tooltip: "Velocidad con deslizador (0-100%) para un solo motor: IN1/IN2 si eliges Motor A, IN3/IN4 si eliges Motor B.",
     extensions: ["motor_label_update"],
   },
   {

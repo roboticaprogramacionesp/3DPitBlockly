@@ -39,7 +39,7 @@
       },
       {
         titulo: 'Crea un proyecto nuevo',
-        desc: 'Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class="icon-btn icon-new"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).',
+        desc: 'Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class="icon-btn icon-new"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).',
         highlightElement: '#btnArchivo'
       },
       {
@@ -329,7 +329,7 @@
         },
         {
           titulo: 'Crea un proyecto nuevo',
-          desc: 'Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class="icon-btn icon-new"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).',
+          desc: 'Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class="icon-btn icon-new"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).',
           highlightElement: '#btnArchivo'
         },
         {
@@ -445,12 +445,12 @@
       steps: [
         {
           titulo: '¿Qué aprenderemos?',
-          desc: 'Vamos a construir una <b>calculadora con botones en pantalla</b>: una cuadrícula de 16 botones grandes (dígitos, +, -, X, /, = y C) que respondés haciendo clic con el mouse, igual que una calculadora de verdad. Son muchos pasos porque hay 16 botones — pero el patrón se repite una y otra vez, así que después de los primeros te vas a dar cuenta solo.',
+          desc: 'Vamos a construir una <b>calculadora con botones en pantalla</b>: una cuadrícula de 16 botones grandes (dígitos, +, -, X, /, = y C) que respondes haciendo clic con el mouse, igual que una calculadora de verdad. Son muchos pasos porque hay 16 botones — pero el patrón se repite una y otra vez, así que después de los primeros te vas a dar cuenta solo.',
           highlightCat: null, bloque: null
         },
         {
           titulo: 'Crea un proyecto nuevo',
-          desc: 'Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class="icon-btn icon-new"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).',
+          desc: 'Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class="icon-btn icon-new"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).',
           highlightElement: '#btnArchivo'
         },
 
@@ -482,12 +482,12 @@
         },
         {
           titulo: 'Crea la variable indice_num',
-          desc: 'Ve a <b>Variables</b> y crea <b>indice_num</b>: vale <b>0</b> mientras escribís el primer número, y <b>1</b> mientras escribís el segundo.',
+          desc: 'Ve a <b>Variables</b> y crea <b>indice_num</b>: vale <b>0</b> mientras escribes el primer número, y <b>1</b> mientras escribes el segundo.',
           highlightCat: 'Variables', highlightFlyoutButton: 'create_variable', variable: 'indice_num', expandCat: null, bloque: null
         },
         {
           titulo: 'Crea la variable guardar_resultado',
-          desc: 'Ve a <b>Variables</b> y crea <b>guardar_resultado</b>: ahí queda el resultado cuando apretás "=".',
+          desc: 'Ve a <b>Variables</b> y crea <b>guardar_resultado</b>: ahí queda el resultado cuando aprietas "=".',
           highlightCat: 'Variables', highlightFlyoutButton: 'create_variable', variable: 'guardar_resultado', expandCat: null, bloque: null
         },
         {
@@ -499,37 +499,37 @@
         /* ───────────── Inicializar ───────────── */
         {
           titulo: 'Inicializa numero en 0',
-          desc: 'Ve a <b>Variables</b> y arrastra <em>Establecer numero a</em> al área de trabajo. Conectale un bloque <em>Número</em> (de <b>Matemáticas</b>) con valor <b>0</b>.',
+          desc: 'Ve a <b>Variables</b> y arrastra <em>Establecer numero a</em> al área de trabajo. Conéctale un bloque <em>Número</em> (de <b>Matemáticas</b>) con valor <b>0</b>.',
           highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
         },
         {
           titulo: 'Inicializa posicion_x en 15',
-          desc: 'Arrastra <em>Establecer posicion_x a</em>, debajo del anterior. Conectale un <em>Número</em> con valor <b>15</b> — ahí empieza a escribirse el primer dígito (el margen izquierdo de la pantalla).',
+          desc: 'Arrastra <em>Establecer posicion_x a</em>, debajo del anterior. Conéctale un <em>Número</em> con valor <b>15</b> — ahí empieza a escribirse el primer dígito (el margen izquierdo de la pantalla).',
           highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
         },
         {
           titulo: 'Inicializa operacion vacía',
-          desc: 'Arrastra <em>Establecer operacion a</em>. Ve a <b>Textos</b> y conectale un bloque de <em>texto</em> vacío (sin escribir nada adentro).',
+          desc: 'Arrastra <em>Establecer operacion a</em>. Ve a <b>Textos</b> y conéctale un bloque de <em>texto</em> vacío (sin escribir nada adentro).',
           highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
         },
         {
           titulo: 'Inicializa numero1 vacío',
-          desc: 'Arrastra <em>Establecer numero1 a</em> y conectale otro bloque de <em>texto</em> vacío.',
+          desc: 'Arrastra <em>Establecer numero1 a</em> y conéctale otro bloque de <em>texto</em> vacío.',
           highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
         },
         {
           titulo: 'Inicializa numero2 vacío',
-          desc: 'Arrastra <em>Establecer numero2 a</em> y conectale otro bloque de <em>texto</em> vacío.',
+          desc: 'Arrastra <em>Establecer numero2 a</em> y conéctale otro bloque de <em>texto</em> vacío.',
           highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
         },
         {
           titulo: 'Inicializa indice_num en 0',
-          desc: 'Arrastra <em>Establecer indice_num a</em> y conectale un <em>Número</em> con valor <b>0</b>.',
+          desc: 'Arrastra <em>Establecer indice_num a</em> y conéctale un <em>Número</em> con valor <b>0</b>.',
           highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
         },
         {
           titulo: 'Inicializa digito_presionado en falso',
-          desc: 'Arrastra <em>Establecer digito_presionado a</em>. Ve a <b>Lógica</b> y conectale el bloque <em>verdadero/falso</em>, dejalo en <b>falso</b>.',
+          desc: 'Arrastra <em>Establecer digito_presionado a</em>. Ve a <b>Lógica</b> y conéctale el bloque <em>verdadero/falso</em>, déjalo en <b>falso</b>.',
           highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
         },
 
@@ -556,7 +556,7 @@
           desc: 'Arrastra <em>Escribir texto en pantalla</em>, justo debajo. Escribe <b>"7"</b>, en X=<b>35</b>, Y=<b>174</b> (el centro del cuadrado), color blanco, tamaño <b>24</b>. Esta pareja de 2 bloques (fondo + número) se repite para los otros 15 botones — de acá en más vas a armar lo mismo, cambiando posición y texto.',
           highlightCat: 'Inicio', expandCat: null, bloque: 'game_show_text', bloqueLabel: 'Escribir texto en pantalla'
         },
-        { titulo: 'Botón "8"', desc: 'Repetí el mismo par de bloques (rectángulo + texto): X=<b>80</b> Y=<b>140</b> para el fondo, texto <b>"8"</b> en X=<b>100</b> Y=<b>174</b>.', highlightCat: 'Inicio', expandCat: null, bloque: 'game_draw_rect', bloqueLabel: 'rectángulo sólido' },
+        { titulo: 'Botón "8"', desc: 'Repite el mismo par de bloques (rectángulo + texto): X=<b>80</b> Y=<b>140</b> para el fondo, texto <b>"8"</b> en X=<b>100</b> Y=<b>174</b>.', highlightCat: 'Inicio', expandCat: null, bloque: 'game_draw_rect', bloqueLabel: 'rectángulo sólido' },
         { titulo: 'Botón "9"', desc: 'Fondo en X=<b>145</b> Y=<b>140</b>; texto <b>"9"</b> en X=<b>165</b> Y=<b>174</b>.', highlightCat: 'Inicio', expandCat: null, bloque: 'game_draw_rect', bloqueLabel: 'rectángulo sólido' },
         { titulo: 'Botón "/"', desc: 'Fondo en X=<b>210</b> Y=<b>140</b>; texto <b>"/"</b> en X=<b>230</b> Y=<b>174</b>.', highlightCat: 'Inicio', expandCat: null, bloque: 'game_draw_rect', bloqueLabel: 'rectángulo sólido' },
         { titulo: 'Botón "4"', desc: 'Fondo en X=<b>15</b> Y=<b>205</b>; texto <b>"4"</b> en X=<b>35</b> Y=<b>239</b>.', highlightCat: 'Inicio', expandCat: null, bloque: 'game_draw_rect', bloqueLabel: 'rectángulo sólido' },
@@ -585,7 +585,7 @@
         },
         {
           titulo: 'Bloque: ¿Se hizo clic?',
-          desc: 'Ve a <b>Inicio</b> y arrastra <em>¿Se hizo clic?</em> dentro del hueco de la condición del "Si" que acabás de poner. Todo lo que sigue va <b>dentro</b> de este "Si".',
+          desc: 'Ve a <b>Inicio</b> y arrastra <em>¿Se hizo clic?</em> dentro del hueco de la condición del "Si" que acabas de poner. Todo lo que sigue va <b>dentro</b> de este "Si".',
           highlightCat: 'Inicio', expandCat: null, bloque: 'mouse_clicked', bloqueLabel: '¿Se hizo clic?'
         },
 
@@ -607,42 +607,42 @@
         },
         {
           titulo: 'X mayor o igual a 15',
-          desc: 'Ve a <b>Lógica</b> y arrastra un bloque de <em>comparación</em> (▼) en el primer hueco del "y". Cambialo a <b>≥</b>. A la izquierda va el bloque <em>Posición X del mouse</em> (de <b>Inicio</b>); a la derecha un <em>Número</em> con valor <b>15</b>.',
+          desc: 'Ve a <b>Lógica</b> y arrastra un bloque de <em>comparación</em> (▼) en el primer hueco del "y". Cámbialo a <b>≥</b>. A la izquierda va el bloque <em>Posición X del mouse</em> (de <b>Inicio</b>); a la derecha un <em>Número</em> con valor <b>15</b>.',
           highlightCat: 'Lógica', expandCat: null, bloque: 'logic_compare', bloqueLabel: 'comparación'
         },
         {
           titulo: 'X menor o igual a 70',
-          desc: 'Arrastra otro bloque de <em>comparación</em> en el segundo hueco del "y", cambialo a <b>≤</b>. Izquierda: <em>Posición X del mouse</em> otra vez. Derecha: <em>Número</em> con valor <b>70</b>.',
+          desc: 'Arrastra otro bloque de <em>comparación</em> en el segundo hueco del "y", cámbialo a <b>≤</b>. Izquierda: <em>Posición X del mouse</em> otra vez. Derecha: <em>Número</em> con valor <b>70</b>.',
           highlightCat: 'Lógica', expandCat: null, bloque: 'logic_compare', bloqueLabel: 'comparación'
         },
         {
           titulo: 'Bloque: Posición X del mouse',
-          desc: 'Ve a <b>Inicio</b> y arrastra <em>Posición X del mouse</em> — lo necesitás dos veces (una en cada comparación que armaste).',
+          desc: 'Ve a <b>Inicio</b> y arrastra <em>Posición X del mouse</em> — lo necesitas dos veces (una en cada comparación que armaste).',
           highlightCat: 'Inicio', expandCat: null, bloque: 'mouse_x', bloqueLabel: 'Posición X del mouse'
         },
         {
           titulo: 'Dentro: si Y está en el rango del botón 7',
-          desc: '<b>Dentro</b> del "Si" que acabás de armar (el de X), ve a <b>Lógica</b> y arrastra otro <em>Si ... hacer</em>. Armá la misma condición "y" pero con <em>Posición Y del mouse</em> (de <b>Inicio</b>), <b>≥ 140</b> y <b>≤ 195</b>.',
+          desc: '<b>Dentro</b> del "Si" que acabas de armar (el de X), ve a <b>Lógica</b> y arrastra otro <em>Si ... hacer</em>. Arma la misma condición "y" pero con <em>Posición Y del mouse</em> (de <b>Inicio</b>), <b>≥ 140</b> y <b>≤ 195</b>.',
           highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer'
         },
         {
           titulo: 'Bloque: Posición Y del mouse',
-          desc: 'Ve a <b>Inicio</b> y arrastra <em>Posición Y del mouse</em> — también lo necesitás dos veces, en las dos comparaciones de Y.',
+          desc: 'Ve a <b>Inicio</b> y arrastra <em>Posición Y del mouse</em> — también lo necesitas dos veces, en las dos comparaciones de Y.',
           highlightCat: 'Inicio', expandCat: null, bloque: 'mouse_y', bloqueLabel: 'Posición Y del mouse'
         },
         {
           titulo: 'Registra el dígito 7',
-          desc: '<b>Dentro</b> del "Si" de Y (el más adentro de todos), ve a <b>Variables</b> y arrastra <em>Establecer numero a</em>. Conectale un <em>Número</em> con valor <b>7</b>.',
+          desc: '<b>Dentro</b> del "Si" de Y (el más adentro de todos), ve a <b>Variables</b> y arrastra <em>Establecer numero a</em>. Conéctale un <em>Número</em> con valor <b>7</b>.',
           highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
         },
         {
           titulo: 'Marca que se apretó un dígito',
-          desc: 'Justo debajo, arrastra <em>Establecer digito_presionado a</em> y conectale el bloque <em>verdadero/falso</em> (de <b>Lógica</b>) en <b>verdadero</b>. ¡El botón 7 ya está completo! Los demás dígitos son exactamente esta misma estructura (dos "Si" anidados + estos dos "Establecer"), cambiando solo los 4 números del rango y el dígito.',
+          desc: 'Justo debajo, arrastra <em>Establecer digito_presionado a</em> y conéctale el bloque <em>verdadero/falso</em> (de <b>Lógica</b>) en <b>verdadero</b>. ¡El botón 7 ya está completo! Los demás dígitos son exactamente esta misma estructura (dos "Si" anidados + estos dos "Establecer"), cambiando solo los 4 números del rango y el dígito.',
           highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
         },
 
         /* ───────────── Resto de los dígitos (compacto) ───────────── */
-        { titulo: 'Botón 8: detectar y registrar', desc: 'Repetí toda la estructura del botón 7 (los dos "Si" anidados + los dos "Establecer"), como nuevo bloque <b>afuera</b> del "Si" del 7 (mismo nivel, no adentro). Rango: X 80-135, Y 140-195. <em>numero</em> = <b>8</b>, <em>digito_presionado</em> = verdadero.', highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer' },
+        { titulo: 'Botón 8: detectar y registrar', desc: 'Repite toda la estructura del botón 7 (los dos "Si" anidados + los dos "Establecer"), como nuevo bloque <b>afuera</b> del "Si" del 7 (mismo nivel, no adentro). Rango: X 80-135, Y 140-195. <em>numero</em> = <b>8</b>, <em>digito_presionado</em> = verdadero.', highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer' },
         { titulo: 'Botón 9: detectar y registrar', desc: 'Misma estructura. Rango: X 145-200, Y 140-195. <em>numero</em> = <b>9</b>.', highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer' },
         { titulo: 'Botón 4: detectar y registrar', desc: 'Misma estructura. Rango: X 15-70, Y 205-260. <em>numero</em> = <b>4</b>.', highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer' },
         { titulo: 'Botón 5: detectar y registrar', desc: 'Misma estructura. Rango: X 80-135, Y 205-260. <em>numero</em> = <b>5</b>.', highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer' },
@@ -650,27 +650,27 @@
         { titulo: 'Botón 1: detectar y registrar', desc: 'Misma estructura. Rango: X 15-70, Y 270-325. <em>numero</em> = <b>1</b>.', highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer' },
         { titulo: 'Botón 2: detectar y registrar', desc: 'Misma estructura. Rango: X 80-135, Y 270-325. <em>numero</em> = <b>2</b>.', highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer' },
         { titulo: 'Botón 3: detectar y registrar', desc: 'Misma estructura. Rango: X 145-200, Y 270-325. <em>numero</em> = <b>3</b>.', highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer' },
-        { titulo: 'Botón 0: detectar y registrar', desc: 'Misma estructura. Rango: X 80-135, Y 335-390. <em>numero</em> = <b>0</b>. Con este ya tenés los 10 dígitos funcionando.', highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer' },
+        { titulo: 'Botón 0: detectar y registrar', desc: 'Misma estructura. Rango: X 80-135, Y 335-390. <em>numero</em> = <b>0</b>. Con este ya tienes los 10 dígitos funcionando.', highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer' },
 
         /* ───────────── Operadores ───────────── */
         {
           titulo: 'Botón "/": arma la detección',
-          desc: 'Afuera de los "Si" de los dígitos, armá la misma estructura de dos "Si" anidados para el botón <b>/</b>: rango X 210-265, Y 140-195 (volvé a los pasos del botón 7 si te perdiste con los bloques de comparación).',
+          desc: 'Afuera de los "Si" de los dígitos, arma la misma estructura de dos "Si" anidados para el botón <b>/</b>: rango X 210-265, Y 140-195 (vuelve a los pasos del botón 7 si te perdiste con los bloques de comparación).',
           highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer'
         },
         {
           titulo: 'Guarda la operación "/"',
-          desc: 'Dentro del "Si" de Y, ve a <b>Variables</b> y arrastra <em>Establecer operacion a</em>. Conectale un bloque de <em>texto</em> (<b>Textos</b>) con el símbolo <b>"/"</b>.',
+          desc: 'Dentro del "Si" de Y, ve a <b>Variables</b> y arrastra <em>Establecer operacion a</em>. Conéctale un bloque de <em>texto</em> (<b>Textos</b>) con el símbolo <b>"/"</b>.',
           highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
         },
         {
           titulo: 'Avanza indice_num',
-          desc: 'Justo debajo, ve a <b>Variables</b> y arrastra <em>Cambiar indice_num por</em>. Dejalo en <b>1</b> — así el próximo dígito que escribas va al <em>numero2</em> en vez de al <em>numero1</em>.',
+          desc: 'Justo debajo, ve a <b>Variables</b> y arrastra <em>Cambiar indice_num por</em>. Déjalo en <b>1</b> — así el próximo dígito que escribas va al <em>numero2</em> en vez de al <em>numero1</em>.',
           highlightCat: 'Variables', expandCat: null, bloque: 'math_change', bloqueLabel: 'Cambiar variable por'
         },
         {
           titulo: 'Muestra el símbolo "/" en pantalla',
-          desc: 'Justo debajo, ve a <b>Inicio</b> y arrastra <em>Escribir texto en pantalla</em>. En el hueco de texto metele <em>obtener operacion</em> (<b>Variables</b>) en vez de escribir texto fijo — así siempre muestra el símbolo que acabás de guardar. X=<em>obtener posicion_x</em>, Y=<b>50</b>, color blanco, tamaño <b>24</b>. Sin este paso el símbolo de la operación nunca aparecería en pantalla.',
+          desc: 'Justo debajo, ve a <b>Inicio</b> y arrastra <em>Escribir texto en pantalla</em>. En el hueco de texto métele <em>obtener operacion</em> (<b>Variables</b>) en vez de escribir texto fijo — así siempre muestra el símbolo que acabas de guardar. X=<em>obtener posicion_x</em>, Y=<b>50</b>, color blanco, tamaño <b>24</b>. Sin este paso el símbolo de la operación nunca aparecería en pantalla.',
           highlightCat: 'Inicio', expandCat: null, bloque: 'game_show_text', bloqueLabel: 'Escribir texto en pantalla'
         },
         {
@@ -680,12 +680,12 @@
         },
         { titulo: 'Botón "X" (multiplicar): detectar y guardar', desc: 'Misma estructura completa (dos "Si" + Establecer operacion + Cambiar indice_num + mostrar símbolo + Cambiar posicion_x). Rango: X 210-265, Y 205-260. <em>operacion</em> = <b>"X"</b> mayúscula.', highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer' },
         { titulo: 'Botón "-": detectar y guardar', desc: 'Misma estructura completa. Rango: X 210-265, Y 270-325. <em>operacion</em> = <b>"-"</b>.', highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer' },
-        { titulo: 'Botón "+": detectar y guardar', desc: 'Misma estructura completa. Rango: X 210-265, Y 335-390. <em>operacion</em> = <b>"+"</b>. Los 4 operadores ya están listos, y ahora su símbolo se ve en pantalla apenas los tocás.', highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer' },
+        { titulo: 'Botón "+": detectar y guardar', desc: 'Misma estructura completa. Rango: X 210-265, Y 335-390. <em>operacion</em> = <b>"+"</b>. Los 4 operadores ya están listos, y ahora su símbolo se ve en pantalla apenas los tocas.', highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer' },
 
         /* ───────────── Botón "=" ───────────── */
         {
           titulo: 'Botón "=": arma la detección',
-          desc: 'Armá la estructura de dos "Si" anidados para <b>=</b>: rango X 145-200, Y 335-390. Todo lo que sigue va dentro del "Si" de Y.',
+          desc: 'Arma la estructura de dos "Si" anidados para <b>=</b>: rango X 145-200, Y 335-390. Todo lo que sigue va dentro del "Si" de Y.',
           highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer'
         },
         {
@@ -695,7 +695,7 @@
         },
         {
           titulo: 'Si la operación fue "/"',
-          desc: 'Ve a <b>Lógica</b> y arrastra otro <em>Si ... hacer</em>, debajo. Hacé clic en el <b>⚙️</b> (engranaje) del bloque y arrastrale <b>3 "si no, si"</b> (else if) adentro — vas a necesitar 4 condiciones en total, una por operador.',
+          desc: 'Ve a <b>Lógica</b> y arrastra otro <em>Si ... hacer</em>, debajo. Haz clic en el <b>⚙️</b> (engranaje) del bloque y arrástrale <b>3 "si no, si"</b> (else if) adentro — vas a necesitar 4 condiciones en total, una por operador.',
           highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer'
         },
         {
@@ -705,12 +705,12 @@
         },
         {
           titulo: 'Calcula la división',
-          desc: 'Dentro del primer "hacer", ve a <b>Variables</b> y arrastra <em>Establecer guardar_resultado a</em>. Conectale un bloque <em>÷ (división)</em> de <b>Matemáticas</b>.',
+          desc: 'Dentro del primer "hacer", ve a <b>Variables</b> y arrastra <em>Establecer guardar_resultado a</em>. Conéctale un bloque <em>÷ (división)</em> de <b>Matemáticas</b>.',
           highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
         },
         {
           titulo: 'Convierte numero1 y numero2 a número',
-          desc: 'numero1/numero2 son <b>texto</b> (vas pegando dígitos) — para hacer cuentas hay que convertirlos. Ve a <b>Matemáticas</b> y arrastra dos bloques <em>convertir a entero</em>, uno en cada hueco de la división. Dentro de cada uno, desde <b>Variables</b>, metele <em>obtener numero1</em> y <em>obtener numero2</em> respectivamente.',
+          desc: 'numero1/numero2 son <b>texto</b> (vas pegando dígitos) — para hacer cuentas hay que convertirlos. Ve a <b>Matemáticas</b> y arrastra dos bloques <em>convertir a entero</em>, uno en cada hueco de la división. Dentro de cada uno, desde <b>Variables</b>, métele <em>obtener numero1</em> y <em>obtener numero2</em> respectivamente.',
           highlightCat: 'Matemáticas', expandCat: null, bloque: 'convert_to_int', bloqueLabel: 'convertir a entero'
         },
         {
@@ -750,7 +750,7 @@
         },
         {
           titulo: 'Muestra el resultado',
-          desc: 'Debajo, arrastra <em>Escribir texto en pantalla</em>. En el hueco de texto metele <em>obtener guardar_resultado</em> (<b>Variables</b>). X=<b>15</b>, Y=<b>90</b>, color blanco, tamaño <b>24</b>.',
+          desc: 'Debajo, arrastra <em>Escribir texto en pantalla</em>. En el hueco de texto métele <em>obtener guardar_resultado</em> (<b>Variables</b>). X=<b>15</b>, Y=<b>90</b>, color blanco, tamaño <b>24</b>.',
           highlightCat: 'Inicio', expandCat: null, bloque: 'game_show_text', bloqueLabel: 'Escribir texto en pantalla'
         },
         {
@@ -767,12 +767,12 @@
         /* ───────────── Botón "C" ───────────── */
         {
           titulo: 'Botón "C": arma la detección',
-          desc: 'Armá la estructura de dos "Si" anidados para <b>C</b>: rango X 15-70, Y 335-390.',
+          desc: 'Arma la estructura de dos "Si" anidados para <b>C</b>: rango X 15-70, Y 335-390.',
           highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer'
         },
         {
           titulo: 'C: borra toda la pantalla de arriba',
-          desc: 'Dentro, copiá el mismo <em>rectángulo sólido</em> que usaste en "=" para limpiar la pantalla de un solo golpe: X=<b>0</b>, Y=<b>0</b>, ancho=<b>280</b>, alto=<b>130</b>, color <b>#1a1a2e</b>. <b>Importante:</b> usá un único rectángulo que cubra toda la franja (no dos rectángulos separados) — si quedan huecos sin cubrir entre ellos, pueden quedar pixeles de texto viejo pegados en pantalla.',
+          desc: 'Dentro, copia el mismo <em>rectángulo sólido</em> que usaste en "=" para limpiar la pantalla de un solo golpe: X=<b>0</b>, Y=<b>0</b>, ancho=<b>280</b>, alto=<b>130</b>, color <b>#1a1a2e</b>. <b>Importante:</b> usa un único rectángulo que cubra toda la franja (no dos rectángulos separados) — si quedan huecos sin cubrir entre ellos, pueden quedar pixeles de texto viejo pegados en pantalla.',
           highlightCat: 'Inicio', expandCat: null, bloque: 'game_draw_rect', bloqueLabel: 'rectángulo sólido'
         },
         {
@@ -789,7 +789,7 @@
         },
         {
           titulo: 'Si se presionó un dígito',
-          desc: 'Ve a <b>Lógica</b> y arrastra <em>Si ... hacer</em>. En la condición, desde <b>Variables</b>, metele directamente <em>obtener digito_presionado</em> (es verdadero/falso, no hace falta comparar con nada más).',
+          desc: 'Ve a <b>Lógica</b> y arrastra <em>Si ... hacer</em>. En la condición, desde <b>Variables</b>, métele directamente <em>obtener digito_presionado</em> (es verdadero/falso, no hace falta comparar con nada más).',
           highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer'
         },
         {
@@ -814,7 +814,7 @@
         },
         {
           titulo: 'Muestra el dígito en pantalla',
-          desc: 'Afuera de ese "Si/si no si" (pero todavía dentro del "Si digito_presionado"), arrastra <em>Escribir texto en pantalla</em>. Metele <em>obtener numero</em> como texto, <em>obtener posicion_x</em> como X, Y=<b>50</b>, color blanco, tamaño <b>24</b>.',
+          desc: 'Afuera de ese "Si/si no si" (pero todavía dentro del "Si digito_presionado"), arrastra <em>Escribir texto en pantalla</em>. Métele <em>obtener numero</em> como texto, <em>obtener posicion_x</em> como X, Y=<b>50</b>, color blanco, tamaño <b>24</b>.',
           highlightCat: 'Inicio', expandCat: null, bloque: 'game_show_text', bloqueLabel: 'Escribir texto en pantalla'
         },
         {
@@ -831,12 +831,12 @@
         /* ───────────── Probar ───────────── */
         {
           titulo: 'Prueba tu calculadora',
-          desc: 'Ve a la vista <b>Juego</b> (ícono de control 🎮 arriba a la derecha) y hacé clic en los botones: probá una suma simple y fijate que el símbolo "+" aparezca en pantalla al tocarlo, y también escribí dos veces el mismo dígito seguido (ej. "55") para confirmar que no se traba.',
+          desc: 'Ve a la vista <b>Juego</b> (ícono de control 🎮 arriba a la derecha) y haz clic en los botones: prueba una suma simple y fíjate que el símbolo "+" aparezca en pantalla al tocarlo, y también escribe dos veces el mismo dígito seguido (ej. "55") para confirmar que no se traba.',
           highlightElement: '#btnGame'
         },
         {
           titulo: '¡Listo!',
-          desc: 'Ya tenés una calculadora funcional con 16 botones grandes: suma, resta, multiplicación, división, dígitos repetidos, el símbolo de la operación visible y un botón C que limpia todo sin dejar pixeles pegados. 🧮',
+          desc: 'Ya tienes una calculadora funcional con 16 botones grandes: suma, resta, multiplicación, división, dígitos repetidos, el símbolo de la operación visible y un botón C que limpia todo sin dejar pixeles pegados. 🧮',
           highlightCat: null, bloque: null
         }
       ]
@@ -854,7 +854,7 @@
         },
         {
           titulo: 'Crea un proyecto nuevo',
-          desc: 'Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class="icon-btn icon-new"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).',
+          desc: 'Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class="icon-btn icon-new"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).',
           highlightElement: '#btnArchivo'
         },
         {
@@ -1053,7 +1053,7 @@
         },
         {
           titulo: 'Crea un proyecto nuevo',
-          desc: 'Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class="icon-btn icon-new"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).',
+          desc: 'Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class="icon-btn icon-new"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).',
           highlightElement: '#btnArchivo'
         },
         {
@@ -1258,7 +1258,7 @@
         },
         {
           titulo: 'Avanza el contador de fotogramas',
-          desc: 'Afuera del "Si el obstáculo llega al fondo" (pero dentro del "Si jugando"), ve a <b>Variables</b> y arrastra <em>Cambiar contador por</em>. Dejalo en <b>1</b>.',
+          desc: 'Afuera del "Si el obstáculo llega al fondo" (pero dentro del "Si jugando"), ve a <b>Variables</b> y arrastra <em>Cambiar contador por</em>. Déjalo en <b>1</b>.',
           highlightCat: 'Variables', expandCat: null, bloque: 'math_change', bloqueLabel: 'Cambiar variable por'
         },
         {
@@ -1293,7 +1293,7 @@
         },
         {
           titulo: 'Suma un segundo sobrevivido',
-          desc: 'Debajo, todavía dentro del mismo <b>hacer</b>, ve a <b>Variables</b> y arrastra <em>Cambiar segundos por</em>. Dejalo en <b>1</b>.',
+          desc: 'Debajo, todavía dentro del mismo <b>hacer</b>, ve a <b>Variables</b> y arrastra <em>Cambiar segundos por</em>. Déjalo en <b>1</b>.',
           highlightCat: 'Variables', expandCat: null, bloque: 'math_change', bloqueLabel: 'Cambiar variable por'
         },
         {
@@ -1318,7 +1318,7 @@
         },
         {
           titulo: 'Comprueba el color del choque',
-          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>¿Toca este color?</em> en la condición. Usa <b>exactamente el mismo color</b> que le pusiste al rectángulo (por ejemplo <b>#ff3b3b</b>). <b>Importante:</b> este bloque revisa qué color hay dibujado debajo del jugador <em>en este momento</em> -- si lo revisás después de dibujar al jugador, lo único que vas a encontrar ahí es el propio color del jugador, nunca el del obstáculo. Por eso el choque se comprueba <b>antes</b> de dibujar al jugador.',
+          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>¿Toca este color?</em> en la condición. Usa <b>exactamente el mismo color</b> que le pusiste al rectángulo (por ejemplo <b>#ff3b3b</b>). <b>Importante:</b> este bloque revisa qué color hay dibujado debajo del jugador <em>en este momento</em> -- si lo revisas después de dibujar al jugador, lo único que vas a encontrar ahí es el propio color del jugador, nunca el del obstáculo. Por eso el choque se comprueba <b>antes</b> de dibujar al jugador.',
           highlightCat: 'Inicio', expandCat: null, bloque: 'touching_color', bloqueLabel: '¿Toca este color?'
         },
         {
@@ -1328,7 +1328,7 @@
         },
         {
           titulo: 'Escribe falso',
-          desc: 'Ve a <b>Lógica</b> y arrastra el bloque <em>verdadero/falso</em>. Cambialo a <b>falso</b>: el choque apaga el juego.',
+          desc: 'Ve a <b>Lógica</b> y arrastra el bloque <em>verdadero/falso</em>. Cámbialo a <b>falso</b>: el choque apaga el juego.',
           highlightCat: 'Lógica', expandCat: null, bloque: 'logic_boolean', bloqueLabel: 'verdadero/falso'
         },
         {
@@ -1343,7 +1343,7 @@
         },
         {
           titulo: 'Si ya NO estás jugando: muestra el choque',
-          desc: 'Bajá hasta la rama <b>"si no"</b> del primer "Si jugando" (hacé clic en el <b>⚙️</b> de ese bloque y arrastrale un "si no" si todavía no lo tiene). Ve a <b>Inicio</b> y arrastra <em>Escribir texto en pantalla</em> ahí dentro, en X=<b>90</b>, Y=<b>170</b>, tamaño <b>22</b>.',
+          desc: 'Baja hasta la rama <b>"si no"</b> del primer "Si jugando" (haz clic en el <b>⚙️</b> de ese bloque y arrástrale un "si no" si todavía no lo tiene). Ve a <b>Inicio</b> y arrastra <em>Escribir texto en pantalla</em> ahí dentro, en X=<b>90</b>, Y=<b>170</b>, tamaño <b>22</b>.',
           highlightCat: 'Inicio', expandCat: null, bloque: 'game_show_text', bloqueLabel: 'Escribir texto en pantalla'
         },
         {
@@ -1376,12 +1376,12 @@
       steps: [
         {
           titulo: '¿Qué aprenderemos?',
-          desc: 'Crearás un juego con contador de <b>puntos</b> y <b>tiempo</b>: cada vez que presiones la barra espaciadora sumas un punto, y tenés 30 segundos <b>de verdad</b> antes de que el juego termine y te muestre tu puntuación final. Para que el tiempo baje a ritmo de reloj (no en cada vuelta del ciclo, que pasa muchas veces por segundo) vas a usar un <b>contador de fotogramas</b>: el truco que usan la mayoría de los juegos simples para medir segundos.',
+          desc: 'Crearás un juego con contador de <b>puntos</b> y <b>tiempo</b>: cada vez que presiones la barra espaciadora sumas un punto, y tienes 30 segundos <b>de verdad</b> antes de que el juego termine y te muestre tu puntuación final. Para que el tiempo baje a ritmo de reloj (no en cada vuelta del ciclo, que pasa muchas veces por segundo) vas a usar un <b>contador de fotogramas</b>: el truco que usan la mayoría de los juegos simples para medir segundos.',
           highlightCat: null, bloque: null
         },
         {
           titulo: 'Crea un proyecto nuevo',
-          desc: 'Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class="icon-btn icon-new"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).',
+          desc: 'Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class="icon-btn icon-new"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).',
           highlightElement: '#btnArchivo'
         },
         {
@@ -1506,7 +1506,7 @@
         },
         {
           titulo: 'Avanza el contador de fotogramas',
-          desc: 'Afuera del "Si espacio" (pero todavía dentro del "Si jugando"), ve a <b>Variables</b> y arrastra <em>Cambiar contador por</em>. Dejalo en <b>1</b>: este bloque se ejecuta en cada vuelta del ciclo, a diferencia del de espacio que depende de la tecla.',
+          desc: 'Afuera del "Si espacio" (pero todavía dentro del "Si jugando"), ve a <b>Variables</b> y arrastra <em>Cambiar contador por</em>. Déjalo en <b>1</b>: este bloque se ejecuta en cada vuelta del ciclo, a diferencia del de espacio que depende de la tecla.',
           highlightCat: 'Variables', expandCat: null, bloque: 'math_change', bloqueLabel: 'Cambiar variable por'
         },
         {
@@ -1541,7 +1541,7 @@
         },
         {
           titulo: 'Resta 1 al tiempo',
-          desc: 'Debajo, todavía dentro del mismo <b>hacer</b>, ve a <b>Variables</b> y arrastra <em>Cambiar tiempo por</em>. Dejalo en <b>-1</b>: recién ahora el tiempo baja, una vez por segundo real.',
+          desc: 'Debajo, todavía dentro del mismo <b>hacer</b>, ve a <b>Variables</b> y arrastra <em>Cambiar tiempo por</em>. Déjalo en <b>-1</b>: recién ahora el tiempo baja, una vez por segundo real.',
           highlightCat: 'Variables', expandCat: null, bloque: 'math_change', bloqueLabel: 'Cambiar variable por'
         },
         {
@@ -1571,7 +1571,7 @@
         },
         {
           titulo: 'Escribe falso',
-          desc: 'Ve a <b>Lógica</b> y arrastra el bloque <em>verdadero/falso</em>. Cambialo a <b>falso</b>.',
+          desc: 'Ve a <b>Lógica</b> y arrastra el bloque <em>verdadero/falso</em>. Cámbialo a <b>falso</b>.',
           highlightCat: 'Lógica', expandCat: null, bloque: 'logic_boolean', bloqueLabel: 'verdadero/falso'
         },
         {
@@ -1596,7 +1596,7 @@
         },
         {
           titulo: 'Si ya NO estás jugando: muestra el resultado final',
-          desc: 'Bajá hasta la rama <b>"si no"</b> del primer "Si jugando" (hacé clic en el <b>⚙️</b> de ese bloque y arrastrale un "si no" si todavía no lo tiene). Ve a <b>Inicio</b> y arrastra <em>Escribir texto en pantalla</em> ahí dentro, en X=<b>100</b>, Y=<b>170</b>, tamaño <b>22</b>.',
+          desc: 'Baja hasta la rama <b>"si no"</b> del primer "Si jugando" (haz clic en el <b>⚙️</b> de ese bloque y arrástrale un "si no" si todavía no lo tiene). Ve a <b>Inicio</b> y arrastra <em>Escribir texto en pantalla</em> ahí dentro, en X=<b>100</b>, Y=<b>170</b>, tamaño <b>22</b>.',
           highlightCat: 'Inicio', expandCat: null, bloque: 'game_show_text', bloqueLabel: 'Escribir texto en pantalla'
         },
         {
@@ -1629,12 +1629,12 @@
       steps: [
         {
           titulo: '¿Qué aprenderemos?',
-          desc: 'Construirás un laberinto de <b>verdad</b>: 3 paredes que bloquean el paso de verdad (si las tocás, volvés al inicio) y una meta al otro lado que tenés que alcanzar para escapar. Vas a practicar movimiento por teclado y <b>detección de colisiones por color</b>, la misma técnica de "¡Esquiva y Sobrevive!" pero usada para bloquear el paso en vez de terminar el juego.',
+          desc: 'Construirás un laberinto de <b>verdad</b>: 3 paredes que bloquean el paso de verdad (si las tocas, vuelves al inicio) y una meta al otro lado que tienes que alcanzar para escapar. Vas a practicar movimiento por teclado y <b>detección de colisiones por color</b>, la misma técnica de "¡Esquiva y Sobrevive!" pero usada para bloquear el paso en vez de terminar el juego.',
           highlightCat: null, bloque: null
         },
         {
           titulo: 'Crea un proyecto nuevo',
-          desc: 'Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class="icon-btn icon-new"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).',
+          desc: 'Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class="icon-btn icon-new"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).',
           highlightElement: '#btnArchivo'
         },
         {
@@ -1669,7 +1669,7 @@
         },
         {
           titulo: 'Dibuja la segunda pared',
-          desc: 'Ve a <b>Inicio</b> y arrastra otro bloque <em>Rectángulo sólido</em>. Usa X=<b>250</b>, Y=<b>110</b>, ancho=<b>20</b>, alto=<b>250</b>, mismo color <b>#777777</b>. Esta vez el hueco libre queda arriba: para pasar tenés que subir primero.',
+          desc: 'Ve a <b>Inicio</b> y arrastra otro bloque <em>Rectángulo sólido</em>. Usa X=<b>250</b>, Y=<b>110</b>, ancho=<b>20</b>, alto=<b>250</b>, mismo color <b>#777777</b>. Esta vez el hueco libre queda arriba: para pasar tienes que subir primero.',
           highlightCat: 'Inicio', expandCat: null, bloque: 'game_draw_rect', bloqueLabel: 'Rectángulo sólido'
         },
         {
@@ -1744,7 +1744,7 @@
         },
         {
           titulo: 'Detecta si toca una pared',
-          desc: 'Ve a <b>Lógica</b> y arrastra otro bloque <em>Si … hacer</em>, <b>antes</b> de dibujar al personaje (todavía no llegamos a ese bloque, pero recordalo: el orden importa, igual que en "¡Esquiva y Sobrevive!").',
+          desc: 'Ve a <b>Lógica</b> y arrastra otro bloque <em>Si … hacer</em>, <b>antes</b> de dibujar al personaje (todavía no llegamos a ese bloque, pero recuérdalo: el orden importa, igual que en "¡Esquiva y Sobrevive!").',
           highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer'
         },
         {
@@ -1754,7 +1754,7 @@
         },
         {
           titulo: 'La pared te manda de vuelta al inicio',
-          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>Poner personaje en X,Y</em> dentro del <b>hacer</b>. Usa X=<b>20</b>, Y=<b>20</b>: si tocás una pared, no podés atravesarla, volvés al principio.',
+          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>Poner personaje en X,Y</em> dentro del <b>hacer</b>. Usa X=<b>20</b>, Y=<b>20</b>: si tocas una pared, no puedes atravesarla, vuelves al principio.',
           highlightCat: 'Inicio', expandCat: null, bloque: 'sprite_set_pos', bloqueLabel: 'Poner personaje en X,Y'
         },
         {
@@ -1774,7 +1774,7 @@
         },
         {
           titulo: 'Espera un momento para festejar',
-          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>esperar … segundos</em>. Dejalo en <b>1.5</b>, para que te dé tiempo de leer el mensaje antes de volver a empezar.',
+          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>esperar … segundos</em>. Déjalo en <b>1.5</b>, para que te dé tiempo de leer el mensaje antes de volver a empezar.',
           highlightCat: 'Inicio', expandCat: null, bloque: 'game_wait', bloqueLabel: 'esperar … segundos'
         },
         {
@@ -1799,7 +1799,7 @@
         },
         {
           titulo: 'Dibuja el personaje',
-          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>Dibujar personaje</em>, <b>después</b> de comprobar la pared, la meta y el borde -- igual que en "¡Esquiva y Sobrevive!", si lo dibujás antes, los "¿Toca este color?" van a encontrar el color del propio personaje en vez del de las paredes.',
+          desc: 'Ve a <b>Inicio</b> y arrastra el bloque <em>Dibujar personaje</em>, <b>después</b> de comprobar la pared, la meta y el borde -- igual que en "¡Esquiva y Sobrevive!", si lo dibujas antes, los "¿Toca este color?" van a encontrar el color del propio personaje en vez del de las paredes.',
           highlightCat: 'Inicio', expandCat: null, bloque: 'sprite_draw', bloqueLabel: 'Dibujar personaje'
         },
         {
@@ -1814,7 +1814,7 @@
         },
         {
           titulo: 'Prueba tu laberinto',
-          desc: 'Ejecuta y recorre el laberinto con las flechas: bajá para pasar la primera pared, subí para pasar la segunda, volvé a bajar para pasar la tercera, y llegá al cuadrado verde para escapar. Si tocás una pared gris, volvés al inicio. Ajusta las paredes y prueba que la ruta sea posible antes de compartir tu juego.',
+          desc: 'Ejecuta y recorre el laberinto con las flechas: baja para pasar la primera pared, sube para pasar la segunda, vuelve a bajar para pasar la tercera, y llega al cuadrado verde para escapar. Si tocas una pared gris, vuelves al inicio. Ajusta las paredes y prueba que la ruta sea posible antes de compartir tu juego.',
           highlightElement: '#btnGameRun'
         }
       ]
@@ -1832,7 +1832,7 @@
         },
         {
           titulo: 'Crea un proyecto nuevo',
-          desc: 'Antes de empezar, abrí el menú <b>Archivo</b> y hacé clic en <b>Nuevo</b> <span class="icon-btn icon-new"></span> para partir de un workspace limpio (si tenías algo sin guardar, te va a pedir confirmación antes de borrarlo).',
+          desc: 'Antes de empezar, abre el menú <b>Archivo</b> y haz clic en <b>Nuevo</b> <span class="icon-btn icon-new"></span> para partir de un workspace limpio (si tenías algo sin guardar, te pedirá confirmación antes de borrarlo).',
           highlightElement: '#btnArchivo'
         },
         {
@@ -1907,7 +1907,7 @@
         },
         {
           titulo: '¿El clic cayó cerca del blanco?',
-          desc: 'Dentro del <b>hacer</b>, ve a <b>Lógica</b> y arrastra otro bloque <em>Si … hacer</em>. Hacé clic en el <b>⚙️</b> (engranaje) y arrastrale un <b>"si no"</b> adentro -- lo vas a necesitar para contar los fallos, no solo los aciertos.',
+          desc: 'Dentro del <b>hacer</b>, ve a <b>Lógica</b> y arrastra otro bloque <em>Si … hacer</em>. Haz clic en el <b>⚙️</b> (engranaje) y arrástrale un <b>"si no"</b> adentro -- lo vas a necesitar para contar los fallos, no solo los aciertos.',
           highlightCat: 'Lógica', expandCat: null, bloque: 'controls_if', bloqueLabel: 'Si … hacer'
         },
         {
@@ -1982,7 +1982,7 @@
         },
         {
           titulo: 'Si no acertaste: suma un fallo',
-          desc: 'Bajá hasta la rama <b>"si no"</b> del mismo bloque "Si" (la que agregaste con el engranaje). Ve a <b>Variables</b> y arrastra <em>Establecer fallos a</em> ahí dentro.',
+          desc: 'Baja hasta la rama <b>"si no"</b> del mismo bloque "Si" (la que agregaste con el engranaje). Ve a <b>Variables</b> y arrastra <em>Establecer fallos a</em> ahí dentro.',
           highlightCat: 'Variables', expandCat: null, bloque: 'variables_set', bloqueLabel: 'Establecer variable'
         },
         {
@@ -2017,7 +2017,7 @@
         },
         {
           titulo: 'Juega y mejora',
-          desc: 'Hacé clic justo sobre el blanco para sumar puntos -- si clicás lejos, suma a <b>fallos</b> en vez de a <b>puntos</b>. Ajusta el margen de 25 píxeles para que sea más o menos exigente.',
+          desc: 'Haz clic justo sobre el blanco para sumar puntos -- si haces clic lejos, suma a <b>fallos</b> en vez de a <b>puntos</b>. Ajusta el margen de 25 píxeles para que sea más o menos exigente.',
           highlightElement: '#btnGameRun'
         }
       ]

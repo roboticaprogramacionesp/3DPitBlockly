@@ -9,14 +9,14 @@
      usos  aplicaciones reales (pantalla final)
      retos [reto, pista]  — 3 por tutorial: fácil, medio y difícil
      quiz  [pregunta, [opciones], índice correcto, por qué]  — 3: fácil, medio y difícil
-     con   clave de TUTORIAL_CONCEPTOS (solo los inalámbricos)
+     con   clave de TUTORIAL_CONCEPTOS (el diagrama animado de «Cómo funciona»)
    Es contenido oficial (HTML confiable), no de tutoriales compartidos.
 ================================================================ */
 var TUTORIAL_EXTRAS = {
 
   /* ── LEDs y salidas ─────────────────────────────────────────── */
   led_basico: {
-    n: 1, t: 10,
+    n: 1, t: 10, con: "led",
     dato: "La palabra <b>LED</b> viene de <em>Light Emitting Diode</em> (diodo emisor de luz). Un LED gasta hasta 10 veces menos energía que un foco de filamento y puede durar más de 25,000 horas.",
     exp: "El bloque <em>Preparar LED</em> configura el pin 2 como <b>salida</b>. Cuando le dices <em>Encender</em>, el ESP32 pone <b>3.3 V</b> en ese pin y la corriente pasa por el LED; con <em>Apagar</em> pone <b>0 V</b> y la luz se apaga. Es la idea básica de toda la electrónica digital: <b>1 = hay voltaje, 0 = no hay</b>.",
     usos: ["Indicadores de encendido en aparatos", "Luces de aviso en tableros de autos", "Señales de estado en robots"],
@@ -33,7 +33,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   led_infinito: {
-    n: 1, t: 15,
+    n: 1, t: 15, con: "led",
     dato: "Tu ojo deja de ver el parpadeo cuando un LED prende y apaga más de unas <b>50 veces por segundo</b>: lo ves encendido fijo. Así funcionan muchas pantallas y luces de LED.",
     exp: "El ciclo <em>repetir mientras Verdadero</em> nunca termina, así que el ESP32 repite para siempre: encender, esperar, apagar, esperar. Los bloques <em>esperar</em> son clave: sin ellos el LED cambiaría tan rápido que no verías nada.",
     usos: ["Luces intermitentes de autos", "Faros y antenas con luz de aviso", "Indicador de \"estoy funcionando\" en aparatos"],
@@ -50,7 +50,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   semaforo: {
-    n: 1, t: 20,
+    n: 1, t: 20, con: "led",
     dato: "El primer semáforo eléctrico se instaló en <b>1914 en Cleveland, EE. UU.</b> Solo tenía luces roja y verde; el amarillo llegó años después para avisar el cambio.",
     exp: "El programa es una <b>secuencia</b>: cada bloque <em>Cambiar estado</em> enciende una luz y el <em>esperar</em> que le sigue decide cuánto dura. Como todo está dentro de un ciclo infinito, el semáforo vuelve a empezar solo.",
     usos: ["Control de tráfico", "Semáforos peatonales", "Señales de \"pase / espere\" en estacionamientos"],
@@ -67,7 +67,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   neopixel_basico: {
-    n: 2, t: 20,
+    n: 2, t: 20, con: "neopixel",
     dato: "Cada NeoPixel tiene <b>tres LEDs diminutos</b> (rojo, verde y azul) y un chip. Mezclando 256 niveles de cada uno se forman más de <b>16 millones de colores</b>.",
     exp: "El ESP32 manda por un solo cable una fila de números: el color del LED 0, del LED 1, del 2… Cada LED se queda con su color y pasa el resto al siguiente. Por eso necesitas <em>Actualizar LEDs</em>: hasta ese momento los colores solo están guardados en la memoria del ESP32.",
     usos: ["Tiras decorativas y luces de ambiente", "Indicadores de nivel (batería, volumen)", "Disfraces y wearables que cambian de color"],
@@ -85,7 +85,7 @@ var TUTORIAL_EXTRAS = {
 
   /* ── Entradas ───────────────────────────────────────────────── */
   boton: {
-    n: 2, t: 25,
+    n: 2, t: 25, con: "boton",
     dato: "Al presionar un botón, el metal <b>rebota</b> unas cuantas veces en milésimas de segundo. Sin una pequeña espera, el ESP32 podría contar varias pulsaciones con un solo toque.",
     exp: "El modo <b>PULL_UP</b> hace que el pin lea 1 mientras no presionas y 0 cuando presionas. El programa guarda el estado anterior y solo suma cuando el botón <b>cambia</b> de suelto a presionado; así cada pulsación cuenta una sola vez.",
     usos: ["Contadores de personas o piezas", "Timbres y botones de pánico", "Controles de videojuegos"],
@@ -102,7 +102,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   infrarrojo_basico: {
-    n: 1, t: 15,
+    n: 1, t: 15, con: "ir_linea",
     dato: "Los robots seguidores de línea de las competencias usan entre 2 y 8 sensores como este para saber si van <b>centrados</b> sobre la línea negra.",
     exp: "El sensor tiene un LED infrarrojo y un receptor. Lo blanco <b>refleja</b> la luz y el receptor la detecta (1); lo negro la <b>absorbe</b> y no regresa nada (0). El ESP32 solo lee si el pin está en 0 o en 1.",
     usos: ["Robots seguidores de línea", "Contadores de objetos en bandas", "Detectores de borde para que un robot no se caiga de la mesa"],
@@ -119,7 +119,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   analogico_adkey: {
-    n: 2, t: 30,
+    n: 2, t: 30, con: "adc",
     dato: "Muchos estéreos de auto usan este mismo truco: <b>un solo cable</b> para todos los botones del volante, cada uno con una resistencia distinta.",
     exp: "Cada botón forma un <b>divisor de voltaje</b> diferente, así que el pin recibe un voltaje distinto según la tecla. El ESP32 lo convierte en un número de 0 a 4095 (ADC) y tus bloques <em>si</em> revisan en qué rango cae para saber qué botón fue.",
     usos: ["Controles de volante en autos", "Menús de aparatos con pocos pines", "Paneles de control de robots"],
@@ -137,7 +137,7 @@ var TUTORIAL_EXTRAS = {
 
   /* ── Sonido y movimiento ───────────────────────────────────── */
   buzzer: {
-    n: 1, t: 15,
+    n: 1, t: 15, con: "buzzer",
     dato: "El oído humano escucha desde unos <b>20 Hz hasta 20,000 Hz</b>. La nota La que usan los músicos para afinar es de <b>440 Hz</b>.",
     exp: "El ESP32 prende y apaga el pin muy rápido (<b>PWM</b>). Cada vez la placa del buzzer vibra, y esas vibraciones mueven el aire: eso es el sonido. La <b>frecuencia</b> (Hz) es cuántas vibraciones hay por segundo: más alta = sonido más agudo.",
     usos: ["Alarmas y despertadores", "Avisos de microondas y lavadoras", "Sensores de reversa en autos"],
@@ -154,7 +154,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   servo: {
-    n: 1, t: 15,
+    n: 1, t: 15, con: "servo",
     dato: "Dentro de un servo hay un motor, engranes y un <b>potenciómetro</b> que mide en qué ángulo está el eje. Así el servo se corrige solo hasta llegar a la posición exacta.",
     exp: "El ESP32 manda un pulso cada 20 milisegundos. El <b>ancho</b> del pulso indica el ángulo: más o menos 0.5 ms = 0° y 2.5 ms = 180°. El circuito del servo compara ese ángulo con el de su eje y mueve el motor hasta igualarlo.",
     usos: ["Brazos robóticos", "Timones y alerones de aviones a escala", "Plumas de estacionamiento y compuertas"],
@@ -171,7 +171,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   stepper_motor: {
-    n: 2, t: 15,
+    n: 2, t: 15, con: "stepper",
     dato: "El 28BYJ-48 necesita unos <b>2048 pasos</b> para dar una vuelta completa: cada paso mueve el eje apenas 0.18°.",
     exp: "El motor tiene 4 bobinas. El driver ULN2003 las activa <b>una tras otra</b> en orden, y cada vez el imán del eje avanza un pasito hacia la bobina activa. Contando pasos, el ESP32 sabe exactamente cuánto giró sin necesitar sensor.",
     usos: ["Impresoras 3D y CNC", "Relojes y cámaras que giran", "Dispensadores de comida para mascotas"],
@@ -188,7 +188,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   puente_h: {
-    n: 2, t: 25,
+    n: 2, t: 25, con: "puente_h",
     dato: "Se llama <b>puente H</b> porque sus 4 interruptores, dibujados alrededor del motor, forman la letra <b>H</b>.",
     exp: "Para que un motor DC cambie de sentido hay que <b>invertir</b> la corriente. El L298N lo hace con interruptores electrónicos: con IN1=1, IN2=0 gira hacia un lado; con IN1=0, IN2=1, al revés. La energía viene de las pilas, no del ESP32.",
     usos: ["Carritos y robots con ruedas", "Puertas y persianas eléctricas", "Bandas transportadoras"],
@@ -205,7 +205,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   relevador: {
-    n: 2, t: 20,
+    n: 2, t: 20, con: "relevador",
     dato: "El \"clic\" que escuchas es una <b>pieza de metal real</b> moviéndose: dentro del relevador hay un electroimán que jala un interruptor.",
     exp: "El ESP32 solo activa una pequeña bobina (el <b>electroimán</b>). Ese imán mueve un contacto que cierra el circuito del foco. Así el ESP32 controla 127 V <b>sin que esa corriente pase por él</b>: los dos circuitos están separados.",
     usos: ["Domótica: prender luces y ventiladores", "Bombas de agua y riego automático", "Cerraduras eléctricas"],
@@ -258,7 +258,7 @@ var TUTORIAL_EXTRAS = {
 
   /* ── Sensores ───────────────────────────────────────────────── */
   ultrasonico: {
-    n: 1, t: 20,
+    n: 1, t: 20, con: "ultrasonico",
     dato: "El sonido viaja a unos <b>343 metros por segundo</b>. El HC-SR04 mide tiempos de millonésimas de segundo para saber la distancia.",
     exp: "El TRIG manda un pulso y el sensor lanza 8 chasquidos de <b>40 kHz</b> (no los oyes). El ECHO se queda en 1 hasta que regresa el rebote. El ESP32 mide ese tiempo y calcula: <b>distancia = tiempo × velocidad del sonido ÷ 2</b> (÷ 2 porque el sonido va y vuelve).",
     usos: ["Sensores de reversa de los autos", "Medidores de nivel de agua en tinacos", "Robots que esquivan obstáculos"],
@@ -275,7 +275,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   medidor_estatura: {
-    n: 2, t: 30,
+    n: 2, t: 30, con: "ultrasonico",
     dato: "Tu cuerpo es un <b>conductor</b>: por eso el ESP32 nota cuando tocas el aluminio. Las pantallas táctiles de los celulares funcionan con un principio parecido.",
     exp: "El sensor está a una altura fija y mide la distancia hasta tu cabeza. Restando: <b>estatura = altura del sensor − distancia</b>. El TouchPad mide la capacitancia del pin: al tocarlo el número baja y el programa lo usa como botón.",
     usos: ["Básculas con medidor de estatura en clínicas", "Control de acceso en juegos mecánicos", "Medir crecimiento de plantas"],
@@ -292,7 +292,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   carrito_esquiva_obstaculos: {
-    n: 3, t: 45,
+    n: 3, t: 45, con: "esquiva",
     dato: "Las aspiradoras robot usan sensores muy parecidos (ultrasonido, infrarrojo o láser) para no chocar con muebles y paredes.",
     exp: "El programa repite muy rápido: <b>mide → decide → mueve</b>. Si la distancia es menor al límite, detiene, retrocede y gira; si no, sigue adelante. A este ciclo se le llama <b>lazo de control</b> y es la base de cualquier robot autónomo.",
     usos: ["Aspiradoras robot", "Autos con frenado automático", "Robots de almacén"],
@@ -309,7 +309,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   dht11: {
-    n: 1, t: 15,
+    n: 1, t: 15, con: "dht",
     dato: "El DHT11 mide la humedad con un material que <b>absorbe agua del aire</b>: al humedecerse cambia su resistencia eléctrica.",
     exp: "El sensor tiene su propio chip que mide y manda los datos por <b>un solo cable</b>, como una serie de pulsos largos y cortos (bits). El bloque <em>Medir</em> le pide una lectura y luego tú tomas la temperatura y la humedad.",
     usos: ["Estaciones meteorológicas", "Invernaderos automáticos", "Termostatos de aire acondicionado"],
@@ -326,7 +326,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   ky001: {
-    n: 2, t: 15,
+    n: 2, t: 15, con: "onewire",
     dato: "Cada DS18B20 trae de fábrica un <b>número de serie único</b> de 64 bits: por eso puedes poner muchos en el mismo cable.",
     exp: "OneWire es un protocolo de <b>un solo cable</b> de datos. El ESP32 primero <em>escanea</em> para encontrar los sensores, luego les pide <em>convertir</em> (medir) y, tras esperar, lee la temperatura de cada uno con precisión de ±0.5 °C.",
     usos: ["Termómetros de alberca y acuario", "Control de temperatura en cocinas", "Monitoreo de refrigeradores"],
@@ -343,7 +343,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   rtc_ds3231: {
-    n: 2, t: 15,
+    n: 2, t: 15, con: "i2c_sensor",
     dato: "El DS3231 tiene un <b>cristal de cuarzo</b> con compensación de temperatura: se desvía menos de 1 minuto al año.",
     exp: "El RTC es un reloj independiente con su propia pila. El ESP32 le escribe la fecha y hora una vez y después solo la lee por <b>I2C</b>. Aunque desconectes el ESP32, el DS3231 sigue contando.",
     usos: ["Alarmas y despertadores", "Registradores de datos con fecha", "Riego automático por horario"],
@@ -360,7 +360,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   mpu6050_imu: {
-    n: 2, t: 20,
+    n: 2, t: 20, con: "i2c_sensor",
     dato: "Dentro del MPU6050 hay <b>piezas microscópicas que se mueven</b> (tecnología MEMS). Tu celular usa sensores así para girar la pantalla.",
     exp: "El <b>acelerómetro</b> mide hacia dónde jala la gravedad y los empujones; el <b>giroscopio</b> mide qué tan rápido gira en cada eje (X, Y, Z). Juntos dicen cómo está inclinado y cómo se mueve el sensor.",
     usos: ["Drones que se estabilizan solos", "Controles de videojuegos", "Contadores de pasos"],
@@ -377,7 +377,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   gps_modulo: {
-    n: 2, t: 20,
+    n: 2, t: 20, con: "gps",
     dato: "Hay más de <b>30 satélites GPS</b> girando a unos 20,000 km de altura. Tu módulo necesita ver al menos 4 para saber dónde está.",
     exp: "Cada satélite manda la hora exacta. El GPS mide cuánto tardó cada señal en llegar y con eso calcula la distancia a cada satélite (<b>trilateración</b>). Luego manda latitud y longitud al ESP32 por el puerto serial.",
     usos: ["Navegación en autos y celulares", "Rastreo de mascotas y paquetes", "Drones que regresan solos"],
@@ -394,7 +394,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   encoder_rotatorio: {
-    n: 2, t: 15,
+    n: 2, t: 15, con: "encoder",
     dato: "La perilla de volumen de muchos estéreos es un encoder: por eso <b>gira sin tope</b>, a diferencia de un potenciómetro.",
     exp: "Al girar, el encoder genera dos señales (CLK y DT) desfasadas. Según cuál cambia primero, el ESP32 sabe el <b>sentido</b> del giro y suma o resta 1 al valor.",
     usos: ["Perillas de volumen", "Menús de impresoras 3D", "Medir cuánto gira una rueda"],
@@ -411,7 +411,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   rfid_mfrc522: {
-    n: 2, t: 20,
+    n: 2, t: 20, con: "rfid",
     dato: "Las tarjetas RFID <b>no tienen pila</b>: toman energía del campo del lector para responder.",
     exp: "El lector crea un campo de radio de <b>13.56 MHz</b>. Cuando acercas la tarjeta, su antena recibe energía, enciende su chip y responde con su <b>UID</b> (número único). El ESP32 lo lee por SPI.",
     usos: ["Tarjetas del transporte público", "Control de acceso en oficinas", "Inventario de libros en bibliotecas"],
@@ -428,7 +428,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   teclado_matricial: {
-    n: 2, t: 15,
+    n: 2, t: 15, con: "teclado",
     dato: "Con una matriz, 16 teclas usan solo <b>8 pines</b> (4 filas + 4 columnas) en vez de 16.",
     exp: "El ESP32 activa una <b>fila</b> a la vez y revisa las columnas. Si una columna responde, sabe que la tecla está en el cruce de esa fila y esa columna. Lo hace tan rápido que parece instantáneo.",
     usos: ["Cerraduras con contraseña", "Cajeros automáticos", "Calculadoras y teléfonos"],
@@ -445,7 +445,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   teclado_4x3: {
-    n: 2, t: 15,
+    n: 2, t: 15, con: "teclado",
     dato: "El teclado 4x3 tiene la misma distribución que el de un <b>teléfono</b>: 1-9, *, 0 y #.",
     exp: "Funciona igual que el 4x4: el ESP32 activa una fila a la vez y revisa cuál de las 3 columnas responde. Con 7 pines lee 12 teclas.",
     usos: ["Teléfonos y porteros eléctricos", "Cajas fuertes", "Máquinas expendedoras"],
@@ -462,7 +462,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   teclado_4x4_i2c: {
-    n: 2, t: 15,
+    n: 2, t: 15, con: "i2c_sensor",
     dato: "El adaptador I2C es un chip <b>expansor de pines</b>: le da 8 pines más al ESP32 usando solo 2 cables.",
     exp: "El chip del adaptador lee las filas y columnas por ti y le manda al ESP32 el resultado por <b>I2C</b> (SDA y SCL). En el mismo par de cables puedes conectar también una pantalla u otros sensores.",
     usos: ["Paneles de control con pantalla", "Sistemas de alarma", "Proyectos con muchos sensores"],
@@ -479,7 +479,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   bmp280_presion: {
-    n: 2, t: 15,
+    n: 2, t: 15, con: "i2c_sensor",
     dato: "La presión del aire baja unos <b>12 Pa por cada metro</b> que subes. Por eso el BMP280 puede estimar la altitud.",
     exp: "El sensor tiene una membrana diminuta que se dobla con la presión del aire. El chip mide esa deformación, la corrige con la temperatura y manda la presión (en Pascales) al ESP32 por I2C.",
     usos: ["Estaciones meteorológicas", "Drones que mantienen la altura", "Relojes de montañismo"],
@@ -496,7 +496,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   bh1750_luz: {
-    n: 1, t: 15,
+    n: 1, t: 15, con: "i2c_sensor",
     dato: "Un día soleado tiene unos <b>100,000 lux</b>; un salón de clases, unos 500; y una noche de luna llena, menos de 1.",
     exp: "El BH1750 tiene un fotodiodo que convierte la luz en corriente. Su chip la mide y la entrega ya convertida en <b>lux</b> (la unidad de iluminación) por I2C.",
     usos: ["Brillo automático de pantallas", "Luces que se prenden al anochecer", "Medir la luz para plantas"],
@@ -513,7 +513,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   qmc5883l_brujula: {
-    n: 2, t: 15,
+    n: 2, t: 15, con: "i2c_sensor",
     dato: "La Tierra es un <b>imán gigante</b>. Una brújula electrónica mide ese campo magnético, que es miles de veces más débil que el de un imán de refrigerador.",
     exp: "El sensor mide el campo magnético en 3 ejes (X, Y, Z). Con X y Y se puede calcular hacia dónde apunta, como una brújula. Los motores y los imanes cercanos alteran la lectura.",
     usos: ["Brújula del celular", "Drones y robots que se orientan", "Detectores de metales sencillos"],
@@ -530,7 +530,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   color_tcs34725: {
-    n: 2, t: 15,
+    n: 2, t: 15, con: "i2c_sensor",
     dato: "El sensor tiene <b>filtros de color</b> sobre sus fotodiodos, parecido a como tu ojo tiene células para el rojo, el verde y el azul.",
     exp: "El TCS34725 ilumina el objeto con su LED blanco y mide cuánta luz roja, verde y azul regresa. El canal más alto te dice de qué color es. Todo llega al ESP32 por I2C.",
     usos: ["Máquinas que separan frutas o dulces por color", "Calibración de pantallas", "Robots que siguen colores"],
@@ -547,7 +547,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   inmp441_microfono: {
-    n: 3, t: 20,
+    n: 3, t: 20, con: "microfono",
     dato: "El INMP441 es un micrófono <b>MEMS</b>, del mismo tipo que traen los celulares y los audífonos inalámbricos.",
     exp: "El micrófono convierte el sonido en números (<b>digital</b>) y los manda por <b>I2S</b>, un protocolo hecho para audio. El bloque <em>nivel sonido</em> toma muchas muestras y calcula qué tan fuerte es el sonido.",
     usos: ["Asistentes de voz", "Medidores de ruido en salones", "Luces que bailan con la música"],
@@ -564,7 +564,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   flujo_agua: {
-    n: 2, t: 20,
+    n: 2, t: 20, con: "flujo",
     dato: "Una llave abierta puede tirar entre <b>6 y 12 litros por minuto</b>. ¡Cerrarla al lavarte los dientes ahorra muchísima agua!",
     exp: "Dentro del sensor hay una <b>turbina con un imán</b>. Cada vuelta genera un pulso en el pin (sensor de efecto Hall). Contando pulsos por segundo, el ESP32 calcula los litros por minuto.",
     usos: ["Medidores de consumo de agua", "Riego automático", "Dispensadores de bebidas"],
@@ -581,7 +581,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   fpm383c_huella: {
-    n: 3, t: 20,
+    n: 3, t: 20, con: "huella",
     dato: "No hay dos personas con la misma huella digital, <b>ni siquiera los gemelos idénticos</b>.",
     exp: "El sensor toma una imagen de tu dedo y busca los <b>puntos característicos</b> (donde las líneas terminan o se dividen). Guarda esos puntos con un número de ID y después compara cada dedo nuevo contra los guardados.",
     usos: ["Desbloqueo de celulares", "Control de asistencia", "Cerraduras inteligentes"],
@@ -599,7 +599,7 @@ var TUTORIAL_EXTRAS = {
 
   /* ── Pantallas ─────────────────────────────────────────────── */
   oled_display: {
-    n: 1, t: 15,
+    n: 1, t: 15, con: "i2c_pantalla",
     dato: "En una OLED cada píxel <b>produce su propia luz</b>: por eso el negro es negro de verdad y gasta muy poca energía.",
     exp: "La pantalla tiene 128 × 64 = <b>8,192 píxeles</b>. Los bloques dibujan primero en la memoria del ESP32 y luego mandan todo por <b>I2C</b>. La posición X va de izquierda a derecha y la Y de arriba hacia abajo.",
     usos: ["Relojes inteligentes", "Pantallas de impresoras 3D", "Indicadores en robots"],
@@ -616,7 +616,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   sh1106_display: {
-    n: 1, t: 15,
+    n: 1, t: 15, con: "i2c_pantalla",
     dato: "La SH1106 tiene memoria para <b>132 columnas</b> aunque solo muestra 128: por eso a veces aparece corrida 2 píxeles.",
     exp: "Igual que la SSD1306, dibuja en memoria y manda todo por I2C, pero su chip <b>SH1106</b> se programa distinto. El bloque <em>rotar</em> voltea la imagen 180° por si la montaste al revés.",
     usos: ["Pantallas de menú en proyectos", "Termómetros digitales", "Mini consolas de juego"],
@@ -633,7 +633,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   lcd_i2c_display: {
-    n: 1, t: 15,
+    n: 1, t: 15, con: "i2c_pantalla",
     dato: "Las LCD 16x2 llevan más de <b>30 años</b> en calculadoras, fotocopiadoras y máquinas de café.",
     exp: "La pantalla tiene 2 renglones de 16 caracteres. El módulo I2C de atrás convierte los 2 cables (SDA, SCL) en los muchos pines que la LCD necesita. El potenciómetro azul ajusta el <b>contraste</b>.",
     usos: ["Máquinas expendedoras", "Equipos de laboratorio", "Paneles de alarma"],
@@ -650,7 +650,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   lcd_paralelo: {
-    n: 2, t: 20,
+    n: 2, t: 20, con: "lcd_paralelo",
     dato: "El chip de estas pantallas, el <b>HD44780</b>, se diseñó en los años 80 y sigue siendo el estándar.",
     exp: "Sin módulo I2C, el ESP32 manda cada letra por <b>4 cables de datos</b> (D4-D7) en dos mitades. RS indica si es un comando o una letra, y E da la señal de \"lee ahora\". V0 ajusta el contraste.",
     usos: ["Relojes y termómetros", "Equipos industriales", "Proyectos sin módulo I2C"],
@@ -667,7 +667,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   tft_display: {
-    n: 2, t: 20,
+    n: 2, t: 20, con: "tft",
     dato: "Una pantalla de 240 × 240 tiene <b>57,600 píxeles</b>, cada uno con miles de colores posibles.",
     exp: "La TFT recibe los colores por <b>SPI</b>, un protocolo rápido. Cada color se arma con rojo, verde y azul. DC le dice a la pantalla si lo que llega es un comando o un dato de color.",
     usos: ["Relojes inteligentes", "Pantallas de termostatos", "Mini videojuegos"],
@@ -684,7 +684,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   tm1637_display: {
-    n: 1, t: 10,
+    n: 1, t: 10, con: "chip_leds",
     dato: "Cada dígito tiene 7 segmentos más el punto; con ellos se forman los números del 0 al 9 y hasta algunas letras como A, b, C, d, E y F.",
     exp: "El chip TM1637 controla los 4 dígitos por ti. El ESP32 solo le manda el número por 2 cables (CLK y DIO) y el chip se encarga de encender los segmentos correctos.",
     usos: ["Relojes de pared", "Marcadores deportivos", "Temporizadores de cocina"],
@@ -701,7 +701,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   display_7seg: {
-    n: 2, t: 15,
+    n: 2, t: 15, con: "siete_seg",
     dato: "Los 7 segmentos se nombran de la <b>a</b> a la <b>g</b>, empezando arriba y girando como las manecillas del reloj; la <b>g</b> es la del centro.",
     exp: "Cada segmento es un LED conectado a su propio pin. Para mostrar un número, el ESP32 enciende la combinación correcta: el 1 usa b y c; el 8 los usa todos. La resistencia de 220 Ω limita la corriente.",
     usos: ["Relojes y despertadores", "Elevadores", "Básculas y marcadores"],
@@ -718,7 +718,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   matrix8_display: {
-    n: 1, t: 15,
+    n: 1, t: 15, con: "chip_leds",
     dato: "La matriz tiene 64 LEDs pero el MAX7219 los controla con solo 3 cables, prendiendo las filas tan rápido que parecen fijas (<b>multiplexado</b>).",
     exp: "El chip MAX7219 recuerda qué LEDs van encendidos y los refresca cientos de veces por segundo. El ESP32 solo le manda el dibujo por SPI (DIN, CS, CLK).",
     usos: ["Letreros de mensajes", "Marcadores", "Caritas y animaciones en robots"],
@@ -735,7 +735,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   neopixel_matriz: {
-    n: 2, t: 15,
+    n: 2, t: 15, con: "neopixel",
     dato: "Una matriz NeoPixel es una tira acomodada en zigzag o en filas: aunque se vea como cuadrícula, es una sola cadena de LEDs.",
     exp: "El bloque <em>pixel x y</em> convierte la posición (columna, fila) al número de LED de la cadena. El <b>brillo</b> multiplica todos los colores para que no gaste tanta corriente.",
     usos: ["Pantallas de pixel art", "Indicadores de clima", "Lámparas de ambiente"],
@@ -752,7 +752,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   neopixel_matriz_8x8: {
-    n: 2, t: 15,
+    n: 2, t: 15, con: "neopixel",
     dato: "64 LEDs en blanco a todo brillo pueden pedir hasta <b>3.8 A</b>: más de lo que da un puerto USB.",
     exp: "Igual que la 5x5: el bloque convierte (x, y) al número de LED en la cadena. Con 64 LEDs el brillo bajo es importante para no sobrecargar la alimentación.",
     usos: ["Letreros de pixel art", "Visualizadores de música", "Juegos como la viborita"],
@@ -770,7 +770,7 @@ var TUTORIAL_EXTRAS = {
 
   /* ── Almacenamiento y audio ─────────────────────────────────── */
   dfplayer_mp3: {
-    n: 2, t: 20,
+    n: 2, t: 20, con: "dfplayer",
     dato: "El MP3 comprime el audio quitando sonidos que tu oído casi no percibe: una canción ocupa <b>unas 10 veces menos</b> que el audio original.",
     exp: "El DFPlayer tiene su propio chip que lee la microSD, descomprime el MP3 y mueve la bocina. El ESP32 solo le manda órdenes cortas por <b>UART</b> (TX/RX): volumen, reproducir pista 1, pausa…",
     usos: ["Juguetes y peluches que hablan", "Avisos de voz en elevadores", "Timbres con canciones"],
@@ -787,7 +787,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   sdcard_modulo: {
-    n: 2, t: 15,
+    n: 2, t: 15, con: "sd",
     dato: "Una microSD de 32 GB podría guardar una lectura de temperatura cada segundo durante <b>más de 100 años</b>.",
     exp: "La microSD se comunica por <b>SPI</b>. MicroPython la monta como una carpeta: puedes crear, escribir y leer archivos de texto igual que en una computadora. Debe estar en formato <b>FAT32</b>.",
     usos: ["Registradores de datos (dataloggers)", "Cámaras y grabadoras", "Guardar configuraciones"],
@@ -976,7 +976,7 @@ var TUTORIAL_EXTRAS = {
 
   /* ── Desafío de Robótica (juegos con el carrito) ────────────── */
   juego_bandera_carrito: {
-    n: 2, t: 40,
+    n: 2, t: 40, con: "carrito",
     dato: "El control de 5 botones usa <b>un solo pin</b>: cada botón tiene una resistencia distinta, y por eso el ESP32 lee un número diferente para cada uno. ¡Ahorras 4 pines!",
     exp: "El ciclo lee el control unas <b>20 veces por segundo</b>. Si el número cae en el rango de un botón, llama a la función de ese movimiento; si no se aprieta nada, llama a <em>alto</em>. Por eso el carrito se mueve <b>solo mientras mantienes</b> el botón. Cada función prende las dos ruedas en el sentido correcto: para girar, una va hacia adelante y la otra hacia atrás.",
     usos: ["Carritos y drones de control remoto", "Grúas y montacargas que se manejan con botones", "Robots de rescate manejados a distancia"],
@@ -993,7 +993,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   juego_ruta_robot: {
-    n: 3, t: 50,
+    n: 3, t: 50, con: "carrito",
     dato: "Los robots de los almacenes también avanzan por <b>casillas</b> en el piso, como en este juego: así saben exactamente dónde están sin necesidad de GPS.",
     exp: "Cada botón llama a una función que <b>avanza o gira y luego se detiene sola</b>: por ejemplo, <em>avanzar_bloque</em> prende las ruedas, espera <em>tiempo_bloque</em> segundos y llama a <em>alto</em>. Al guardar los tiempos en <b>variables</b>, calibras el robot cambiando un solo número. La espera de 0.3 s al final del ciclo hace que un apretón cuente una sola vez.",
     usos: ["Robots de almacenes que se mueven por casillas", "Robots aspiradora que recorren la casa por zonas", "Juegos de mesa con robots, como este"],
@@ -1011,7 +1011,7 @@ var TUTORIAL_EXTRAS = {
 
   /* ── 🎮 Juegos con el motor de juegos (pantalla) ───────────────── */
   juego_direcciones: {
-    n: 1, t: 20,
+    n: 1, t: 20, con: "juego",
     dato: "En la pantalla de una computadora, la <b>Y crece hacia abajo</b>: la esquina de arriba a la izquierda es (0, 0). Por eso para subir el personaje se usa un dy <b>negativo</b>.",
     exp: "El ciclo <em>repetir mientras verdadero</em> es el <b>ciclo del juego</b>: en cada vuelta borra la pantalla, revisa qué flechas están apretadas, mueve el personaje unos píxeles y lo vuelve a dibujar. Como da unas 60 vueltas por segundo, el movimiento se ve suave.",
     usos: ["Videojuegos de todo tipo", "Controlar un robot o un dron con el teclado", "Simuladores de manejo"],
@@ -1028,7 +1028,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   juego_calculadora_basica: {
-    n: 3, t: 60,
+    n: 3, t: 60, con: "juego_mouse",
     dato: "Las primeras calculadoras electrónicas de bolsillo salieron a la venta a principios de los <b>años 70</b>. Antes, una calculadora eléctrica ocupaba un escritorio entero.",
     exp: "Cada botón es un <b>rectángulo</b> dibujado en la pantalla. Cuando haces clic, el programa revisa si la posición del mouse (X, Y) cae <b>dentro</b> de un rectángulo con condiciones del tipo «X mayor que la orilla izquierda y menor que la derecha». Así sabe qué botón apretaste.",
     usos: ["Cajeros automáticos y pantallas táctiles", "Puntos de venta de las tiendas", "Cualquier app con botones"],
@@ -1045,7 +1045,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   juego_plano_cartesiano: {
-    n: 2, t: 35,
+    n: 2, t: 35, con: "juego",
     dato: "El plano cartesiano se llama así por <b>René Descartes</b>, que lo describió en 1637. En latín firmaba como <em>Cartesius</em>.",
     exp: "El punto se mueve con las flechas y el objetivo aparece en una <b>coordenada al azar</b>. En cada vuelta el programa calcula la <b>distancia</b> entre los dos: si es pequeña, cuenta un acierto y elige otra coordenada.",
     usos: ["GPS y mapas", "Videojuegos (todo personaje tiene coordenadas)", "Robots que se mueven a un punto"],
@@ -1062,7 +1062,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   juego_caja_area: {
-    n: 3, t: 60,
+    n: 3, t: 60, con: "juego_mouse",
     dato: "El <b>área</b> de un rectángulo es base × altura, y se mide en unidades <b>cuadradas</b>: si mides en centímetros, el área queda en cm².",
     exp: "Una <b>función</b> elige una base y una altura al azar, calcula el área correcta y la pone en uno de los 4 cuadrados, también al azar. En los otros pone respuestas falsas. Al hacer clic, el programa revisa en qué cuadrado cayó y lo compara con el correcto.",
     usos: ["Calcular cuánta pintura o piso se necesita", "Medir terrenos y casas", "Juegos educativos de matemáticas"],
@@ -1079,7 +1079,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   juego_caja_perimetro: {
-    n: 3, t: 60,
+    n: 3, t: 60, con: "juego_mouse",
     dato: "El <b>perímetro</b> es lo que mide la orilla de una figura. En un rectángulo es 2 × (base + altura): las dos bases más las dos alturas.",
     exp: "Funciona igual que el juego de áreas: una <b>función</b> crea un rectángulo al azar, calcula su perímetro, lo pone en uno de los 4 cuadrados y llena los demás con respuestas falsas. El clic se compara con el cuadrado correcto.",
     usos: ["Calcular cuánta cerca o malla se necesita", "Poner marco a un cuadro", "Medir la orilla de un terreno"],
@@ -1096,7 +1096,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   juego_evitar_obstaculos: {
-    n: 2, t: 40,
+    n: 2, t: 40, con: "juego",
     dato: "Muchos videojuegos detectan choques por <b>color</b>: si el personaje toca un píxel del color de la pared, chocó. Es una técnica sencilla y muy usada en juegos clásicos.",
     exp: "El obstáculo es un rectángulo cuya posición se guarda en <b>variables</b>: en cada vuelta del ciclo baja un poco, y cuando sale de la pantalla vuelve a aparecer arriba en una X al azar. Si el jugador toca su color, el juego termina y muestra cuántos segundos sobreviviste.",
     usos: ["Videojuegos de esquivar", "Simuladores de manejo", "Robots que evitan obstáculos (como el carrito con ultrasónico)"],
@@ -1113,7 +1113,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   juego_puntaje_tiempo: {
-    n: 2, t: 35,
+    n: 2, t: 35, con: "juego",
     dato: "La mayoría de los juegos dibujan unas <b>60 imágenes por segundo</b>. Por eso contar 60 fotogramas equivale, más o menos, a contar un segundo.",
     exp: "El ciclo da muchas vueltas por segundo, así que no se puede bajar el tiempo en cada vuelta. Un <b>contador de fotogramas</b> suma 1 en cada vuelta y, cuando llega a 60, baja el tiempo en 1 segundo y vuelve a empezar. Cuando el tiempo llega a 0, el juego se detiene.",
     usos: ["Cronómetros y relojes", "Concursos con tiempo límite", "Semáforos y hornos de microondas"],
@@ -1130,7 +1130,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   juego_laberinto: {
-    n: 2, t: 30,
+    n: 2, t: 30, con: "juego",
     dato: "Hay un truco para salir de muchos laberintos: pon una mano en la pared y nunca la sueltes. Funciona si todas las paredes están conectadas.",
     exp: "Las paredes son rectángulos de un color. En cada vuelta, si el personaje <b>toca ese color</b>, el programa lo regresa a la salida. La meta es un rectángulo verde: al tocarla, ganas.",
     usos: ["Videojuegos de laberintos", "Robots que buscan la salida (micromouse)", "Planear rutas en un mapa"],
@@ -1147,7 +1147,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   juego_punteria: {
-    n: 2, t: 30,
+    n: 2, t: 30, con: "juego_mouse",
     dato: "Para medir la distancia entre dos puntos se usa el <b>teorema de Pitágoras</b>: la raíz cuadrada de (diferencia en X)² + (diferencia en Y)².",
     exp: "Cuando haces clic, el programa calcula la <b>distancia</b> entre el clic y el centro del blanco. Si es menor que 25 píxeles, cuenta como acierto y el blanco se mueve a otro lugar al azar; si no, cuenta un fallo.",
     usos: ["Juegos de puntería", "Pantallas táctiles (saber qué tocaste)", "Drones y robots que apuntan a un objetivo"],
@@ -1164,7 +1164,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   juego_bandera_pantalla: {
-    n: 2, t: 40,
+    n: 2, t: 40, con: "juego",
     dato: "Con <b>crear texto con</b> puedes armar el nombre de un personaje: «vaso» + 2 = «vaso2». Así un solo bloque sirve para preguntar por cualquier vaso.",
     exp: "Cada vaso es un <b>personaje con nombre</b> (vaso1, vaso2, vaso3). La variable <b>meta</b> guarda un número al azar, y el juego pregunta si el robot toca a «vaso» + meta. Si sí, suma un punto, suena una nota y <b>esconde</b> ese vaso: ya no se dibuja ni se puede tocar. Luego se elige otra meta al azar, repitiendo hasta que salga un vaso que todavía <b>se vea</b>.",
     usos: ["Practicar antes de manejar el robot de verdad", "Simuladores de robots", "Juegos de recoger objetos"],
@@ -1181,7 +1181,7 @@ var TUTORIAL_EXTRAS = {
   },
 
   juego_ruta_pantalla: {
-    n: 2, t: 40,
+    n: 2, t: 40, con: "juego",
     dato: "En los juegos de mesa con dado, cada número tiene la misma probabilidad de salir: <b>1 de 6</b>. Un número aleatorio entre 1 y 6 imita un dado justo.",
     exp: "La barra espaciadora guarda un número al azar en <b>dado</b> y lo copia a <b>pasos</b>. Cada apretón de → mueve el robot 70 píxeles (una casilla) y resta 1 a pasos. Cuando pasos llega a 0 ya no avanza hasta tirar otra vez. Las esperas cortas hacen que un apretón cuente una sola vez.",
     usos: ["Juegos de mesa digitales", "Practicar La Ruta del Conocimiento antes de usar el robot", "Contar pasos en un recorrido"],
@@ -1198,7 +1198,7 @@ var TUTORIAL_EXTRAS = {
   }
 };
 
-/* ── Conceptos de comunicación (antes de programar) ──────────────
+/* ── Conceptos «Cómo funciona» (antes de programar) ──────────────
    diagrama: nodos [id, emoji, etiqueta, x] y enlaces
    [desde, hasta, texto, ida_y_vuelta, tachado]. glosario: [término,
    explicación]. problemas: [síntoma, solución]. */
@@ -1342,6 +1342,568 @@ var TUTORIAL_CONCEPTOS = {
       ["No llega nada", "Apunta directo al sensor: la luz no atraviesa objetos."],
       ["Funciona mal cerca de la ventana", "El sol tiene mucho infrarrojo: prueba en la sombra."],
       ["¿Está emitiendo?", "Mira el LED con la cámara del celular: verás destellos morados."]
+    ]
+  },
+
+  /* ── Salidas, entradas y actuadores ─────────────────────────── */
+  led: {
+    titulo: "¿Cómo prende el ESP32 un LED?",
+    analogia: "Un pin de salida es como un <b>apagador que mueve tu programa</b>: con un <b>1</b> pone 3.3 V y la corriente pasa por el LED; con un <b>0</b> pone 0 V y la luz se apaga.",
+    nodos: [["prog", "🧩", "Tu programa", 50], ["esp", "📟", "Pin del ESP32", 180], ["led", "💡", "LED", 310]],
+    enlaces: [["prog", "esp", "encender = 1"], ["esp", "led", "3.3 V"]],
+    glosario: [
+      ["Pin (GPIO)", "Una patita del ESP32 que tu programa puede usar como entrada o como salida."],
+      ["Salida", "El pin pone voltaje: 3.3 V (un 1) o 0 V (un 0)."],
+      ["LED", "Diodo emisor de luz. Solo deja pasar la corriente en un sentido: la pata larga es el positivo."],
+      ["Resistencia", "Limita la corriente para no quemar el LED. Con 3.3 V se usa una de 220 Ω."],
+      ["GND", "La tierra (0 V): por ahí regresa la corriente."]
+    ],
+    problemas: [
+      ["No prende", "Revisa que el número de pin del bloque sea el mismo donde conectaste el LED."],
+      ["El LED externo no enciende", "Voltéalo: la pata larga va al pin y la corta a GND (con la resistencia en el camino)."],
+      ["Brilla muy poquito", "Revisa la resistencia: debe ser de unos 220 Ω, no de 10 kΩ."]
+    ]
+  },
+  boton: {
+    titulo: "¿Cómo lee el ESP32 un botón?",
+    analogia: "Un pin de entrada es como un <b>timbre</b>: el ESP32 está atento a él. Con <b>PULL_UP</b> el pin se queda en <b>1</b> mientras nadie presiona; al presionar, el botón lo une con GND y se vuelve <b>0</b>.",
+    nodos: [["btn", "🔘", "Botón", 50], ["esp", "📟", "ESP32", 180], ["pc", "💻", "Monitor serial", 310]],
+    enlaces: [["btn", "esp", "1 suelto / 0"], ["esp", "pc", "cuenta +1"]],
+    glosario: [
+      ["Entrada digital", "El pin no pone voltaje: lo mide y lo convierte en 1 o 0."],
+      ["PULL_UP", "Una resistencia dentro del ESP32 que deja el pin en 1 cuando nadie presiona."],
+      ["Contador", "Una variable que sube de uno en uno cada vez que pasa algo."],
+      ["Rebote", "Al presionar, el metal del botón tiembla y puede contar varias veces. Una pequeña espera lo evita."]
+    ],
+    problemas: [
+      ["Siempre lee 1", "Revisa que una pata del botón vaya al pin y la otra a <b>GND</b>."],
+      ["Cuenta de más", "Agrega una espera corta después de contar, o espera a que sueltes el botón."],
+      ["Siempre lee 0", "El botón quedó mal puesto en la protoboard: gíralo 90°."]
+    ]
+  },
+  buzzer: {
+    titulo: "¿Cómo suena el buzzer?",
+    analogia: "El ESP32 prende y apaga el pin <b>cientos de veces por segundo</b> (PWM). Una lámina dentro del buzzer vibra a ese ritmo y empuja el aire, como la piel de un tambor. Más vibraciones por segundo = sonido más agudo.",
+    nodos: [["esp", "📟", "ESP32", 50], ["bz", "🔊", "Buzzer", 180], ["oido", "👂", "Tus oídos", 310]],
+    enlaces: [["esp", "bz", "PWM: tono"], ["bz", "oido", "vibra el aire"]],
+    glosario: [
+      ["Frecuencia", "Cuántas vibraciones hay en un segundo. Se mide en hertz (Hz). La nota La es de 440 Hz."],
+      ["PWM", "Prender y apagar un pin muy rápido. En el buzzer, la frecuencia decide la nota."],
+      ["Buzzer pasivo", "Necesita la señal PWM para sonar y puede tocar distintas notas."],
+      ["Buzzer activo", "Trae su propio circuito: suena con solo darle voltaje, pero siempre con el mismo tono."]
+    ],
+    problemas: [
+      ["No suena", "Revisa que el <b>+</b> vaya al pin y el <b>−</b> a GND."],
+      ["Siempre suena igual", "Seguramente es un buzzer <b>activo</b>: para tocar notas usa uno pasivo."],
+      ["Suena muy bajito", "Prueba frecuencias entre 1,000 y 3,000 Hz: ahí los buzzers suenan más fuerte."]
+    ]
+  },
+  servo: {
+    titulo: "¿Cómo sabe el servo a qué ángulo ir?",
+    analogia: "Cada 20 milisegundos el ESP32 le manda un <b>pulso</b>, y lo que dura el pulso es la orden: cerca de 0.5 ms es 0°, 1.5 ms es 90° y 2.5 ms es 180°. Dentro del servo, un circuito compara la orden con la posición real y mueve el motor hasta que coincidan.",
+    nodos: [["esp", "📟", "ESP32", 50], ["sv", "⚙️", "Servo", 180], ["brazo", "📐", "Brazo en su ángulo", 310]],
+    enlaces: [["esp", "sv", "pulso 50 Hz"], ["sv", "brazo", "gira"]],
+    glosario: [
+      ["Servomotor", "Un motor que va a un ángulo exacto y se queda ahí."],
+      ["Pulso", "Un ratito con el pin en 1. Su duración le dice al servo el ángulo."],
+      ["50 Hz", "El servo espera un pulso cada 20 ms, es decir, 50 veces por segundo."],
+      ["Cables", "Café o negro = GND, rojo = 5 V, naranja o amarillo = señal."]
+    ],
+    problemas: [
+      ["Tiembla o el ESP32 se reinicia", "El servo consume mucha corriente: aliméntalo con 5 V aparte y une los GND."],
+      ["No se mueve", "Revisa que el cable naranja (señal) esté en el pin del bloque."],
+      ["No llega a 180°", "Algunos servos llegan a unos 170°. No lo fuerces: se puede romper el engrane."]
+    ]
+  },
+  ultrasonico: {
+    titulo: "¿Cómo mide la distancia el HC-SR04?",
+    analogia: "Funciona como un <b>murciélago</b>: lanza un sonido que no oyes (40 kHz), espera el eco y mide cuánto tardó. El sonido viaja a unos 343 m/s; como va y regresa, la distancia es <b>tiempo × 343 ÷ 2</b>.",
+    nodos: [["esp", "📟", "ESP32", 50], ["us", "📡", "HC-SR04", 180], ["obj", "🧱", "Objeto", 310]],
+    enlaces: [["esp", "us", "TRIG / ECHO", true], ["us", "obj", "ultrasonido", true]],
+    glosario: [
+      ["TRIG", "El pin con el que el ESP32 le dice al sensor: ¡dispara el sonido!"],
+      ["ECHO", "El pin que se queda en 1 mientras el sonido va y regresa."],
+      ["Ultrasonido", "Sonido tan agudo (40,000 Hz) que el oído humano no lo escucha."],
+      ["Velocidad del sonido", "Unos 343 metros por segundo en el aire a 20 °C."],
+      ["Alcance", "De 2 cm a unos 4 m."]
+    ],
+    problemas: [
+      ["Siempre da 0 o un número raro", "Revisa que TRIG y ECHO no estén al revés."],
+      ["Las medidas brincan", "Apunta a una superficie plana y dura: la tela y las cosas inclinadas desvían el eco."],
+      ["No mide nada", "Revisa VCC y GND. Si lo alimentas con 5 V, protege el pin de ECHO con un divisor de voltaje."]
+    ]
+  },
+  esquiva: {
+    titulo: "¿Cómo decide el carrito hacia dónde ir?",
+    analogia: "El carrito repite tres cosas muy rápido: <b>mira</b> (mide la distancia), <b>piensa</b> (¿hay algo muy cerca?) y <b>actúa</b> (avanza o gira). Así trabajan casi todos los robots: sensar, decidir y actuar.",
+    nodos: [["us", "📡", "HC-SR04", 50], ["esp", "📟", "ESP32", 180], ["mot", "🚙", "Motores", 310]],
+    enlaces: [["us", "esp", "distancia"], ["esp", "mot", "avanza o gira"]],
+    glosario: [
+      ["Sensar, decidir, actuar", "Los tres pasos que repite un robot dentro de su ciclo."],
+      ["Umbral", "El número límite que decide el cambio, por ejemplo 20 cm."],
+      ["Puente H", "El módulo que le da a los motores la corriente de las pilas."],
+      ["Ciclo infinito", "El robot nunca deja de revisar el camino."]
+    ],
+    problemas: [
+      ["Choca sin frenar", "Sube el umbral: a toda velocidad necesita más espacio para frenar."],
+      ["Gira para siempre", "Revisa la medida en el monitor serial: si da 0, revisa TRIG y ECHO."],
+      ["El ESP32 se reinicia", "No alimentes los motores desde el ESP32: usa las pilas del puente H y une los GND."]
+    ]
+  },
+  neopixel: {
+    titulo: "¿Cómo se controlan tantos LEDs con un solo cable?",
+    analogia: "Los NeoPixel se pasan los datos como una <b>fila pasando un recado</b>: el primer LED se queda con su color (rojo, verde y azul) y le pasa el resto al siguiente, y así hasta el último.",
+    nodos: [["esp", "📟", "ESP32", 40], ["l1", "🔴", "LED 0", 140], ["l2", "🟢", "LED 1", 240], ["l3", "🔵", "LED 2", 330]],
+    enlaces: [["esp", "l1", "datos"], ["l1", "l2", "el resto"], ["l2", "l3", "el resto"]],
+    glosario: [
+      ["NeoPixel (WS2812)", "Un LED RGB con un chip adentro que entiende su propio color."],
+      ["RGB", "Cada color se arma con rojo, verde y azul, cada uno de 0 a 255."],
+      ["Índice", "El número de cada LED. El primero es el <b>0</b>."],
+      ["Mostrar", "Los colores se guardan primero y se mandan todos juntos con el bloque de mostrar."]
+    ],
+    problemas: [
+      ["No prende ninguno", "Conecta el cable al <b>DIN</b> (entrada), no al DOUT: sigue la flechita impresa."],
+      ["Colores raros o al azar", "Une el GND de los LEDs con el del ESP32."],
+      ["Parpadea o el ESP32 se reinicia", "Muchos LEDs en blanco gastan mucha corriente: baja el brillo o usa fuente aparte."]
+    ]
+  },
+  puente_h: {
+    titulo: "¿Qué hace el puente H?",
+    analogia: "El ESP32 da muy poquita corriente para mover un motor. El puente H es como un <b>agente de tránsito</b>: el ESP32 le da la orden por IN1 e IN2 y él deja pasar la corriente de las pilas hacia un lado o hacia el otro, y el motor gira adelante o atrás.",
+    nodos: [["esp", "📟", "ESP32", 50], ["ph", "🚦", "Puente H L298N", 180], ["mot", "⚙️", "Motor DC", 310]],
+    enlaces: [["esp", "ph", "IN1 / IN2"], ["ph", "mot", "corriente"]],
+    glosario: [
+      ["Puente H", "Cuatro interruptores electrónicos que cambian el sentido de la corriente del motor."],
+      ["IN1 e IN2", "1 y 0 = adelante · 0 y 1 = atrás · 0 y 0 = alto."],
+      ["ENA / ENB", "La velocidad del motor. Con PWM puedes ir más lento."],
+      ["Fuente externa", "Las pilas o la batería que mueven los motores."]
+    ],
+    problemas: [
+      ["No se mueve", "Revisa las pilas, el puente (jumper) de ENA y que el GND del L298N esté unido al del ESP32."],
+      ["Gira al revés", "Intercambia los dos cables de ese motor en el L298N."],
+      ["El ESP32 se reinicia", "Nunca alimentes los motores desde el ESP32."]
+    ]
+  },
+  stepper: {
+    titulo: "¿Cómo da pasos el motor?",
+    analogia: "Dentro del motor hay <b>bobinas</b> (imanes eléctricos). Si se encienden <b>en orden</b>, una tras otra, el eje gira un poquito en cada paso, como cuando caminas poniendo un pie delante del otro.",
+    nodos: [["esp", "📟", "ESP32", 50], ["drv", "🔲", "Driver ULN2003", 180], ["mot", "🌀", "Motor 28BYJ-48", 310]],
+    enlaces: [["esp", "drv", "IN1 a IN4"], ["drv", "mot", "bobinas"]],
+    glosario: [
+      ["Paso", "El giro más pequeño que puede dar el motor."],
+      ["Bobina", "Alambre enrollado que se vuelve imán cuando le pasa corriente."],
+      ["28BYJ-48", "Motor con engranes: necesita unos 2,048 pasos para dar una vuelta completa."],
+      ["ULN2003", "El driver que le da al motor la corriente que el ESP32 no puede dar."]
+    ],
+    problemas: [
+      ["Vibra pero no gira", "Revisa el orden de IN1 a IN4, o haz los pasos más lentos."],
+      ["No hace nada", "El driver necesita <b>5 V</b> y GND unido con el ESP32."],
+      ["Se calienta", "Es normal que se entibie. Apágalo cuando no lo uses."]
+    ]
+  },
+  relevador: {
+    titulo: "¿Cómo funciona un relevador?",
+    analogia: "Un relevador es un <b>apagador que se mueve solo</b>: una bobina (electroimán) jala una palanquita de metal y cierra otro circuito, separado del ESP32. Por eso suena <b>clic</b>.",
+    nodos: [["esp", "📟", "ESP32", 50], ["rel", "🔌", "Relevador", 180], ["foco", "💡", "Aparato", 310]],
+    enlaces: [["esp", "rel", "señal"], ["rel", "foco", "cierra el circuito"]],
+    glosario: [
+      ["Bobina", "El electroimán que mueve el contacto."],
+      ["COM", "El contacto común: por ahí entra la corriente del aparato."],
+      ["NA (NO)", "Normalmente abierto: se conecta solo cuando el relevador se activa."],
+      ["NC", "Normalmente cerrado: está conectado y se abre cuando el relevador se activa."],
+      ["Activo en bajo", "Muchos módulos se activan con 0 y se desactivan con 1."]
+    ],
+    problemas: [
+      ["Funciona al revés", "Tu módulo es <b>activo en bajo</b>: cambia el 1 por 0, o usa NC en lugar de NA."],
+      ["No hace clic", "Revisa que el módulo tenga su VCC (casi siempre 5 V) y GND."],
+      ["⚠️ Aparatos de la pared (127 V)", "Nunca los conectes sin un adulto: practica con una pila y un LED."]
+    ]
+  },
+  ir_linea: {
+    titulo: "¿Cómo distingue el sensor lo negro de lo blanco?",
+    analogia: "El sensor tiene una lucecita <b>infrarroja</b> y un \"ojo\". Lo blanco rebota la luz y el ojo la ve; lo negro se la traga. Es la misma razón por la que una playera negra se calienta más al sol.",
+    nodos: [["sup", "🏁", "Superficie", 50], ["ir", "👁️", "Sensor IR", 180], ["esp", "📟", "ESP32", 310]],
+    enlaces: [["ir", "sup", "luz IR", true], ["ir", "esp", "OUT: 0 o 1"]],
+    glosario: [
+      ["Infrarrojo", "Luz que el ojo no ve, pero la cámara del celular sí."],
+      ["Reflejo", "La luz que rebota en la superficie y regresa al sensor."],
+      ["Potenciómetro", "El tornillito azul del módulo: ajusta qué tanto reflejo cuenta como blanco."],
+      ["Seguidor de línea", "Un robot que usa estos sensores para seguir una cinta negra."]
+    ],
+    problemas: [
+      ["Siempre da lo mismo", "Gira el potenciómetro poco a poco hasta que el LED del módulo cambie entre negro y blanco."],
+      ["Falla a ratos", "Ponlo a más o menos 1 cm de la superficie."],
+      ["No funciona junto a la ventana", "El sol tiene mucho infrarrojo: prueba en la sombra."]
+    ]
+  },
+  adc: {
+    titulo: "¿Cómo se leen 5 botones con un solo cable?",
+    analogia: "Cada botón está conectado a resistencias distintas, como los <b>escalones de una escalera</b>: cada uno deja el cable a una altura (voltaje) diferente. El ADC del ESP32 mide esa altura y la convierte en un número del <b>0 al 4095</b>.",
+    nodos: [["kp", "🎛️", "Botones", 50], ["esp", "📟", "ADC del ESP32", 180], ["num", "🔢", "Número 0–4095", 310]],
+    enlaces: [["kp", "esp", "voltaje"], ["esp", "num", "lectura"]],
+    glosario: [
+      ["Analógico", "Una señal que puede tomar muchos valores, no solo 0 y 1."],
+      ["ADC", "Convertidor analógico a digital: cambia un voltaje por un número."],
+      ["12 bits", "El ADC del ESP32 da números del 0 al 4095."],
+      ["Divisor de voltaje", "Dos o más resistencias que reparten el voltaje en partes."],
+      ["Rango", "Como el número varía un poquito, se compara con un intervalo (por ejemplo, de 100 a 200)."]
+    ],
+    problemas: [
+      ["El número brinca", "Es normal: compara con rangos, no con un número exacto."],
+      ["Siempre da 0 o 4095", "Revisa VCC y GND, y que el cable esté en un pin con ADC."],
+      ["Dos botones dan lo mismo", "Imprime la lectura de cada uno y ajusta los rangos."]
+    ]
+  },
+
+  /* ── Sensores ───────────────────────────────────────────────── */
+  dht: {
+    titulo: "¿Cómo mide el DHT11 la temperatura y la humedad?",
+    analogia: "Adentro tiene una tirita que cambia con el agua del aire y un termómetro electrónico (termistor). Su chip mide los dos y le manda al ESP32 los números por <b>un solo cable</b>, como un mensaje en clave.",
+    nodos: [["dht", "🌡️", "DHT11", 50], ["esp", "📟", "ESP32", 180], ["pc", "💻", "Monitor serial", 310]],
+    enlaces: [["dht", "esp", "1 cable: datos"], ["esp", "pc", "°C y %"]],
+    glosario: [
+      ["Temperatura", "Qué tan caliente está el aire. El DHT11 mide de 0 a 50 °C."],
+      ["Humedad relativa", "Cuánta agua hay en el aire, en porcentaje (de 20 a 90 %)."],
+      ["Medir", "Primero se le pide al sensor que mida y después se leen los valores."],
+      ["Tiempo entre lecturas", "El DHT11 necesita al menos 1 segundo entre una medición y otra; mejor 2."]
+    ],
+    problemas: [
+      ["Marca error al leer", "Revisa el pin de datos y espera 2 segundos entre lecturas."],
+      ["¿Funciona?", "Échale aire con la boca: la humedad debe subir."],
+      ["Tiene 4 patas", "La tercera no se usa. El módulo de 3 patas ya trae su resistencia."]
+    ]
+  },
+  onewire: {
+    titulo: "¿Qué es OneWire?",
+    analogia: "OneWire es como <b>pasar lista</b>: varios sensores comparten un solo cable y cada uno tiene un número de serie único. El ESP32 los llama por su número y cada uno contesta su temperatura.",
+    nodos: [["ds", "🌡️", "DS18B20", 50], ["esp", "📟", "ESP32", 180], ["pc", "💻", "Monitor serial", 310]],
+    enlaces: [["esp", "ds", "OneWire", true], ["esp", "pc", "°C"]],
+    glosario: [
+      ["OneWire", "Una forma de platicar con varios aparatos usando un solo cable de datos."],
+      ["Dirección (ROM)", "El número único de 64 bits de cada sensor."],
+      ["Conversión", "El sensor tarda unos 750 ms en medir; hay que esperarlo antes de leer."],
+      ["Rango", "El DS18B20 mide de −55 a 125 °C, y hay versiones contra agua."]
+    ],
+    problemas: [
+      ["No encuentra sensores", "Revisa el pin de datos. El KY-001 ya trae la resistencia de 4.7 kΩ."],
+      ["Siempre marca 85 °C", "Ese es el valor de arranque: falta esperar la conversión antes de leer."],
+      ["Lee muy lento", "Es normal: cada lectura tarda casi un segundo."]
+    ]
+  },
+  i2c_pantalla: {
+    titulo: "¿Cómo le habla el ESP32 a la pantalla?",
+    analogia: "I2C es como un <b>salón de clases</b>: el ESP32 es el maestro y llama a cada aparato por su <b>dirección</b> (la OLED suele ser 0x3C y la LCD 0x27). Solo usa dos cables: <b>SDA</b> lleva los datos y <b>SCL</b> marca el ritmo.",
+    nodos: [["prog", "🧩", "Tu programa", 50], ["esp", "📟", "ESP32", 180], ["pan", "🖥️", "Pantalla", 310]],
+    enlaces: [["prog", "esp", "texto"], ["esp", "pan", "I2C: SDA + SCL"]],
+    glosario: [
+      ["I2C", "Un bus de 2 cables donde pueden ir varios aparatos a la vez."],
+      ["SDA", "El cable de los datos."],
+      ["SCL", "El cable del reloj: marca cuándo leer cada dato."],
+      ["Dirección", "El número de cada aparato en el bus, por ejemplo 0x3C o 0x27."],
+      ["Mostrar", "En las OLED primero dibujas en memoria y luego mandas todo junto con mostrar."]
+    ],
+    problemas: [
+      ["La pantalla no hace nada", "Revisa que SDA y SCL no estén al revés, y VCC y GND."],
+      ["Error de que no encuentra el aparato", "Revisa la dirección: algunas OLED son 0x3D y algunas LCD son 0x3F."],
+      ["La LCD solo muestra cuadritos", "Gira el potenciómetro azul de atrás para ajustar el contraste."]
+    ]
+  },
+  i2c_sensor: {
+    titulo: "¿Cómo platica el sensor con el ESP32?",
+    analogia: "Por I2C el ESP32 es como un <b>maestro pasando lista</b>: llama al sensor por su <b>dirección</b>, le pregunta \"¿qué mides?\" y el sensor le contesta con sus números. Todo por dos cables: <b>SDA</b> (datos) y <b>SCL</b> (ritmo).",
+    nodos: [["sen", "🔬", "Sensor I2C", 50], ["esp", "📟", "ESP32", 180], ["pc", "💻", "Monitor serial", 310]],
+    enlaces: [["esp", "sen", "SDA + SCL", true], ["esp", "pc", "datos"]],
+    glosario: [
+      ["I2C", "Un bus de 2 cables donde pueden ir varios sensores a la vez."],
+      ["SDA y SCL", "Datos y reloj. Se conectan igual en todos los aparatos del bus."],
+      ["Dirección", "Cada modelo trae la suya: el RTC y el MPU6050 usan 0x68, el BMP280 0x76 y el BH1750 0x23."],
+      ["Escanear", "Buscar qué direcciones contestan en el bus para saber qué está conectado."]
+    ],
+    problemas: [
+      ["No encuentra el sensor", "Revisa SDA y SCL (que no estén al revés), y que tenga 3.3 V y GND."],
+      ["Dos aparatos chocan", "Si dos usan la misma dirección (como el RTC y el MPU6050), cambia la de uno si se puede."],
+      ["Datos raros o que se cortan", "Usa cables cortos y bien metidos."]
+    ]
+  },
+  gps: {
+    titulo: "¿Cómo sabe el GPS dónde estás?",
+    analogia: "Cada satélite manda la <b>hora exacta</b>. El GPS compara cuánto tardaron en llegar las señales de <b>al menos 4 satélites</b> y con eso calcula dónde estás, como cuando calculas qué tan lejos cayó un rayo contando los segundos hasta el trueno.",
+    nodos: [["sat", "🛰️", "Satélites", 50], ["gps", "📡", "Módulo GPS", 180], ["esp", "📟", "ESP32", 310]],
+    enlaces: [["sat", "gps", "señales de radio"], ["gps", "esp", "UART: NMEA"]],
+    glosario: [
+      ["Satélites GPS", "Unos 30 satélites que dan vueltas a la Tierra mandando su hora."],
+      ["NMEA", "El texto que manda el módulo, con líneas como <code>$GPRMC</code>."],
+      ["Latitud y longitud", "Las coordenadas de un lugar en el planeta."],
+      ["Fix", "Cuando el módulo ya calculó tu posición (su LED empieza a parpadear)."],
+      ["9600 baudios", "La velocidad del serial de casi todos los módulos GPS."]
+    ],
+    problemas: [
+      ["No da la posición", "Sal al aire libre: la primera vez puede tardar varios minutos."],
+      ["No llega nada", "Cruza los cables: el TX del GPS va al RX del ESP32."],
+      ["Llegan letras raras", "Revisa que la velocidad sea de 9600 baudios."]
+    ]
+  },
+  encoder: {
+    titulo: "¿Cómo sabe el encoder hacia dónde giras?",
+    analogia: "Al girar la perilla, dos contactos (<b>CLK</b> y <b>DT</b>) se abren y cierran casi al mismo tiempo, como dos personas aplaudiendo una tras otra. Según quién aplaude primero, el ESP32 sabe si giraste a la derecha o a la izquierda.",
+    nodos: [["per", "🎛️", "Perilla", 50], ["esp", "📟", "ESP32", 180], ["num", "🔢", "Contador", 310]],
+    enlaces: [["per", "esp", "CLK y DT"], ["esp", "num", "+1 o −1"]],
+    glosario: [
+      ["CLK y DT", "Las dos señales que cambian al girar. Su orden indica el sentido."],
+      ["SW", "El botón que trae la perilla al presionarla."],
+      ["Clic", "Cada escalón que sientes al girar. El KY-040 tiene unos 20 por vuelta."],
+      ["Sin tope", "A diferencia de un potenciómetro, puede girar para siempre."]
+    ],
+    problemas: [
+      ["Cuenta al revés", "Intercambia CLK y DT."],
+      ["Brinca números", "Gira despacio: los contactos rebotan. Una espera cortita ayuda."],
+      ["El botón no responde", "Revisa el cable de SW y que use PULL_UP."]
+    ]
+  },
+  rfid: {
+    titulo: "¿Cómo lee el RFID una tarjeta sin tocarla?",
+    analogia: "La tarjeta <b>no tiene pila</b>: el lector crea un campo magnético que le da energía por un instante, como un cargador inalámbrico, y la tarjeta contesta con su número único (<b>UID</b>).",
+    nodos: [["tar", "💳", "Tarjeta", 50], ["rd", "📶", "Lector MFRC522", 180], ["esp", "📟", "ESP32", 310]],
+    enlaces: [["rd", "tar", "radio 13.56 MHz", true], ["rd", "esp", "SPI: UID"]],
+    glosario: [
+      ["RFID", "Identificación por radiofrecuencia: leer algo sin tocarlo."],
+      ["UID", "El número único de cada tarjeta o llavero."],
+      ["13.56 MHz", "La frecuencia que usan el lector y las tarjetas."],
+      ["SPI", "Un bus de 4 cables (SCK, MOSI, MISO y SDA/CS) entre el lector y el ESP32."]
+    ],
+    problemas: [
+      ["No lee la tarjeta", "Acércala a menos de 3 cm y no la muevas."],
+      ["No responde el lector", "El MFRC522 va a <b>3.3 V</b>, no a 5 V. Revisa los cables de SPI."],
+      ["Lee otra tarjeta", "Algunas tarjetas (como las de banco) no son compatibles."]
+    ]
+  },
+  teclado: {
+    titulo: "¿Cómo sabe el ESP32 qué tecla presionaste?",
+    analogia: "Las teclas están en una <b>cuadrícula, como en Batalla Naval</b>: el ESP32 activa una fila a la vez y revisa qué columna contesta. Fila 2 y columna 3 = la tecla <b>6</b>.",
+    nodos: [["tec", "🔢", "Teclado", 50], ["esp", "📟", "ESP32", 180], ["pc", "💻", "Monitor serial", 310]],
+    enlaces: [["esp", "tec", "filas × columnas", true], ["esp", "pc", "tecla"]],
+    glosario: [
+      ["Fila y columna", "Cada tecla une una fila con una columna."],
+      ["Barrido", "Revisar fila por fila muy rápido para encontrar la tecla."],
+      ["Cables", "El 4×4 usa 8 cables (4 filas y 4 columnas); el 4×3 usa 7."],
+      ["Rebote", "Al presionar, la tecla puede leerse varias veces: hay que esperar a que la sueltes."]
+    ],
+    problemas: [
+      ["Salen teclas cambiadas", "Revisa el orden de los cables: primero las filas y luego las columnas."],
+      ["Una fila no funciona", "Ese cable está flojo o en otro pin."],
+      ["Se repite la tecla", "Espera a soltar la tecla antes de leer otra."]
+    ]
+  },
+
+  /* ── Pantallas ──────────────────────────────────────────────── */
+  chip_leds: {
+    titulo: "¿Por qué bastan pocos cables para tantos LEDs?",
+    analogia: "Un display tiene decenas de LEDs; conectarlos uno por uno usaría todos los pines del ESP32. El chip es como un <b>jefe de cuadrilla</b>: el ESP32 le da la orden por pocos cables y él prende cada LED.",
+    nodos: [["esp", "📟", "ESP32", 50], ["chip", "🧠", "Chip controlador", 180], ["leds", "🟥", "LEDs", 310]],
+    enlaces: [["esp", "chip", "2 o 3 cables"], ["chip", "leds", "muchos LEDs"]],
+    glosario: [
+      ["TM1637", "El chip del display de 4 dígitos. Usa 2 cables: CLK y DIO."],
+      ["MAX7219", "El chip de la matriz de 8×8. Usa 3 cables: DIN, CS y CLK."],
+      ["Multiplexado", "Prender los LEDs por turnos tan rápido que tu ojo los ve fijos."],
+      ["Brillo", "Los dos chips dejan cambiar el brillo desde el programa."]
+    ],
+    problemas: [
+      ["No prende", "Revisa VCC y GND. La matriz MAX7219 funciona mejor con 5 V."],
+      ["Se ve volteado", "Gira el módulo o cambia la rotación en el programa."],
+      ["Muestra basura", "Revisa que los cables de datos estén en los pines del bloque."]
+    ]
+  },
+  siete_seg: {
+    titulo: "¿Cómo se forma un número con 7 rayitas?",
+    analogia: "Cada número se arma con 7 segmentos (<b>a, b, c, d, e, f y g</b>), como figuras de cerillos. Para el 1 prendes b y c; para el 8, todos.",
+    nodos: [["esp", "📟", "ESP32", 60], ["seg", "🔟", "Segmentos a–g", 300]],
+    enlaces: [["esp", "seg", "7 pines: uno por segmento"]],
+    glosario: [
+      ["Segmento", "Cada una de las 7 rayitas: un LED alargado."],
+      ["Cátodo común", "Todos los segmentos comparten GND: se prenden con 1."],
+      ["Ánodo común", "Todos comparten el positivo: se prenden con 0."],
+      ["Resistencia", "Cada segmento necesita la suya, de unos 220 Ω."]
+    ],
+    problemas: [
+      ["Prende todo menos el número", "Tu display es de <b>ánodo común</b>: invierte los 1 y 0."],
+      ["Falta una rayita", "Revisa el cable y la resistencia de ese segmento."],
+      ["El número sale raro", "Revisa que cada pin vaya a su letra (a, b, c…)."]
+    ]
+  },
+  lcd_paralelo: {
+    titulo: "¿Cómo escribe letras la LCD?",
+    analogia: "La LCD tiene su propio chip (HD44780) que ya sabe dibujar las letras. El ESP32 le manda cada letra por <b>4 cables de datos</b> (D4 a D7), en dos mitades, y con <b>E</b> le avisa: \"¡ya, léelo!\".",
+    nodos: [["esp", "📟", "ESP32", 60], ["lcd", "📺", "LCD 16x2", 300]],
+    enlaces: [["esp", "lcd", "RS, E y D4–D7"]],
+    glosario: [
+      ["16x2", "16 columnas y 2 renglones de letras."],
+      ["RS", "Le dice a la LCD si lo que llega es una letra o una orden."],
+      ["E (Enable)", "El aviso de que ya puede leer los datos."],
+      ["Modo de 4 bits", "Mandar cada letra en dos mitades para usar menos cables."],
+      ["Contraste (V0)", "Se ajusta con un potenciómetro para que se vean las letras."]
+    ],
+    problemas: [
+      ["Solo cuadritos negros", "Ajusta el contraste con el potenciómetro."],
+      ["Letras raras", "Uno de los cables D4–D7 está cambiado o flojo."],
+      ["No se ve nada", "Revisa la luz de fondo (pines A y K) y VCC."]
+    ]
+  },
+  tft: {
+    titulo: "¿Cómo se pinta la pantalla TFT?",
+    analogia: "Una pantalla TFT es una <b>cuadrícula de miles de píxeles</b>, y cada uno mezcla rojo, verde y azul. El ESP32 le manda los colores por <b>SPI</b>, un bus muy rápido, para dibujar líneas, figuras y texto.",
+    nodos: [["prog", "🧩", "Tu programa", 50], ["esp", "📟", "ESP32", 180], ["tft", "🎨", "Pantalla TFT", 310]],
+    enlaces: [["prog", "esp", "dibuja"], ["esp", "tft", "SPI rápido"]],
+    glosario: [
+      ["Píxel", "Cada puntito de la pantalla."],
+      ["Coordenadas", "La posición (x, y). El (0, 0) es la esquina de arriba a la izquierda."],
+      ["SPI", "Un bus rápido con cables de reloj (SCK), datos (MOSI), CS y DC."],
+      ["RGB", "Los colores se arman con rojo, verde y azul."]
+    ],
+    problemas: [
+      ["Pantalla blanca", "Revisa los cables de CS, DC y RST."],
+      ["Colores cambiados", "Tu pantalla puede usar otro orden de color (BGR)."],
+      ["Sale de lado", "Cambia la rotación en el bloque de iniciar."]
+    ]
+  },
+
+  /* ── Sonido, datos y otros módulos ──────────────────────────── */
+  dfplayer: {
+    titulo: "¿Cómo toca música el DFPlayer?",
+    analogia: "El DFPlayer es un <b>reproductor de MP3 completo</b>: lee las canciones de la microSD y mueve la bocina. El ESP32 solo le da órdenes por serial, como un control remoto: \"toca la 3\", \"sube el volumen\".",
+    nodos: [["esp", "📟", "ESP32", 50], ["df", "🎵", "DFPlayer", 180], ["boc", "🔊", "Bocina", 310]],
+    enlaces: [["esp", "df", "UART: órdenes"], ["df", "boc", "audio"]],
+    glosario: [
+      ["microSD", "La memoria donde van las canciones. Debe estar en formato FAT32."],
+      ["Nombres", "Las canciones se llaman 0001.mp3, 0002.mp3…"],
+      ["UART", "El serial por donde el ESP32 manda las órdenes (9600 baudios)."],
+      ["Volumen", "Va de 0 a 30."]
+    ],
+    problemas: [
+      ["No suena", "Revisa que la microSD sea FAT32 y que las canciones se llamen 0001.mp3, 0002.mp3…"],
+      ["No obedece", "Cruza los cables: TX del ESP32 al RX del DFPlayer y al revés."],
+      ["Se escucha un zumbido", "Pon una resistencia de 1 kΩ en el cable que llega al RX del DFPlayer."]
+    ]
+  },
+  sd: {
+    titulo: "¿Cómo guarda datos el ESP32 en la SD?",
+    analogia: "La tarjeta SD es como un <b>cuaderno</b>: el ESP32 abre un archivo, escribe renglones y lo cierra. Si no lo cierra, es como no guardar: se puede perder lo escrito.",
+    nodos: [["esp", "📟", "ESP32", 60], ["sd", "💾", "Tarjeta microSD", 300]],
+    enlaces: [["esp", "sd", "SPI: leer y escribir", true]],
+    glosario: [
+      ["Montar", "Preparar la tarjeta para poder usar sus archivos."],
+      ["FAT32", "El formato que entiende el ESP32."],
+      ["Archivo", "Donde se guardan los datos, por ejemplo datos.txt o datos.csv."],
+      ["Cerrar", "Terminar de escribir para que todo quede guardado."]
+    ],
+    problemas: [
+      ["No monta la tarjeta", "Formatéala en FAT32 (mejor de 32 GB o menos) y revisa los cables."],
+      ["El archivo sale vacío", "Revisa que el programa cierre el archivo."],
+      ["Falla a veces", "Saca y mete la tarjeta, y revisa que esté bien metida."]
+    ]
+  },
+  huella: {
+    titulo: "¿Cómo reconoce tu huella el sensor?",
+    analogia: "El sensor toma una foto de las líneas de tu dedo y guarda solo un <b>mapa de sus puntos especiales</b> (donde una línea termina o se divide). Para reconocerte, compara el mapa nuevo con los que ya tiene y le dice al ESP32 tu número.",
+    nodos: [["dedo", "👆", "Dedo", 50], ["sen", "🔎", "Sensor FPM383C", 180], ["esp", "📟", "ESP32", 310]],
+    enlaces: [["dedo", "sen", "imagen"], ["sen", "esp", "UART: número"]],
+    glosario: [
+      ["Registrar", "Guardar una huella nueva en el sensor."],
+      ["Plantilla", "El mapa de puntos especiales que se guarda (no la foto)."],
+      ["ID", "El número con el que quedó guardada cada huella."],
+      ["UART", "El serial por donde el sensor y el ESP32 se mandan mensajes."]
+    ],
+    problemas: [
+      ["No te reconoce", "Pon el dedo limpio y en la misma posición que cuando lo registraste."],
+      ["No responde", "Cruza TX y RX entre el sensor y el ESP32."],
+      ["Reconoce mal", "Registra la huella otra vez, con todo el dedo sobre el sensor."]
+    ]
+  },
+  microfono: {
+    titulo: "¿Cómo escucha el micrófono INMP441?",
+    analogia: "Tu voz mueve el aire; una <b>membrana diminuta</b> dentro del micrófono vibra y su chip convierte esa vibración en números que le manda al ESP32 <b>miles de veces por segundo</b>.",
+    nodos: [["voz", "🗣️", "Sonido", 50], ["mic", "🎙️", "INMP441", 180], ["esp", "📟", "ESP32", 310]],
+    enlaces: [["voz", "mic", "vibración"], ["mic", "esp", "I2S digital"]],
+    glosario: [
+      ["I2S", "Un bus para mandar audio digital. Usa SCK (reloj), WS (canal) y SD (datos)."],
+      ["Muestreo", "Cuántos números por segundo se toman, por ejemplo 16,000."],
+      ["Amplitud", "Qué tan grande es la vibración: sonido más fuerte = números más grandes."],
+      ["L/R", "Elige si el micrófono es el canal izquierdo o derecho."]
+    ],
+    problemas: [
+      ["Solo da ceros", "Conecta L/R a GND y revisa SCK, WS y SD."],
+      ["Mucho ruido", "Usa cables cortos y aliméntalo con 3.3 V, no con 5 V."],
+      ["No cambia al hablar", "Habla cerca del agujerito del micrófono."]
+    ]
+  },
+  flujo: {
+    titulo: "¿Cómo mide el sensor cuánta agua pasa?",
+    analogia: "Adentro hay un <b>rehilete</b> con un imán. Cada vez que gira, un sensor Hall da un pulso. El ESP32 cuenta los pulsos: más pulsos por segundo = más agua.",
+    nodos: [["agua", "💧", "Agua", 50], ["yf", "🌀", "Sensor YF-201", 180], ["esp", "📟", "ESP32", 310]],
+    enlaces: [["agua", "yf", "gira"], ["yf", "esp", "pulsos"]],
+    glosario: [
+      ["Sensor Hall", "Detecta cuando pasa un imán cerca."],
+      ["Pulso", "Un 1 cortito cada vez que pasa el imán."],
+      ["Caudal", "Cuánta agua pasa por minuto (litros por minuto)."],
+      ["Fórmula", "En este sensor, pulsos por segundo ÷ 7.5 ≈ litros por minuto."]
+    ],
+    problemas: [
+      ["No cuenta nada", "Revisa la flecha del sensor: el agua debe ir en esa dirección."],
+      ["Cuenta muy poco", "Revisa el pin de señal (amarillo) y que tenga VCC y GND."],
+      ["Sin agua para probar", "Sopla suavemente por el tubo: el rehilete gira."]
+    ]
+  },
+
+  /* ── Juegos ─────────────────────────────────────────────────── */
+  juego: {
+    titulo: "¿Cómo funciona un videojuego?",
+    analogia: "Un videojuego es como un <b>libro de dibujos animados</b>: en cada vuelta del ciclo revisa las teclas, mueve a los personajes, borra la pantalla y dibuja todo otra vez. Como pasa unas <b>60 veces por segundo</b>, ves movimiento.",
+    nodos: [["tec", "⌨️", "Teclado", 50], ["ciclo", "🔁", "Ciclo del juego", 180], ["pan", "🖥️", "Pantalla", 310]],
+    enlaces: [["tec", "ciclo", "teclas"], ["ciclo", "pan", "dibuja"], ["pan", "ciclo", "otra vuelta", false, false, true]],
+    glosario: [
+      ["Ciclo del juego", "El <em>repetir mientras verdadero</em> donde pasa todo el juego."],
+      ["Fotograma (frame)", "Cada dibujo de la pantalla. <em>Siguiente frame</em> espera al próximo."],
+      ["Coordenadas", "x crece a la derecha y y crece <b>hacia abajo</b>. El (0, 0) es arriba a la izquierda."],
+      ["Personaje (sprite)", "Una imagen que se mueve por la pantalla."],
+      ["Colisión", "Cuando dos cosas se tocan en la pantalla."]
+    ],
+    problemas: [
+      ["No se mueve nada", "Revisa que los bloques estén <b>dentro</b> del ciclo y que al final esté <em>siguiente frame</em>."],
+      ["El personaje deja rastro", "Falta <em>limpiar pantalla</em> al inicio del ciclo."],
+      ["Se mueve muy rápido", "Usa pasos más pequeños, o una espera cortita después de moverse."]
+    ]
+  },
+  juego_mouse: {
+    titulo: "¿Cómo responde el juego al mouse?",
+    analogia: "En cada vuelta del ciclo el juego pregunta: <b>¿dónde está el mouse?</b> y <b>¿hicieron clic?</b> Si el clic cayó dentro de un botón o un blanco, cuenta; luego borra y dibuja todo otra vez, unas 60 veces por segundo.",
+    nodos: [["mouse", "🖱️", "Mouse", 50], ["ciclo", "🔁", "Ciclo del juego", 180], ["pan", "🖥️", "Pantalla", 310]],
+    enlaces: [["mouse", "ciclo", "x, y y clic"], ["ciclo", "pan", "dibuja"], ["pan", "ciclo", "otra vuelta", false, false, true]],
+    glosario: [
+      ["Coordenadas del mouse", "El x y la y de la flechita dentro de la pantalla del juego."],
+      ["Clic", "El bloque de clic da verdadero <b>una sola vez</b> por cada clic: al preguntar, el clic se gasta."],
+      ["Zona", "Un rectángulo: el clic cuenta si x y y caen dentro de él."],
+      ["Fotograma (frame)", "Cada dibujo de la pantalla."]
+    ],
+    problemas: [
+      ["El clic a veces no hace nada", "Pregunta por el clic <b>una sola vez</b> en cada vuelta y guárdalo en una variable: si preguntas dos veces, la segunda ya no lo ve."],
+      ["El clic no cuenta", "Revisa las comparaciones: x entre la orilla izquierda y la derecha, y entre la de arriba y la de abajo."],
+      ["No se ve nada", "Revisa que al final del ciclo esté <em>siguiente frame</em>."]
+    ]
+  },
+  carrito: {
+    titulo: "¿Cómo obedece el carrito al control?",
+    analogia: "Cada botón del control da un <b>voltaje distinto</b> por un solo cable. El ESP32 lo lee como un número, decide hacia dónde ir y le pide al puente H que mueva las ruedas.",
+    nodos: [["ctl", "🎛️", "Control", 40], ["esp", "📟", "ESP32", 140], ["ph", "🚦", "L298N", 240], ["rue", "🛞", "Ruedas", 330]],
+    enlaces: [["ctl", "esp", "número"], ["esp", "ph", "IN1–IN4"], ["ph", "rue", "giran"]],
+    glosario: [
+      ["ADKey", "Un control de 5 botones que usa un solo pin analógico."],
+      ["Rango", "Cada botón da un número aproximado; se compara con un intervalo."],
+      ["Puente H", "El L298N mueve los dos motores con la corriente de las pilas."],
+      ["Mantener apretado", "El ciclo revisa el control muchas veces por segundo: mientras aprietas, sigue moviéndose."]
+    ],
+    problemas: [
+      ["No responde a los botones", "Imprime la lectura del ADKey en el monitor serial y ajusta los rangos."],
+      ["Una rueda gira al revés", "Cambia de lugar los dos cables de ese motor en el L298N."],
+      ["Se va de lado", "Los motores nunca son iguales: ajusta el tiempo o la velocidad de cada uno."]
     ]
   }
 };
